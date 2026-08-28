@@ -13,10 +13,12 @@ export const site = {
     // Tek cümlelik vaat. Ziyaretçinin okuyacağı ilk şey.
     vaat: 'Dağınık bir çalışma düzenini, takip edilebilir bir programa çeviriyorum.',
     // Kısa tanıtım. 2-3 cümle. Kendi ağzınızdan yazın.
+    // ⚠️ Bu metin hâlâ yer tutucu. Kıvanç kendi ağzından yazmalı.
     tanitim:
-      '[DOLDURULACAK] Kaç yıldır koçluk yaptığınız, hangi alanda okuduğunuz, ' +
-      'neden bu işi yaptığınız. Öğrenciyle ve veliyle nasıl çalıştığınıza dair ' +
-      'iki üç cümle. Abartılı iddia yerine somut ve sade bir anlatım daha güven verir.',
+      '[DOLDURULACAK] On yıldır YKS ve LGS öğrencileriyle çalışıyorum. ' +
+      'Buraya kendi cümlelerinizle: hangi alanda okuduğunuz, neden bu işi ' +
+      'yaptığınız, öğrenciyle ve veliyle nasıl çalıştığınız. İki üç cümle yeter; ' +
+      'abartılı iddia yerine sade bir anlatım daha çok güven verir.',
   },
 
   iletisim: {
@@ -29,33 +31,37 @@ export const site = {
 
   // Ana vaadin altındaki üç kısa kanıt satırı.
   ozetler: [
-    { sayi: '1.498', etiket: 'konu başlığı', not: 'MEB müfredatına göre güncel' },
-    { sayi: '7', etiket: 'ayrı katalog', not: 'YKS alanları, 9-11. sınıf ve LGS' },
-    { sayi: '[DOLDURULACAK]', etiket: 'öğrenci', not: 'Şu an koçluk verilen' },
+    { emoji: '🗓️', sayi: '10', etiket: 'yıl', not: 'Koçluk deneyimi' },
+    { emoji: '🎓', sayi: '3.450', etiket: 'öğrenci', not: 'Bugüne kadar birlikte çalışılan' },
+    { emoji: '📚', sayi: '1.498', etiket: 'konu başlığı', not: 'Güncel MEB müfredatına göre' },
   ],
 
   nasil: {
     baslik: 'Nasıl çalışıyoruz',
     adimlar: [
       {
+        emoji: '🤝',
         baslik: 'Tanışma ve seviye tespiti',
         metin:
           'Hangi sınıfta, hangi alanda ve nerede olduğunuzu konuşuyoruz. ' +
           'Deneme sonuçlarınız varsa birlikte bakıyoruz.',
       },
       {
+        emoji: '🗂️',
         baslik: 'Programın kurulması',
         metin:
           'Haftalık program, sizin gerçek gününüze göre yazılıyor. ' +
           'Okul, dershane ve dinlenme saatleri hesaba katılıyor.',
       },
       {
+        emoji: '✅',
         baslik: 'Günlük takip',
         metin:
           'Yapılan ve yapılmayan görevler sistem üzerinden görünüyor. ' +
           'Aksama olduğunda aynı hafta içinde müdahale ediliyor.',
       },
       {
+        emoji: '📈',
         baslik: 'Deneme analizi',
         metin:
           'Her denemeden sonra net değişimi ve konu bazlı eksikler çıkarılıyor. ' +
@@ -67,21 +73,21 @@ export const site = {
   platform: {
     baslik: 'Sistem üzerinden neler takip ediliyor',
     maddeler: [
-      'Günlük ve haftalık program',
-      'Konu bazlı ilerleme durumu',
-      'Deneme sonuçları ve net değişimi',
-      'Soru çözüm sayıları',
-      'Veli görüntüleme erişimi',
+      { emoji: '🗓️', metin: 'Günlük ve haftalık program' },
+      { emoji: '📖', metin: 'Konu bazlı ilerleme durumu' },
+      { emoji: '📊', metin: 'Deneme sonuçları ve net değişimi' },
+      { emoji: '✏️', metin: 'Soru çözüm sayıları' },
+      { emoji: '👨‍👩‍👦', metin: 'Veli görüntüleme erişimi' },
     ],
   },
 
   kimler: {
     baslik: 'Kimler için',
     gruplar: [
-      { ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık ve Sözel alanları' },
-      { ad: '9-11. sınıf', aciklama: 'Okul dersleriyle birlikte erken hazırlık' },
-      { ad: 'LGS', aciklama: '8. sınıf öğrencileri' },
-      { ad: 'Mezun', aciklama: 'İkinci kez sınava girecekler' },
+      { emoji: '🎯', ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık ve Sözel alanları' },
+      { emoji: '🏫', ad: '9-11. sınıf', aciklama: 'Okul dersleriyle birlikte erken hazırlık' },
+      { emoji: '🧩', ad: 'LGS', aciklama: '8. sınıf öğrencileri' },
+      { emoji: '🔁', ad: 'Mezun', aciklama: 'İkinci kez sınava girecekler' },
     ],
   },
 

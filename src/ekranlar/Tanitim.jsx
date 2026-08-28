@@ -1,9 +1,5 @@
 import { site } from '../icerik/site.js'
 
-function Kabarcik({ dolu = true }) {
-  return <span className={dolu ? 'kb kb--dolu' : 'kb'} aria-hidden="true" />
-}
-
 export default function Tanitim({ onGiris }) {
   const { koc, iletisim, ozetler, nasil, platform, kimler, cagri } = site
 
@@ -46,6 +42,7 @@ export default function Tanitim({ onGiris }) {
       <section className="t-sayilar">
         {ozetler.map((o) => (
           <div key={o.etiket} className="t-sayi">
+            <span className="t-emoji" aria-hidden="true">{o.emoji}</span>
             <strong>{o.sayi}</strong>
             <span className="t-sayi-etiket">{o.etiket}</span>
             <span className="t-sayi-not">{o.not}</span>
@@ -59,7 +56,10 @@ export default function Tanitim({ onGiris }) {
         <ol className="t-adimlar">
           {nasil.adimlar.map((a, i) => (
             <li key={a.baslik}>
-              <span className="t-adim-no">{String(i + 1).padStart(2, '0')}</span>
+              <span className="t-adim-no">
+                <span className="t-emoji" aria-hidden="true">{a.emoji}</span>
+                {String(i + 1).padStart(2, '0')}
+              </span>
               <div>
                 <h3>{a.baslik}</h3>
                 <p>{a.metin}</p>
@@ -74,9 +74,9 @@ export default function Tanitim({ onGiris }) {
         <h2>{platform.baslik}</h2>
         <ul className="t-maddeler">
           {platform.maddeler.map((m) => (
-            <li key={m}>
-              <Kabarcik />
-              {m}
+            <li key={m.metin}>
+              <span className="t-emoji" aria-hidden="true">{m.emoji}</span>
+              {m.metin}
             </li>
           ))}
         </ul>
@@ -92,6 +92,7 @@ export default function Tanitim({ onGiris }) {
         <div className="t-gruplar">
           {kimler.gruplar.map((g) => (
             <div key={g.ad} className="t-grup">
+              <span className="t-emoji t-emoji--buyuk" aria-hidden="true">{g.emoji}</span>
               <span className="t-grup-ad">{g.ad}</span>
               <span className="t-grup-aciklama">{g.aciklama}</span>
             </div>

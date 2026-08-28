@@ -322,3 +322,15 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   border-top: 1px solid var(--cizgi);
   font-size: 0.8125rem; color: var(--soluk);
 }
+
+/* Emoji işaretleri: metnin yanında hizalı dursun, tipografiyi bozmasın */
+.t-emoji {
+  font-size: 1rem;
+  line-height: 1;
+  font-family:
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+.t-sayi .t-emoji { display: block; margin-bottom: 0.5rem; font-size: 1.125rem; }
+.t-adim-no { display: flex; flex-direction: column; align-items: flex-start; gap: 0.4rem; }
+.t-emoji--buyuk { display: block; font-size: 1.25rem; margin-bottom: 0.5rem; }
+.t-maddeler li .t-emoji { flex-shrink: 0; width: 1.25rem; }
