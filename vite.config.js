@@ -34,6 +34,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // Belge gorselleri yalnizca tanitim sayfasinda kullaniliyor;
+        // uygulamanin calismasi icin gerekli degil. On bellege alinmazlar,
+        // ihtiyac aninda agdan cekilir.
+        globIgnores: ['**/belgeler/**'],
         navigateFallback: '/index.html',
         // Yeni surum indirildigi anda devreye girsin. Bunlar olmadan eski
         // service worker sayfayi kontrol etmeye devam eder ve kullanici

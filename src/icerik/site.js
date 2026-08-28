@@ -47,14 +47,22 @@ export const site = {
 
   // ⚠️ DEMO — gerçek belgelerle değiştirilecek.
   // Görselleri public/belgeler/ içine koyup gorsel alanına yolunu yazın.
+  // ⚠️ DEMO — görseller örnektir, üzerlerinde "ÖRNEK" filigranı vardır.
+  // Gerçek belgeleri public/belgeler/ içine koyup gorsel yolunu değiştirin.
   belgeler: {
     baslik: 'Belgeler',
-    aciklama: 'Eğitim ve sertifikalar.',
+    aciklama: 'Eğitim ve sertifikalar. Yana kaydırarak hepsini görebilirsiniz.',
     liste: [
-      { ad: 'Lisans Diploması', kurum: '[DEMO] Üniversite · Bölüm', yil: '2015', gorsel: '' },
-      { ad: 'Eğitim Koçluğu Sertifikası', kurum: '[DEMO] Kurum adı', yil: '2016', gorsel: '' },
-      { ad: 'Rehberlik ve Psikolojik Danışmanlık', kurum: '[DEMO] Kurum adı', yil: '2019', gorsel: '' },
-      { ad: 'Ölçme ve Değerlendirme Eğitimi', kurum: '[DEMO] Kurum adı', yil: '2022', gorsel: '' },
+      { ad: 'Lisans Diploması', kurum: '[DEMO] Eğitim Fakültesi', yil: '2015', gorsel: '/belgeler/ornek-01.png' },
+      { ad: 'Eğitim Koçluğu Sertifikası', kurum: '[DEMO] Sürekli Eğitim Merkezi', yil: '2016', gorsel: '/belgeler/ornek-02.png' },
+      { ad: 'Rehberlik ve Psikolojik Danışmanlık', kurum: '[DEMO] Pedagoji Enstitüsü', yil: '2019', gorsel: '/belgeler/ornek-03.png' },
+      { ad: 'Ölçme ve Değerlendirme', kurum: '[DEMO] Eğitim Bilimleri Merkezi', yil: '2022', gorsel: '/belgeler/ornek-04.png' },
+      { ad: 'Öğrenme Psikolojisi', kurum: '[DEMO] Psikoloji Uygulama Merkezi', yil: '2018', gorsel: '/belgeler/ornek-05.png' },
+      { ad: 'Sınav Kaygısı Yönetimi', kurum: '[DEMO] Danışmanlık Akademisi', yil: '2020', gorsel: '/belgeler/ornek-06.png' },
+      { ad: 'Verimli Ders Çalışma Teknikleri', kurum: '[DEMO] Eğitim Akademisi', yil: '2017', gorsel: '/belgeler/ornek-07.png' },
+      { ad: 'Bireysel Farklılıklar ve Öğrenme Stilleri', kurum: '[DEMO] Eğitim Enstitüsü', yil: '2021', gorsel: '/belgeler/ornek-08.png' },
+      { ad: 'Aile İletişimi ve Veli Danışmanlığı', kurum: '[DEMO] Aile Danışma Merkezi', yil: '2023', gorsel: '/belgeler/ornek-09.png' },
+      { ad: 'Kariyer Planlama ve Tercih Danışmanlığı', kurum: '[DEMO] Meslek Rehberliği Merkezi', yil: '2024', gorsel: '/belgeler/ornek-10.png' },
     ],
   },
 

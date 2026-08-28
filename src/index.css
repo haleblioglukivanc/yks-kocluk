@@ -398,19 +398,70 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .kim-metin p { margin: 0 0 1rem; font-size: 0.9375rem; line-height: 1.68; color: var(--kursun); max-width: 56ch; }
 .kim-metin p:last-child { margin-bottom: 0; }
 
-/* ---------- Belgeler ---------- */
+/* ---------- Belgeler: yatay kaydırılan raf ---------- */
 
-.belge-izgara { display: grid; grid-template-columns: repeat(auto-fill, minmax(11rem, 1fr)); gap: 1.25rem; }
-.belge { margin: 0; }
-.belge-gorsel {
-  aspect-ratio: 1 / 1.35; border: 1.5px solid var(--kare); border-radius: 2px;
-  background: #fff; display: grid; place-items: center; overflow: hidden; margin-bottom: 0.75rem;
+/* Raf, bölümün yan boşluklarını taşarak kenardan kenara uzanır. */
+.belge-serit {
+  margin-inline: calc(-1 * clamp(1.75rem, 8vw, 5.5rem));
+  overflow: hidden;
 }
-.belge-gorsel img { width: 100%; height: 100%; object-fit: cover; }
+
+.belge-raf {
+  list-style: none; margin: 0;
+  padding: 0.25rem clamp(1.75rem, 8vw, 5.5rem) 1.25rem;
+  display: flex; gap: 1.125rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: var(--kare) transparent;
+}
+.belge-raf::-webkit-scrollbar { height: 6px; }
+.belge-raf::-webkit-scrollbar-track { background: transparent; }
+.belge-raf::-webkit-scrollbar-thumb { background: var(--kare); border-radius: 3px; }
+
+.belge {
+  flex: 0 0 auto;
+  width: 10.5rem;
+  scroll-snap-align: start;
+  margin: 0;
+}
+
+.belge-gorsel {
+  aspect-ratio: 620 / 840;
+  border: 1.5px solid var(--kare); border-radius: 2px;
+  background: #fff; display: grid; place-items: center;
+  overflow: hidden; margin-bottom: 0.75rem;
+  box-shadow: 0 1px 3px rgb(27 42 74 / 0.07);
+  transition: transform 180ms ease, box-shadow 180ms ease;
+}
+.belge:hover .belge-gorsel {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgb(27 42 74 / 0.12);
+}
+.belge-gorsel img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .belge-bos { font-size: 0.75rem; color: var(--silik); text-align: center; padding: 0.5rem; }
-.belge h3 { font-family: var(--def); font-size: 0.9375rem; font-weight: 700; margin: 0 0 0.2rem; line-height: 1.3; }
-.belge-kurum { margin: 0; font-size: 0.8125rem; color: var(--kursun); line-height: 1.4; }
-.belge-yil { margin: 0.2rem 0 0; font-family: var(--mon); font-size: 0.75rem; color: var(--silik); }
+
+.belge h3 {
+  font-family: var(--def); font-size: 0.875rem; font-weight: 700;
+  margin: 0 0 0.2rem; line-height: 1.3;
+}
+.belge-kurum { margin: 0; font-size: 0.75rem; color: var(--kursun); line-height: 1.4; }
+.belge-yil { margin: 0.25rem 0 0; font-family: var(--mon); font-size: 0.6875rem; color: var(--silik); }
+
+.belge-ipucu {
+  margin: 0.25rem 0 0; font-family: var(--mon);
+  font-size: 0.6875rem; letter-spacing: 0.1em; color: var(--silik);
+}
+
+@media (min-width: 48rem) {
+  .belge { width: 12rem; }
+  .belge-ipucu { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .belge:hover .belge-gorsel { transform: none; }
+}
 
 /* ---------- Adımlar ---------- */
 

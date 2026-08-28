@@ -168,18 +168,25 @@ export default function Tanitim({ onGiris }) {
       <section className="bolum" id="belgeler">
         <h2>{belgeler.baslik}</h2>
         <p className="bolum-alt">{belgeler.aciklama}</p>
-        <div className="belge-izgara">
-          {belgeler.liste.map((b) => (
-            <article key={b.ad} className="belge">
-              <div className="belge-gorsel">
-                {b.gorsel ? <img src={b.gorsel} alt={b.ad} loading="lazy" /> : <span className="belge-bos">Görsel eklenmedi</span>}
-              </div>
-              <h3>{b.ad}</h3>
-              <p className="belge-kurum">{b.kurum}</p>
-              <p className="belge-yil">{b.yil}</p>
-            </article>
-          ))}
+        <div className="belge-serit">
+          <ul className="belge-raf">
+            {belgeler.liste.map((b) => (
+              <li key={b.ad} className="belge">
+                <div className="belge-gorsel">
+                  {b.gorsel ? (
+                    <img src={b.gorsel} alt={b.ad} loading="lazy" />
+                  ) : (
+                    <span className="belge-bos">Görsel eklenmedi</span>
+                  )}
+                </div>
+                <h3>{b.ad}</h3>
+                <p className="belge-kurum">{b.kurum}</p>
+                <p className="belge-yil">{b.yil}</p>
+              </li>
+            ))}
+          </ul>
         </div>
+        <p className="belge-ipucu">← yana kaydırın →</p>
       </section>
 
       {/* ---------- Nasıl ---------- */}

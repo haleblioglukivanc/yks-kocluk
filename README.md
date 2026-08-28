@@ -54,7 +54,25 @@ ayarıyla sağlanır; bilinmeyen yollar `index.html` döner.
 | `/` | Panel (giriş yapılmışsa, role göre) |
 
 Tanıtım sayfasının bütün metinleri `src/icerik/site.js` dosyasındadır.
-`[DOLDURULACAK]` işaretli alanlar yayına çıkmadan gerçek bilgiyle değiştirilmelidir.
+
+### Belgeleri değiştirme
+
+`public/belgeler/` klasöründe `ornek-01.png` … `ornek-10.png` adında on örnek görsel
+var; hepsinin üzerinde "ÖRNEK" filigranı bulunur. Gerçek belgeler geldiğinde:
+
+1. Görselleri aynı klasöre koyun (dikey, 620×840 oranına yakın iyi sonuç verir).
+2. `src/icerik/site.js` içindeki `belgeler.liste` dizisinde `gorsel` yolunu değiştirin.
+3. `[DEMO]` etiketlerini gerçek kurum adlarıyla değiştirin.
+4. Örnek görselleri silin.
+
+Belge görselleri service worker ön belleğine alınmaz (`globIgnores`), böylece
+uygulamayı kuranlar gereksiz veri indirmez.
+
+### Yayın öncesi kontrol listesi
+
+`site.js` içinde `[DEMO]` ve `[DOLDURULACAK]` araması yapın. Kalan yoksa hazırdır.
+Özellikle `yorumlar.liste` gerçek değilse boşaltın (`[]`) — uydurma referans
+gerçek bir kişinin adı altında yayınlanmamalı.
 
 ## Roller
 
