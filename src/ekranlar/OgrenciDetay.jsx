@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Avatar, FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR, gunAnahtari } from '../bilesenler/ProgramIzgarasi.jsx'
+import HedefNet from '../bilesenler/HedefNet.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const TUR_ADI = {
@@ -23,6 +24,7 @@ const ILERLEME_ADI = {
 
 export default function OgrenciDetay({ ogrenciId, onGeri }) {
   const [ogrenci, setOgrenci] = useState(null)
+  const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
   const [duzenle, setDuzenle] = useState(false)
@@ -32,12 +34,18 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
     const { data, error } = await supabase
       .from('ogrenciler')
       .select(
-        'id, koc_id, alan, sinif, katalog_id, aktif, hedef_universite, hedef_bolum, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon, fotograf_yolu), kataloglar(id, ad)',
+        'id, koc_id, alan, sinif, katalog_id, aktif, hedef_universite, hedef_bolum, hedef_tyt_net, hedef_ayt_net, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon, fotograf_yolu), kataloglar(id, ad)',
       )
       .eq('id', ogrenciId)
       .maybeSingle()
     if (error) setHata(hataMetni(error))
     setOgrenci(data)
+
+    const { data: nd } = await supabase
+      .from('ogrenci_net_durumu')
+      .select('tur, son_net, en_yuksek_net')
+      .eq('ogrenci_id', ogrenciId)
+    setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
   }, [ogrenciId])
 
   useEffect(() => {
@@ -75,6 +83,16 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
                 .filter(Boolean)
                 .join(' · ') || 'Bilgi girilmemiş'}
             </p>
+            {(ogrenci.hedef_universite || ogrenci.hedef_bolum) && (
+              <p className="kimlik-hedef">
+                Hedef: {[ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')}
+              </p>
+            )}
+            <HedefNet
+              tyt={ogrenci.hedef_tyt_net}
+              ayt={ogrenci.hedef_ayt_net}
+              durum={netDurumu}
+            />
             {!ogrenci.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
           </div>
           <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
@@ -93,13 +111,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
           />
         ) : (
           <dl className="kunye">
-            <div>
-              <dt>Hedef</dt>
-              <dd>
-                {[ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ') ||
-                  'Belirtilmedi'}
-              </dd>
-            </div>
             <div>
               <dt>Telefon</dt>
               <dd>{ogrenci.profiller?.telefon || 'Belirtilmedi'}</dd>
@@ -149,6 +160,8 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
   const [alan, setAlan] = useState(ogrenci.alan ?? '')
   const [uni, setUni] = useState(ogrenci.hedef_universite ?? '')
   const [bolum, setBolum] = useState(ogrenci.hedef_bolum ?? '')
+  const [tytNet, setTytNet] = useState(ogrenci.hedef_tyt_net ?? '')
+  const [aytNet, setAytNet] = useState(ogrenci.hedef_ayt_net ?? '')
   const [aktif, setAktif] = useState(ogrenci.aktif)
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
@@ -157,6 +170,14 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
     setHata('')
     if (ad.trim().length < 2) {
       setHata('Ad soyad en az 2 karakter olmalı.')
+      return
+    }
+    if (tytNet !== '' && (Number(tytNet) < 0 || Number(tytNet) > 120)) {
+      setHata('Hedef TYT net 0 ile 120 arasında olmalı.')
+      return
+    }
+    if (aytNet !== '' && (Number(aytNet) < 0 || Number(aytNet) > 80)) {
+      setHata('Hedef AYT net 0 ile 80 arasında olmalı.')
       return
     }
     setBekliyor(true)
@@ -175,6 +196,8 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
           alan: alan || null,
           hedef_universite: uni.trim() || null,
           hedef_bolum: bolum.trim() || null,
+          hedef_tyt_net: tytNet === '' ? null : Number(tytNet),
+          hedef_ayt_net: aytNet === '' ? null : Number(aytNet),
           aktif,
         })
         .eq('id', ogrenci.id)
@@ -240,6 +263,17 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
       <Alan etiket="Hedef bölüm">
         <input value={bolum} onChange={(e) => setBolum(e.target.value)} placeholder="İsteğe bağlı" />
       </Alan>
+
+      <div className="ikili">
+        <Alan etiket="Hedef TYT net" ipucu="0 – 120">
+          <input type="number" min="0" max="120" step="0.25" inputMode="decimal"
+                 value={tytNet} onChange={(e) => setTytNet(e.target.value)} placeholder="Örn. 105" />
+        </Alan>
+        <Alan etiket="Hedef AYT net" ipucu="0 – 80">
+          <input type="number" min="0" max="80" step="0.25" inputMode="decimal"
+                 value={aytNet} onChange={(e) => setAytNet(e.target.value)} placeholder="Örn. 62" />
+        </Alan>
+      </div>
       <label className="onay">
         <input type="checkbox" checked={aktif} onChange={(e) => setAktif(e.target.checked)} />
         <span>

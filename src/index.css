@@ -776,3 +776,30 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .son-net { text-align: right; flex-shrink: 0; }
 .son-net strong { display: block; font-family: var(--mono); font-size: 1.5rem; font-weight: 700; line-height: 1; }
 .son-net span { font-size: 0.6875rem; color: var(--soluk); }
+
+/* ═══════════ Hedef net ═══════════ */
+
+.hedef-net { margin-top: 0.625rem; display: grid; gap: 0.5rem; }
+.hedef-satir {
+  display: grid;
+  grid-template-columns: 2.25rem minmax(3rem, 1fr) auto auto;
+  align-items: center; gap: 0.5rem 0.625rem;
+}
+.hedef-ad {
+  font-family: var(--mono); font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.05em; color: var(--grafit);
+}
+.hedef-cubuk { height: 6px; background: var(--kagit); border-radius: 3px; overflow: hidden; }
+.hedef-dolgu { height: 100%; background: var(--dolgu); border-radius: 3px; transition: width 360ms ease; }
+.hedef-dolgu--ulasti { background: var(--isaret); }
+.hedef-deger { font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); white-space: nowrap; }
+.hedef-deger strong { color: var(--murekkep); font-weight: 700; }
+.hedef-yok { color: var(--soluk); }
+.hedef-eniyi { font-size: 0.6875rem; color: var(--isaret); white-space: nowrap; }
+
+@media (max-width: 26rem) {
+  .hedef-satir { grid-template-columns: 2.25rem 1fr auto; }
+  .hedef-eniyi { grid-column: 2 / -1; }
+}
+
+@media (prefers-reduced-motion: reduce) { .hedef-dolgu { transition: none; } }

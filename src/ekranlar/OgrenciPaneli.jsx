@@ -3,12 +3,14 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Avatar } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
+import HedefNet from '../bilesenler/HedefNet.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
 export default function OgrenciPaneli({ profil }) {
   const [kayit, setKayit] = useState(null)
   const [denemeler, setDenemeler] = useState([])
+  const [netDurumu, setNetDurumu] = useState(null)
   const [sekme, setSekme] = useState('program')
   const [hata, setHata] = useState('')
 
@@ -17,7 +19,7 @@ export default function OgrenciPaneli({ profil }) {
       const { data: o, error } = await supabase
         .from('ogrenciler')
         .select(
-          'id, koc_id, alan, sinif, katalog_id, hedef_universite, hedef_bolum, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)',
+          'id, koc_id, alan, sinif, katalog_id, hedef_universite, hedef_bolum, hedef_tyt_net, hedef_ayt_net, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)',
         )
         .maybeSingle()
       if (error) {
@@ -32,6 +34,11 @@ export default function OgrenciPaneli({ profil }) {
         .order('tarih', { ascending: false })
         .limit(8)
       setDenemeler(d ?? [])
+
+      const { data: nd } = await supabase
+        .from('ogrenci_net_durumu')
+        .select('tur, son_net, en_yuksek_net')
+      setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
     })()
   }, [])
 
@@ -64,6 +71,11 @@ export default function OgrenciPaneli({ profil }) {
                 Hedef: {[kayit.hedef_universite, kayit.hedef_bolum].filter(Boolean).join(' · ')}
               </p>
             )}
+            <HedefNet
+              tyt={kayit.hedef_tyt_net}
+              ayt={kayit.hedef_ayt_net}
+              durum={netDurumu}
+            />
           </div>
           {sonNet !== null && (
             <div className="son-net">
