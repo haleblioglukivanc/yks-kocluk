@@ -9,15 +9,37 @@ const ALAN_ADI = {
   dil: 'Dil',
 }
 
+/** Edge Function çağrısı: hesap açma yalnızca sunucu tarafında yapılabilir. */
+async function kullaniciOlustur(govde) {
+  const { data: oturum } = await supabase.auth.getSession()
+  const jeton = oturum?.session?.access_token
+  if (!jeton) throw new Error('Oturum bulunamadı.')
+
+  const { data, error } = await supabase.functions.invoke('kullanici-olustur', {
+    body: govde,
+  })
+  if (error) {
+    // Fonksiyon hata gövdesini okumaya çalış
+    let mesaj = error.message
+    try {
+      const g = await error.context?.json()
+      if (g?.hata) mesaj = g.hata
+    } catch {
+      /* gövde okunamadı, genel mesaj kalsın */
+    }
+    throw new Error(mesaj)
+  }
+  return data
+}
+
 export default function KocPaneli() {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
-  const [davetler, setDavetler] = useState([])
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
 
   const yukle = useCallback(async () => {
-    const [o, k, d] = await Promise.all([
+    const [o, k] = await Promise.all([
       supabase
         .from('ogrenciler')
         .select('id, alan, sinif, aktif, katalog_id, profiller!inner(ad_soyad), kataloglar(ad)')
@@ -27,18 +49,10 @@ export default function KocPaneli() {
         .select('id, ad, tur, seviye, alan')
         .is('koc_id', null)
         .order('sira'),
-      supabase
-        .from('davetler')
-        .select('id, kod, rol, ad_soyad, kullanildi, son_gecerlilik')
-        .is('kullanildi', null)
-        .order('olusturuldu', { ascending: false })
-        .limit(10),
     ])
-
     if (o.error) setHata(hataMetni(o.error))
     setOgrenciler(o.data ?? [])
     setKataloglar(k.data ?? [])
-    setDavetler(d.data ?? [])
   }, [])
 
   useEffect(() => {
@@ -54,26 +68,18 @@ export default function KocPaneli() {
         altBaslik={ogrenciler ? `${ogrenciler.length} kayıtlı öğrenci` : undefined}
         eylem={
           <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-            {formAcik ? 'Kapat' : 'Öğrenci davet et'}
+            {formAcik ? 'Kapat' : 'Öğrenci ekle'}
           </Dugme>
         }
       >
-        {formAcik && (
-          <DavetFormu
-            kataloglar={kataloglar}
-            onOlustu={() => {
-              setFormAcik(false)
-              yukle()
-            }}
-          />
-        )}
+        {formAcik && <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />}
 
         {ogrenciler === null ? (
           <Yukleniyor />
         ) : ogrenciler.length === 0 ? (
           <Bos
             baslik="Henüz öğrenciniz yok"
-            aciklama="Bir davet kodu oluşturun ve öğrencinize gönderin. Kodu kullanarak kayıt olduğunda burada görünecek."
+            aciklama="Öğrenci ekleyin. Sistem geçici bir şifre üretir; öğrenci o şifreyle giriş yapıp kendi şifresini belirler."
           />
         ) : (
           <ul className="liste">
@@ -97,61 +103,38 @@ export default function KocPaneli() {
           </ul>
         )}
       </Kart>
-
-      {davetler.length > 0 && (
-        <Kart baslik="Bekleyen davetler" altBaslik="Henüz kullanılmamış kodlar">
-          <ul className="liste">
-            {davetler.map((d) => (
-              <li key={d.id} className="liste-satir">
-                <div>
-                  <span className="kod-rozet">{d.kod}</span>
-                  <span className="liste-alt">
-                    {d.ad_soyad ? `${d.ad_soyad} · ` : ''}
-                    {d.rol === 'veli' ? 'Veli' : 'Öğrenci'} ·{' '}
-                    {new Date(d.son_gecerlilik).toLocaleDateString('tr-TR')} tarihine kadar
-                  </span>
-                </div>
-                <button
-                  className="metin-dugme"
-                  onClick={() => navigator.clipboard?.writeText(d.kod)}
-                >
-                  Kopyala
-                </button>
-              </li>
-            ))}
-          </ul>
-        </Kart>
-      )}
     </div>
   )
 }
 
-function DavetFormu({ kataloglar, onOlustu }) {
+function OgrenciFormu({ kataloglar, onEklendi }) {
   const [adSoyad, setAdSoyad] = useState('')
+  const [eposta, setEposta] = useState('')
   const [katalogId, setKatalogId] = useState('')
   const [sinif, setSinif] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
-  const [sonKod, setSonKod] = useState('')
+  const [sonuc, setSonuc] = useState(null)
 
   const secili = kataloglar.find((k) => String(k.id) === katalogId)
 
-  async function olustur() {
+  async function ekle() {
     setHata('')
-    setSonKod('')
+    setSonuc(null)
     setBekliyor(true)
     try {
-      const { data, error } = await supabase.rpc('davet_olustur', {
-        p_rol: 'ogrenci',
-        p_ad_soyad: adSoyad.trim() || null,
-        p_katalog_id: katalogId ? Number(katalogId) : null,
-        p_alan: secili?.alan ?? null,
-        p_sinif: sinif ? Number(sinif) : (secili?.seviye ?? null),
+      const d = await kullaniciOlustur({
+        rol: 'ogrenci',
+        ad_soyad: adSoyad.trim(),
+        eposta: eposta.trim(),
+        katalog_id: katalogId ? Number(katalogId) : null,
+        alan: secili?.alan ?? null,
+        sinif: sinif ? Number(sinif) : (secili?.seviye ?? null),
       })
-      if (error) throw error
-      setSonKod(data.kod)
+      setSonuc(d)
       setAdSoyad('')
-      onOlustu?.()
+      setEposta('')
+      await onEklendi()
     } catch (e) {
       setHata(hataMetni(e))
     } finally {
@@ -159,9 +142,44 @@ function DavetFormu({ kataloglar, onOlustu }) {
     }
   }
 
+  if (sonuc) {
+    return (
+      <div className="form-kutu">
+        <div className="kod-sonuc">
+          <p>
+            <strong className="satir-ad">{sonuc.ad_soyad}</strong> için hesap açıldı.
+            Aşağıdaki bilgileri öğrenciye iletin.
+          </p>
+          <div className="sifre-kutu">
+            <span className="sifre-etiket">E-posta</span>
+            <code>{sonuc.eposta}</code>
+            <span className="sifre-etiket">Geçici şifre</span>
+            <code className="sifre">{sonuc.gecici_sifre}</code>
+          </div>
+          <button
+            className="metin-dugme"
+            onClick={() =>
+              navigator.clipboard?.writeText(
+                `E-posta: ${sonuc.eposta}\nGeçici şifre: ${sonuc.gecici_sifre}`,
+              )
+            }
+          >
+            Kopyala
+          </button>
+          <p className="uyari-not">
+            Bu şifre bir daha gösterilmez. Öğrenci ilk girişte kendi şifresini belirleyecek.
+          </p>
+        </div>
+        <Dugme tur="ikincil" onClick={() => setSonuc(null)}>
+          Bir öğrenci daha ekle
+        </Dugme>
+      </div>
+    )
+  }
+
   return (
     <div className="form-kutu">
-      <Alan etiket="Öğrenci adı" ipucu="Kodu kimin için ürettiğinizi hatırlamanız için">
+      <Alan etiket="Ad soyad">
         <input
           value={adSoyad}
           onChange={(e) => setAdSoyad(e.target.value)}
@@ -169,7 +187,16 @@ function DavetFormu({ kataloglar, onOlustu }) {
         />
       </Alan>
 
-      <Alan etiket="Konu kataloğu" ipucu="Öğrencinin çalışacağı ders takımı">
+      <Alan etiket="E-posta" ipucu="Öğrenci bu adresle giriş yapacak">
+        <input
+          type="email"
+          value={eposta}
+          onChange={(e) => setEposta(e.target.value)}
+          placeholder="ogrenci@eposta.com"
+        />
+      </Alan>
+
+      <Alan etiket="Konu kataloğu">
         <select value={katalogId} onChange={(e) => setKatalogId(e.target.value)}>
           <option value="">Sonra seçilsin</option>
           {kataloglar.map((k) => (
@@ -194,19 +221,9 @@ function DavetFormu({ kataloglar, onOlustu }) {
 
       <Uyari>{hata}</Uyari>
 
-      {sonKod ? (
-        <div className="kod-sonuc">
-          <p>Kod hazır. Öğrencinize gönderin:</p>
-          <strong>{sonKod}</strong>
-          <button className="metin-dugme" onClick={() => navigator.clipboard?.writeText(sonKod)}>
-            Kopyala
-          </button>
-        </div>
-      ) : (
-        <Dugme onClick={olustur} bekliyor={bekliyor}>
-          Davet kodu oluştur
-        </Dugme>
-      )}
+      <Dugme onClick={ekle} bekliyor={bekliyor}>
+        Hesabı oluştur
+      </Dugme>
     </div>
   )
 }

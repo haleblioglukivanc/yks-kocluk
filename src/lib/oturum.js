@@ -13,7 +13,7 @@ export function useOturum() {
   const profiliCek = useCallback(async (id) => {
     const { data, error } = await supabase
       .from('profiller')
-      .select('id, rol, ad_soyad')
+      .select('id, rol, ad_soyad, sifre_degistirmeli')
       .eq('id', id)
       .maybeSingle()
     if (error) {

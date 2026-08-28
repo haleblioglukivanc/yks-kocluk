@@ -56,14 +56,17 @@ ayarıyla sağlanır; bilinmeyen yollar `index.html` döner.
 Bir koç, veritabanı seviyesinde başka koçun verisine erişemez. Yetkilendirme
 uygulama kodunda değil, RLS politikalarında tanımlıdır.
 
-## Katılım akışı
+## Hesap açma akışı
 
-1. Koç kayıt olurken "Koç olarak kayıt oluyorum" kutusunu işaretler.
-2. Panelden davet kodu üretir (`XXXX-XXXX`), öğrenciye gönderir.
-3. Öğrenci normal kayıt olur, kodu girer; hesabı otomatik olarak koça bağlanır.
-4. Veli daveti aynı şekilde, ancak koç kodu belirli bir öğrenci için üretir.
+Siteden kendi kendine kayıt olunamaz. Bütün hesapları koç açar.
 
-Kodlar tek kullanımlıktır ve 30 gün geçerlidir.
+1. Koç panelden öğrencinin adını, e-postasını, kataloğunu ve sınıfını girer.
+2. Sistem rastgele bir geçici şifre üretir ve hesabı açar.
+3. Koç bu bilgileri öğrenciye iletir. Şifre bir daha gösterilmez.
+4. Öğrenci ilk girişte kendi şifresini belirlemeye zorlanır.
+
+Hesap açma işlemi `service_role` anahtarı gerektirdiği için tarayıcıda değil,
+`supabase/functions/kullanici-olustur` Edge Function'ında yapılır.
 
 ## Konu katalogları
 

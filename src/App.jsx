@@ -1,9 +1,7 @@
-import { useEffect, useState } from 'react'
-import { supabase } from './lib/supabase.js'
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Giris from './ekranlar/Giris.jsx'
-import DavetKodu from './ekranlar/DavetKodu.jsx'
+import SifreDegistir from './ekranlar/SifreDegistir.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
@@ -12,20 +10,6 @@ const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Y�
 
 export default function App() {
   const { durum, profil, yenile, cikisYap } = useOturum()
-  const [bagli, setBagli] = useState(null) // öğrenci/veli bir koça bağlı mı
-
-  useEffect(() => {
-    if (durum !== 'hazir' || !profil) return
-    if (profil.rol === 'koc' || profil.rol === 'yonetici') {
-      setBagli(true)
-      return
-    }
-    ;(async () => {
-      const tablo = profil.rol === 'veli' ? 'veli_ogrenci' : 'ogrenciler'
-      const { count } = await supabase.from(tablo).select('*', { count: 'exact', head: true })
-      setBagli((count ?? 0) > 0)
-    })()
-  }, [durum, profil])
 
   if (durum === 'yukleniyor') {
     return (
@@ -45,26 +29,11 @@ export default function App() {
     )
   }
 
-  if (bagli === null) {
-    return (
-      <div className="giris-sayfa">
-        <Yukleniyor />
-      </div>
-    )
+  if (profil.sifre_degistirmeli) {
+    return <SifreDegistir profil={profil} onBitti={yenile} onCikis={cikisYap} />
   }
 
-  if (!bagli) {
-    return (
-      <DavetKodu
-        profil={profil}
-        onCikis={cikisYap}
-        onBaglandi={async () => {
-          await yenile()
-          setBagli(true)
-        }}
-      />
-    )
-  }
+  const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
 
   return (
     <div className="uygulama">
@@ -83,7 +52,7 @@ export default function App() {
       </header>
 
       <main>
-        {profil.rol === 'koc' || profil.rol === 'yonetici' ? (
+        {kocMu ? (
           <KocPaneli />
         ) : profil.rol === 'veli' ? (
           <VeliPaneli />
