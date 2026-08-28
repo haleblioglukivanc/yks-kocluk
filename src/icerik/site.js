@@ -1,101 +1,206 @@
 /**
- * Tanıtım sayfasının bütün metinleri burada.
- * Değiştirmek için başka dosyaya girmenize gerek yok.
+ * ═══════════════════════════════════════════════════════════════
+ *  TANITIM SAYFASININ TÜM İÇERİĞİ
+ *  Metin değiştirmek için başka dosyaya girmeye gerek yok.
+ * ═══════════════════════════════════════════════════════════════
  *
- * ⚠️ [DOLDURULACAK] işaretli yerler yer tutucudur. Gerçek bilgiyle
- * değiştirilmeden yayına çıkmamalı.
+ *  ⚠️  ŞU AN DEMO VERİ İLE ÇALIŞIYOR.
+ *
+ *  Yayına çıkmadan önce gerçek bilgiyle değiştirilecek alanlar:
+ *    · koc.biyografi   → Kıvanç'ın kendi metni
+ *    · belgeler.liste  → gerçek diploma / sertifika görselleri
+ *    · yorumlar.liste  → gerçek öğrenci ve veli yorumları
+ *    · netGrafigi.veri → gerçek bir öğrencinin net gelişimi
+ *    · iletisim.*      → telefon, WhatsApp, Instagram
+ *
+ *  Uydurma yorumu gerçek bir kişinin adı altında yayınlamak etik ve
+ *  hukuki risk taşır. yorumlar.liste dizisini boşaltırsanız ([])
+ *  o bölüm sayfada hiç görünmez.
  */
 
 export const site = {
   koc: {
     ad: 'Kıvanç Haleblioğlu',
     unvan: 'YKS ve LGS Koçu',
-    // Tek cümlelik vaat. Ziyaretçinin okuyacağı ilk şey.
-    vaat: 'Dağınık bir çalışma düzenini, takip edilebilir bir programa çeviriyorum.',
-    // Kısa tanıtım. 2-3 cümle. Kendi ağzınızdan yazın.
-    // ⚠️ Bu metin hâlâ yer tutucu. Kıvanç kendi ağzından yazmalı.
-    tanitim:
-      '[DOLDURULACAK] On yıldır YKS ve LGS öğrencileriyle çalışıyorum. ' +
-      'Buraya kendi cümlelerinizle: hangi alanda okuduğunuz, neden bu işi ' +
-      'yaptığınız, öğrenciyle ve veliyle nasıl çalıştığınız. İki üç cümle yeter; ' +
-      'abartılı iddia yerine sade bir anlatım daha çok güven verir.',
+
+    // Sayfanın ilk cümlesi. {} içindeki kelimeye fosforlu vurgu gelir.
+    vaat: 'Netin nereye gittiğini {birlikte} görelim.',
+
+    altVaat:
+      'On yıldır sınava hazırlanan öğrencilerle çalışıyorum. Yaptığım iş ' +
+      'program yazmak değil; o programın gerçekten yürüdüğünden emin olmak.',
+
+    // ⚠️ DEMO — Kıvanç kendi cümleleriyle değiştirmeli.
+    biyografi: [
+      'Koçluğa kendi hazırlık sürecimde eksikliğini hissettiğim şeyi yapmak için ' +
+        'başladım: birinin haftalık olarak nerede olduğumu sorması ve sapmayı erken görmesi.',
+      'Öğrencilerimin çoğu bilgi eksikliğinden değil, düzensizlikten kaybediyor. ' +
+        'Bu yüzden çalışmanın kendisi kadar takibine de önem veriyorum. Her hafta ne ' +
+        'yapıldığı, ne yapılmadığı ve nedeni konuşulur.',
+      'Veliyle iletişimi öğrencinin bilgisi dâhilinde kurarım. Veli sisteme girip ' +
+        'ilerlemeyi görebilir; ama süreç öğrenciyle benim aramdadır.',
+    ],
+
+    // public/ klasörüne koyup yolunu yazın: '/kivanc.jpg'. Boşsa baş harfler görünür.
+    portre: '',
   },
 
-  iletisim: {
-    // Boş bırakılan alanlar sayfada görünmez.
-    eposta: 'haleblioglukivanc@gmail.com',
-    telefon: '', // örn. '+90 5XX XXX XX XX'
-    whatsapp: '', // sadece rakam, örn. '905XXXXXXXXX'
-    instagram: '', // kullanıcı adı, '@' olmadan
+  // ⚠️ DEMO — gerçek belgelerle değiştirilecek.
+  // Görselleri public/belgeler/ içine koyup gorsel alanına yolunu yazın.
+  belgeler: {
+    baslik: 'Belgeler',
+    aciklama: 'Eğitim ve sertifikalar.',
+    liste: [
+      { ad: 'Lisans Diploması', kurum: '[DEMO] Üniversite · Bölüm', yil: '2015', gorsel: '' },
+      { ad: 'Eğitim Koçluğu Sertifikası', kurum: '[DEMO] Kurum adı', yil: '2016', gorsel: '' },
+      { ad: 'Rehberlik ve Psikolojik Danışmanlık', kurum: '[DEMO] Kurum adı', yil: '2019', gorsel: '' },
+      { ad: 'Ölçme ve Değerlendirme Eğitimi', kurum: '[DEMO] Kurum adı', yil: '2022', gorsel: '' },
+    ],
   },
 
-  // Ana vaadin altındaki üç kısa kanıt satırı.
-  ozetler: [
-    { emoji: '🗓️', sayi: '10', etiket: 'yıl', not: 'Koçluk deneyimi' },
-    { emoji: '🎓', sayi: '3.450', etiket: 'öğrenci', not: 'Bugüne kadar birlikte çalışılan' },
-    { emoji: '📚', sayi: '1.498', etiket: 'konu başlığı', not: 'Güncel MEB müfredatına göre' },
+  sayilar: [
+    { sayi: '10', birim: 'yıl', not: 'Koçluk deneyimi' },
+    { sayi: '3.450', birim: 'öğrenci', not: 'Bugüne kadar birlikte çalışılan' },
+    { sayi: '1.498', birim: 'konu', not: 'Güncel müfredata göre takip edilen' },
   ],
+
+  // ⚠️ DEMO — grafiğin şeklini göstermek için. Gerçek veriyle değiştirin.
+  netGrafigi: {
+    baslik: 'Bir öğrencinin bir yılı',
+    aciklama: 'Aylık deneme netleri. İnişler dâhil, çünkü süreç düz gitmez.',
+    veri: [
+      { ay: 'Eyl', net: 42 }, { ay: 'Eki', net: 51 }, { ay: 'Kas', net: 48 },
+      { ay: 'Ara', net: 59 }, { ay: 'Oca', net: 63 }, { ay: 'Şub', net: 58 },
+      { ay: 'Mar', net: 71 }, { ay: 'Nis', net: 78 }, { ay: 'May', net: 84 },
+      { ay: 'Haz', net: 91 },
+    ],
+  },
 
   nasil: {
     baslik: 'Nasıl çalışıyoruz',
+    aciklama: 'Dört adım. Sırası önemli, çünkü her biri bir öncekine dayanıyor.',
     adimlar: [
       {
-        emoji: '🤝',
         baslik: 'Tanışma ve seviye tespiti',
         metin:
-          'Hangi sınıfta, hangi alanda ve nerede olduğunuzu konuşuyoruz. ' +
-          'Deneme sonuçlarınız varsa birlikte bakıyoruz.',
+          'Hangi sınıfta, hangi alanda ve gerçekte nerede olduğunuzu konuşuyoruz. ' +
+          'Elinizde deneme sonucu varsa birlikte okuyoruz. Bu görüşme ücretsiz.',
       },
       {
-        emoji: '🗂️',
         baslik: 'Programın kurulması',
         metin:
-          'Haftalık program, sizin gerçek gününüze göre yazılıyor. ' +
-          'Okul, dershane ve dinlenme saatleri hesaba katılıyor.',
+          'Haftalık program sizin gerçek gününüze göre yazılıyor. Okul, dershane, ' +
+          'yol ve dinlenme saatleri düşülüyor; kalan zamana program yapılır.',
       },
       {
-        emoji: '✅',
         baslik: 'Günlük takip',
         metin:
-          'Yapılan ve yapılmayan görevler sistem üzerinden görünüyor. ' +
-          'Aksama olduğunda aynı hafta içinde müdahale ediliyor.',
+          'Yapılan ve yapılmayan görevler sistemde görünüyor. Aksama olduğunda ay ' +
+          'sonunu beklemiyoruz; aynı hafta konuşup nedenini buluyoruz.',
       },
       {
-        emoji: '📈',
         baslik: 'Deneme analizi',
         metin:
           'Her denemeden sonra net değişimi ve konu bazlı eksikler çıkarılıyor. ' +
-          'Program buna göre güncelleniyor.',
+          'Program bir sonraki hafta buna göre güncelleniyor.',
       },
     ],
   },
 
   platform: {
-    baslik: 'Sistem üzerinden neler takip ediliyor',
+    baslik: 'Sistemde ne takip ediliyor',
+    aciklama: 'Öğrenci ve veli kendi hesabıyla giriyor. Veli görebilir, değiştiremez.',
     maddeler: [
-      { emoji: '🗓️', metin: 'Günlük ve haftalık program' },
-      { emoji: '📖', metin: 'Konu bazlı ilerleme durumu' },
-      { emoji: '📊', metin: 'Deneme sonuçları ve net değişimi' },
-      { emoji: '✏️', metin: 'Soru çözüm sayıları' },
-      { emoji: '👨‍👩‍👦', metin: 'Veli görüntüleme erişimi' },
+      { ad: 'Haftalık program', not: 'Günlük görevler, hedef soru sayılarıyla' },
+      { ad: 'Konu ilerlemesi', not: 'Başlanmadı / çalışılıyor / bitti' },
+      { ad: 'Deneme sonuçları', not: 'Ders bazlı doğru, yanlış ve net' },
+      { ad: 'Net grafiği', not: 'Zaman içindeki değişim' },
+      { ad: 'Veli erişimi', not: 'Sadece görüntüleme' },
     ],
   },
 
   kimler: {
     baslik: 'Kimler için',
     gruplar: [
-      { emoji: '🎯', ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık ve Sözel alanları' },
-      { emoji: '🏫', ad: '9-11. sınıf', aciklama: 'Okul dersleriyle birlikte erken hazırlık' },
-      { emoji: '🧩', ad: 'LGS', aciklama: '8. sınıf öğrencileri' },
-      { emoji: '🔁', ad: 'Mezun', aciklama: 'İkinci kez sınava girecekler' },
+      { ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık, Sözel' },
+      { ad: '9–11. sınıf', aciklama: 'Okulla birlikte erken hazırlık' },
+      { ad: 'LGS', aciklama: '8. sınıf' },
+      { ad: 'Mezun', aciklama: 'İkinci kez girecekler' },
+    ],
+  },
+
+  // ⚠️ DEMO — gerçek yorum yoksa: liste: []
+  yorumlar: {
+    baslik: 'Ne diyorlar',
+    liste: [
+      {
+        metin:
+          '[DEMO] En çok işime yarayan şey haftalık görüşmelerdi. Kendi başıma plan ' +
+          'yapıyordum ama iki hafta sonra bırakıyordum. Burada bırakma şansım olmadı.',
+        kisi: 'Ö. Y.', rol: '12. sınıf · Sayısal',
+      },
+      {
+        metin:
+          '[DEMO] Oğlumun ne yaptığını sormaktan yorulmuştum. Sisteme girip ' +
+          'görebiliyorum, o yüzden artık sormuyorum. İkimiz de rahatladık.',
+        kisi: 'S. K.', rol: 'Veli',
+      },
+      {
+        metin:
+          '[DEMO] Denemeden sonra sadece net söylenmiyor, hangi konudan kaybettiğim ' +
+          'çıkarılıyor. Bir sonraki hafta o konu programa giriyor.',
+        kisi: 'M. A.', rol: 'Mezun · Eşit Ağırlık',
+      },
+    ],
+  },
+
+  sorular: {
+    baslik: 'Sık sorulanlar',
+    liste: [
+      {
+        soru: 'Görüşmeler nasıl yapılıyor?',
+        cevap: 'Haftada bir, önceden belirlenen saatte. Yüz yüze ya da görüntülü. Süre genelde 30–45 dakika.',
+      },
+      {
+        soru: 'Ücret ne kadar?',
+        cevap:
+          'Öğrencinin sınıfına ve görüşme sıklığına göre değişiyor. Tanışma görüşmesinde ' +
+          'net rakam konuşuyoruz; o görüşme ücretsiz.',
+      },
+      {
+        soru: 'Ders anlatıyor musunuz?',
+        cevap:
+          'Hayır. Koçluk ders anlatımı değildir. Neyi, ne zaman, ne kadar çalışacağınızı ' +
+          'planlar ve takip ederim. Konu eksiği varsa uygun kaynağa yönlendiririm.',
+      },
+      {
+        soru: 'Veli süreci nasıl görüyor?',
+        cevap:
+          'Veliye kendi hesabı açılıyor. Program, görevler ve deneme sonuçlarını ' +
+          'görüntüleyebiliyor; hiçbirini değiştiremiyor.',
+      },
+      {
+        soru: 'Yıl ortasında başlanır mı?',
+        cevap:
+          'Başlanır. Program kalan süreye göre yeniden kurulur. Geç başlamak hiç ' +
+          'başlamamaktan iyidir, ama beklentiyi de buna göre konuşuruz.',
+      },
     ],
   },
 
   cagri: {
-    baslik: 'Başlamadan önce konuşalım',
+    baslik: 'Önce tanışalım',
     metin:
-      'Uygun olup olmadığımızı anlamak için kısa bir görüşme yeterli. ' +
-      'Ücret ve çalışma düzenini o görüşmede netleştiriyoruz.',
+      'Birlikte çalışıp çalışamayacağımızı anlamak için kısa bir görüşme yeterli. ' +
+      'Ücretsiz ve bir taahhüt oluşturmuyor.',
     dugme: 'İletişime geç',
+  },
+
+  iletisim: {
+    // Boş bırakılan satır sayfada görünmez.
+    eposta: 'haleblioglukivanc@gmail.com',
+    telefon: '',
+    whatsapp: '',
+    instagram: '',
   },
 }

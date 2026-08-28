@@ -29,12 +29,10 @@ export default function Giris({ onGeri }) {
   }
 
   return (
-    <div className="giris-sayfa">
+    <div className="giris-sayfa giris-kagit">
       <div className="giris-kutu">
         <header className="giris-basi">
-          <h1>
-            YKS <span className="ince">Koçluk</span>
-          </h1>
+          <h1>Giriş</h1>
           <p>Program, deneme takibi ve konu ilerlemesi tek yerde.</p>
         </header>
 
