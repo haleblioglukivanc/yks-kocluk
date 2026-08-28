@@ -1,0 +1,29 @@
+node_modules
+dist
+dist-ssr
+*.local
+
+# Ortam değişkenleri — asla depoya girmemeli
+.env
+.env.*
+!.env.example
+
+# Wrangler
+.wrangler
+.dev.vars
+
+# Editör / işletim sistemi
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Kayıtlar
+logs
+*.log
+npm-debug.log*

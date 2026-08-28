@@ -1,0 +1,169 @@
+:root {
+  --kagit: #edeff3;
+  --murekkep: #131c33;
+  --grafit: #5a6478;
+  --dolgu: #2a4a7f;
+  --isaret: #0e7c5a;
+  --cizgi: #c9cfda;
+
+  --display: 'Archivo', system-ui, sans-serif;
+  --govde: 'Inter', system-ui, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--kagit);
+  background-image: radial-gradient(var(--cizgi) 0.5px, transparent 0.5px);
+  background-size: 22px 22px;
+  color: var(--murekkep);
+  font-family: var(--govde);
+  -webkit-font-smoothing: antialiased;
+}
+
+.sayfa {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 8vw, 5rem) clamp(1.25rem, 5vw, 2rem) 3rem;
+}
+
+/* Başlık */
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--grafit);
+  margin: 0 0 1.25rem;
+}
+
+.baslik h1 {
+  font-family: var(--display);
+  font-weight: 900;
+  font-size: clamp(2.75rem, 12vw, 4.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.baslik h1 .ince {
+  font-weight: 500;
+  color: var(--grafit);
+}
+
+.ozet {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--grafit);
+  max-width: 30rem;
+  margin: 1rem 0 0;
+}
+
+/* Optik form */
+
+.form {
+  margin-top: clamp(2.5rem, 7vw, 3.5rem);
+  border-top: 1.5px solid var(--murekkep);
+}
+
+.satir {
+  display: grid;
+  grid-template-columns: 1.25rem 1.125rem 1fr auto;
+  grid-template-areas:
+    'kod kabarcik ad durum'
+    '.   .        not not';
+  align-items: center;
+  gap: 0 0.875rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--cizgi);
+}
+
+.kod {
+  grid-area: kod;
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--grafit);
+}
+
+.kabarcik {
+  grid-area: kabarcik;
+  width: 1.125rem;
+  height: 1.125rem;
+  border: 1.5px solid var(--grafit);
+  border-radius: 50%;
+  transition:
+    background-color 200ms ease,
+    border-color 200ms ease,
+    transform 200ms ease;
+}
+
+.kabarcik--doldu {
+  background-color: var(--dolgu);
+  border-color: var(--dolgu);
+  transform: scale(1.08);
+}
+
+.ad {
+  grid-area: ad;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  letter-spacing: -0.01em;
+}
+
+.not {
+  grid-area: not;
+  font-size: 0.8125rem;
+  color: var(--grafit);
+  margin-top: 0.25rem;
+}
+
+.durum {
+  grid-area: durum;
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--grafit);
+}
+
+.satir--doldu .durum {
+  color: var(--isaret);
+}
+
+/* Alt bilgi */
+
+.alt {
+  display: flex;
+  align-items: baseline;
+  gap: 0.875rem;
+  margin-top: 2rem;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--grafit);
+}
+
+.sayac {
+  font-family: var(--mono);
+  font-weight: 700;
+  font-size: 1.125rem;
+  color: var(--murekkep);
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kabarcik {
+    transition: none;
+  }
+}
