@@ -45,6 +45,17 @@ derlenir ve yayınlanır.
 SPA yönlendirmesi `wrangler.jsonc` içindeki `not_found_handling: "single-page-application"`
 ayarıyla sağlanır; bilinmeyen yollar `index.html` döner.
 
+## Sayfalar
+
+| Yol | İçerik |
+| --- | --- |
+| `/` | Tanıtım sayfası (giriş yapılmamışsa) |
+| `/giris` | Giriş formu |
+| `/` | Panel (giriş yapılmışsa, role göre) |
+
+Tanıtım sayfasının bütün metinleri `src/icerik/site.js` dosyasındadır.
+`[DOLDURULACAK]` işaretli alanlar yayına çıkmadan gerçek bilgiyle değiştirilmelidir.
+
 ## Roller
 
 | Rol | Yetki |

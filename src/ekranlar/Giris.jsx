@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari } from '../bilesenler/Ortak.jsx'
 
-export default function Giris() {
+export default function Giris({ onGeri }) {
   const [eposta, setEposta] = useState('')
   const [sifre, setSifre] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
@@ -69,6 +69,12 @@ export default function Giris() {
           Hesabınız koçunuz tarafından açılır. Giriş bilgilerinizi bilmiyorsanız koçunuza
           danışın.
         </p>
+
+        {onGeri && (
+          <button className="metin-dugme" onClick={onGeri}>
+            Ana sayfaya dön
+          </button>
+        )}
       </div>
     </div>
   )

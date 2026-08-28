@@ -208,3 +208,117 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .oneri-baslik { margin: 0; font-weight: 500; font-size: 0.9375rem; }
 .oneri-alt { margin: 0.3rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--grafit); max-width: 34rem; }
 .oneri-eylem { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }
+
+/* ==================== Tanıtım sayfası ==================== */
+
+.tanitim {
+  min-height: 100dvh;
+  background-image: radial-gradient(var(--cizgi) 0.5px, transparent 0.5px);
+  background-size: 22px 22px;
+}
+
+.t-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; padding: 1rem clamp(1.25rem, 5vw, 2.5rem);
+  max-width: 60rem; margin: 0 auto;
+}
+.dugme--kucuk { padding: 0.45rem 0.875rem; font-size: 0.8125rem; }
+
+.tanitim section { max-width: 60rem; margin: 0 auto; padding: 0 clamp(1.25rem, 5vw, 2.5rem); }
+
+/* Hero */
+
+.t-hero { padding-top: clamp(2.5rem, 8vw, 5rem) !important; padding-bottom: clamp(2rem, 6vw, 3.5rem) !important; }
+
+.t-etiket {
+  font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--grafit); margin: 0 0 1.25rem;
+}
+
+.t-hero h1 {
+  font-family: var(--display); font-weight: 900;
+  font-size: clamp(2rem, 6vw, 3.25rem); line-height: 1.04;
+  letter-spacing: -0.03em; max-width: 20ch; margin: 0;
+}
+
+.t-ozet {
+  margin: 1.25rem 0 0; max-width: 46ch;
+  font-size: 1rem; line-height: 1.65; color: var(--grafit);
+}
+
+.t-eylemler { display: flex; align-items: center; gap: 1.25rem; margin-top: 1.75rem; flex-wrap: wrap; }
+.t-eylemler .dugme { text-decoration: none; display: inline-block; }
+
+/* Sayılar */
+
+.t-sayilar {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 1px; background: var(--cizgi);
+  border-top: 1px solid var(--cizgi); border-bottom: 1px solid var(--cizgi);
+  margin-bottom: clamp(2.5rem, 7vw, 4rem) !important;
+  padding: 0 !important; max-width: 60rem;
+}
+.t-sayi { background: var(--kagit); padding: 1.25rem clamp(1.25rem, 5vw, 2.5rem); }
+.t-sayi strong {
+  display: block; font-family: var(--display); font-weight: 900;
+  font-size: 1.875rem; letter-spacing: -0.02em; line-height: 1;
+}
+.t-sayi-etiket { display: block; font-size: 0.875rem; margin-top: 0.35rem; }
+.t-sayi-not { display: block; font-size: 0.75rem; color: var(--soluk); margin-top: 0.2rem; line-height: 1.45; }
+
+/* Bölümler */
+
+.t-bolum { padding-top: clamp(2rem, 6vw, 3rem) !important; padding-bottom: clamp(2rem, 6vw, 3rem) !important; }
+.t-bolum h2 {
+  font-family: var(--display); font-weight: 700;
+  font-size: clamp(1.25rem, 3vw, 1.625rem); letter-spacing: -0.02em;
+  margin: 0 0 1.5rem;
+}
+
+.t-adimlar { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.25rem; }
+.t-adimlar li { display: grid; grid-template-columns: 2.5rem 1fr; gap: 1rem; align-items: start; }
+.t-adim-no {
+  font-family: var(--mono); font-size: 0.8125rem; font-weight: 700;
+  color: var(--dolgu); padding-top: 0.15rem;
+}
+.t-adimlar h3 { font-family: var(--display); font-size: 1rem; font-weight: 700; margin: 0 0 0.3rem; }
+.t-adimlar p { margin: 0; font-size: 0.9375rem; line-height: 1.6; color: var(--grafit); max-width: 52ch; }
+
+.t-bolum--kutu {
+  background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--r);
+  padding: clamp(1.5rem, 4vw, 2rem) !important;
+  max-width: calc(60rem - 2 * clamp(1.25rem, 5vw, 2.5rem));
+  margin-left: auto; margin-right: auto;
+}
+
+.t-maddeler { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.t-maddeler li { display: flex; align-items: center; gap: 0.75rem; font-size: 0.9375rem; }
+.kb { width: 0.75rem; height: 0.75rem; border: 1.5px solid var(--grafit); border-radius: 50%; flex-shrink: 0; }
+.kb--dolu { background: var(--dolgu); border-color: var(--dolgu); }
+
+.t-dipnot { margin: 1.25rem 0 0; font-size: 0.8125rem; line-height: 1.55; color: var(--soluk); }
+
+.t-gruplar { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1px; background: var(--cizgi); border: 1px solid var(--cizgi); border-radius: var(--r); overflow: hidden; }
+.t-grup { background: var(--yuzey); padding: 1rem 1.125rem; }
+.t-grup-ad { display: block; font-family: var(--display); font-weight: 700; font-size: 1rem; }
+.t-grup-aciklama { display: block; font-size: 0.8125rem; color: var(--soluk); margin-top: 0.25rem; line-height: 1.45; }
+
+/* İletişim */
+
+.t-cagri p { margin: 0 0 1.5rem; font-size: 0.9375rem; line-height: 1.65; color: var(--grafit); max-width: 50ch; }
+.t-iletisim { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.75rem; }
+.t-iletisim li { display: flex; align-items: baseline; gap: 0.875rem; }
+.t-iletisim-ad {
+  font-family: var(--mono); font-size: 0.6875rem; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--soluk); min-width: 5.5rem;
+}
+.t-iletisim a { color: var(--murekkep); text-decoration: underline; text-underline-offset: 3px; }
+
+.t-alt {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 1rem; flex-wrap: wrap;
+  max-width: 60rem; margin: 0 auto;
+  padding: 1.5rem clamp(1.25rem, 5vw, 2.5rem) 2.5rem;
+  border-top: 1px solid var(--cizgi);
+  font-size: 0.8125rem; color: var(--soluk);
+}

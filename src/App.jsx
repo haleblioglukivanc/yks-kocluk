@@ -1,5 +1,7 @@
+import { useEffect, useState } from 'react'
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
+import Tanitim from './ekranlar/Tanitim.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
@@ -7,8 +9,28 @@ import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
+/** Küçük yol yönetimi: /giris girişi, diğer her şey tanıtımı açar. */
+function useYol() {
+  const [yol, setYol] = useState(() => window.location.pathname)
+
+  useEffect(() => {
+    const geri = () => setYol(window.location.pathname)
+    window.addEventListener('popstate', geri)
+    return () => window.removeEventListener('popstate', geri)
+  }, [])
+
+  const git = (hedef) => {
+    window.history.pushState({}, '', hedef)
+    setYol(hedef)
+    window.scrollTo(0, 0)
+  }
+
+  return [yol, git]
+}
+
 export default function App() {
   const { durum, profil, cikisYap } = useOturum()
+  const [yol, git] = useYol()
 
   if (durum === 'yukleniyor') {
     return (
@@ -18,7 +40,14 @@ export default function App() {
     )
   }
 
-  if (durum === 'cikis') return <Giris />
+  // Giriş yapılmamış: tanıtım veya giriş
+  if (durum === 'cikis') {
+    return yol === '/giris' ? (
+      <Giris onGeri={() => git('/')} />
+    ) : (
+      <Tanitim onGiris={() => git('/giris')} />
+    )
+  }
 
   if (!profil) {
     return (
@@ -41,7 +70,13 @@ export default function App() {
             {profil.ad_soyad} · {ROL_ADI[profil.rol] ?? profil.rol}
           </span>
         </div>
-        <button className="metin-dugme" onClick={cikisYap}>
+        <button
+          className="metin-dugme"
+          onClick={async () => {
+            await cikisYap()
+            git('/')
+          }}
+        >
           Çıkış
         </button>
       </header>
