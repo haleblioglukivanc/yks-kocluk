@@ -1,64 +1,96 @@
 import { useEffect, useState } from 'react'
+import { supabase } from './lib/supabase.js'
+import { useOturum } from './lib/oturum.js'
+import { Yukleniyor } from './bilesenler/Ortak.jsx'
+import Giris from './ekranlar/Giris.jsx'
+import DavetKodu from './ekranlar/DavetKodu.jsx'
+import KocPaneli from './ekranlar/KocPaneli.jsx'
+import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
+import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 
-const ADIMLAR = [
-  { kod: 'A', ad: 'Depo', not: 'Supabase — Frankfurt' },
-  { kod: 'B', ad: 'Kaynak', not: 'GitHub deposu' },
-  { kod: 'C', ad: 'Yayın', not: 'Cloudflare Workers' },
-  { kod: 'D', ad: 'Şema', not: 'Tablolar ve RLS' },
-]
-
-// İlk üçü tamam, dördüncüsü sırada.
-const TAMAMLANAN = 3
+const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
 export default function App() {
-  const [dolan, setDolan] = useState(0)
+  const { durum, profil, yenile, cikisYap } = useOturum()
+  const [bagli, setBagli] = useState(null) // öğrenci/veli bir koça bağlı mı
 
   useEffect(() => {
-    const azHareket = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    if (azHareket) {
-      setDolan(TAMAMLANAN)
+    if (durum !== 'hazir' || !profil) return
+    if (profil.rol === 'koc' || profil.rol === 'yonetici') {
+      setBagli(true)
       return
     }
-    const zamanlayicilar = []
-    for (let i = 1; i <= TAMAMLANAN; i++) {
-      zamanlayicilar.push(setTimeout(() => setDolan(i), 260 * i + 200))
-    }
-    return () => zamanlayicilar.forEach(clearTimeout)
-  }, [])
+    ;(async () => {
+      const tablo = profil.rol === 'veli' ? 'veli_ogrenci' : 'ogrenciler'
+      const { count } = await supabase.from(tablo).select('*', { count: 'exact', head: true })
+      setBagli((count ?? 0) > 0)
+    })()
+  }, [durum, profil])
+
+  if (durum === 'yukleniyor') {
+    return (
+      <div className="giris-sayfa">
+        <Yukleniyor />
+      </div>
+    )
+  }
+
+  if (durum === 'cikis') return <Giris />
+
+  if (!profil) {
+    return (
+      <div className="giris-sayfa">
+        <Yukleniyor metin="Profil hazırlanıyor" />
+      </div>
+    )
+  }
+
+  if (bagli === null) {
+    return (
+      <div className="giris-sayfa">
+        <Yukleniyor />
+      </div>
+    )
+  }
+
+  if (!bagli) {
+    return (
+      <DavetKodu
+        profil={profil}
+        onCikis={cikisYap}
+        onBaglandi={async () => {
+          await yenile()
+          setBagli(true)
+        }}
+      />
+    )
+  }
 
   return (
-    <main className="sayfa">
-      <header className="baslik">
-        <p className="eyebrow">Kurulum durumu</p>
-        <h1>
-          YKS <span className="ince">Koçluk</span>
-        </h1>
-        <p className="ozet">
-          Tek koç, çok öğrenci. Program, deneme takibi ve konu ilerlemesi tek yerde.
-        </p>
+    <div className="uygulama">
+      <header className="ust-bar">
+        <div>
+          <span className="marka">
+            YKS <span className="ince">Koçluk</span>
+          </span>
+          <span className="ust-alt">
+            {profil.ad_soyad} · {ROL_ADI[profil.rol] ?? profil.rol}
+          </span>
+        </div>
+        <button className="metin-dugme" onClick={cikisYap}>
+          Çıkış
+        </button>
       </header>
 
-      <section className="form" aria-label="Kurulum adımları">
-        {ADIMLAR.map((adim, i) => {
-          const doldu = i < dolan
-          return (
-            <div className={`satir${doldu ? ' satir--doldu' : ''}`} key={adim.kod}>
-              <span className="kod">{adim.kod}</span>
-              <span className={`kabarcik${doldu ? ' kabarcik--doldu' : ''}`} aria-hidden="true" />
-              <span className="ad">{adim.ad}</span>
-              <span className="not">{adim.not}</span>
-              <span className="durum">{doldu ? 'tamam' : 'sırada'}</span>
-            </div>
-          )
-        })}
-      </section>
-
-      <footer className="alt">
-        <span className="sayac">
-          {dolan}/{ADIMLAR.length}
-        </span>
-        <span>Bu sayfa yayın hattının çalıştığını gösterir. Uygulama henüz kurulmadı.</span>
-      </footer>
-    </main>
+      <main>
+        {profil.rol === 'koc' || profil.rol === 'yonetici' ? (
+          <KocPaneli />
+        ) : profil.rol === 'veli' ? (
+          <VeliPaneli />
+        ) : (
+          <OgrenciPaneli profil={profil} />
+        )}
+      </main>
+    </div>
   )
 }
