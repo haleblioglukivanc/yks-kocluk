@@ -1,7 +1,6 @@
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Giris from './ekranlar/Giris.jsx'
-import SifreOnerisi from './ekranlar/SifreOnerisi.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
@@ -9,7 +8,7 @@ import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
 export default function App() {
-  const { durum, profil, yenile, cikisYap } = useOturum()
+  const { durum, profil, cikisYap } = useOturum()
 
   if (durum === 'yukleniyor') {
     return (
@@ -49,7 +48,6 @@ export default function App() {
 
       <main>
         <div className="panel">
-          <SifreOnerisi profil={profil} onGuncellendi={yenile} />
           {kocMu ? (
             <KocPaneli />
           ) : profil.rol === 'veli' ? (

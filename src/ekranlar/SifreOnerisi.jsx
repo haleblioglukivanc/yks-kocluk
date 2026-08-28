@@ -1,3 +1,8 @@
+// ŞU AN KULLANILMIYOR.
+// App.jsx içinde render edilmiyor; şifre değiştirme önerisi kaldırıldı.
+// Geri getirmek için App.jsx'e <SifreOnerisi profil={profil} onGuncellendi={yenile} />
+// satırını eklemek yeterli.
+
 import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Kart, Uyari } from '../bilesenler/Ortak.jsx'
