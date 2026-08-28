@@ -32,7 +32,7 @@ async function kullaniciOlustur(govde) {
   return data
 }
 
-export default function KocPaneli() {
+export default function KocPaneli({ onOgrenciAc }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [hata, setHata] = useState('')
@@ -84,20 +84,26 @@ export default function KocPaneli() {
         ) : (
           <ul className="liste">
             {ogrenciler.map((o) => (
-              <li key={o.id} className="liste-satir">
-                <div>
-                  <span className="liste-ad">{o.profiller?.ad_soyad ?? 'İsimsiz'}</span>
-                  <span className="liste-alt">
-                    {[
-                      o.sinif ? (o.sinif === 13 ? 'Mezun' : `${o.sinif}. sınıf`) : null,
-                      o.alan ? ALAN_ADI[o.alan] : null,
-                      o.kataloglar?.ad,
-                    ]
-                      .filter(Boolean)
-                      .join(' · ') || 'Bilgi girilmemiş'}
-                  </span>
-                </div>
-                {!o.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
+              <li key={o.id}>
+                <button
+                  className={`ogrenci-satir${o.aktif ? '' : ' ogrenci-satir--pasif'}`}
+                  onClick={() => onOgrenciAc(o.id)}
+                >
+                  <div>
+                    <span className="liste-ad">{o.profiller?.ad_soyad ?? 'İsimsiz'}</span>
+                    <span className="liste-alt">
+                      {[
+                        o.sinif ? (o.sinif === 13 ? 'Mezun' : `${o.sinif}. sınıf`) : null,
+                        o.alan ? ALAN_ADI[o.alan] : null,
+                        o.kataloglar?.ad,
+                      ]
+                        .filter(Boolean)
+                        .join(' · ') || 'Bilgi girilmemiş'}
+                    </span>
+                  </div>
+                  {!o.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
+                  <span className="ok" aria-hidden="true">›</span>
+                </button>
               </li>
             ))}
           </ul>

@@ -4,6 +4,7 @@ import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
+import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 
@@ -58,6 +59,7 @@ export default function App() {
   }
 
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
+  const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
 
   return (
     <div className="uygulama">
@@ -84,7 +86,11 @@ export default function App() {
       <main>
         <div className="panel">
           {kocMu ? (
-            <KocPaneli />
+            ogrenciId ? (
+              <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/')} />
+            ) : (
+              <KocPaneli onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
+            )
           ) : profil.rol === 'veli' ? (
             <VeliPaneli />
           ) : (
