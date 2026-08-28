@@ -191,3 +191,20 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   line-height: 1.5;
   color: var(--uyari);
 }
+
+/* ---------- Şifre önerisi ---------- */
+
+.oneri {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: 0.875rem 1.125rem;
+  background: #eef3f9;
+  border: 1px solid #c7d6e8;
+  border-radius: var(--r);
+}
+.oneri-baslik { margin: 0; font-weight: 500; font-size: 0.9375rem; }
+.oneri-alt { margin: 0.3rem 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--grafit); max-width: 34rem; }
+.oneri-eylem { display: flex; align-items: center; gap: 0.75rem; flex-shrink: 0; }

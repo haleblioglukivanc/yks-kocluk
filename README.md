@@ -63,7 +63,10 @@ Siteden kendi kendine kayıt olunamaz. Bütün hesapları koç açar.
 1. Koç panelden öğrencinin adını, e-postasını, kataloğunu ve sınıfını girer.
 2. Sistem rastgele bir geçici şifre üretir ve hesabı açar.
 3. Koç bu bilgileri öğrenciye iletir. Şifre bir daha gösterilmez.
-4. Öğrenci ilk girişte kendi şifresini belirlemeye zorlanır.
+4. Öğrenci giriş yaptığında kendi şifresini belirlemesi önerilir; zorunlu değildir.
+
+Şifre değişimi zorunlu olmadığı için koç, öğrencinin şifresini bilmeye devam eder.
+Öğrenci öneriyi kabul edip şifresini değiştirene kadar bu geçerlidir.
 
 Hesap açma işlemi `service_role` anahtarı gerektirdiği için tarayıcıda değil,
 `supabase/functions/kullanici-olustur` Edge Function'ında yapılır.

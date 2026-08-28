@@ -1,7 +1,7 @@
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Giris from './ekranlar/Giris.jsx'
-import SifreDegistir from './ekranlar/SifreDegistir.jsx'
+import SifreOnerisi from './ekranlar/SifreOnerisi.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
@@ -29,10 +29,6 @@ export default function App() {
     )
   }
 
-  if (profil.sifre_degistirmeli) {
-    return <SifreDegistir profil={profil} onBitti={yenile} onCikis={cikisYap} />
-  }
-
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
 
   return (
@@ -52,13 +48,16 @@ export default function App() {
       </header>
 
       <main>
-        {kocMu ? (
-          <KocPaneli />
-        ) : profil.rol === 'veli' ? (
-          <VeliPaneli />
-        ) : (
-          <OgrenciPaneli profil={profil} />
-        )}
+        <div className="panel">
+          <SifreOnerisi profil={profil} onGuncellendi={yenile} />
+          {kocMu ? (
+            <KocPaneli />
+          ) : profil.rol === 'veli' ? (
+            <VeliPaneli />
+          ) : (
+            <OgrenciPaneli profil={profil} />
+          )}
+        </div>
       </main>
     </div>
   )

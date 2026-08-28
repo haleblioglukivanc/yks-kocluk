@@ -1,12 +1,20 @@
 import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Alan, Dugme, Uyari } from '../bilesenler/Ortak.jsx'
+import { Alan, Dugme, Kart, Uyari } from '../bilesenler/Ortak.jsx'
 
-export default function SifreDegistir({ profil, onBitti, onCikis }) {
+/**
+ * Şifre değiştirme artık zorunlu değil. Geçici şifreyle açılan hesaplarda
+ * kapatılabilir bir öneri olarak görünür; kullanıcı isterse değiştirir.
+ */
+export default function SifreOnerisi({ profil, onGuncellendi }) {
+  const [acik, setAcik] = useState(false)
+  const [gizlendi, setGizlendi] = useState(false)
   const [yeni, setYeni] = useState('')
   const [tekrar, setTekrar] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
+
+  if (gizlendi || !profil?.sifre_degistirmeli) return null
 
   async function kaydet() {
     setHata('')
@@ -29,7 +37,8 @@ export default function SifreDegistir({ profil, onBitti, onCikis }) {
         .eq('id', profil.id)
       if (pHata) throw pHata
 
-      await onBitti()
+      setGizlendi(true)
+      await onGuncellendi?.()
     } catch (e) {
       setHata(hataMetni(e))
     } finally {
@@ -37,17 +46,31 @@ export default function SifreDegistir({ profil, onBitti, onCikis }) {
     }
   }
 
-  return (
-    <div className="giris-sayfa">
-      <div className="giris-kutu">
-        <header className="giris-basi">
-          <h1>Şifrenizi belirleyin</h1>
-          <p>
-            Hoş geldiniz {profil.ad_soyad}. Hesabınız geçici bir şifreyle açıldı. Devam
-            etmek için kendi şifrenizi belirleyin.
+  if (!acik) {
+    return (
+      <div className="oneri">
+        <div>
+          <p className="oneri-baslik">Şifrenizi değiştirmek ister misiniz?</p>
+          <p className="oneri-alt">
+            Hesabınız koçunuzun verdiği geçici şifreyle açıldı. Kendi şifrenizi
+            belirlerseniz hesabınıza yalnızca siz girebilirsiniz.
           </p>
-        </header>
+        </div>
+        <div className="oneri-eylem">
+          <Dugme tur="ikincil" onClick={() => setAcik(true)}>
+            Değiştir
+          </Dugme>
+          <button className="metin-dugme" onClick={() => setGizlendi(true)}>
+            Şimdi değil
+          </button>
+        </div>
+      </div>
+    )
+  }
 
+  return (
+    <Kart baslik="Şifre değiştir">
+      <div className="form-kutu">
         <Alan etiket="Yeni şifre" ipucu="En az 8 karakter">
           <input
             type="password"
@@ -72,13 +95,12 @@ export default function SifreDegistir({ profil, onBitti, onCikis }) {
         <Uyari>{hata}</Uyari>
 
         <Dugme onClick={kaydet} bekliyor={bekliyor}>
-          Kaydet ve devam et
+          Kaydet
         </Dugme>
-
-        <button className="metin-dugme" onClick={onCikis}>
-          Çıkış yap
+        <button className="metin-dugme" onClick={() => setAcik(false)}>
+          Vazgeç
         </button>
       </div>
-    </div>
+    </Kart>
   )
 }
