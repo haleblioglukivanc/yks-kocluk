@@ -687,3 +687,92 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .ilerleme--tekrar_gerekli { border-color: var(--uyari); color: var(--uyari); }
 
 .form-kutu--dar { margin-block: 0.625rem; }
+
+/* ═══════════ Program ızgarası (önceki demonun düzeni) ═══════════ */
+
+.prg-basi { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.875rem; }
+.prg-hafta { display: flex; align-items: center; gap: 0.625rem; }
+.prg-hafta-orta { text-align: center; min-width: 8.5rem; }
+.prg-hafta-etiket { display: block; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soluk); }
+.prg-hafta-tarih { display: block; font-family: var(--mono); font-size: 0.8125rem; font-weight: 500; margin-top: 0.1rem; }
+
+.prg-ozet { display: grid; grid-template-columns: 1fr auto; gap: 0.375rem 0.75rem; margin-bottom: 0.875rem; }
+.prg-ozet-etiket { font-size: 0.8125rem; color: var(--soluk); }
+.prg-ozet-sayi { font-family: var(--mono); font-weight: 600; font-size: 0.875rem; }
+.prg-cubuk { grid-column: 1 / -1; height: 5px; background: var(--kagit); border-radius: 3px; overflow: hidden; }
+.prg-cubuk div { height: 100%; background: var(--isaret); border-radius: 3px; transition: width 320ms ease; }
+
+.prg-kaydir { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-inline: -0.5rem; padding-inline: 0.5rem; }
+.prg-tablo { border-collapse: separate; border-spacing: 3px; min-width: 25rem; width: 100%; }
+.prg-tablo th {
+  font-weight: 500; color: var(--soluk); font-size: 0.625rem;
+  text-transform: uppercase; letter-spacing: 0.05em; padding-bottom: 0.15rem;
+}
+.prg-tablo th.prg-bugun { color: var(--dolgu); }
+.prg-gun-no { display: block; font-family: var(--mono); font-size: 0.6875rem; margin-top: 0.1rem; }
+.prg-saat {
+  color: var(--soluk); font-family: var(--mono); font-size: 0.625rem;
+  padding-right: 0.25rem; white-space: nowrap;
+}
+
+.hucre {
+  width: 100%; min-width: 3rem; padding: 0.5rem 0.375rem;
+  border-radius: 7px; border: 1px solid transparent;
+  font: inherit; font-size: 0.6875rem; font-weight: 500; text-align: center;
+  cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.hucre--bos { background: var(--kagit); color: var(--soluk); }
+.hucre--bos:disabled { cursor: default; }
+.hucre--bos:not(:disabled):hover { background: #e8edf5; color: var(--dolgu); }
+.hucre--dolu { background: #eeedfb; color: #2a2380; border-color: #d6d3f5; }
+.hucre--dolu:hover { border-color: var(--dolgu); }
+.hucre--bitti { background: #e4f0ea; color: #2e7d5b; border-color: #c6e0d4; }
+
+.prg-ipucu { margin: 0.75rem 0 0; font-size: 0.75rem; line-height: 1.5; color: var(--soluk); }
+
+.prg-serbest { margin-top: 1.25rem; }
+.prg-serbest h4 { font-size: 0.8125rem; font-weight: 600; margin: 0 0 0.5rem; }
+.prg-serbest ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.375rem; }
+.serbest {
+  width: 100%; display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.5rem 0.625rem; background: var(--kagit); border: 0; border-radius: 6px;
+  font: inherit; font-size: 0.8125rem; text-align: left; cursor: pointer; color: inherit;
+}
+.serbest--bitti { background: #e4f0ea; color: #2e7d5b; }
+.serbest--bitti .serbest-ad { text-decoration: line-through; }
+.serbest-gun { font-family: var(--mono); font-size: 0.6875rem; color: var(--soluk); width: 2rem; flex-shrink: 0; }
+.serbest-ad { flex: 1; min-width: 0; }
+.serbest-adet { font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); }
+
+/* Hücre düzenleme paneli */
+
+.hucre-panel { margin-top: 1rem; padding: 0.875rem 1rem; background: var(--kagit); border-radius: 8px; }
+.hucre-basi { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+.hucre-gun { display: block; font-weight: 600; font-size: 0.9375rem; }
+.hucre-saat { display: block; font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); margin-top: 0.1rem; }
+.hucre-mevcut { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+
+/* ═══════════ Kimlik kartı ve fotoğraf ═══════════ */
+
+.kimlik { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; }
+.kimlik-metin { flex: 1; min-width: 9rem; }
+.kimlik-ad { font-family: var(--display); font-weight: 700; font-size: 1.1875rem; letter-spacing: -0.02em; margin: 0; }
+.kimlik-alt { margin: 0.25rem 0 0; font-size: 0.8125rem; color: var(--soluk); }
+.kimlik-hedef { margin: 0.375rem 0 0; font-size: 0.8125rem; color: var(--grafit); }
+
+.avatar {
+  display: grid; place-items: center; flex-shrink: 0; overflow: hidden;
+  background: var(--kagit); border: 1px solid var(--cizgi); border-radius: 10px;
+  font-family: var(--display); font-weight: 700; color: var(--grafit); letter-spacing: -0.02em;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar--orta { width: 2.5rem; height: 2.5rem; font-size: 0.875rem; border-radius: 8px; }
+.avatar--buyuk { width: 4rem; height: 4rem; font-size: 1.25rem; }
+
+.foto-yukle { display: flex; align-items: center; gap: 1rem; padding-bottom: 0.25rem; }
+.foto-eylem { display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; }
+.foto-hata { margin: 0.25rem 0 0; font-size: 0.75rem; color: var(--uyari); }
+
+.son-net { text-align: right; flex-shrink: 0; }
+.son-net strong { display: block; font-family: var(--mono); font-size: 1.5rem; font-weight: 700; line-height: 1; }
+.son-net span { font-size: 0.6875rem; color: var(--soluk); }

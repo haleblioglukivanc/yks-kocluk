@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Avatar } from '../bilesenler/Fotograf.jsx'
 
 const ALAN_ADI = {
   sayisal: 'Sayısal',
@@ -42,7 +43,7 @@ export default function KocPaneli({ onOgrenciAc }) {
     const [o, k] = await Promise.all([
       supabase
         .from('ogrenciler')
-        .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad), kataloglar(ad)')
+        .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)')
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('kataloglar')
@@ -89,6 +90,7 @@ export default function KocPaneli({ onOgrenciAc }) {
                   className={`ogrenci-satir${o.aktif ? '' : ' ogrenci-satir--pasif'}`}
                   onClick={() => onOgrenciAc(o.id)}
                 >
+                  <Avatar yol={o.profiller?.fotograf_yolu} ad={o.profiller?.ad_soyad} />
                   <div>
                     <span className="liste-ad">{o.profiller?.ad_soyad ?? 'İsimsiz'}</span>
                     <span className="liste-alt">

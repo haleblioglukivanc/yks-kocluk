@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Avatar, FotografYukle } from '../bilesenler/Fotograf.jsx'
+import ProgramIzgarasi, { PERIYOTLAR, gunAnahtari } from '../bilesenler/ProgramIzgarasi.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const TUR_ADI = {
@@ -19,25 +21,6 @@ const ILERLEME_ADI = {
   tekrar_gerekli: 'Tekrar gerekli',
 }
 
-/** Yerel saate göre YYYY-MM-DD. toISOString kullanılmaz: UTC'ye kayar. */
-const gunAnahtari = (t) => t.toLocaleDateString('sv-SE')
-
-function haftaBasi(tarih) {
-  const t = new Date(tarih)
-  const gun = (t.getDay() + 6) % 7 // pazartesi = 0
-  t.setDate(t.getDate() - gun)
-  t.setHours(0, 0, 0, 0)
-  return t
-}
-
-function haftaGunleri(bas) {
-  return Array.from({ length: 7 }, (_, i) => {
-    const t = new Date(bas)
-    t.setDate(bas.getDate() + i)
-    return t
-  })
-}
-
 export default function OgrenciDetay({ ogrenciId, onGeri }) {
   const [ogrenci, setOgrenci] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
@@ -49,7 +32,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
     const { data, error } = await supabase
       .from('ogrenciler')
       .select(
-        'id, koc_id, alan, sinif, katalog_id, aktif, hedef_universite, hedef_bolum, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon), kataloglar(id, ad)',
+        'id, koc_id, alan, sinif, katalog_id, aktif, hedef_universite, hedef_bolum, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon, fotograf_yolu), kataloglar(id, ad)',
       )
       .eq('id', ogrenciId)
       .maybeSingle()
@@ -78,21 +61,27 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         ← Öğrenci listesi
       </button>
 
-      <Kart
-        baslik={ad}
-        altBaslik={[
-          ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null,
-          ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
-          ogrenci.kataloglar?.ad,
-        ]
-          .filter(Boolean)
-          .join(' · ')}
-        eylem={
+      <Kart>
+        <div className="kimlik">
+          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
+          <div className="kimlik-metin">
+            <h2 className="kimlik-ad">{ad}</h2>
+            <p className="kimlik-alt">
+              {[
+                ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null,
+                ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
+                ogrenci.kataloglar?.ad,
+              ]
+                .filter(Boolean)
+                .join(' · ') || 'Bilgi girilmemiş'}
+            </p>
+            {!ogrenci.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
+          </div>
           <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
-            {duzenle ? 'Kapat' : 'Bilgileri düzenle'}
+            {duzenle ? 'Kapat' : 'Düzenle'}
           </Dugme>
-        }
-      >
+        </div>
+
         {duzenle ? (
           <BilgiFormu
             ogrenci={ogrenci}
@@ -201,6 +190,13 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
 
   return (
     <div className="form-kutu">
+      <FotografYukle
+        ogrenciId={ogrenci.id}
+        mevcutYol={ogrenci.profiller?.fotograf_yolu}
+        ad={ad}
+        onDegisti={onKaydedildi}
+      />
+
       <Alan etiket="Ad soyad">
         <input value={ad} onChange={(e) => setAd(e.target.value)} />
       </Alan>
@@ -263,274 +259,76 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
 /* ─────────────────────────── Program ─────────────────────────── */
 
 function Program({ ogrenci }) {
-  const [bas, setBas] = useState(() => haftaBasi(new Date()))
-  const [gorevler, setGorevler] = useState(null)
-  const [formGun, setFormGun] = useState(null)
-  const [hata, setHata] = useState('')
-
-  const gunler = haftaGunleri(bas)
-  const ilk = gunAnahtari(gunler[0])
-  const son = gunAnahtari(gunler[6])
-
-  const yukle = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('gorevler')
-      .select('id, tarih, tur, baslik, hedef_adet, yapilan_adet, durum, dersler(ad), konular(ad)')
-      .eq('ogrenci_id', ogrenci.id)
-      .gte('tarih', ilk)
-      .lte('tarih', son)
-      .order('tarih')
-      .order('id')
-    if (error) setHata(hataMetni(error))
-    setGorevler(data ?? [])
-  }, [ogrenci.id, ilk, son])
-
-  useEffect(() => {
-    yukle()
-  }, [yukle])
-
-  async function durumDegistir(g) {
-    const sirada = { bekliyor: 'devam', devam: 'tamamlandi', tamamlandi: 'atlandi', atlandi: 'bekliyor' }
-    const { error } = await supabase
-      .from('gorevler')
-      .update({ durum: sirada[g.durum] })
-      .eq('id', g.id)
-    if (error) setHata(hataMetni(error))
-    else yukle()
-  }
-
-  async function sil(id) {
-    const { error } = await supabase.from('gorevler').delete().eq('id', id)
-    if (error) setHata(hataMetni(error))
-    else yukle()
-  }
-
-  const bugun = gunAnahtari(new Date())
+  const [secim, setSecim] = useState(null) // { blok, tarih, periyot }
+  const [tazele, setTazele] = useState(0)
 
   return (
-    <Kart
-      baslik="Haftalık program"
-      altBaslik={`${gunler[0].toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })} – ${gunler[6].toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}`}
-      eylem={
-        <div className="hafta-gezinme">
-          <button
-            className="ok-dugme"
-            onClick={() => setBas(new Date(bas.getFullYear(), bas.getMonth(), bas.getDate() - 7))}
-            aria-label="Önceki hafta"
-          >
-            ←
-          </button>
-          <button className="metin-dugme" onClick={() => setBas(haftaBasi(new Date()))}>
-            Bu hafta
-          </button>
-          <button
-            className="ok-dugme"
-            onClick={() => setBas(new Date(bas.getFullYear(), bas.getMonth(), bas.getDate() + 7))}
-            aria-label="Sonraki hafta"
-          >
-            →
-          </button>
-        </div>
-      }
-    >
-      <Uyari>{hata}</Uyari>
+    <Kart baslik="Haftalık program" altBaslik="Zaman dilimine göre">
+      <ProgramIzgarasi
+        key={tazele}
+        ogrenci={ogrenci}
+        duzenlenebilir
+        onHucreSec={(blok, tarih, periyot) => setSecim({ blok, tarih, periyot })}
+      />
 
-      {gorevler === null ? (
-        <Yukleniyor />
-      ) : (
-        <div className="hafta">
-          {gunler.map((g) => {
-            const anahtar = gunAnahtari(g)
-            const gunun = gorevler.filter((x) => x.tarih === anahtar)
-            return (
-              <section key={anahtar} className={`gun${anahtar === bugun ? ' gun--bugun' : ''}`}>
-                <header className="gun-basi">
-                  <span className="gun-ad">
-                    {g.toLocaleDateString('tr-TR', { weekday: 'long' })}
-                    <span className="gun-tarih">{g.getDate()}</span>
-                  </span>
-                  <button
-                    className="metin-dugme"
-                    onClick={() => setFormGun(formGun === anahtar ? null : anahtar)}
-                  >
-                    {formGun === anahtar ? 'Kapat' : '+ Görev'}
-                  </button>
-                </header>
-
-                {formGun === anahtar && (
-                  <GorevFormu
-                    ogrenci={ogrenci}
-                    tarih={anahtar}
-                    onEklendi={() => {
-                      setFormGun(null)
-                      yukle()
-                    }}
-                  />
-                )}
-
-                {gunun.length === 0 ? (
-                  <p className="gun-bos">Görev yok</p>
-                ) : (
-                  <ul className="gorev-liste">
-                    {gunun.map((g2) => (
-                      <li key={g2.id} className={`gorev gorev--${g2.durum}`}>
-                        <button
-                          className="gorev-kutu"
-                          onClick={() => durumDegistir(g2)}
-                          aria-label={`Durum: ${DURUM_ADI[g2.durum]}`}
-                          title={DURUM_ADI[g2.durum]}
-                        />
-                        <div className="gorev-metin">
-                          <span className="gorev-baslik">{g2.baslik}</span>
-                          <span className="gorev-alt">
-                            {[
-                              g2.dersler?.ad,
-                              g2.konular?.ad,
-                              TUR_ADI[g2.tur],
-                              g2.hedef_adet ? `${g2.yapilan_adet}/${g2.hedef_adet}` : null,
-                            ]
-                              .filter(Boolean)
-                              .join(' · ')}
-                          </span>
-                        </div>
-                        <button className="sil-dugme" onClick={() => sil(g2.id)} aria-label="Sil">
-                          ×
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-            )
-          })}
-        </div>
+      {secim && (
+        <HucreDuzenle
+          ogrenci={ogrenci}
+          secim={secim}
+          onKapat={() => setSecim(null)}
+          onDegisti={() => {
+            setSecim(null)
+            setTazele((t) => t + 1)
+          }}
+        />
       )}
     </Kart>
   )
 }
 
-function GorevFormu({ ogrenci, tarih, onEklendi }) {
-  const [dersler, setDersler] = useState([])
-  const [konular, setKonular] = useState([])
-  const [dersId, setDersId] = useState('')
-  const [konuId, setKonuId] = useState('')
-  const [tur, setTur] = useState('soru_cozumu')
-  const [baslik, setBaslik] = useState('')
-  const [hedef, setHedef] = useState('')
-  const [bekliyor, setBekliyor] = useState(false)
-  const [hata, setHata] = useState('')
+/** Bir hücreye ders atar ya da mevcut bloğu düzenler/siler. */
+function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
+  const { blok, tarih, periyot } = secim
+  const gun = new Date(tarih).toLocaleDateString('tr-TR', {
+    weekday: 'long', day: 'numeric', month: 'long',
+  })
+  const saat = periyot ? PERIYOTLAR[periyot - 1] : 'Gün boyu'
 
-  useEffect(() => {
-    if (!ogrenci.katalog_id) return
-    supabase
-      .from('dersler')
-      .select('id, ad, kapsam')
-      .eq('katalog_id', ogrenci.katalog_id)
-      .order('sira')
-      .then(({ data }) => setDersler(data ?? []))
-  }, [ogrenci.katalog_id])
-
-  useEffect(() => {
-    if (!dersId) {
-      setKonular([])
-      setKonuId('')
-      return
-    }
-    supabase
-      .from('konular')
-      .select('id, ad')
-      .eq('ders_id', Number(dersId))
-      .order('sira')
-      .then(({ data }) => setKonular(data ?? []))
-  }, [dersId])
-
-  async function ekle() {
-    setHata('')
-    const secilenKonu = konular.find((k) => String(k.id) === konuId)
-    const secilenDers = dersler.find((d) => String(d.id) === dersId)
-    const son = baslik.trim() || secilenKonu?.ad || secilenDers?.ad || TUR_ADI[tur]
-
-    setBekliyor(true)
-    try {
-      const { error } = await supabase.from('gorevler').insert({
-        ogrenci_id: ogrenci.id,
-        koc_id: ogrenci.koc_id,
-        tarih,
-        ders_id: dersId ? Number(dersId) : null,
-        konu_id: konuId ? Number(konuId) : null,
-        tur,
-        baslik: son,
-        hedef_adet: hedef ? Number(hedef) : null,
-      })
-      if (error) throw error
-      onEklendi()
-    } catch (e) {
-      setHata(hataMetni(e))
-    } finally {
-      setBekliyor(false)
-    }
+  async function sil() {
+    await supabase.from('gorevler').delete().eq('id', blok.id)
+    onDegisti()
   }
 
   return (
-    <div className="form-kutu form-kutu--dar">
-      {!ogrenci.katalog_id && (
-        <Uyari tur="bilgi">
-          Bu öğrenciye katalog atanmamış. Ders ve konu seçmek için önce bilgileri düzenleyin.
-        </Uyari>
+    <div className="hucre-panel">
+      <header className="hucre-basi">
+        <div>
+          <span className="hucre-gun">{gun}</span>
+          <span className="hucre-saat">{saat}</span>
+        </div>
+        <button className="metin-dugme" onClick={onKapat}>Kapat</button>
+      </header>
+
+      {blok ? (
+        <div className="hucre-mevcut">
+          <div>
+            <span className="liste-ad">{blok.baslik}</span>
+            <span className="liste-alt">
+              {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur],
+                blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null]
+                .filter(Boolean).join(' · ')}
+            </span>
+          </div>
+          <Dugme tur="ikincil" onClick={sil}>Bloğu sil</Dugme>
+        </div>
+      ) : (
+        <GorevFormu
+          ogrenci={ogrenci}
+          tarih={tarih}
+          periyot={periyot}
+          onEklendi={onDegisti}
+        />
       )}
-
-      <div className="ikili">
-        <Alan etiket="Ders">
-          <select value={dersId} onChange={(e) => setDersId(e.target.value)}>
-            <option value="">Seçilmedi</option>
-            {dersler.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.ad} ({d.kapsam.replace('_', '+').toUpperCase()})
-              </option>
-            ))}
-          </select>
-        </Alan>
-        <Alan etiket="Konu">
-          <select value={konuId} onChange={(e) => setKonuId(e.target.value)} disabled={!dersId}>
-            <option value="">Seçilmedi</option>
-            {konular.map((k) => (
-              <option key={k.id} value={k.id}>
-                {k.ad}
-              </option>
-            ))}
-          </select>
-        </Alan>
-      </div>
-
-      <div className="ikili">
-        <Alan etiket="Tür">
-          <select value={tur} onChange={(e) => setTur(e.target.value)}>
-            {Object.entries(TUR_ADI).map(([k, v]) => (
-              <option key={k} value={k}>
-                {v}
-              </option>
-            ))}
-          </select>
-        </Alan>
-        <Alan etiket="Hedef adet" ipucu="Soru sayısı, sayfa vb.">
-          <input
-            type="number"
-            min="1"
-            value={hedef}
-            onChange={(e) => setHedef(e.target.value)}
-            placeholder="40"
-          />
-        </Alan>
-      </div>
-
-      <Alan etiket="Başlık" ipucu="Boş bırakılırsa konu adı kullanılır">
-        <input value={baslik} onChange={(e) => setBaslik(e.target.value)} placeholder="Örn. Türev testi" />
-      </Alan>
-
-      <Uyari>{hata}</Uyari>
-      <Dugme onClick={ekle} bekliyor={bekliyor}>
-        Görevi ekle
-      </Dugme>
     </div>
   )
 }
