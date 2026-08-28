@@ -35,6 +35,12 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         navigateFallback: '/index.html',
+        // Yeni surum indirildigi anda devreye girsin. Bunlar olmadan eski
+        // service worker sayfayi kontrol etmeye devam eder ve kullanici
+        // butun sekmeleri kapatana kadar eski surumu gorur.
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
       },
     }),
   ],
