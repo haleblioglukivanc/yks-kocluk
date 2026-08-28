@@ -42,7 +42,7 @@ export default function KocPaneli() {
     const [o, k] = await Promise.all([
       supabase
         .from('ogrenciler')
-        .select('id, alan, sinif, aktif, katalog_id, profiller!inner(ad_soyad), kataloglar(ad)')
+        .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad), kataloglar(ad)')
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('kataloglar')

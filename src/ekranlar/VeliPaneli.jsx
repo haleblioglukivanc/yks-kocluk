@@ -10,7 +10,7 @@ export default function VeliPaneli() {
     ;(async () => {
       const { data, error } = await supabase
         .from('veli_ogrenci')
-        .select('ogrenci_id, iliski, ogrenciler(sinif, alan, profiller(ad_soyad), kataloglar(ad))')
+        .select('ogrenci_id, iliski, ogrenciler(sinif, alan, profiller!ogrenciler_id_fkey(ad_soyad), kataloglar(ad))')
       if (error) setHata(hataMetni(error))
       setCocuklar(data ?? [])
     })()
