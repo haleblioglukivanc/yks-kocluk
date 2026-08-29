@@ -114,6 +114,10 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
+  /* Tek bir uzun konu adı bile sayfayı yatayda kaydırılabilir yapıyordu.
+     `clip` kaydırma kabı yaratmadığı için üst bar ve alt gezinmenin
+     `sticky` davranışı bozulmaz; `hidden` bozardı. */
+  overflow-x: clip;
 }
 /* İçerik kısa olduğunda gezinme çubuğu sayfanın ortasında asılı kalıyordu.
    main'i esnetip çubuğu ekranın altına itiyoruz. */
@@ -125,15 +129,28 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
   background: var(--yuzey); border-bottom: 1px solid var(--cizgi);
   position: sticky; top: 0; z-index: 5;
 }
+.ust-bar > div { min-width: 0; }
+.ust-bar > .metin-dugme { flex: 0 0 auto; }
 .marka { display: block; font-family: var(--display); font-weight: 900; font-size: 1.0625rem; letter-spacing: -0.02em; }
 .ust-alt { display: block; font-size: 0.75rem; color: var(--soluk); margin-top: 0.1rem; }
+/* Uzun ad soyad ile sürüm damgası üst barı genişletmesin */
+.ust-alt, .derleme-damgasi { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
-.panel { display: flex; flex-direction: column; gap: 1rem; }
+/* `.uygulama` bir sütun flex kabı; içindeki `margin: 0 auto` esneme yerine
+   fit-content genişlik seçtiriyor ve içerik uzun olduğunda main ekranı
+   aşıyordu. Kesin genişlik verip ortalamayı margin-inline'a bırakıyoruz. */
+main {
+  width: 100%; max-width: 44rem; min-width: 0;
+  margin-inline: auto; padding: clamp(1rem, 4vw, 1.75rem);
+}
+.panel { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
 
-.kart { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--r); padding: 1.125rem 1.25rem; }
-.kart-basi { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 0.875rem; }
-.kart-basi h2 { font-size: 1.0625rem; font-weight: 700; }
+.kart { background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--r); padding: 1.125rem 1.25rem; min-width: 0; }
+/* Başlık uzun, sağdaki süzgeç sabit genişlikte olduğunda ikisi yan yana
+   sığmıyordu; alt satıra sarsınlar. */
+.kart-basi { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem 1rem; margin-bottom: 0.875rem; }
+.kart-basi > *:first-child { flex: 1 1 12rem; min-width: 0; }
+.kart-basi h2 { font-size: 1.0625rem; font-weight: 700; overflow-wrap: anywhere; }
 .kart-alt { margin: 0.2rem 0 0; font-size: 0.8125rem; color: var(--soluk); }
 
 .form-kutu {
@@ -582,9 +599,10 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   padding-bottom: env(safe-area-inset-bottom);
 }
 .alt-bag {
-  flex: 1; min-height: 48px; padding: 14px 8px;
+  flex: 1; min-width: 0; min-height: 48px; padding: 14px 8px;
   background: none; border: 0; font: inherit; font-size: 14px;
   color: inherit; opacity: 0.6; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .alt-bag--etkin { opacity: 1; font-weight: 600; box-shadow: inset 0 2px 0 var(--marka-koyu-amber); }
 
@@ -969,25 +987,48 @@ body[data-tema='panel'] {
 .hucre--bos { min-height: 2.4rem; }
 
 /* ---------- Konu ısı haritası ---------- */
-.isi-suzgec { font-size: 0.8125rem; padding: 0.4rem 0.6rem; max-width: 9rem; }
-.isi-satir { border-top: 1px solid var(--cizgi); }
+.isi-suzgec { font-size: 0.8125rem; padding: 0.4rem 0.6rem; flex: 0 1 9rem; width: 9rem; max-width: 100%; min-width: 0; }
+.isi-satir { border-top: 1px solid var(--cizgi); min-width: 0; }
 .isi-satir:first-child { border-top: 0; }
+
+/* Konu adı + çubuk + sayı tek satıra dizilince "Paragrafta Düşünceyi
+   Geliştirme Yolları" gibi uzun adlar satırı ekranın dışına itiyordu.
+   Dar ekranda ad ile sayı üstte, çubuk altta tam genişlikte duruyor;
+   minmax(0, 1fr) sütunun içerikle şişmesini imkânsız kılıyor. */
 .isi-dugme {
-  display: flex; align-items: center; gap: 0.75rem; width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  column-gap: 0.75rem; row-gap: 0.4rem;
+  width: 100%;
   padding: 0.75rem 0; min-height: 44px;
   background: none; border: 0; font: inherit; color: inherit;
   text-align: left; cursor: pointer;
 }
-.isi-ad { flex: 1; min-width: 0; }
-.isi-ad .liste-ad { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.isi-ad { grid-column: 1; grid-row: 1; min-width: 0; }
+/* Kısaltmak yerine iki satıra sar: konu adının sonu ayırt edici oluyor. */
+.isi-ad .liste-ad {
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden; overflow-wrap: anywhere; line-height: 1.25;
+}
+.isi-ad .liste-alt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .isi-cubuk {
-  flex: 0 0 4rem; height: 8px; border-radius: 999px;
+  grid-column: 1 / -1; grid-row: 2;
+  width: 100%; height: 8px; border-radius: 999px;
   background: var(--yuzey-2, #e9edf2); overflow: hidden;
 }
 .isi-cubuk span { display: block; height: 100%; background: var(--uyari); }
-.isi-sayi { flex: 0 0 1.25rem; text-align: right; font-family: var(--mono); font-size: 0.8125rem; }
+.isi-sayi {
+  grid-column: 2; grid-row: 1; justify-self: end;
+  font-family: var(--mono); font-size: 0.8125rem; font-variant-numeric: tabular-nums;
+}
+/* Ekran yetince eski tek satırlık dizilime dönülür. */
+@media (min-width: 34rem) {
+  .isi-dugme { grid-template-columns: minmax(0, 1fr) 5rem auto; }
+  .isi-cubuk { grid-column: 2; grid-row: 1; }
+}
 .isi-detay { padding: 0 0 0.75rem; }
-.isi-kim { margin: 0 0 0.25rem; font-size: 0.875rem; }
+.isi-kim { margin: 0 0 0.25rem; font-size: 0.875rem; overflow-wrap: anywhere; }
 
 /* Beş sekmede etiketler sığsın */
 .alt-gezinme { padding-inline: 0.25rem; }
