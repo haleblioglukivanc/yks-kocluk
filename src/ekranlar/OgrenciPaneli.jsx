@@ -46,17 +46,8 @@ export default function OgrenciPaneli({ profil }) {
       setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
 
       const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti')
-      if (bugun) {
-        setOzet(bugun)
-        setKalemOlaylari(
-          await kalemiCalistir({
-            profilId: profil.id,
-            rol: 'ogrenci',
-            ad: profil.ad_soyad,
-            veri: bugun,
-          }),
-        )
-      }
+      // Kâmil artık uygulama kabuğunda, köşede duruyor; burada sadece veri
+      if (bugun) setOzet(bugun)
     })()
   }, [profil.id, profil.ad_soyad, tazele])
 
