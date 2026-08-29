@@ -94,6 +94,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
               ayt={ogrenci.hedef_ayt_net}
               durum={netDurumu}
             />
+            <SeriVeRozet ogrenciId={ogrenci.id} />
             {!ogrenci.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
           </div>
           <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
@@ -1103,5 +1104,61 @@ function Veliler({ ogrenci }) {
         </ul>
       )}
     </Kart>
+  )
+}
+
+
+/* ─────────────────────────── Seri ve rozet ─────────────────────────── */
+
+/** Koçun tebrik fırsatını kaçırmaması için: seri ve son kazanılan rozet.
+ *  Öğrenci bunları kendi panelinde görüyor, koç göremiyordu. */
+function SeriVeRozet({ ogrenciId }) {
+  const [veri, setVeri] = useState(null)
+
+  useEffect(() => {
+    let iptal = false
+    ;(async () => {
+      const [s, r] = await Promise.all([
+        supabase
+          .from('seriler')
+          .select('guncel_seri, en_uzun_seri, son_aktif_gun')
+          .eq('ogrenci_id', ogrenciId)
+          .maybeSingle(),
+        supabase
+          .from('ogrenci_rozet')
+          .select('kazanildi, rozetler(ad)')
+          .eq('ogrenci_id', ogrenciId)
+          .order('kazanildi', { ascending: false }),
+      ])
+      if (!iptal) setVeri({ seri: s.data, rozetler: r.data ?? [] })
+    })()
+    return () => {
+      iptal = true
+    }
+  }, [ogrenciId])
+
+  if (!veri) return null
+
+  /* Tablodaki seri yalnızca aktivite oldukça güncelleniyor. Son aktiflik
+     dünden eskiyse seri kopmuştur; okurken düzeltiyoruz. */
+  const bugun = new Date()
+  bugun.setHours(0, 0, 0, 0)
+  const sonAktif = veri.seri?.son_aktif_gun ? new Date(veri.seri.son_aktif_gun) : null
+  const kopmus = !sonAktif || (bugun - sonAktif) / 864e5 > 1
+  const seri = kopmus ? 0 : (veri.seri?.guncel_seri ?? 0)
+  const sonRozet = veri.rozetler[0]
+
+  if (seri === 0 && veri.rozetler.length === 0) return null
+
+  return (
+    <p className="kimlik-seri">
+      {seri > 0 && <span>{seri} günlük seri</span>}
+      {seri > 0 && sonRozet && <span aria-hidden="true"> · </span>}
+      {sonRozet && (
+        <span>
+          {veri.rozetler.length} rozet · son: {sonRozet.rozetler?.ad}
+        </span>
+      )}
+    </p>
   )
 }
