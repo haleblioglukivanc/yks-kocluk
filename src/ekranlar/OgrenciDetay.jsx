@@ -797,10 +797,13 @@ function Konular({ ogrenci }) {
       setAcikDers(dersId)
       const [k, i] = await Promise.all([
         supabase.from('konular').select('id, ad, unite').eq('ders_id', dersId).order('sira'),
-        supabase.from('konu_ilerleme').select('konu_id, durum').eq('ogrenci_id', ogrenci.id),
+        supabase
+          .from('konu_ilerleme')
+          .select('konu_id, durum, koc_onayi')
+          .eq('ogrenci_id', ogrenci.id),
       ])
       setKonular(k.data ?? [])
-      setIlerleme(Object.fromEntries((i.data ?? []).map((x) => [x.konu_id, x.durum])))
+      setIlerleme(Object.fromEntries((i.data ?? []).map((x) => [x.konu_id, x])))
     },
     [acikDers, ogrenci.id],
   )
@@ -810,13 +813,45 @@ function Konular({ ogrenci }) {
       .from('konu_ilerleme')
       .upsert({ ogrenci_id: ogrenci.id, konu_id: konuId, durum, guncellendi: new Date().toISOString() })
     if (error) setHata(hataMetni(error))
-    else setIlerleme((o) => ({ ...o, [konuId]: durum }))
+    // Durum tamamlandıdan çıkarsa onay tetikleyicide düşüyor; ekran da düşürsün.
+    else
+      setIlerleme((o) => ({
+        ...o,
+        [konuId]: { konu_id: konuId, durum, koc_onayi: durum === 'tamamlandi' && (o[konuId]?.koc_onayi ?? false) },
+      }))
+  }
+
+  /* Öğrenci "bitti" dedi diye konu bitmiş sayılmıyor: koç kontrol edip
+     tiki atınca sayılıyor. Tik yalnızca tamamlandı satırlarında açılır. */
+  async function onayYaz(konuId, onay) {
+    const oncesi = ilerleme[konuId]
+    setIlerleme((o) => ({ ...o, [konuId]: { ...o[konuId], koc_onayi: onay } }))
+    const { error } = await supabase
+      .from('konu_ilerleme')
+      .update({ koc_onayi: onay })
+      .eq('ogrenci_id', ogrenci.id)
+      .eq('konu_id', konuId)
+    if (error) {
+      setIlerleme((o) => ({ ...o, [konuId]: oncesi }))
+      setHata(hataMetni(error))
+    }
   }
 
   if (dersler === null) return <Kart baslik="Konular"><Yukleniyor /></Kart>
 
+  const bekleyen = Object.values(ilerleme).filter(
+    (x) => x.durum === 'tamamlandi' && !x.koc_onayi,
+  ).length
+
   return (
-    <Kart baslik="Konu ilerlemesi" altBaslik={ogrenci.kataloglar?.ad}>
+    <Kart
+      baslik="Konu ilerlemesi"
+      altBaslik={
+        acikDers && bekleyen
+          ? `${bekleyen} konu kontrolünü bekliyor`
+          : ogrenci.kataloglar?.ad
+      }
+    >
       <Uyari>{hata}</Uyari>
       {dersler.length === 0 ? (
         <Bos baslik="Katalog atanmamış" aciklama="Bilgileri düzenleyip bir katalog seçin." />
@@ -839,9 +874,9 @@ function Konular({ ogrenci }) {
                         {k.unite && <span className="konu-unite">{k.unite}</span>}
                       </span>
                       <select
-                        value={ilerleme[k.id] ?? 'baslanmadi'}
+                        value={ilerleme[k.id]?.durum ?? 'baslanmadi'}
                         onChange={(e) => durumYaz(k.id, e.target.value)}
-                        className={`ilerleme ilerleme--${ilerleme[k.id] ?? 'baslanmadi'}`}
+                        className={`ilerleme ilerleme--${ilerleme[k.id]?.durum ?? 'baslanmadi'}`}
                       >
                         {Object.entries(ILERLEME_ADI).map(([kk, vv]) => (
                           <option key={kk} value={kk}>
@@ -849,6 +884,20 @@ function Konular({ ogrenci }) {
                           </option>
                         ))}
                       </select>
+                      {ilerleme[k.id]?.durum === 'tamamlandi' && (
+                        <label
+                          className={
+                            ilerleme[k.id]?.koc_onayi ? 'onay-kutu onay-kutu--acik' : 'onay-kutu'
+                          }
+                        >
+                          <input
+                            type="checkbox"
+                            checked={Boolean(ilerleme[k.id]?.koc_onayi)}
+                            onChange={(e) => onayYaz(k.id, e.target.checked)}
+                          />
+                          <span>{ilerleme[k.id]?.koc_onayi ? 'Kontrol ettim' : 'Kontrol et'}</span>
+                        </label>
+                      )}
                     </li>
                   ))}
                 </ul>

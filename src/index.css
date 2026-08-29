@@ -375,7 +375,36 @@ main {
 .ders-satir:hover { background: var(--kagit); }
 
 .konu-liste { list-style: none; margin: 0 0 0.75rem; padding: 0.5rem 0 0; display: grid; gap: 0.25rem; }
-.konu-liste li { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0.375rem 0.625rem; background: var(--kagit); border-radius: 6px; }
+.konu-liste li { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem 0.75rem; padding: 0.375rem 0.625rem; background: var(--kagit); border-radius: 6px; }
+
+/* ---------- Koç onayı ---------- */
+/* Öğrencinin "bitti"si ile konunun bitmesi aynı şey değil: tik yalnızca
+   tamamlandı satırlarında açılıyor ve dokunma alanı 44px'in altına düşmüyor. */
+.onay-kutu {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  min-height: 32px; padding: 0.2rem 0.55rem;
+  border: 1px solid var(--cizgi); border-radius: 999px;
+  font-size: 0.75rem; color: var(--grafit); cursor: pointer;
+  white-space: nowrap; flex: 0 0 auto;
+}
+.onay-kutu input { width: 16px; height: 16px; margin: 0; accent-color: var(--isaret, #1d9e75); }
+.onay-kutu--acik { border-color: var(--isaret, #1d9e75); color: var(--isaret, #1d9e75); font-weight: 600; }
+
+.konu-durum { display: inline-flex; align-items: center; gap: 0.4rem; flex: 0 0 auto; }
+.konu-onay { font-size: 11px; color: var(--isaret, #0f6e56); white-space: nowrap; }
+.konu-onay--bekliyor { color: var(--soluk); }
+
+.onay-satir {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.625rem 0; border-top: 1px solid var(--cizgi);
+}
+.onay-satir:first-child { border-top: 0; }
+.onay-metin {
+  flex: 1; min-width: 0; text-align: left;
+  background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer;
+}
+.onay-metin .liste-ad { display: block; overflow-wrap: anywhere; }
+.onay-dugme { flex: 0 0 auto; padding: 0.4rem 0.85rem; font-size: 0.8125rem; }
 .konu-ad { font-size: 0.8125rem; flex: 1; min-width: 0; }
 .konu-unite { display: block; font-size: 0.6875rem; color: var(--soluk); margin-top: 0.1rem; }
 .ilerleme { width: auto; min-width: 8.5rem; padding: 0.3rem 0.5rem; font-size: 0.75rem; flex-shrink: 0; }

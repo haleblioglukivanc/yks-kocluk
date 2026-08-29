@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Kart } from '../bilesenler/Ortak.jsx'
 import RiskRadari from '../bilesenler/RiskRadari.jsx'
+import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
 
 /** Koçun günlük durum ekranı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün ne oluyor" sorusuna cevap verir. */
@@ -22,6 +23,7 @@ export default function KocPaneli({ onOgrenciAc }) {
     <div className="panel">
       {ozet && <Ozetler ozet={ozet} />}
       <RiskRadari onOgrenciAc={onOgrenciAc} />
+      <OnayKuyrugu onOgrenciAc={onOgrenciAc} />
     </div>
   )
 }

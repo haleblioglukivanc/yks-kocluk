@@ -62,7 +62,7 @@ export default function KonuHaritasi({ profilId }) {
 
     const { data, error } = await supabase
       .from('konular')
-      .select('id, ad, unite, sira, konu_ilerleme(durum)')
+      .select('id, ad, unite, sira, konu_ilerleme(durum, koc_onayi)')
       .eq('ders_id', dersId)
       .order('sira')
 
@@ -75,6 +75,7 @@ export default function KonuHaritasi({ profilId }) {
       [dersId]: (data ?? []).map((k) => ({
         ...k,
         durum: k.konu_ilerleme?.[0]?.durum ?? 'baslanmadi',
+        onayli: Boolean(k.konu_ilerleme?.[0]?.koc_onayi),
       })),
     }))
   }
@@ -84,7 +85,9 @@ export default function KonuHaritasi({ profilId }) {
     setHata('')
     setKonular((m) => ({
       ...m,
-      [dersId]: m[dersId].map((k) => (k.id === konu.id ? { ...k, durum: yeni } : k)),
+      [dersId]: m[dersId].map((k) =>
+        k.id === konu.id ? { ...k, durum: yeni, onayli: yeni === 'tamamlandi' && k.onayli } : k,
+      ),
     }))
 
     const { error } = await supabase
@@ -97,7 +100,9 @@ export default function KonuHaritasi({ profilId }) {
     if (error) {
       setKonular((m) => ({
         ...m,
-        [dersId]: m[dersId].map((k) => (k.id === konu.id ? { ...k, durum: konu.durum } : k)),
+        [dersId]: m[dersId].map((k) =>
+          k.id === konu.id ? { ...k, durum: konu.durum, onayli: konu.onayli } : k,
+        ),
       }))
       setHata(hataMetni(error))
       return
@@ -123,6 +128,7 @@ export default function KonuHaritasi({ profilId }) {
                   <span className='liste-ad'>{d.ders}</span>
                   <span className='liste-alt'>
                     {String(d.kapsam).toUpperCase().replace('_', '/')} · {d.tamamlandi}/{d.toplam} bitti
+                    {d.tamamlandi > 0 && ` · ${d.onayli ?? 0} koç onaylı`}
                   </span>
                 </div>
                 <span className='ok' aria-hidden='true'>{acik === d.dersId ? '−' : '+'}</span>
@@ -137,8 +143,17 @@ export default function KonuHaritasi({ profilId }) {
                       <li key={k.id}>
                         <button className='konu-satir' onClick={() => durumDegistir(d.dersId, k)}>
                           <span className='konu-ad'>{k.ad}</span>
-                          <span className={`konu-rozet konu-rozet--${k.durum}`}>
-                            {DURUM_ADI[k.durum]}
+                          <span className="konu-durum">
+                            {/* Koç kontrol edene kadar "bitti" beklemede sayılır. */}
+                            {k.durum === 'tamamlandi' &&
+                              (k.onayli ? (
+                                <span className="konu-onay" title="Koçun onayladı">✓ onaylı</span>
+                              ) : (
+                                <span className="konu-onay konu-onay--bekliyor">onay bekliyor</span>
+                              ))}
+                            <span className={`konu-rozet konu-rozet--${k.durum}`}>
+                              {DURUM_ADI[k.durum]}
+                            </span>
                           </span>
                         </button>
                       </li>
