@@ -1229,3 +1229,14 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .uygulama .serbest--bitti { background: #17352a; color: #7fd0a8; }
 .uygulama .prg-serbest h4 { color: var(--grafit); }
 .uygulama .hucre-panel { background: var(--yuzey-2); border: 1px solid var(--cizgi); }
+
+/* Panel açıkken gövde de koyu; yatay taşmada beyaz şerit kalmasın */
+body[data-tema='panel'] {
+  background-color: #17181b;
+  background-image: none;
+  color: #ecedef;
+}
+
+/* Izgara kendi içinde kaysın, sayfayı yatayda taşırmasın */
+.prg-kaydir { max-width: 100%; }
+.uygulama { overflow-x: clip; }

@@ -36,6 +36,18 @@ export default function App() {
   const { durum, profil, cikisYap } = useOturum()
   const [yol, git] = useYol()
 
+  /* Koyu tema gövdeye de yazılır. Sadece .uygulama üzerinde olduğunda,
+     sayfa yatayda taştığı anda taşan şeridi body'nin kâğıt zemini
+     boyuyor ve sağda beyaz bir bant kalıyordu. */
+  const panelAcik = durum === 'hazir' && Boolean(profil)
+  useEffect(() => {
+    if (panelAcik) document.body.dataset.tema = 'panel'
+    else delete document.body.dataset.tema
+    return () => {
+      delete document.body.dataset.tema
+    }
+  }, [panelAcik])
+
   if (durum === 'yukleniyor') {
     return (
       <div className="giris-sayfa">
