@@ -997,3 +997,11 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .balon--ondan { background: var(--kagit); border: 1px solid var(--kare); }
 .veli-yorum { background: var(--kagit); border: 1px solid var(--kare); font-family: var(--display); font-weight: 500; }
 .ozet-sayi { font-family: var(--display); }
+
+.derleme-damgasi {
+  display: block;
+  font-family: var(--mono);
+  font-size: 0.625rem;
+  color: var(--soluk);
+  margin-top: 0.15rem;
+}

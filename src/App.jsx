@@ -87,6 +87,9 @@ export default function App() {
           <span className="ust-alt">
             {profil.ad_soyad} · {ROL_ADI[profil.rol] ?? profil.rol}
           </span>
+          {/* Hangi derlemeye baktığımızı görebilmek için. Önbellek sorunlarını
+              tahmin etmek yerine ölçmeyi sağlıyor. */}
+          <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
         </div>
         <button
           className="metin-dugme"

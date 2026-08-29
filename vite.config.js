@@ -6,7 +6,10 @@ import { VitePWA } from 'vite-plugin-pwa'
 // TABAN ortam degiskeni bos birakilirsa kok kabul edilir.
 const taban = process.env.TABAN || '/'
 
+const DERLEME = new Date().toISOString().slice(0, 16).replace('T', ' ')
+
 export default defineConfig({
+  define: { __DERLEME__: JSON.stringify(DERLEME) },
   base: taban,
   plugins: [
     react(),
