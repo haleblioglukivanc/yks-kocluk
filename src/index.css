@@ -1638,3 +1638,25 @@ body[data-tema='panel'] {
 .cokme-sur { font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); }
 .cokme-dugmeler { display: flex; gap: 0.625rem; margin-top: 1rem; }
 .cokme-dugmeler .dugme { flex: 1; }
+
+/* ---------- Raporlar ---------- */
+.rapor-kpi { grid-template-columns: 1fr 1fr; margin-top: 0.75rem; }
+.rapor-tarih { display: flex; align-items: center; gap: 0.5rem; margin-top: 0.75rem; }
+.rapor-tarih input { flex: 1; min-width: 0; }
+.rapor-tire { color: var(--soluk); }
+.rapor-grafik { margin-top: 1rem; }
+.rapor-grafik .net-grafik { height: 72px; }
+.rapor-grafik-etiket {
+  display: flex; margin-top: 4px;
+  font-size: 0.625rem; color: var(--soluk);
+}
+.rapor-grafik-etiket span { flex: 1; min-width: 0; text-align: center; overflow: hidden; }
+.rapor-satir { align-items: flex-start; }
+.rapor-satir-metin { flex: 1; min-width: 0; }
+.rapor-cubuk { margin-top: 6px; }
+.rapor-eylemler { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 1rem; }
+.rapor-gecmis .liste-satir { align-items: flex-start; gap: 0.5rem; }
+.rapor-hata {
+  display: block; margin-top: 4px; font-family: var(--mono);
+  font-size: 0.6875rem; color: var(--uyari); word-break: break-word;
+}

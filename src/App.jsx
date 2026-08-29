@@ -12,6 +12,7 @@ import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import OgrenciGozuyle from './ekranlar/OgrenciGozuyle.jsx'
 import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
+import Raporlar from './ekranlar/Raporlar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
@@ -87,6 +88,7 @@ export default function App() {
         ['/ogrenciler', 'Öğrenciler'],
         ['/konular', 'Konular'],
         ['/veli-ozetleri', 'Veli'],
+        ['/raporlar', 'Rapor'],
         ['/mesajlar', 'Mesajlar'],
       ]
     : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim'], ['/mesajlar', 'Mesajlar']]
@@ -104,6 +106,8 @@ export default function App() {
     if (kocMu && gozuyleId)
       return <OgrenciGozuyle ogrenciId={gozuyleId} onGeri={() => git('/ogrenciler')} />
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
+    if (kocMu && yol === '/raporlar')
+      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/ogrenciler')} />
     if (kocMu) return <KocPaneli onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (profil.rol === 'veli') return <VeliPaneli />
