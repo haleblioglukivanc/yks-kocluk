@@ -367,7 +367,145 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
   )
 }
 
+
+/* Adet girilmesi anlamlı olan türler. Konu anlatımına "30 soru" demek tuhaf. */
+const ADETLI = new Set(['soru_cozumu', 'okuma', 'tekrar'])
+
+/** Boş bir hücreye ders atar. Ders seçilince o dersin konuları yüklenir. */
+function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
+  const [dersler, setDersler] = useState([])
+  const [konular, setKonular] = useState([])
+  const [dersId, setDersId] = useState('')
+  const [konuId, setKonuId] = useState('')
+  const [tur, setTur] = useState('konu_anlatimi')
+  const [hedef, setHedef] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  useEffect(() => {
+    if (!ogrenci.katalog_id) return
+    supabase
+      .from('dersler')
+      .select('id, ad, sira')
+      .eq('katalog_id', ogrenci.katalog_id)
+      .order('sira')
+      .then(({ data }) => setDersler(data ?? []))
+  }, [ogrenci.katalog_id])
+
+  useEffect(() => {
+    if (!dersId) {
+      setKonular([])
+      return
+    }
+    supabase
+      .from('konular')
+      .select('id, ad, sira')
+      .eq('ders_id', dersId)
+      .order('sira')
+      .then(({ data }) => setKonular(data ?? []))
+  }, [dersId])
+
+  async function ekle() {
+    if (!dersId) {
+      setHata('Önce bir ders seç.')
+      return
+    }
+    setBekliyor(true)
+    setHata('')
+
+    const ders = dersler.find((d) => String(d.id) === dersId)
+    const konu = konular.find((k) => String(k.id) === konuId)
+    const baslik = konu ? `${TUR_ADI[tur]} — ${konu.ad}` : `${ders?.ad ?? ''} ${TUR_ADI[tur].toLowerCase()}`
+
+    const { error } = await supabase.from('gorevler').insert({
+      ogrenci_id: ogrenci.id,
+      koc_id: ogrenci.koc_id,
+      tarih,
+      periyot: periyot ?? null,
+      ders_id: Number(dersId),
+      konu_id: konuId ? Number(konuId) : null,
+      tur,
+      baslik,
+      hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
+      durum: 'bekliyor',
+    })
+
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    onEklendi()
+  }
+
+  if (!ogrenci.katalog_id) {
+    return (
+      <Bos
+        baslik="Katalog atanmamış"
+        aciklama="Ders atayabilmek için önce öğrenciye bir konu kataloğu seçin."
+      />
+    )
+  }
+
+  return (
+    <div className="form-kutu">
+      <Alan etiket="Ders">
+        <select
+          value={dersId}
+          onChange={(e) => {
+            setDersId(e.target.value)
+            setKonuId('')
+          }}
+        >
+          <option value="">Ders seç</option>
+          {dersler.map((d) => (
+            <option key={d.id} value={d.id}>{d.ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      <Alan etiket="Konu" ipucu="İstersen boş bırak">
+        <select value={konuId} onChange={(e) => setKonuId(e.target.value)} disabled={!konular.length}>
+          <option value="">{konular.length ? 'Konu seç' : 'Önce ders seç'}</option>
+          {konular.map((k) => (
+            <option key={k.id} value={k.id}>{k.ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      <Alan etiket="Tür">
+        <select value={tur} onChange={(e) => setTur(e.target.value)}>
+          {Object.entries(TUR_ADI).map(([k, ad]) => (
+            <option key={k} value={k}>{ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      {ADETLI.has(tur) && (
+        <Alan etiket="Hedef adet">
+          <input
+            type="number"
+            inputMode="numeric"
+            min="1"
+            max="500"
+            value={hedef}
+            onChange={(e) => setHedef(e.target.value)}
+            placeholder="Örn. 30"
+          />
+        </Alan>
+      )}
+
+      <Uyari>{hata}</Uyari>
+
+      <Dugme onClick={ekle} bekliyor={bekliyor}>
+        Bloğa ekle
+      </Dugme>
+    </div>
+  )
+}
+
 /* ─────────────────────────── Denemeler ─────────────────────────── */
+
 
 function Denemeler({ ogrenci }) {
   const [liste, setListe] = useState(null)
