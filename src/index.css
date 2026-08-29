@@ -1329,3 +1329,39 @@ body[data-tema='panel'] {
 .alt-gezinme { padding-inline: 0.25rem; }
 .alt-bag { font-size: 0.75rem; padding: 0.875rem 0.25rem; }
 @media (min-width: 26rem) { .alt-bag { font-size: 0.8125rem; } }
+
+/* Notlar */
+.not-satir { align-items: flex-start; }
+.not-metin { display: block; font-size: 0.9375rem; line-height: 1.5; white-space: pre-wrap; }
+
+/* Beş sekme dar ekranda sığmıyor: yatayda kaysın */
+.sekmeler--genis { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+.sekmeler--genis::-webkit-scrollbar { display: none; }
+.sekmeler--genis .sekme { flex: 0 0 auto; padding-inline: 0.75rem; white-space: nowrap; }
+
+/* ---------- Seri ve rozetler ---------- */
+.seri-kutu { display: flex; gap: 2rem; }
+.seri-sayi {
+  display: block; font-family: var(--display); font-weight: 700;
+  font-size: 2.25rem; line-height: 1; color: var(--fosfor);
+}
+.seri-sayi--sonuk { color: var(--grafit); }
+
+.rozet-izgara {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.625rem;
+}
+@media (min-width: 30rem) { .rozet-izgara { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+
+.rozet-kart {
+  background: var(--yuzey-2, #f2f5f9);
+  border: 1px solid var(--cizgi);
+  border-radius: 10px;
+  padding: 0.75rem 0.625rem;
+  text-align: center;
+}
+.rozet-kart--kilitli { opacity: 0.45; }
+.rozet-ikon { display: block; font-size: 1.5rem; line-height: 1; margin-bottom: 0.35rem; }
+.rozet-ad { display: block; font-size: 0.8125rem; font-weight: 600; }
+.rozet-aciklama { display: block; font-size: 0.6875rem; color: var(--soluk); margin-top: 0.15rem; line-height: 1.35; }
+.rozet-tarih { display: block; font-size: 0.625rem; color: var(--isaret); margin-top: 0.35rem; }

@@ -2,35 +2,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Avatar } from '../bilesenler/Fotograf.jsx'
+import { kullaniciOlustur } from '../lib/hesap.js'
 
 const ALAN_ADI = {
   sayisal: 'Sayısal',
   esit_agirlik: 'Eşit Ağırlık',
   sozel: 'Sözel',
   dil: 'Dil',
-}
-
-/** Edge Function çağrısı: hesap açma yalnızca sunucu tarafında yapılabilir. */
-async function kullaniciOlustur(govde) {
-  const { data: oturum } = await supabase.auth.getSession()
-  const jeton = oturum?.session?.access_token
-  if (!jeton) throw new Error('Oturum bulunamadı.')
-
-  const { data, error } = await supabase.functions.invoke('kullanici-olustur', {
-    body: govde,
-  })
-  if (error) {
-    // Fonksiyon hata gövdesini okumaya çalış
-    let mesaj = error.message
-    try {
-      const g = await error.context?.json()
-      if (g?.hata) mesaj = g.hata
-    } catch {
-      /* gövde okunamadı, genel mesaj kalsın */
-    }
-    throw new Error(mesaj)
-  }
-  return data
 }
 
 export default function Ogrencilerim({ onOgrenciAc }) {

@@ -4,6 +4,7 @@ import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/
 import { Avatar, FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR, gunAnahtari } from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
+import { kullaniciOlustur } from '../lib/hesap.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const TUR_ADI = {
@@ -132,6 +133,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
           ['program', 'Program'],
           ['denemeler', 'Denemeler'],
           ['konular', 'Konular'],
+          ['notlar', 'Notlar'],
+          ['veli', 'Veli'],
         ].map(([k, e]) => (
           <button
             key={k}
@@ -146,6 +149,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
       {sekme === 'program' && <Program ogrenci={ogrenci} />}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
+      {sekme === 'notlar' && <Notlar ogrenci={ogrenci} />}
+      {sekme === 'veli' && <Veliler ogrenci={ogrenci} />}
     </div>
   )
 }
@@ -826,6 +831,273 @@ function Konular({ ogrenci }) {
                   ))}
                 </ul>
               )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Kart>
+  )
+}
+
+
+/* ─────────────────────────── Notlar ─────────────────────────── */
+
+const GORUNURLUK = [
+  ['sadece_koc', 'Sadece ben'],
+  ['ogrenci', 'Öğrenci de görsün'],
+  ['veli', 'Veli de görsün'],
+]
+
+const GORUNURLUK_ADI = Object.fromEntries(GORUNURLUK)
+
+/** Koçun öğrenci hakkındaki notları. Her notta kimin göreceği ayrı seçilir;
+ *  varsayılan "sadece ben", yani bilinçli seçmeden hiçbir not paylaşılmaz. */
+function Notlar({ ogrenci }) {
+  const [liste, setListe] = useState(null)
+  const [metin, setMetin] = useState('')
+  const [gorunurluk, setGorunurluk] = useState('sadece_koc')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('koc_notlari')
+      .select('id, icerik, gorunurluk, olusturuldu')
+      .eq('ogrenci_id', ogrenci.id)
+      .order('olusturuldu', { ascending: false })
+    if (error) setHata(hataMetni(error))
+    setListe(data ?? [])
+  }, [ogrenci.id])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
+
+  async function ekle() {
+    const icerik = metin.trim()
+    if (icerik.length < 3) {
+      setHata('Not çok kısa.')
+      return
+    }
+    setBekliyor(true)
+    setHata('')
+    const { error } = await supabase.from('koc_notlari').insert({
+      ogrenci_id: ogrenci.id,
+      koc_id: ogrenci.koc_id,
+      icerik,
+      gorunurluk,
+    })
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setMetin('')
+    setGorunurluk('sadece_koc')
+    yukle()
+  }
+
+  async function sil(id) {
+    const { error } = await supabase.from('koc_notlari').delete().eq('id', id)
+    if (error) setHata(hataMetni(error))
+    else yukle()
+  }
+
+  return (
+    <Kart baslik="Notlar" altBaslik="Her notta kimin göreceğini sen seçersin">
+      <div className="form-kutu">
+        <Alan etiket="Yeni not">
+          <textarea
+            rows={3}
+            value={metin}
+            placeholder="Kısa bir not…"
+            onChange={(e) => {
+              setMetin(e.target.value)
+              setHata('')
+            }}
+          />
+        </Alan>
+
+        <Alan etiket="Kim görsün">
+          <select value={gorunurluk} onChange={(e) => setGorunurluk(e.target.value)}>
+            {GORUNURLUK.map(([k, ad]) => (
+              <option key={k} value={k}>{ad}</option>
+            ))}
+          </select>
+        </Alan>
+
+        <Uyari>{hata}</Uyari>
+
+        <Dugme onClick={ekle} bekliyor={bekliyor}>Notu kaydet</Dugme>
+      </div>
+
+      {liste === null ? (
+        <Yukleniyor />
+      ) : liste.length === 0 ? (
+        <Bos baslik="Henüz not yok" aciklama="İlk notu yukarıdan ekleyebilirsin." />
+      ) : (
+        <ul className="liste">
+          {liste.map((n) => (
+            <li key={n.id} className="liste-satir not-satir">
+              <div>
+                <span className="not-metin">{n.icerik}</span>
+                <span className="liste-alt">
+                  {new Date(n.olusturuldu).toLocaleDateString('tr-TR')} ·{' '}
+                  {GORUNURLUK_ADI[n.gorunurluk] ?? n.gorunurluk}
+                </span>
+              </div>
+              <button className="metin-dugme" onClick={() => sil(n.id)}>Sil</button>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Kart>
+  )
+}
+
+/* ─────────────────────────── Veli ─────────────────────────── */
+
+const ILISKI = [
+  ['anne', 'Anne'],
+  ['baba', 'Baba'],
+  ['vasi', 'Vasi'],
+  ['diger', 'Diğer'],
+]
+
+/** Veli hesabı açar ve öğrenciye bağlar. Hesap açma service_role
+ *  gerektirdiği için Edge Function üzerinden yapılır. */
+function Veliler({ ogrenci }) {
+  const [liste, setListe] = useState(null)
+  const [formAcik, setFormAcik] = useState(false)
+  const [adSoyad, setAdSoyad] = useState('')
+  const [eposta, setEposta] = useState('')
+  const [iliski, setIliski] = useState('anne')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+  const [sonuc, setSonuc] = useState(null)
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('veli_ogrenci')
+      .select('veli_id, iliski, profiller!veli_ogrenci_veli_id_fkey(ad_soyad)')
+      .eq('ogrenci_id', ogrenci.id)
+    if (error) setHata(hataMetni(error))
+    setListe(data ?? [])
+  }, [ogrenci.id])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
+
+  async function ekle() {
+    setHata('')
+    setBekliyor(true)
+    try {
+      const d = await kullaniciOlustur({
+        rol: 'veli',
+        ad_soyad: adSoyad.trim(),
+        eposta: eposta.trim(),
+        ogrenci_id: ogrenci.id,
+        iliski,
+      })
+      setSonuc(d)
+      setAdSoyad('')
+      setEposta('')
+      await yukle()
+    } catch (e) {
+      setHata(hataMetni(e))
+    } finally {
+      setBekliyor(false)
+    }
+  }
+
+  async function bagiKaldir(veliId) {
+    const { error } = await supabase
+      .from('veli_ogrenci')
+      .delete()
+      .eq('ogrenci_id', ogrenci.id)
+      .eq('veli_id', veliId)
+    if (error) setHata(hataMetni(error))
+    else yukle()
+  }
+
+  return (
+    <Kart
+      baslik="Veli"
+      altBaslik="Veli yalnızca senin yayınladığın haftalık özeti görür"
+      eylem={
+        <Dugme tur="ikincil" onClick={() => { setFormAcik((v) => !v); setSonuc(null) }}>
+          {formAcik ? 'Kapat' : 'Veli ekle'}
+        </Dugme>
+      }
+    >
+      {formAcik && (sonuc ? (
+        <div className="form-kutu">
+          <div className="kod-sonuc">
+            <p>
+              <strong className="satir-ad">{sonuc.ad_soyad}</strong> için veli hesabı açıldı.
+              Bilgileri veliye iletin.
+            </p>
+            <div className="sifre-kutu">
+              <span className="sifre-etiket">E-posta</span>
+              <code>{sonuc.eposta}</code>
+              <span className="sifre-etiket">Geçici şifre</span>
+              <code className="sifre">{sonuc.gecici_sifre}</code>
+            </div>
+            <button
+              className="metin-dugme"
+              onClick={() =>
+                navigator.clipboard?.writeText(
+                  `E-posta: ${sonuc.eposta}\nGeçici şifre: ${sonuc.gecici_sifre}`,
+                )
+              }
+            >
+              Kopyala
+            </button>
+            <p className="uyari-not">Bu şifre bir daha gösterilmez.</p>
+          </div>
+          <Dugme tur="ikincil" onClick={() => setSonuc(null)}>Bir veli daha ekle</Dugme>
+        </div>
+      ) : (
+        <div className="form-kutu">
+          <Alan etiket="Ad soyad">
+            <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} placeholder="Örn. Ayşe Yılmaz" />
+          </Alan>
+          <Alan etiket="E-posta" ipucu="Veli bu adresle giriş yapacak">
+            <input type="email" value={eposta} onChange={(e) => setEposta(e.target.value)} placeholder="veli@eposta.com" />
+          </Alan>
+          <Alan etiket="Yakınlık">
+            <select value={iliski} onChange={(e) => setIliski(e.target.value)}>
+              {ILISKI.map(([k, ad]) => (
+                <option key={k} value={k}>{ad}</option>
+              ))}
+            </select>
+          </Alan>
+          <Uyari>{hata}</Uyari>
+          <Dugme onClick={ekle} bekliyor={bekliyor}>Hesabı oluştur</Dugme>
+        </div>
+      ))}
+
+      {!formAcik && <Uyari>{hata}</Uyari>}
+
+      {liste === null ? (
+        <Yukleniyor />
+      ) : liste.length === 0 ? (
+        <Bos
+          baslik="Bağlı veli yok"
+          aciklama="Veli eklerseniz haftalık özetleri onaylayarak paylaşabilirsiniz."
+        />
+      ) : (
+        <ul className="liste">
+          {liste.map((v) => (
+            <li key={v.veli_id} className="liste-satir">
+              <div>
+                <span className="liste-ad">{v.profiller?.ad_soyad ?? 'İsimsiz'}</span>
+                <span className="liste-alt">
+                  {ILISKI.find(([k]) => k === v.iliski)?.[1] ?? v.iliski}
+                </span>
+              </div>
+              <button className="metin-dugme" onClick={() => bagiKaldir(v.veli_id)}>Bağı kaldır</button>
             </li>
           ))}
         </ul>

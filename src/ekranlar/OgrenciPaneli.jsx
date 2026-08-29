@@ -6,6 +6,7 @@ import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
+import Rozetlerim from './Rozetlerim.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
@@ -112,6 +113,7 @@ export default function OgrenciPaneli({ profil }) {
           ['bugun', 'Bugün'],
           ['program', 'Program'],
           ['konular', 'Konularım'],
+          ['rozetler', 'Rozetlerim'],
           ['denemeler', 'Denemelerim'],
         ].map(([k, e]) => (
           <button
@@ -137,6 +139,8 @@ export default function OgrenciPaneli({ profil }) {
         </>
       ) : sekme === 'konular' ? (
         <KonuHaritasi profilId={kayit.id} />
+      ) : sekme === 'rozetler' ? (
+        <Rozetlerim ozet={ozet} />
       ) : (
         <Kart baslik="Denemelerim" altBaslik={`Son ${denemeler.length} kayıt`}>
           {denemeler.length === 0 ? (
