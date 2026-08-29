@@ -9,6 +9,7 @@ import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
+import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 
@@ -79,15 +80,23 @@ export default function App() {
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   const baglantilar = kocMu
-    ? [['/', 'Panel'], ['/konular', 'Konular'], ['/veli-ozetleri', 'Veli'], ['/mesajlar', 'Mesajlar']]
+    ? [
+        ['/', 'Panel'],
+        ['/ogrenciler', 'Öğrenciler'],
+        ['/konular', 'Konular'],
+        ['/veli-ozetleri', 'Veli'],
+        ['/mesajlar', 'Mesajlar'],
+      ]
     : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim'], ['/mesajlar', 'Mesajlar']]
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
     if (kocMu && yol === '/konular') return <KonuIsiHaritasi />
+    if (kocMu && yol === '/ogrenciler')
+      return <Ogrencilerim onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
-    if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/')} />
-    if (kocMu) return <KocPaneli profil={profil} onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
+    if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/ogrenciler')} />
+    if (kocMu) return <KocPaneli onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (profil.rol === 'veli') return <VeliPaneli />
     return <OgrenciPaneli profil={profil} />
   }
@@ -123,7 +132,10 @@ export default function App() {
 
       <nav className="alt-gezinme" aria-label="Ana gezinme">
         {baglantilar.map(([hedef, ad]) => {
-          const etkin = hedef === '/' ? yol === '/' || yol.startsWith('/ogrenci/') : yol === hedef
+          const etkin =
+            hedef === '/ogrenciler'
+              ? yol === '/ogrenciler' || yol.startsWith('/ogrenci/')
+              : yol === hedef
           return (
             <button
               key={hedef}

@@ -1324,3 +1324,8 @@ body[data-tema='panel'] {
 .isi-sayi { flex: 0 0 1.25rem; text-align: right; font-family: var(--mono); font-size: 0.8125rem; }
 .isi-detay { padding: 0 0 0.75rem; }
 .isi-kim { margin: 0 0 0.25rem; font-size: 0.875rem; }
+
+/* Beş sekmede etiketler sığsın */
+.alt-gezinme { padding-inline: 0.25rem; }
+.alt-bag { font-size: 0.75rem; padding: 0.875rem 0.25rem; }
+@media (min-width: 26rem) { .alt-bag { font-size: 0.8125rem; } }
