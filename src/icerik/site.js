@@ -66,10 +66,11 @@ export const site = {
     ],
   },
 
+  // emoji alanı isteğe bağlı: silersen o satırda emoji görünmez.
   sayilar: [
-    { sayi: '10', birim: 'yıl', not: 'Koçluk deneyimi' },
-    { sayi: '3.450', birim: 'öğrenci', not: 'Bugüne kadar birlikte çalışılan' },
-    { sayi: '1.498', birim: 'konu', not: 'Güncel müfredata göre takip edilen' },
+    { emoji: '🕙', sayi: '10', birim: 'yıl', not: 'Koçluk deneyimi' },
+    { emoji: '🎓', sayi: '3.450', birim: 'öğrenci', not: 'Bugüne kadar birlikte çalışılan' },
+    { emoji: '📚', sayi: '1.498', birim: 'konu', not: 'Güncel müfredata göre takip edilen' },
   ],
 
   // ⚠️ DEMO — grafiğin şeklini göstermek için. Gerçek veriyle değiştirin.
@@ -130,10 +131,10 @@ export const site = {
   kimler: {
     baslik: 'Kimler için',
     gruplar: [
-      { ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık, Sözel' },
-      { ad: '9–11. sınıf', aciklama: 'Okulla birlikte erken hazırlık' },
-      { ad: 'LGS', aciklama: '8. sınıf' },
-      { ad: 'Mezun', aciklama: 'İkinci kez girecekler' },
+      { emoji: '🎯', ad: 'YKS', aciklama: 'Sayısal, Eşit Ağırlık, Sözel' },
+      { emoji: '🏫', ad: '9–11. sınıf', aciklama: 'Okulla birlikte erken hazırlık' },
+      { emoji: '✏️', ad: 'LGS', aciklama: '8. sınıf' },
+      { emoji: '🔁', ad: 'Mezun', aciklama: 'İkinci kez girecekler' },
     ],
   },
 

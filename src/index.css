@@ -237,8 +237,10 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   --yuzey:   #131a2c;   /* kart ve görsel yüzeyi, zeminden bir ton açık */
   --kare:    #232c44;   /* ayırıcı çizgi — görülmesin, hissedilsin */
   --murekkep:#eef2fb;   /* ana metin */
-  --kirmizi: #5b8cff;   /* aksan — eskiden kırmızıydı, artık mavi */
-  --fosfor:  #24386e;   /* vurgu bandı: mat, doygun olmayan mavi */
+  --kirmizi: #5b8cff;   /* soğuk aksan: çizgi, bağlantı, yapı */
+  --alev:    #ff7a45;   /* sıcak aksan: turuncu-kırmızı */
+  --amber:   #ffb454;   /* sıcak aksan: turuncu-sarı */
+  --fosfor:  #ffc94a;   /* fosforlu kalem — sarı, koyu zeminin üstünde */
   --kursun:  #a9b3c9;   /* gövde metni */
   --silik:   #6d7891;
 
@@ -251,8 +253,11 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   background-color: var(--defter);
   /* Tek bir yumuşak ışık. Parlaklık değil, derinlik için. */
   background-image:
+    radial-gradient(85% 50% at 88% 4%, rgb(255 122 69 / 0.15) 0%, transparent 58%),
+    radial-gradient(70% 45% at 6% 62%, rgb(255 180 84 / 0.07) 0%, transparent 60%),
     radial-gradient(120% 70% at 50% -10%, #16203a 0%, transparent 60%);
   background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--murekkep);
   font-family: var(--gov);
   font-size: 16px;
@@ -287,7 +292,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   background: transparent; color: var(--murekkep);
   font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer;
 }
-.sayfa-kagit .kucuk-dugme:hover { border-color: var(--kirmizi); color: var(--kirmizi); }
+.sayfa-kagit .kucuk-dugme:hover { border-color: var(--amber); color: var(--amber); }
 
 /* ---------- Kahraman ---------- */
 
@@ -295,7 +300,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 .sayfa-kagit .eyebrow {
   font-family: var(--mon); font-size: 0.6875rem; letter-spacing: 0.16em;
-  text-transform: uppercase; color: var(--kirmizi); margin: 0 0 1.25rem;
+  text-transform: uppercase; color: var(--alev); margin: 0 0 1.25rem;
 }
 
 .sayfa-kagit h1 {
@@ -305,9 +310,9 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 }
 
 .fosfor {
-  background: linear-gradient(transparent 12%, var(--fosfor) 12%, var(--fosfor) 86%, transparent 86%);
-  box-shadow: inset 0 -1.5px 0 var(--kirmizi);
-  color: inherit; padding-inline: 0.12em;
+  background: linear-gradient(transparent 10%, var(--fosfor) 10%, var(--amber) 88%, transparent 88%);
+  box-shadow: inset 0 -3px 0 var(--alev);
+  color: #14100a; padding-inline: 0.14em;
 }
 
 .sayfa-kagit .kahraman-alt {
@@ -320,11 +325,11 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 }
 .sayfa-kagit .ana-dugme {
   display: inline-block; padding: 0.75rem 1.5rem;
-  background: var(--murekkep); color: var(--defter);
+  background: var(--amber); color: #17110a;
   border-radius: 2px; text-decoration: none;
-  font-weight: 600; font-size: 0.9375rem;
+  font-weight: 700; font-size: 0.9375rem;
 }
-.sayfa-kagit .ana-dugme:hover { background: var(--kirmizi); }
+.sayfa-kagit .ana-dugme:hover { background: var(--alev); color: #170d07; }
 .sayfa-kagit .metin-bag {
   background: none; border: 0; padding: 0; cursor: pointer;
   font: inherit; font-size: 0.9375rem; color: var(--kursun);
@@ -351,12 +356,12 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 @keyframes ciz { to { stroke-dashoffset: 0; } }
 
 .net-nokta { fill: var(--defter); stroke: var(--murekkep); stroke-width: 1.75; opacity: 0; animation: belir 320ms ease forwards; }
-.net-nokta--son { fill: var(--kirmizi); stroke: var(--kirmizi); }
+.net-nokta--son { fill: var(--alev); stroke: var(--alev); }
 @keyframes belir { to { opacity: 1; } }
 
 .net-son-deger {
   font-family: var(--def); font-size: 15px; font-weight: 700;
-  fill: var(--kirmizi); text-anchor: middle;
+  fill: var(--alev); text-anchor: middle;
 }
 
 .net-not {
@@ -373,8 +378,9 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   padding-block: 1.75rem;
   border-block: 1px solid var(--kare);
 }
+.serit-emoji { display: block; font-size: 1.25rem; line-height: 1; margin-bottom: 0.5rem; }
 .serit-oge strong {
-  display: block; font-family: var(--def); font-weight: 800;
+  display: block; color: var(--amber); font-family: var(--def); font-weight: 800;
   font-size: clamp(1.75rem, 4vw, 2.375rem); line-height: 1; letter-spacing: -0.03em;
 }
 .serit-birim { display: inline-block; font-size: 0.8125rem; color: var(--kursun); margin-top: 0.3rem; }
@@ -383,6 +389,11 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 /* ---------- Ortak bölüm ---------- */
 
 .sayfa-kagit .bolum { padding-block: clamp(2.5rem, 7vw, 4rem); }
+.sayfa-kagit .bolum h2::before {
+  content: ''; display: block; width: 2.25rem; height: 3px;
+  background: linear-gradient(90deg, var(--alev), var(--amber));
+  border-radius: 2px; margin-bottom: 0.875rem;
+}
 .sayfa-kagit .bolum h2 {
   font-family: var(--def); font-weight: 700;
   font-size: clamp(1.375rem, 3.5vw, 1.875rem);
@@ -477,10 +488,10 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .adimlar li { display: grid; grid-template-columns: 2.25rem 1fr; gap: 1.125rem; align-items: start; }
 .adim-no {
   width: 2.25rem; height: 2.25rem; border-radius: 50%;
-  border: 1.5px solid var(--kare);
+  border: 1.5px solid var(--alev);
   display: grid; place-items: center;
   font-family: var(--mon); font-size: 0.8125rem; font-weight: 700;
-  color: var(--kirmizi);
+  color: var(--amber);
 }
 .adimlar h3 { font-family: var(--def); font-size: 1.0625rem; font-weight: 700; margin: 0.2rem 0 0.35rem; }
 .adimlar p { margin: 0; font-size: 0.9375rem; line-height: 1.62; color: var(--kursun); max-width: 54ch; }
@@ -495,12 +506,12 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 }
 .takip li:last-child { border-bottom: 0; }
 .tik {
-  width: 1rem; height: 1rem; border: 1.5px solid var(--kirmizi); border-radius: 2px;
+  width: 1rem; height: 1rem; border: 1.5px solid var(--amber); border-radius: 2px;
   position: relative; align-self: center;
 }
 .tik::after {
   content: ''; position: absolute; inset: 0;
-  border-right: 2px solid var(--kirmizi); border-bottom: 2px solid var(--kirmizi);
+  border-right: 2px solid var(--amber); border-bottom: 2px solid var(--amber);
   transform: rotate(40deg) translate(0.1rem, -0.1rem) scale(0.55);
   transform-origin: center;
 }
@@ -515,13 +526,14 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 .gruplar { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1px; background: var(--kare); border: 1px solid var(--kare); }
 .grup { background: var(--yuzey); padding: 1.125rem 1.25rem; }
+.grup-emoji { display: block; font-size: 1.125rem; line-height: 1; margin-bottom: 0.5rem; }
 .grup-ad { display: block; font-family: var(--def); font-weight: 700; font-size: 1.0625rem; }
 .grup-alt { display: block; font-size: 0.8125rem; color: var(--kursun); margin-top: 0.3rem; line-height: 1.45; }
 
 /* ---------- Yorumlar ---------- */
 
 .yorumlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem; }
-.yorum { margin: 0; padding: 1.25rem 1.375rem; background: var(--yuzey); border: 1px solid var(--kare); border-left: 3px solid var(--kirmizi); border-radius: 2px; }
+.yorum { margin: 0; padding: 1.25rem 1.375rem; background: var(--yuzey); border: 1px solid var(--kare); border-left: 3px solid var(--amber); border-radius: 2px; }
 .yorum p { margin: 0 0 1rem; font-size: 0.9375rem; line-height: 1.65; }
 .yorum footer { display: flex; flex-direction: column; gap: 0.15rem; }
 .yorum-kisi { font-weight: 600; font-size: 0.875rem; }
@@ -538,7 +550,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 }
 .sss-isaret { position: relative; width: 0.875rem; height: 0.875rem; flex-shrink: 0; }
 .sss-isaret::before, .sss-isaret::after {
-  content: ''; position: absolute; background: var(--kirmizi);
+  content: ''; position: absolute; background: var(--alev);
   transition: transform 180ms ease;
 }
 .sss-isaret::before { inset: 45% 0 45% 0; }
@@ -552,8 +564,8 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .iletisim { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.875rem; }
 .iletisim li { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
 .iletisim-ad { font-family: var(--mon); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silik); min-width: 5.5rem; }
-.iletisim a { color: var(--murekkep); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--kirmizi); text-decoration-thickness: 2px; }
-.iletisim a:hover { text-decoration-color: var(--murekkep); }
+.iletisim a { color: var(--murekkep); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--amber); text-decoration-thickness: 2px; }
+.iletisim a:hover { text-decoration-color: var(--alev); }
 
 .sayfa-kagit .alt {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
@@ -561,7 +573,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   font-size: 0.8125rem; color: var(--silik);
 }
 
-.sayfa-kagit :focus-visible { outline: 2px solid var(--kirmizi); outline-offset: 2px; }
+.sayfa-kagit :focus-visible { outline: 2px solid var(--amber); outline-offset: 2px; }
 
 @media (prefers-reduced-motion: reduce) {
   .net-cizgi--ciz { animation: none; stroke-dashoffset: 0; }

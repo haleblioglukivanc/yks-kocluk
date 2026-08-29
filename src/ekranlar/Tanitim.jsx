@@ -150,6 +150,7 @@ export default function Tanitim({ onGiris }) {
       <section className="serit">
         {sayilar.map((s) => (
           <div key={s.not} className="serit-oge">
+            {s.emoji && <span className="serit-emoji" aria-hidden="true">{s.emoji}</span>}
             <strong>{s.sayi}</strong>
             <span className="serit-birim">{s.birim}</span>
             <span className="serit-not">{s.not}</span>
@@ -231,6 +232,7 @@ export default function Tanitim({ onGiris }) {
         <div className="gruplar">
           {kimler.gruplar.map((g) => (
             <div key={g.ad} className="grup">
+              {g.emoji && <span className="grup-emoji" aria-hidden="true">{g.emoji}</span>}
               <span className="grup-ad">{g.ad}</span>
               <span className="grup-alt">{g.aciklama}</span>
             </div>
