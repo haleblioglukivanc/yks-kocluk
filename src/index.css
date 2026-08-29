@@ -1,22 +1,22 @@
 :root {
-  /* Kareli defter dili. Tanıtım sayfasında zaten kullanılıyordu,
-     artık panel de aynı dili konuşuyor. */
-  --kagit:    #fbfaf7;   /* kâğıt */
-  --kare:     #eceff2;   /* kare çizgisi — fark edilmeden hissedilmeli */
-  --cizgi-kart: #e4e8ee; /* kart kenarı, kareden biraz koyu */
-  --yuzey:    #ffffff;
-  --murekkep: #1b2a4a;   /* tükenmez kalem lacivert */
-  --grafit:   #5c6373;   /* kurşun kalem grisi */
-  --soluk:    #8d94a1;
-  --dolgu:    #2a4a7f;
-  --isaret:   #0f7a58;
-  --uyari:    #c8322b;   /* öğretmen kalemi */
-  --fosfor:   #ffe26b;   /* fosforlu kalem */
-  --cizgi:    #e4e8ee;
+  /* Tüm değerler tek kaynaktan gelir: src/tema.css
+     Renk değiştirmek için oraya gidin. */
+  --kagit:    var(--marka-zemin);
+  --kare:     var(--marka-cizgi);
+  --cizgi-kart: var(--marka-cizgi);
+  --yuzey:    var(--marka-yuzey);
+  --murekkep: var(--marka-metin);
+  --grafit:   var(--marka-metin-2);
+  --soluk:    var(--marka-metin-3);
+  --dolgu:    var(--marka-mavi);
+  --isaret:   var(--marka-basari);
+  --uyari:    var(--marka-hata);
+  --fosfor:   var(--marka-fosfor);
+  --cizgi:    var(--marka-cizgi);
 
-  --display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --govde: 'Karla', system-ui, sans-serif;
-  --mono: 'JetBrains Mono', ui-monospace, monospace;
+  --display: var(--marka-baslik);
+  --govde: var(--marka-govde);
+  --mono: var(--marka-mono);
 
   --r: 12px;
 }
@@ -26,11 +26,6 @@ html, body { margin: 0; padding: 0; }
 
 body {
   background-color: var(--kagit);
-  /* Kareli defter dokusu. Fark edilmeden hissedilecek kadar hafif. */
-  background-image:
-    linear-gradient(var(--kare) 1px, transparent 1px),
-    linear-gradient(90deg, var(--kare) 1px, transparent 1px);
-  background-size: 26px 26px;
   color: var(--murekkep);
   font-family: var(--govde);
   font-size: 15px;
@@ -100,7 +95,7 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
   transition: opacity 120ms ease;
 }
 .dugme:disabled { opacity: 0.55; cursor: default; }
-.dugme--birincil { background: var(--murekkep); color: var(--kagit); }
+.dugme--birincil { background: var(--marka-gecis); color: #fff; }
 .dugme--ikincil { background: var(--kagit); color: var(--murekkep); border: 1px solid var(--cizgi); }
 
 .metin-dugme {
@@ -229,13 +224,13 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 /* Giriş ekranı, tanıtım sayfasıyla aynı açık dilde */
 .giris-kagit {
-  --kagit:    #ffffff;
-  --yuzey:    #ffffff;
-  --cizgi:    #e5e9f2;
-  --murekkep: #111a2e;
-  --grafit:   #4b5670;
-  --soluk:    #7d879e;
-  --dolgu:    #ec5f2b;
+  --kagit:    var(--marka-yuzey);
+  --yuzey:    var(--marka-yuzey);
+  --cizgi:    var(--marka-cizgi);
+  --murekkep: var(--marka-metin);
+  --grafit:   var(--marka-metin-2);
+  --soluk:    var(--marka-metin-3);
+  --dolgu:    var(--marka-alev);
 
   background-color: var(--kagit);
   background-image:
@@ -260,7 +255,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;
 }
 .giris-kagit .dugme--birincil {
-  background: linear-gradient(135deg, #f0a020, #ec5f2b);
+  background: var(--marka-gecis);
   color: #fff; border-radius: 10px;
 }
 .giris-kagit .dugme--birincil:hover { filter: brightness(1.06); }
@@ -499,7 +494,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   gap: 10px;
   background: var(--yuzey, #fff);
   border: 1px solid var(--cizgi, #e3e8f0);
-  border-left: 4px solid #ffd84d;
+  border-left: 4px solid var(--marka-fosfor);
   border-radius: 0 12px 12px 0;
   padding: 12px 14px;
   margin-bottom: 16px;
@@ -591,7 +586,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   background: none; border: 0; font: inherit; font-size: 14px;
   color: inherit; opacity: 0.6; cursor: pointer;
 }
-.alt-bag--etkin { opacity: 1; font-weight: 600; box-shadow: inset 0 2px 0 #ffd84d; }
+.alt-bag--etkin { opacity: 1; font-weight: 600; box-shadow: inset 0 2px 0 var(--marka-koyu-amber); }
 
 @media (prefers-reduced-motion: reduce) {
   .kalem-baloncuk { animation: none; opacity: 0.8; }
@@ -692,17 +687,18 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
    ============================================================ */
 
 .uygulama {
-  --kagit:    #17181b;
-  --yuzey:    #1e1f23;
-  --yuzey-2:  #26282d;
-  --murekkep: #ecedef;
-  --grafit:   #a0a4ad;
-  --soluk:    #7c8089;
-  --cizgi:    #2b2d33;
-  --dolgu:    #4a90e2;
+  /* Panelin gece paleti de markadan gelir (tema.css). */
+  --kagit:    var(--marka-koyu-zemin);
+  --yuzey:    var(--marka-koyu-yuzey);
+  --yuzey-2:  var(--marka-koyu-yuzey-2);
+  --murekkep: var(--marka-koyu-metin);
+  --grafit:   var(--marka-koyu-metin-2);
+  --soluk:    var(--marka-koyu-metin-3);
+  --cizgi:    var(--marka-koyu-cizgi);
+  --dolgu:    var(--marka-koyu-mavi);
   --isaret:   #5fbf7f;
-  --uyari:    #e8705f;
-  --fosfor:   #ffd84d;
+  --uyari:    #ff8a72;
+  --fosfor:   var(--marka-koyu-amber);
 
   background: var(--kagit);
   color: var(--murekkep);
@@ -714,7 +710,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .uygulama .ust-bar { border-bottom: 1px solid var(--cizgi); }
 .uygulama .kart { background: var(--yuzey); border-color: var(--cizgi); }
 .uygulama .dugme--ikincil { background: var(--yuzey-2); color: var(--murekkep); border-color: var(--cizgi); }
-.uygulama .dugme--birincil { background: var(--dolgu); color: #0d1117; }
+.uygulama .dugme--birincil { background: var(--marka-koyu-gecis); color: #1a0f06; }
 .uygulama .metin-dugme { color: var(--grafit); }
 .uygulama input,
 .uygulama select,
@@ -900,9 +896,9 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 /* Panel açıkken gövde de koyu; yatay taşmada beyaz şerit kalmasın */
 body[data-tema='panel'] {
-  background-color: #17181b;
+  background-color: var(--marka-koyu-zemin);
   background-image: none;
-  color: #ecedef;
+  color: var(--marka-koyu-metin);
 }
 
 /* Izgara kendi içinde kaysın, sayfayı yatayda taşırmasın */

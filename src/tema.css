@@ -1,0 +1,53 @@
+/* ═══════════════════════════════════════════════════════════════
+   MARKA — TEK KAYNAK
+   Renkleri ve yazı tiplerini yalnızca burada değiştirin.
+   Tanıtım sayfası da paneller de bu değerleri okur;
+   buradaki bir değişiklik her yere birden yansır.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* — sıcak aksanlar (düğmeler, vurgular) — */
+  --marka-amber:   #f0a020;
+  --marka-alev:    #ec5f2b;
+
+  /* — soğuk aksan (bağlantı, odak, bilgi) — */
+  --marka-mavi:    #2f5fe0;
+
+  /* — metin — */
+  --marka-metin:   #111a2e;
+  --marka-metin-2: #4b5670;
+  --marka-metin-3: #7d879e;
+
+  /* — zeminler — */
+  --marka-zemin:   #f5f7fb;   /* uygulama arka planı */
+  --marka-yuzey:   #ffffff;   /* kartlar */
+  --marka-cizgi:   #e5e9f2;   /* ince kenarlar */
+  --marka-cizgi-2: #d3daea;   /* belirgin kenarlar */
+  --marka-koyu:    #0e1626;   /* koyu bantlar, footer */
+
+  /* — anlamı sabit renkler (markadan bağımsız) — */
+  --marka-basari:  #0f7a58;
+  --marka-hata:    #c8322b;
+  --marka-fosfor:  #ffc94a;
+
+  /* — yazı tipleri — */
+  --marka-baslik: 'Bricolage Grotesque', 'Archivo', system-ui, sans-serif;
+  --marka-govde:  'Karla', system-ui, sans-serif;
+  --marka-mono:   'JetBrains Mono', ui-monospace, monospace;
+
+  /* — koyu yüzeyler (panel, koyu bantlar) — */
+  --marka-koyu-zemin:   #0e1626;
+  --marka-koyu-yuzey:   #141d31;
+  --marka-koyu-yuzey-2: #1b2540;
+  --marka-koyu-cizgi:   #27324d;
+  --marka-koyu-metin:   #edf1fa;
+  --marka-koyu-metin-2: #a7b1c7;
+  --marka-koyu-metin-3: #75809a;
+  --marka-koyu-amber:   #ffb454;
+  --marka-koyu-alev:    #ff7a45;
+  --marka-koyu-mavi:    #6d9aff;
+
+  /* — sıkça kullanılan türevler — */
+  --marka-gecis: linear-gradient(135deg, var(--marka-amber), var(--marka-alev));
+  --marka-koyu-gecis: linear-gradient(135deg, var(--marka-koyu-amber), var(--marka-koyu-alev));
+}

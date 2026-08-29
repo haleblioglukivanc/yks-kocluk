@@ -7,31 +7,28 @@
    ═══════════════════════════════════════════════════════════════ */
 
 .tanitim {
-  /* — zeminler — */
-  --beyaz:    #ffffff;
-  --gri:      #f5f7fb;
+  /* Değerler tek kaynaktan: src/tema.css */
+  --beyaz:    var(--marka-yuzey);
+  --gri:      var(--marka-zemin);
   --sicak:    #fff8f1;
-  --koyu:     #0e1626;
-  --koyu2:    #182238;
+  --koyu:     var(--marka-koyu-zemin);
+  --koyu2:    var(--marka-koyu-yuzey-2);
 
-  /* — çizgi ve yüzey — */
-  --kenar:    #e5e9f2;
-  --kenar2:   #d3daea;
-  --yuzey:    #ffffff;
+  --kenar:    var(--marka-cizgi);
+  --kenar2:   var(--marka-cizgi-2);
+  --yuzey:    var(--marka-yuzey);
 
-  /* — metin — */
-  --metin:    #111a2e;
-  --metin2:   #4b5670;
-  --metin3:   #7d879e;
+  --metin:    var(--marka-metin);
+  --metin2:   var(--marka-metin-2);
+  --metin3:   var(--marka-metin-3);
 
-  /* — aksanlar — */
-  --mavi:     #2f5fe0;
-  --amber:    #f0a020;
-  --alev:     #ec5f2b;
+  --mavi:     var(--marka-mavi);
+  --amber:    var(--marka-amber);
+  --alev:     var(--marka-alev);
 
-  --def: 'Bricolage Grotesque', 'Archivo', system-ui, sans-serif;
-  --gov: 'Karla', system-ui, sans-serif;
-  --mon: 'JetBrains Mono', ui-monospace, monospace;
+  --def: var(--marka-baslik);
+  --gov: var(--marka-govde);
+  --mon: var(--marka-mono);
 
   --en: 72rem;
   --pad: clamp(1.25rem, 5vw, 3rem);
@@ -58,16 +55,16 @@ html:has(.tanitim) { scroll-behavior: smooth; }
 .t-bant--yesil { background: linear-gradient(180deg, #f0faf5, #e2f3ea); }
 .t-bant--koyu {
   background: var(--koyu);
-  color: #eef2fb;
-  --metin: #eef2fb;
-  --metin2: #a7b1c7;
-  --metin3: #75809a;
-  --kenar: #26314b;
+  color: var(--marka-koyu-metin);
+  --metin: var(--marka-koyu-metin);
+  --metin2: var(--marka-koyu-metin-2);
+  --metin3: var(--marka-koyu-metin-3);
+  --kenar: var(--marka-koyu-cizgi);
   --kenar2: #33405f;
-  --yuzey: #131c2f;
-  --amber: #ffb454;
-  --alev: #ff7a45;
-  --mavi: #6d9aff;
+  --yuzey: var(--marka-koyu-yuzey);
+  --amber: var(--marka-koyu-amber);
+  --alev: var(--marka-koyu-alev);
+  --mavi: var(--marka-koyu-mavi);
 }
 .t-bant--dar { padding-block: clamp(2rem, 5vw, 3rem); }
 
