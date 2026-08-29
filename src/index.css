@@ -1334,10 +1334,16 @@ body[data-tema='panel'] {
 .not-satir { align-items: flex-start; }
 .not-metin { display: block; font-size: 0.9375rem; line-height: 1.5; white-space: pre-wrap; }
 
-/* Beş sekme dar ekranda sığmıyor: yatayda kaysın */
-.sekmeler--genis { overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.sekmeler--genis::-webkit-scrollbar { display: none; }
-.sekmeler--genis .sekme { flex: 0 0 auto; padding-inline: 0.75rem; white-space: nowrap; }
+/* Beş sekme dar ekrana tek satırda sığmıyor. Yatay kaydırma denendi ama
+   kaydırılabildiği anlaşılmıyor, sağdaki sekmeler görünmez kalıyordu.
+   Alt satıra sarmak hepsini görünür tutuyor. */
+.sekmeler--genis { flex-wrap: wrap; }
+.sekmeler--genis .sekme {
+  flex: 1 1 auto;
+  min-width: 5.5rem;
+  padding-inline: 0.5rem;
+  white-space: nowrap;
+}
 
 /* ---------- Seri ve rozetler ---------- */
 .seri-kutu { display: flex; gap: 2rem; }
