@@ -1107,3 +1107,83 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 }
 .ilerleme-dolu { height: 100%; background: var(--isaret); border-radius: 999px; transition: width 240ms ease-out; }
 @media (prefers-reduced-motion: reduce) { .ilerleme-dolu { transition: none; } }
+
+/* ============================================================
+   Kâmil — sağ alt köşede duran karakter
+   ============================================================ */
+
+.kalem-kose {
+  position: fixed;
+  right: 0.75rem;
+  bottom: calc(3.75rem + env(safe-area-inset-bottom));
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  pointer-events: none;
+}
+.kalem-kose > * { pointer-events: auto; }
+
+.kalem-tetik {
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.35));
+  animation: kalem-salinim 5.5s ease-in-out infinite;
+}
+.kalem-tetik:active { transform: scale(0.94); }
+
+@keyframes kalem-salinim {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50%      { transform: translateY(-5px) rotate(-2deg); }
+}
+
+.kalem-kabarcik {
+  position: relative;
+  max-width: min(17rem, 72vw);
+  background: var(--yuzey, #1e1f23);
+  border: 1px solid var(--cizgi, #2b2d33);
+  border-radius: 14px 14px 4px 14px;
+  padding: 0.75rem 0.875rem;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 0.3);
+  animation: kalem-belir 220ms ease-out;
+}
+@keyframes kalem-belir {
+  from { opacity: 0; transform: translateY(6px) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+.kalem-kabarcik-ad {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 0.75rem;
+  color: #6aa6f5;
+}
+.kalem-kabarcik-metin {
+  margin: 0.25rem 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  color: var(--murekkep);
+}
+.kalem-kabarcik-kapat {
+  margin-top: 0.625rem;
+  background: none;
+  border: 1px solid var(--cizgi);
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--grafit);
+  cursor: pointer;
+}
+
+/* Alt gezinme çubuğunun üstüne binmesin diye sayfa altına pay */
+.uygulama > main { padding-bottom: 4.5rem; }
+
+@media (prefers-reduced-motion: reduce) {
+  .kalem-tetik { animation: none; }
+  .kalem-kabarcik { animation: none; }
+}

@@ -6,8 +6,6 @@ import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
-import { KalemBalonu } from '../bilesenler/Kalem.jsx'
-import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
@@ -17,7 +15,6 @@ export default function OgrenciPaneli({ profil }) {
   const [netDurumu, setNetDurumu] = useState(null)
   const [sekme, setSekme] = useState('bugun')
   const [hata, setHata] = useState('')
-  const [kalemOlaylari, setKalemOlaylari] = useState([])
   const [ozet, setOzet] = useState(null)
   const [tazele, setTazele] = useState(0)
   const yenile = () => setTazele((n) => n + 1)
@@ -73,16 +70,6 @@ export default function OgrenciPaneli({ profil }) {
 
   return (
     <>
-      {kalemOlaylari.map((olay) => (
-        <KalemBalonu
-          key={olay.kod}
-          olay={{ ...olay, yipranma: ozet?.yipranma ?? 0 }}
-          onKapat={(o) => {
-            kalemiKapat(o)
-            setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))
-          }}
-        />
-      ))}
 
       <Kart>
         <div className="kimlik">

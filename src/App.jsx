@@ -9,6 +9,7 @@ import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
+import KalemKosede from './bilesenler/KalemKosede.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
@@ -121,6 +122,8 @@ export default function App() {
           )
         })}
       </nav>
+
+      <KalemKosede profil={profil} />
     </div>
   )
 }
