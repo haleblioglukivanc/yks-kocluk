@@ -1666,3 +1666,31 @@ body[data-tema='panel'] {
 .blok-eylem { display: flex; align-items: flex-end; gap: 0.75rem; margin-top: 0.875rem; }
 .blok-eylem .alan { flex: 0 0 7rem; }
 .blok-eylem .dugme { flex: 1; }
+
+/* ---------- Rutinler ---------- */
+.prg-serbest ul { display: grid; gap: 0.625rem; }
+.rutin {
+  background: var(--yuzey-2, #f1f6fd);
+  border: 1px solid var(--cizgi);
+  border-radius: 10px;
+  padding: 0.625rem 0.75rem;
+}
+.rutin-basi {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 0.75rem; margin-bottom: 0.5rem;
+}
+.rutin-ad { font-size: 0.9375rem; font-weight: 600; }
+.rutin-sayi { font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); }
+.rutin-gunler { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.rutin-gun {
+  min-width: 2.6rem; min-height: 36px; padding: 0.35rem 0.4rem;
+  border: 1px dashed var(--cizgi); border-radius: 8px;
+  background: transparent; color: var(--grafit);
+  font: inherit; font-size: 0.6875rem; cursor: pointer;
+}
+.rutin-gun--bitti {
+  background: #d9f0e5; color: #10603f; border: 1px solid #a9dcc5;
+}
+
+/* Rutinler başlığı bölüm başlığı gibi dursun */
+.prg-serbest h4 { font-size: 0.9375rem; color: #b8431a; margin-bottom: 0.625rem; }

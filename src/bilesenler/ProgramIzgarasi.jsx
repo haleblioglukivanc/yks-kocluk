@@ -74,6 +74,20 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
   })
   const gunBoyu = (gorevler ?? []).filter((g) => !g.periyot)
 
+  /* Rutinler isme göre gruplanıyor. "Paragraf" her gün tekrarlanıyorsa
+     yedi ayrı satır yerine tek satır ve yedi gün rozeti görünür. */
+  const rutinHarita = new Map()
+  for (const g of gunBoyu) {
+    const ad = g.dersler?.ad ?? g.baslik
+    if (!rutinHarita.has(ad)) rutinHarita.set(ad, [])
+    rutinHarita.get(ad).push(g)
+  }
+  const rutinler = [...rutinHarita.entries()].map(([ad, liste]) => ({
+    ad,
+    gorevler: liste.slice().sort((a, b) => a.tarih.localeCompare(b.tarih)),
+    biten: liste.filter((g) => g.durum === 'tamamlandi').length,
+  }))
+
   const bloklar = (gorevler ?? []).filter((g) => g.periyot)
   const biten = bloklar.filter((g) => g.durum === 'tamamlandi').length
   const oran = bloklar.length ? Math.round((biten / bloklar.length) * 100) : 0
@@ -195,25 +209,29 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
 
           {gunBoyu.length > 0 && (
             <div className="prg-serbest">
-              <h4>Saate bağlı olmayan görevler</h4>
+              <h4>Rutinler</h4>
               <ul>
-                {gunBoyu.map((g) => (
-                  <li key={g.id}>
-                    <button
-                      className={`serbest${g.durum === 'tamamlandi' ? ' serbest--bitti' : ''}`}
-                      onClick={() => {
-                        if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
-                        else setSecilen(g)
-                      }}
-                    >
-                      <span className="serbest-gun">
-                        {new Date(g.tarih).toLocaleDateString('tr-TR', { weekday: 'short' })}
-                      </span>
-                      <span className="serbest-ad">{g.baslik}</span>
-                      {g.hedef_adet && (
-                        <span className="serbest-adet">{g.yapilan_adet}/{g.hedef_adet}</span>
-                      )}
-                    </button>
+                {rutinler.map((r) => (
+                  <li key={r.ad} className="rutin">
+                    <div className="rutin-basi">
+                      <span className="rutin-ad">{r.ad}</span>
+                      <span className="rutin-sayi">{r.biten}/{r.gorevler.length}</span>
+                    </div>
+                    <div className="rutin-gunler">
+                      {r.gorevler.map((g) => (
+                        <button
+                          key={g.id}
+                          className={`rutin-gun${g.durum === 'tamamlandi' ? ' rutin-gun--bitti' : ''}`}
+                          title={g.baslik}
+                          onClick={() => {
+                            if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
+                            else setSecilen(g)
+                          }}
+                        >
+                          {new Date(g.tarih).toLocaleDateString('tr-TR', { weekday: 'short' })}
+                        </button>
+                      ))}
+                    </div>
                   </li>
                 ))}
               </ul>
