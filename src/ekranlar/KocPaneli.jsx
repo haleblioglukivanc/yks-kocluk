@@ -43,7 +43,7 @@ function NetGrafigi({ veri }) {
   const alan = `${cizgi} L${x(veri.length - 1)} ${Y} L${x(0)} ${Y} Z`
   const son = Number(veri[veri.length - 1].ort)
   // Yükselen eğri mavi, düşen eğri turuncu: renk yönü de anlatsın
-  const renk = son >= Number(veri[0].ort) ? '#4c8dff' : '#f2764b'
+  const renk = son >= Number(veri[0].ort) ? '#1f63c4' : '#e2571f'
 
   return (
     <svg
@@ -62,7 +62,7 @@ function NetGrafigi({ veri }) {
       <path d={cizgi} fill="none" stroke={renk} strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={x(veri.length - 1)} cy={y(son)} r="4.5"
-              fill={renk} stroke="#1e1f23" strokeWidth="2.5" />
+              fill={renk} stroke="#ffffff" strokeWidth="2.5" />
     </svg>
   )
 }

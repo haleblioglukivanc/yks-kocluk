@@ -126,8 +126,8 @@ export default function CalismaSayaci({ ogrenciId, onKaydedildi }) {
       <div className='sayac-halka'>
         <svg viewBox='0 0 120 120' width='150' height='150' role='img'
              aria-label={`Kalan süre ${bicim(kalan)}`}>
-          <circle cx='60' cy='60' r='52' fill='none' stroke='#E3E8F0' strokeWidth='8' />
-          <circle cx='60' cy='60' r='52' fill='none' stroke='#FFD84D' strokeWidth='8'
+          <circle cx='60' cy='60' r='52' fill='none' stroke='#e6eef8' strokeWidth='8' />
+          <circle cx='60' cy='60' r='52' fill='none' stroke='#e2571f' strokeWidth='8'
                   strokeLinecap='round' strokeDasharray={C}
                   strokeDashoffset={C * (1 - oran)} transform='rotate(-90 60 60)' />
           <text x='60' y='67' textAnchor='middle' fontSize='23' fill='currentColor'>
