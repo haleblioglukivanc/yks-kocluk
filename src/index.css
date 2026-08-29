@@ -1718,3 +1718,11 @@ body[data-tema='panel'] {
   border: 1px solid var(--serin-kenar, #a9c7f0);
   color: #17539f; font-weight: 600;
 }
+
+/* Zemin mat: radyal parlamalar kaldırıldı, mavi bir tık doygunluğu
+   düşürüldü. Işık huzmesi ekranda parlıyordu, düz renk daha sakin. */
+body[data-tema='panel'] {
+  background-color: #dbe5f0;
+  background-image: none;
+}
+.uygulama { --kagit: #dbe5f0; }
