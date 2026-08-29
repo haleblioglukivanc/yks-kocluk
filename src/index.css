@@ -2,7 +2,8 @@
   /* Kareli defter dili. Tanıtım sayfasında zaten kullanılıyordu,
      artık panel de aynı dili konuşuyor. */
   --kagit:    #fbfaf7;   /* kâğıt */
-  --kare:     #dfe6ea;   /* kare çizgisi */
+  --kare:     #eceff2;   /* kare çizgisi — fark edilmeden hissedilmeli */
+  --cizgi-kart: #e4e8ee; /* kart kenarı, kareden biraz koyu */
   --yuzey:    #ffffff;
   --murekkep: #1b2a4a;   /* tükenmez kalem lacivert */
   --grafit:   #5c6373;   /* kurşun kalem grisi */
@@ -11,7 +12,7 @@
   --isaret:   #0f7a58;
   --uyari:    #c8322b;   /* öğretmen kalemi */
   --fosfor:   #ffe26b;   /* fosforlu kalem */
-  --cizgi:    #dfe6ea;
+  --cizgi:    #e4e8ee;
 
   --display: 'Bricolage Grotesque', system-ui, sans-serif;
   --govde: 'Karla', system-ui, sans-serif;
@@ -114,7 +115,14 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
 
 /* ---------- Uygulama kabuğu ---------- */
 
-.uygulama { min-height: 100dvh; }
+.uygulama {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+/* İçerik kısa olduğunda gezinme çubuğu sayfanın ortasında asılı kalıyordu.
+   main'i esnetip çubuğu ekranın altına itiyoruz. */
+.uygulama > main { flex: 1; }
 
 .ust-bar {
   display: flex; align-items: center; justify-content: space-between;
@@ -1005,3 +1013,6 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   color: var(--soluk);
   margin-top: 0.15rem;
 }
+
+/* Kareli doku yalnızca uygulama gövdesinde; başlık ve gezinme düz kâğıt */
+.ust-bar, .alt-gezinme { background: var(--yuzey); }
