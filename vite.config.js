@@ -2,7 +2,12 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+// GitHub Pages proje sitesi alt dizinde yayinlanir, Cloudflare kokte.
+// TABAN ortam degiskeni bos birakilirsa kok kabul edilir.
+const taban = process.env.TABAN || '/'
+
 export default defineConfig({
+  base: taban,
   plugins: [
     react(),
     VitePWA({
@@ -15,17 +20,17 @@ export default defineConfig({
           'Tek koç, çok öğrenci. Program, deneme takibi ve konu ilerlemesi tek yerde.',
         lang: 'tr',
         dir: 'ltr',
-        start_url: '/',
-        scope: '/',
+        start_url: taban,
+        scope: taban,
         display: 'standalone',
         orientation: 'portrait',
         theme_color: '#131C33',
         background_color: '#EDEFF3',
         icons: [
-          { src: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+          { src: taban + 'icon-192.png', sizes: '192x192', type: 'image/png' },
+          { src: taban + 'icon-512.png', sizes: '512x512', type: 'image/png' },
           {
-            src: '/icon-512-maskable.png',
+            src: taban + 'icon-512-maskable.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
@@ -38,7 +43,7 @@ export default defineConfig({
         // uygulamanin calismasi icin gerekli degil. On bellege alinmazlar,
         // ihtiyac aninda agdan cekilir.
         globIgnores: ['**/belgeler/**'],
-        navigateFallback: '/index.html',
+        navigateFallback: taban + 'index.html',
         // Yeni surum indirildigi anda devreye girsin. Bunlar olmadan eski
         // service worker sayfayi kontrol etmeye devam eder ve kullanici
         // butun sekmeleri kapatana kadar eski surumu gorur.
