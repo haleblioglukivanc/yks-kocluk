@@ -1239,4 +1239,67 @@ body[data-tema='panel'] {
 
 /* Izgara kendi içinde kaysın, sayfayı yatayda taşırmasın */
 .prg-kaydir { max-width: 100%; }
-.uygulama { overflow-x: clip; }
+
+/* ============================================================
+   Program ızgarası — telefon ekranına sığsın
+   Sabit 25rem genişlik telefonda taşıyordu. Tablo artık ekranı
+   paylaşıyor: 7 gün eşit sütun, metin sığmazsa kısalıyor.
+   ============================================================ */
+
+.prg-kaydir { overflow-x: visible; margin-inline: 0; padding-inline: 0; }
+
+.prg-tablo {
+  min-width: 0;
+  width: 100%;
+  table-layout: fixed;
+  border-spacing: 2px;
+}
+
+.prg-tablo th { font-size: 0.625rem; padding-bottom: 0.25rem; }
+.prg-gun-no { font-size: 0.6875rem; }
+
+.prg-saat {
+  width: 2.4rem;
+  font-size: 0.5625rem;
+  padding-right: 0.2rem;
+  white-space: nowrap;
+}
+
+.hucre {
+  min-width: 0;
+  padding: 0.55rem 0.15rem;
+  font-size: 0.5625rem;
+  border-radius: 6px;
+}
+
+/* Biraz geniş telefonlarda nefes payı */
+@media (min-width: 24rem) {
+  .prg-tablo { border-spacing: 3px; }
+  .prg-saat { width: 2.7rem; font-size: 0.625rem; }
+  .hucre { font-size: 0.625rem; padding: 0.6rem 0.25rem; }
+}
+
+@media (min-width: 34rem) {
+  .prg-saat { width: 3.25rem; font-size: 0.6875rem; }
+  .hucre { font-size: 0.75rem; padding: 0.7rem 0.4rem; }
+}
+
+/* Kâmil ızgaranın üstüne binince hücreyi okumayı zorlaştırıyordu:
+   konuşmuyorken hafifçe siliniyor, dokununca tam görünür oluyor. */
+.kalem-tetik { opacity: 0.9; transition: opacity 180ms ease; }
+.kalem-tetik:hover, .kalem-tetik:focus-visible { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .kalem-tetik { transition: none; } }
+
+/* Ders adı tek satıra sığmıyorsa kısaltmak yerine iki satıra sarsın:
+   "Mate…" yerine "Mate / matik" okunabiliyor. */
+.hucre--dolu {
+  white-space: normal;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+  min-height: 2.4rem;
+}
+.hucre--bos { min-height: 2.4rem; }
