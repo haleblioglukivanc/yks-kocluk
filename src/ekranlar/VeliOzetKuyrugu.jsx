@@ -11,8 +11,8 @@ const saatDakika = (dk = 0) => (dk >= 60 ? `${Math.floor(dk / 60)} sa ${dk % 60}
 // Koçun boş sayfayla karşılaşmaması için başlangıç cümlesi.
 // Kopyala-yapıştır olmasın diye bilerek eksik bırakılıyor.
 function taslakYorum(k) {
-  if ((k.devam_yuzdesi ?? 0) >= 80) return `${k.ad} bu hafta planına büyük ölçüde uydu. `
-  if ((k.devam_yuzdesi ?? 0) >= 50) return `${k.ad} bu hafta planının bir kısmını tamamladı. `
+  if ((k.devam ?? 0) >= 80) return `${k.ad} bu hafta planına büyük ölçüde uydu. `
+  if ((k.devam ?? 0) >= 50) return `${k.ad} bu hafta planının bir kısmını tamamladı. `
   return `${k.ad} bu hafta planın gerisinde kaldı. `
 }
 
@@ -24,19 +24,16 @@ export default function VeliOzetKuyrugu() {
   const [bilgi, setBilgi] = useState('')
 
   const yukle = useCallback(async () => {
-    const { data, error } = await supabase
-      .from('veli_haftalik_ozet')
-      .select('id, ogrenci_id, hafta_baslangic, devam_yuzdesi, toplam_dakika, trend, koc_yorumu, yaklasan_deneme, profiller!inner(ad_soyad)')
-      .eq('yayinlandi', false)
-      .order('hafta_baslangic', { ascending: false })
+    const { data, error } = await supabase.rpc('veli_ozet_kuyrugu')
 
     if (error) {
       setHata(hataMetni(error))
+      setKayitlar([])
       return
     }
-    const liste = (data ?? []).map((k) => ({ ...k, ad: k.profiller?.ad_soyad ?? '' }))
+    const liste = data ?? []
     setKayitlar(liste)
-    setYorumlar(Object.fromEntries(liste.map((k) => [k.id, k.koc_yorumu ?? taslakYorum(k)])))
+    setYorumlar(Object.fromEntries(liste.map((k) => [k.id, k.yorum ?? taslakYorum(k)])))
   }, [])
 
   useEffect(() => {
@@ -100,7 +97,7 @@ export default function VeliOzetKuyrugu() {
           <div key={k.id} className='ozet-kayit'>
             <span className='liste-ad'>{k.ad}</span>
             <span className='liste-alt'>
-              Uyum %{k.devam_yuzdesi ?? 0} · {saatDakika(k.toplam_dakika)} ·{' '}
+              Uyum %{k.devam ?? 0} · {saatDakika(k.dakika)} ·{' '}
               {TREND_YAZI[k.trend] ?? 'sabit'}
             </span>
             <textarea
