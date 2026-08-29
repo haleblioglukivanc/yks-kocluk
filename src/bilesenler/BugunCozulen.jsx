@@ -5,7 +5,7 @@ import { Bos, Kart, Uyari } from './Ortak.jsx'
 /* Ders başına tek satır tutuluyor: aynı derse ikinci kez giren sayı eskisini
    eziyor. "Bugün 40 mı 55 mi çözdüm" tartışmasını doğurmayan tek yol bu. */
 
-export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, onDegisti }) {
+export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, onDegisti, saltOkunur = false }) {
   const [liste, setListe] = useState(kayitlar ?? [])
   const [dersler, setDersler] = useState([])
   const [acik, setAcik] = useState(false)
@@ -18,14 +18,14 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
   }, [kayitlar])
 
   useEffect(() => {
-    if (!katalogId) return
+    if (!katalogId || saltOkunur) return
     supabase
       .from('dersler')
       .select('id, ad')
       .eq('katalog_id', katalogId)
       .order('sira')
       .then(({ data }) => setDersler(data ?? []))
-  }, [katalogId])
+  }, [katalogId, saltOkunur])
 
   const toplam = liste.reduce((a, s) => a + (s.dogru + s.yanlis + s.bos), 0)
 
@@ -103,14 +103,21 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
       <Uyari>{hata}</Uyari>
 
       {liste.length === 0 ? (
-        <Bos baslik="Bugün için kayıt yok" aciklama="Çözdüğün soruları ders ders ekle." />
+        <Bos
+          baslik="Bugün için kayıt yok"
+          aciklama={saltOkunur ? 'Öğrenci bugün soru kaydı girmemiş.' : 'Çözdüğün soruları ders ders ekle.'}
+        />
       ) : (
         <ul className="liste cozulen-liste">
           {liste.map((s) => (
             <li key={s.ders_id} className="cozulen-satir">
-              <button className="cozulen-ders" onClick={() => duzenlemeyeAl(s)}>
-                {s.ders}
-              </button>
+              {saltOkunur ? (
+                <span className="cozulen-ders">{s.ders}</span>
+              ) : (
+                <button className="cozulen-ders" onClick={() => duzenlemeyeAl(s)}>
+                  {s.ders}
+                </button>
+              )}
               <span className="dny">
                 <span className="dny-d">
                   <b>{s.dogru}</b>D
@@ -122,15 +129,17 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
                   <b>{s.bos}</b>B
                 </span>
               </span>
-              <button className="cozulen-sil" onClick={() => sil(s)} aria-label={`${s.ders} kaydını sil`}>
-                ×
-              </button>
+              {!saltOkunur && (
+                <button className="cozulen-sil" onClick={() => sil(s)} aria-label={`${s.ders} kaydını sil`}>
+                  ×
+                </button>
+              )}
             </li>
           ))}
         </ul>
       )}
 
-      {acik ? (
+      {saltOkunur ? null : acik ? (
         <div className="cozulen-form">
           <select
             value={form.ders_id}

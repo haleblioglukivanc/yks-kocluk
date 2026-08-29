@@ -5,6 +5,7 @@ import { Avatar } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
+import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
@@ -131,7 +132,7 @@ export default function OgrenciPaneli({ profil }) {
       {sekme === 'bugun' ? (
         <>
           <CalismaSayaci ogrenciId={kayit.id} onKaydedildi={yenile} />
-          <BugunKarti ozet={ozet} onDegisti={yenile} />
+          <GunHedefleri gorevler={ozet?.gorevler} onDegisti={yenile} />
           <GunlukRutinler
             ogrenciId={kayit.id}
             rutinler={ozet?.rutinler}
@@ -185,120 +186,5 @@ export default function OgrenciPaneli({ profil }) {
         </Kart>
       )}
     </>
-  )
-}
-
-
-const TUR_ETIKET = {
-  konu_anlatimi: 'Konu',
-  soru_cozumu: 'Soru',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Diğer',
-}
-
-/** Bugünün görevleri. Tek dokunuşla tamamlanır; dokunuşun beklememesi için
- *  önce ekranda değişir, sonra sunucuya yazılır. Hata olursa geri alınır. */
-function BugunKarti({ ozet, onDegisti }) {
-  const [gorevler, setGorevler] = useState(ozet?.gorevler ?? [])
-  const [hata, setHata] = useState('')
-
-  useEffect(() => {
-    setGorevler(ozet?.gorevler ?? [])
-  }, [ozet])
-
-  const biten = gorevler.filter((g) => g.durum === 'tamamlandi').length
-
-  async function degistir(gorev, bittiMi) {
-    const onceki = gorevler
-    setGorevler((m) =>
-      m.map((g) => (g.id === gorev.id ? { ...g, durum: bittiMi ? 'tamamlandi' : 'bekliyor' } : g)),
-    )
-    const { error } = await supabase
-      .from('gorevler')
-      .update({ durum: bittiMi ? 'tamamlandi' : 'bekliyor' })
-      .eq('id', gorev.id)
-    if (error) {
-      setGorevler(onceki)
-      setHata(hataMetni(error))
-      return
-    }
-    setHata('')
-    onDegisti?.()
-  }
-
-  return (
-    <Kart
-      baslik="Günün hedefleri"
-      eylem={
-        gorevler.length ? (
-          <span className="hedef-sayac">
-            {biten}/{gorevler.length}
-          </span>
-        ) : null
-      }
-    >
-      <Uyari>{hata}</Uyari>
-
-      {gorevler.length === 0 ? (
-        <Bos
-          baslik="Bugün planında bir şey yok"
-          aciklama="Sayaçla serbest çalışabilir ya da dinlenebilirsin."
-        />
-      ) : (
-        <>
-          {/* Yüzde çubuğu yerine hedef başına bir baloncuk: kaç tane kaldığı
-              sayılabiliyor, "%60" soyut kalıyordu. */}
-          <div className="baloncuk-serit" aria-hidden="true">
-            {gorevler.map((g) => (
-              <span
-                key={g.id}
-                className={`baloncuk${g.durum === 'tamamlandi' ? ' baloncuk--dolu' : ''}`}
-              />
-            ))}
-          </div>
-
-          <ul className="liste gorev-liste">
-            {gorevler.map((g) => {
-              const bitti = g.durum === 'tamamlandi'
-              const etiket = [g.ders, g.konu].filter(Boolean).join(' · ')
-              return (
-                <li key={g.id} className={`gorev-satir${bitti ? ' gorev-satir--bitti' : ''}`}>
-                  <button
-                    className="gorev-tik"
-                    role="checkbox"
-                    aria-checked={bitti}
-                    aria-label={`${g.baslik} tamamlandı`}
-                    onClick={() => degistir(g, !bitti)}
-                  >
-                    <svg viewBox="0 0 12 12" aria-hidden="true">
-                      <path
-                        d="M2 6.2l2.6 2.6L10 3.4"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
-                  <div className="gorev-govde">
-                    <span className="gorev-baslik">
-                      {g.baslik}
-                      {g.hedef_adet && !/\d/.test(g.baslik) ? ` — ${g.hedef_adet} soru` : ''}
-                    </span>
-                    {(etiket || g.tur) && (
-                      <span className="gorev-etiket">{etiket || TUR_ETIKET[g.tur] || g.tur}</span>
-                    )}
-                    {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
-                  </div>
-                </li>
-              )
-            })}
-          </ul>
-        </>
-      )}
-    </Kart>
   )
 }

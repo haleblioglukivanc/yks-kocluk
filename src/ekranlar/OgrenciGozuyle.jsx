@@ -1,27 +1,19 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
+import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
+import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
+import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
 /* Koçun "öğrenci ne görüyor" sorusuna cevabı. Salt okunur:
    buradan hiçbir şey değiştirilemez, yanlışlıkla öğrenci adına
    görev tamamlanmasın diye. */
 
-const TUR_ETIKET = {
-  konu_anlatimi: 'Konu',
-  soru_cozumu: 'Soru',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Diğer',
-}
-
-const bugunAnahtari = () => new Date().toLocaleDateString('sv-SE')
-
 export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
   const [ogrenci, setOgrenci] = useState(null)
-  const [gorevler, setGorevler] = useState(null)
+  const [gun, setGun] = useState(null)
   const [notlar, setNotlar] = useState([])
   const [hata, setHata] = useState('')
 
@@ -34,12 +26,9 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
           .select('id, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad)')
           .eq('id', ogrenciId)
           .maybeSingle(),
-        supabase
-          .from('gorevler')
-          .select('id, baslik, tur, durum, hedef_adet, yapilan_adet, aciklama, dersler(ad)')
-          .eq('ogrenci_id', ogrenciId)
-          .eq('tarih', bugunAnahtari())
-          .order('periyot', { nullsFirst: false }),
+        /* Öğrencinin kendi ekranıyla aynı veri, aynı gün hesabı: tarihi
+           cihazdan değil sunucudan alıyoruz ki iki ekran ayrışmasın. */
+        supabase.rpc('ogrenci_gunluk_ozet', { p_ogrenci: ogrenciId }),
         supabase
           .from('koc_notlari')
           .select('id, icerik, olusturuldu')
@@ -50,8 +39,9 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
       ])
       if (iptal) return
       if (o.error) setHata(hataMetni(o.error))
+      else if (g.error) setHata(hataMetni(g.error))
       setOgrenci(o.data)
-      setGorevler(g.data ?? [])
+      setGun(g.data ?? null)
       setNotlar(n.data ?? [])
     })()
     return () => {
@@ -69,8 +59,6 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
 
   if (!ogrenci) return <Yukleniyor />
 
-  const biten = (gorevler ?? []).filter((g) => g.durum === 'tamamlandi').length
-
   return (
     <div className="panel">
       <button className="metin-dugme geri-dugme" onClick={onGeri}>← Öğrenci listesi</button>
@@ -82,35 +70,26 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
         </span>
       </div>
 
-      <Kart
-        baslik="Bugünün görevleri"
-        altBaslik={gorevler?.length ? `${biten}/${gorevler.length} tamamlandı` : undefined}
-      >
-        {gorevler === null ? (
-          <Yukleniyor />
-        ) : gorevler.length === 0 ? (
-          <Bos
-            baslik="Bugün planında bir şey yok"
-            aciklama="Öğrenci bugün boş bir ekran görüyor."
+      {gun === null ? (
+        <Yukleniyor />
+      ) : (
+        <>
+          <GunHedefleri gorevler={gun.gorevler} saltOkunur />
+          <GunlukRutinler
+            ogrenciId={ogrenciId}
+            rutinler={gun.rutinler}
+            haftaBasi={gun.haftaBasi}
+            bugun={gun.bugun}
+            saltOkunur
           />
-        ) : (
-          <ul className="liste">
-            {gorevler.map((g) => (
-              <li key={g.id} className={`liste-satir${g.durum === 'tamamlandi' ? ' gorev--bitti' : ''}`}>
-                <div>
-                  <span className="liste-ad">{g.baslik}</span>
-                  <span className="liste-alt">
-                    {[TUR_ETIKET[g.tur] ?? g.tur, g.dersler?.ad,
-                      g.hedef_adet ? `${g.yapilan_adet ?? 0}/${g.hedef_adet}` : null]
-                      .filter(Boolean).join(' · ')}
-                  </span>
-                  {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
-                </div>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Kart>
+          <BugunCozulen
+            ogrenciId={ogrenciId}
+            kayitlar={gun.bugunSoru}
+            tarih={gun.bugun}
+            saltOkunur
+          />
+        </>
+      )}
 
       {notlar.length > 0 && (
         <Kart baslik="Öğrencinin gördüğü notların" altBaslik="Yalnızca paylaşıma açtıkların">

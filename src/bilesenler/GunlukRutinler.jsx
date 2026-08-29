@@ -16,7 +16,7 @@ function gunEkle(iso, i) {
   return t.toISOString().slice(0, 10)
 }
 
-export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, onDegisti }) {
+export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, onDegisti, saltOkunur = false }) {
   const [liste, setListe] = useState(rutinler ?? [])
   const [hata, setHata] = useState('')
   const [duzenle, setDuzenle] = useState(false)
@@ -33,7 +33,7 @@ export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, 
     : -1
 
   async function isaretle(rutin, gunIndeks) {
-    if (!haftaBasi) return
+    if (saltOkunur || !haftaBasi) return
     const tarih = gunEkle(haftaBasi, gunIndeks)
     const acik = Boolean(rutin.gunler?.[gunIndeks])
     const onceki = liste
@@ -99,16 +99,20 @@ export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, 
       baslik="Günlük rutinler"
       altBaslik={liste.length ? `Bu hafta ${buHafta} işaret` : undefined}
       eylem={
-        <button className="metin-dugme" onClick={() => setDuzenle((d) => !d)}>
-          {duzenle ? 'Bitti' : 'Düzenle'}
-        </button>
+        saltOkunur ? null : (
+          <button className="metin-dugme" onClick={() => setDuzenle((d) => !d)}>
+            {duzenle ? 'Bitti' : 'Düzenle'}
+          </button>
+        )
       }
     >
       <Uyari>{hata}</Uyari>
 
       {liste.length === 0 && !duzenle ? (
         <p className="kart-alt">
-          Henüz rutin yok. “Düzenle”ye dokunup her gün tekrarlayacağın alışkanlıkları ekle.
+          {saltOkunur
+            ? 'Öğrencinin tanımlı rutini yok.'
+            : 'Henüz rutin yok. “Düzenle”ye dokunup her gün tekrarlayacağın alışkanlıkları ekle.'}
         </p>
       ) : (
         <div className="rutin-sarmal">
@@ -131,9 +135,12 @@ export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, 
                   {KISA_GUN.map((g, i) => (
                     <td key={g}>
                       <button
-                        className={`baloncuk baloncuk--dokun${r.gunler?.[i] ? ' baloncuk--dolu' : ''}`}
+                        className={`baloncuk${saltOkunur ? '' : ' baloncuk--dokun'}${
+                          r.gunler?.[i] ? ' baloncuk--dolu' : ''
+                        }`}
                         aria-pressed={Boolean(r.gunler?.[i])}
                         aria-label={`${r.ad} · ${TAM_GUN[i]}`}
+                        disabled={saltOkunur}
                         onClick={() => isaretle(r, i)}
                       />
                     </td>
