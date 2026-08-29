@@ -41,8 +41,9 @@ export const site = {
         'ilerlemeyi görebilir; ama süreç öğrenciyle benim aramdadır.',
     ],
 
-    // public/ klasörüne koyup yolunu yazın: '/kivanc.jpg'. Boşsa baş harfler görünür.
-    portre: '',
+    // Gerçek fotoğraf: public/ içine koyup yolu yazın, örn. '/kivanc.jpg'.
+    // ⚠️ Şimdilik temsili illüstrasyon.
+    portre: '/portre.svg',
   },
 
   // ⚠️ DEMO — gerçek belgelerle değiştirilecek.
@@ -138,27 +139,47 @@ export const site = {
     ],
   },
 
-  // ⚠️ DEMO — gerçek yorum yoksa: liste: []
+  // ⚠️ ÖRNEK YORUMLAR — KURGU. Gösterim için yazılmış demo metinlerdir;
+  //    gerçek kişilere ait değildir. CANLIYA ÇIKMADAN ÖNCE gerçek ve izinli
+  //    yorumlarla değiştirin ya da bölümü kapatın: liste: []
   yorumlar: {
     baslik: 'Ne diyorlar',
     liste: [
       {
         metin:
-          '[DEMO] En çok işime yarayan şey haftalık görüşmelerdi. Kendi başıma plan ' +
-          'yapıyordum ama iki hafta sonra bırakıyordum. Burada bırakma şansım olmadı.',
-        kisi: 'Ö. Y.', rol: '12. sınıf · Sayısal',
+          'Kendi başıma plan yapıyordum ama iki hafta sonra bırakıyordum. Burada ' +
+          'bırakma şansım olmadı; her pazartesi biri o planın hesabını soruyor.',
+        kisi: 'Ömer Y.', rol: '12. sınıf · Sayısal',
       },
       {
         metin:
-          '[DEMO] Oğlumun ne yaptığını sormaktan yorulmuştum. Sisteme girip ' +
-          'görebiliyorum, o yüzden artık sormuyorum. İkimiz de rahatladık.',
-        kisi: 'S. K.', rol: 'Veli',
+          'Oğlumun ne yaptığını sormaktan yorulmuştum. Artık sisteme girip kendim ' +
+          'görüyorum, o yüzden sormuyorum. Evdeki gerginlik gözle görülür azaldı.',
+        kisi: 'Sevgi K.', rol: 'Veli',
       },
       {
         metin:
-          '[DEMO] Denemeden sonra sadece net söylenmiyor, hangi konudan kaybettiğim ' +
-          'çıkarılıyor. Bir sonraki hafta o konu programa giriyor.',
-        kisi: 'M. A.', rol: 'Mezun · Eşit Ağırlık',
+          'Denemeden sonra sadece netim söylenmiyor; hangi konudan kaç soru ' +
+          'kaybettiğim çıkarılıyor ve o konu ertesi hafta programa giriyor.',
+        kisi: 'Melis A.', rol: 'Mezun · Eşit Ağırlık',
+      },
+      {
+        metin:
+          'Nisan ayında 58 netteydim, eylülde 81. Sihir yok; kaybettiğim konular ' +
+          'tek tek kapatıldı. Grafiği görmek insanı gerçekten çalıştırıyor.',
+        kisi: 'Baran T.', rol: '12. sınıf · Sayısal',
+      },
+      {
+        metin:
+          'Kızım LGS grubundaydı. En sevdiğim şey süreç boyunca kimsenin panik ' +
+          'yaratmaması oldu; her hafta ne yapılacağı belliydi, biz de rahattık.',
+        kisi: 'Hakan D.', rol: 'Veli',
+      },
+      {
+        metin:
+          'Okul, dershane ve yol derken günüm zaten doluydu. Program gerçek ' +
+          'saatlerime göre yazıldı; ilk defa bir planın sonunu getirebiliyorum.',
+        kisi: 'Zeynep S.', rol: '11. sınıf · Eşit Ağırlık',
       },
     ],
   },
@@ -295,6 +316,7 @@ export const site = {
     liste: [
       {
         youtube: '',
+        kapak: '/video/program.svg',
         tur: 'Program',
         baslik: 'Haftalık program nasıl kurulur?',
         ozet: 'Okul, dershane ve yol saatleri düşüldükten sonra kalan zamana gerçekçi bir program yazmanın adımları.',
@@ -303,6 +325,7 @@ export const site = {
       },
       {
         youtube: '',
+        kapak: '/video/deneme.svg',
         tur: 'Deneme',
         baslik: 'Deneme sonucunu okumanın doğru yolu',
         ozet: 'Net sayısına bakıp geçmek yerine, hangi konudan kaç soru kaybedildiğini çıkarmak.',
@@ -311,6 +334,7 @@ export const site = {
       },
       {
         youtube: '',
+        kapak: '/video/veli.svg',
         tur: 'Veliye',
         baslik: 'Veliye: ne zaman sormalı, ne zaman susmalı',
         ozet: 'Takip ile baskı arasındaki fark ve evde motivasyonu bozmadan destek olmanın sınırları.',
@@ -319,6 +343,7 @@ export const site = {
       },
       {
         youtube: '',
+        kapak: '/video/verim.svg',
         tur: 'Verimlilik',
         baslik: 'Günde 8 saat masada, 2 saat verim',
         ozet: 'Çalışma süresi ile çalışma verimi neden aynı şey değil; süre yerine neyi ölçmeli.',
@@ -327,6 +352,7 @@ export const site = {
       },
       {
         youtube: '',
+        kapak: '/video/tercih.svg',
         tur: 'Tercih',
         baslik: 'Tercih döneminde en sık yapılan üç hata',
         ozet: 'Sıralama okumak, taban puan yanılgısı ve bölüm seçerken atlanan sorular.',
@@ -335,6 +361,7 @@ export const site = {
       },
       {
         youtube: '',
+        kapak: '/video/mezun.svg',
         tur: 'Mezun',
         baslik: 'Mezun yılını ilk yıldan farklı kılan şey',
         ozet: 'Aynı kaynakları tekrar etmek yerine, ikinci yılda neyin değişmesi gerektiği.',
@@ -354,37 +381,37 @@ export const site = {
       'Davet için iletişim bölümünden ulaşabilirsiniz.',
     liste: [
       {
-        gorsel: '',
+        gorsel: '/seminerler/kaygi.svg',
         baslik: 'Sınav kaygısıyla baş etmek',
         yer: 'Anadolu Lisesi · Veli semineri',
         etiketler: ['2026', '210 katılımcı'],
       },
       {
-        gorsel: '',
+        gorsel: '/seminerler/songun.svg',
         baslik: 'Son 100 gün: gerçekçi planlama',
         yer: 'Fen Lisesi · 12. sınıf seminerleri',
         etiketler: ['2026', '140 katılımcı'],
       },
       {
-        gorsel: '',
+        gorsel: '/seminerler/gecis.svg',
         baslik: 'LGS’den YKS’ye geçiş',
         yer: 'Rehberlik servisi çalıştayı',
         etiketler: ['2025', '90 katılımcı'],
       },
       {
-        gorsel: '',
+        gorsel: '/seminerler/iletisim.svg',
         baslik: 'Veli-öğrenci iletişimi',
         yer: 'Belediye gençlik merkezi',
         etiketler: ['2025', '160 katılımcı'],
       },
       {
-        gorsel: '',
+        gorsel: '/seminerler/aliskanlik.svg',
         baslik: 'Çalışma alışkanlığı kurmak',
         yer: 'Ortaokul veli toplantısı',
         etiketler: ['2025', '120 katılımcı'],
       },
       {
-        gorsel: '',
+        gorsel: '/seminerler/tercih.svg',
         baslik: 'Tercih dönemi bilgilendirmesi',
         yer: 'Online oturum',
         etiketler: ['2024', '400+ izleyici'],

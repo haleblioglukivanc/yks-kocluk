@@ -53,7 +53,9 @@ html:has(.tanitim) { scroll-behavior: smooth; }
 
 .t-bant { padding-block: clamp(3.5rem, 9vw, 6.5rem); }
 .t-bant--gri { background: var(--gri); }
-.t-bant--sicak { background: var(--sicak); }
+.t-bant--sicak { background: linear-gradient(180deg, #fff8ef, #ffefdd); }
+.t-bant--mavi { background: linear-gradient(180deg, #f0f5ff, #e3edff); }
+.t-bant--yesil { background: linear-gradient(180deg, #f0faf5, #e2f3ea); }
 .t-bant--koyu {
   background: var(--koyu);
   color: #eef2fb;
@@ -476,6 +478,15 @@ html:has(.tanitim) { scroll-behavior: smooth; }
 }
 .t-video-hucre:nth-child(3n+2) .t-video-bos { background: linear-gradient(150deg, #37231b, #160e0d); }
 .t-video-hucre:nth-child(3n)   .t-video-bos { background: linear-gradient(150deg, #12313a, #0a1522); }
+.t-video-kapak { position: absolute; inset: 0; }
+.t-video-kapak img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 300ms ease; }
+.t-video:hover .t-video-kapak img { transform: scale(1.04); }
+.t-video-kapak .t-oynat {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  transition: transform 200ms ease;
+}
+.t-video:hover .t-video-kapak .t-oynat { transform: translate(-50%, -50%) scale(1.1); }
+
 .t-sure {
   position: absolute; right: 0.625rem; bottom: 0.625rem;
   padding: 0.2rem 0.5rem; border-radius: 6px;

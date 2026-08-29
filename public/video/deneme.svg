@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <linearGradient id="z" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2a1430"/><stop offset="1" stop-color="#120a20"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#z)"/>
+  <circle cx="1150" cy="80" r="260" fill="#ff9a54" opacity="0.12"/>
+  <circle cx="90" cy="660" r="180" fill="#ff9a54" opacity="0.08"/>
+  <polyline points="820,560 930,470 1010,505 1110,370 1210,290" fill="none" stroke="#ffb454" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="1210" cy="290" r="18" fill="#ff7a45"/>
+  <rect x="70" y="66" rx="8" width="317" height="44" fill="#ff9a54"/>
+  <text x="90" y="96" font-size="24" font-weight="bold" fill="#14100a" letter-spacing="3">DENEME ANALİZİ</text>
+  <text x="70" y="360" font-size="76" font-weight="bold" fill="#ffffff">Deneme sonucu</text>
+  <text x="70" y="450" font-size="76" font-weight="bold" fill="#ffffff">nasıl okunur?</text>
+  <text x="70" y="640" font-size="28" fill="#ffffff" opacity="0.75">Kıvanç Haleblioğlu · YKS ve LGS Koçluğu</text>
+</svg>

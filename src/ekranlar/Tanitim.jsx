@@ -317,6 +317,11 @@ function VideoKart({ video }) {
             allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
           />
+        ) : video.kapak ? (
+          <div className="t-video-kapak">
+            <img src={video.kapak} alt="" loading="lazy" />
+            <span className="t-oynat" aria-hidden="true" />
+          </div>
         ) : (
           <div className="t-video-bos">
             <span className="t-oynat" aria-hidden="true" />
@@ -550,7 +555,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Yaklaşım ---------- */}
-      <section className="t-bant">
+      <section className="t-bant t-bant--mavi">
         <div className="t-kap">
           <Belir>
             <p className="t-etiket">Yaklaşım</p>
@@ -572,7 +577,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Nasıl çalışıyoruz ---------- */}
-      <section className="t-bant t-bant--gri" id="nasil">
+      <section className="t-bant t-bant--sicak" id="nasil">
         <div className="t-kap">
           <Belir>
             <p className="t-etiket">Süreç</p>
@@ -620,7 +625,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Seminerler ---------- */}
-      <section className="t-bant t-bant--gri" id="seminerler">
+      <section className="t-bant t-bant--yesil" id="seminerler">
         <div className="t-kap">
           <Belir>
             <p className="t-etiket">Sahne</p>
@@ -656,7 +661,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Belgeler ---------- */}
-      <section className="t-bant t-bant--sicak" id="belgeler">
+      <section className="t-bant t-bant--gri" id="belgeler">
         <div className="t-kap">
           <Belir>
             <p className="t-etiket">Belgeler</p>
@@ -684,7 +689,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Kimler için ---------- */}
-      <section className="t-bant">
+      <section className="t-bant t-bant--mavi">
         <div className="t-kap">
           <Belir>
             <p className="t-etiket">Kapsam</p>
@@ -704,7 +709,7 @@ export default function Tanitim({ onGiris }) {
 
       {/* ---------- Yorumlar ---------- */}
       {yorumlar.liste.length > 0 && (
-        <section className="t-bant t-bant--gri">
+        <section className="t-bant t-bant--sicak">
           <div className="t-kap">
             <Belir>
               <p className="t-etiket">Geri bildirim</p>

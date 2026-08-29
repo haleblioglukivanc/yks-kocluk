@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <linearGradient id="z" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3a1a12"/><stop offset="1" stop-color="#160a08"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#z)"/>
+  <circle cx="1150" cy="80" r="260" fill="#ff9a54" opacity="0.12"/>
+  <circle cx="90" cy="660" r="180" fill="#ff9a54" opacity="0.08"/>
+  <path d="M 1030 250 A 140 140 0 1 1 900 390" fill="none" stroke="#ffb454" stroke-width="16" stroke-linecap="round"/>
+<polygon points="880,350 930,390 870,420" fill="#ff7a45"/>
+  <rect x="70" y="66" rx="8" width="219" height="44" fill="#ff9a54"/>
+  <text x="90" y="96" font-size="24" font-weight="bold" fill="#14100a" letter-spacing="3">MEZUNLARA</text>
+  <text x="70" y="360" font-size="76" font-weight="bold" fill="#ffffff">İkinci yılı farklı</text>
+  <text x="70" y="450" font-size="76" font-weight="bold" fill="#ffffff">kılan şey ne?</text>
+  <text x="70" y="640" font-size="28" fill="#ffffff" opacity="0.75">Kıvanç Haleblioğlu · YKS ve LGS Koçluğu</text>
+</svg>

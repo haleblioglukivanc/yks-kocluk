@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" font-family="Arial, Helvetica, sans-serif">
+  <defs>
+    <linearGradient id="z" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c1440"/><stop offset="1" stop-color="#0b0a22"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#z)"/>
+  <circle cx="1150" cy="80" r="260" fill="#9a8cff" opacity="0.12"/>
+  <circle cx="90" cy="660" r="180" fill="#9a8cff" opacity="0.08"/>
+  <path d="M 900 620 L 900 430 L 800 300" fill="none" stroke="#ffffff" stroke-width="14" opacity="0.35" stroke-linecap="round"/>
+<path d="M 900 430 L 1050 280" fill="none" stroke="#ffb454" stroke-width="14" stroke-linecap="round"/>
+<circle cx="1050" cy="280" r="20" fill="#ff7a45"/>
+<circle cx="800" cy="300" r="14" fill="#ffffff" opacity="0.4"/>
+  <rect x="70" y="66" rx="8" width="297" height="44" fill="#9a8cff"/>
+  <text x="90" y="96" font-size="24" font-weight="bold" fill="#14100a" letter-spacing="3">TERCİH DÖNEMİ</text>
+  <text x="70" y="360" font-size="76" font-weight="bold" fill="#ffffff">En sık yapılan</text>
+  <text x="70" y="450" font-size="76" font-weight="bold" fill="#ffffff">üç tercih hatası</text>
+  <text x="70" y="640" font-size="28" fill="#ffffff" opacity="0.75">Kıvanç Haleblioğlu · YKS ve LGS Koçluğu</text>
+</svg>
