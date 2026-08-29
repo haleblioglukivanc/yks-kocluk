@@ -87,9 +87,9 @@ export default function OgrenciPaneli({ profil }) {
               ayt={kayit.hedef_ayt_net}
               durum={netDurumu}
             />
-            {(ozet?.guncelSeri ?? 0) > 0 && (
-              <p className="kimlik-seri">
-                {ozet.guncelSeri} günlük seri
+            {ozet && (
+              <p className={`kimlik-seri${ozet.guncelSeri ? '' : ' kimlik-seri--sifir'}`}>
+                {ozet.guncelSeri ?? 0} günlük seri
                 {ozet.calismaDkBugun ? ` · bugün ${ozet.calismaDkBugun} dk` : ''}
               </p>
             )}

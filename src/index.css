@@ -1371,3 +1371,6 @@ body[data-tema='panel'] {
 .rozet-ad { display: block; font-size: 0.8125rem; font-weight: 600; }
 .rozet-aciklama { display: block; font-size: 0.6875rem; color: var(--soluk); margin-top: 0.15rem; line-height: 1.35; }
 .rozet-tarih { display: block; font-size: 0.625rem; color: var(--isaret); margin-top: 0.35rem; }
+
+/* Sıfır seri sarı vurguyla kutlanacak bir şey gibi durmasın */
+.kimlik-seri--sifir { color: var(--soluk); }

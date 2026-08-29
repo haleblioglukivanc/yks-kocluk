@@ -1148,17 +1148,13 @@ function SeriVeRozet({ ogrenciId }) {
   const seri = kopmus ? 0 : (veri.seri?.guncel_seri ?? 0)
   const sonRozet = veri.rozetler[0]
 
-  if (seri === 0 && veri.rozetler.length === 0) return null
-
+  /* Sıfırlar da yazılıyor: "0 günlük seri · 0 rozet" koça öğrencinin
+     yeni ya da durmuş olduğunu söyler. Satırın hiç çıkmaması bu bilgiyi
+     gizliyordu. */
   return (
-    <p className="kimlik-seri">
-      {seri > 0 && <span>{seri} günlük seri</span>}
-      {seri > 0 && sonRozet && <span aria-hidden="true"> · </span>}
-      {sonRozet && (
-        <span>
-          {veri.rozetler.length} rozet · son: {sonRozet.rozetler?.ad}
-        </span>
-      )}
+    <p className={`kimlik-seri${seri === 0 ? ' kimlik-seri--sifir' : ''}`}>
+      {seri} günlük seri · {veri.rozetler.length} rozet
+      {sonRozet ? ` · son: ${sonRozet.rozetler?.ad}` : ''}
     </p>
   )
 }
