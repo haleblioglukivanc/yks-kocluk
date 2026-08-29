@@ -144,6 +144,11 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
 
   const h = govdeYuksekligi(yipranma);
   const ucY = 45 + h;
+  // Gövde kısalınca yüz de onunla birlikte küçülüp yukarı kayar,
+  // yoksa ağız tahta uca taşıyor. yipranma=0'da bu dönüşüm birim.
+  const olcek = h / 132;
+  const yuzY = 45 + (h * 71) / 132;
+  const yuzDonusum = `translate(100 ${yuzY.toFixed(2)}) scale(${olcek.toFixed(4)}) translate(-100 -116)`;
   const acik = i.goz !== 'kapali';
   const rx = i.goz === 'buyuk' ? 17.5 : 15;
   const ry = kirpiyor ? 2.5 : (i.goz === 'buyuk' ? 19.5 : 17);
@@ -160,34 +165,36 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
       <polygon points={`64,${ucY} 136,${ucY} 100,${ucY + 51}`} fill={RENK.tahta} />
       <polygon points={`86,${ucY + 30} 114,${ucY + 30} 100,${ucY + 51}`} fill={RENK.uc} />
 
-      <ellipse cx='70' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />
-      <ellipse cx='130' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />
+      <g transform={yuzDonusum}>
+        <ellipse cx='70' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />
+        <ellipse cx='130' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />
 
-      <path d={i.kas[0]} stroke={RENK.cizgi} strokeWidth='4' strokeLinecap='round' fill='none' />
-      <path d={i.kas[1]} stroke={RENK.cizgi} strokeWidth='4' strokeLinecap='round' fill='none' />
+        <path d={i.kas[0]} stroke={RENK.cizgi} strokeWidth='4' strokeLinecap='round' fill='none' />
+        <path d={i.kas[1]} stroke={RENK.cizgi} strokeWidth='4' strokeLinecap='round' fill='none' />
 
-      {acik ? (
-        <g>
-          <ellipse cx='82' cy='110' rx={rx} ry={ry} fill='#FFFFFF' stroke={RENK.cizgi} strokeWidth='2.5' />
-          <ellipse cx='118' cy='110' rx={rx} ry={ry} fill='#FFFFFF' stroke={RENK.cizgi} strokeWidth='2.5' />
-          {!kirpiyor && (
-            <g>
-              <circle cx={82 + bx} cy={110 + by} r='8.5' fill={RENK.bebek} />
-              <circle cx={118 + bx} cy={110 + by} r='8.5' fill={RENK.bebek} />
-              <circle cx={78 + bx} cy={105 + by} r='3.4' fill='#FFFFFF' />
-              <circle cx={114 + bx} cy={105 + by} r='3.4' fill='#FFFFFF' />
-            </g>
-          )}
-        </g>
-      ) : (
-        <g stroke={RENK.cizgi} strokeWidth='3.5' fill='none' strokeLinecap='round'>
-          <path d='M69 110 Q82 98 95 110' />
-          <path d='M105 110 Q118 98 131 110' />
-        </g>
-      )}
+        {acik ? (
+          <g>
+            <ellipse cx='82' cy='110' rx={rx} ry={ry} fill='#FFFFFF' stroke={RENK.cizgi} strokeWidth='2.5' />
+            <ellipse cx='118' cy='110' rx={rx} ry={ry} fill='#FFFFFF' stroke={RENK.cizgi} strokeWidth='2.5' />
+            {!kirpiyor && (
+              <g>
+                <circle cx={82 + bx} cy={110 + by} r='8.5' fill={RENK.bebek} />
+                <circle cx={118 + bx} cy={110 + by} r='8.5' fill={RENK.bebek} />
+                <circle cx={78 + bx} cy={105 + by} r='3.4' fill='#FFFFFF' />
+                <circle cx={114 + bx} cy={105 + by} r='3.4' fill='#FFFFFF' />
+              </g>
+            )}
+          </g>
+        ) : (
+          <g stroke={RENK.cizgi} strokeWidth='3.5' fill='none' strokeLinecap='round'>
+            <path d='M69 110 Q82 98 95 110' />
+            <path d='M105 110 Q118 98 131 110' />
+          </g>
+        )}
 
-      <path d={i.agiz} stroke={RENK.cizgi} strokeWidth='3.6'
-            fill={i.dolu ? RENK.cizgi : 'none'} strokeLinecap='round' />
+        <path d={i.agiz} stroke={RENK.cizgi} strokeWidth='3.6'
+              fill={i.dolu ? RENK.cizgi : 'none'} strokeLinecap='round' />
+      </g>
       {i.ekstra}
     </svg>
   );
