@@ -1187,3 +1187,45 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   .kalem-tetik { animation: none; }
   .kalem-kabarcik { animation: none; }
 }
+
+/* ============================================================
+   Program ızgarası — koyu tema karşılıkları
+   Renkler açık tema için sabit yazılmıştı; koyu zeminde boş
+   hücreler kayboluyor, dolu bloklar okunmuyordu.
+   ============================================================ */
+
+.uygulama .prg-cubuk { background: var(--yuzey-2); }
+.uygulama .prg-tablo th { color: var(--grafit); }
+.uygulama .prg-tablo th.prg-bugun { color: var(--dolgu); }
+.uygulama .prg-saat { color: var(--soluk); }
+
+/* Boş hücre: dokunulabilir olduğu belli olsun diye kesikli çerçeve */
+.uygulama .hucre--bos {
+  background: transparent;
+  border: 1px dashed var(--cizgi);
+  color: var(--soluk);
+}
+.uygulama .hucre--bos:not(:disabled):hover,
+.uygulama .hucre--bos:not(:disabled):active {
+  background: var(--yuzey-2);
+  border-color: var(--dolgu);
+  color: var(--dolgu);
+}
+.uygulama .hucre--bos:disabled { border-style: solid; opacity: 0.45; }
+
+.uygulama .hucre--dolu {
+  background: #24304a;
+  color: #b9cdf0;
+  border-color: #33456b;
+}
+.uygulama .hucre--dolu:hover { border-color: var(--dolgu); }
+.uygulama .hucre--bitti {
+  background: #17352a;
+  color: #7fd0a8;
+  border-color: #245943;
+}
+
+.uygulama .serbest { background: var(--yuzey-2); color: var(--murekkep); }
+.uygulama .serbest--bitti { background: #17352a; color: #7fd0a8; }
+.uygulama .prg-serbest h4 { color: var(--grafit); }
+.uygulama .hucre-panel { background: var(--yuzey-2); border: 1px solid var(--cizgi); }
