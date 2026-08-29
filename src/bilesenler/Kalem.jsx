@@ -63,12 +63,12 @@ const IFADE = {
   bekliyor: {
     kas: ['M72 84 L92 84', 'M108 84 L128 84'],
     goz: 'acik', bebek: [0, 0],
-    agiz: 'M92 148 Q100 156 108 148', dolu: false, yanak: 0.55, ekstra: null,
+    agiz: 'M86 146 Q100 161 114 146', dolu: false, yanak: 0.55, ekstra: null,
   },
   dusunuyor: {
     kas: ['M72 79 L92 87', 'M108 84 L128 84'],
     goz: 'acik', bebek: [-4, -4],
-    agiz: 'M91 150 Q96 145 100 150 T109 150', dolu: false, yanak: 0.45,
+    agiz: 'M85 150 Q92.5 142 100 150 T115 150', dolu: false, yanak: 0.45,
     ekstra: (
       <g fill={RENK.halka}>
         <circle cx='150' cy='92' r='4' />
@@ -80,17 +80,17 @@ const IFADE = {
   sevinc: {
     kas: ['M70 76 Q82 70 94 76', 'M106 76 Q118 70 130 76'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M88 144 Q100 162 112 144 Z', dolu: true, yanak: 0.9, ekstra: null,
+    agiz: 'M83 142 Q100 168 117 142 Z', dolu: true, yanak: 0.9, ekstra: null,
   },
   sasirdi: {
     kas: ['M69 72 Q82 65 95 72', 'M105 72 Q118 65 131 72'],
     goz: 'buyuk', bebek: [0, 0],
-    agiz: 'M94 146 a6.5 8.5 0 1 0 13 0 a6.5 8.5 0 1 0 -13 0', dolu: true, yanak: 0.6, ekstra: null,
+    agiz: 'M91 144 a9 11.5 0 1 0 18 0 a9 11.5 0 1 0 -18 0', dolu: true, yanak: 0.6, ekstra: null,
   },
   uyku: {
     kas: ['M72 88 L92 88', 'M108 88 L128 88'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M94 150 Q100 155 106 150', dolu: false, yanak: 0.4,
+    agiz: 'M90 149 Q100 158 110 149', dolu: false, yanak: 0.4,
     ekstra: (
       <g fill='#888780'>
         <text x='146' y='86' fontSize='21'>z</text>
@@ -101,18 +101,18 @@ const IFADE = {
   endise: {
     kas: ['M72 79 L92 89', 'M108 89 L128 79'],
     goz: 'acik', bebek: [0, 3],
-    agiz: 'M91 154 Q100 145 109 154', dolu: false, yanak: 0.35, ekstra: null,
+    agiz: 'M86 155 Q100 142 114 155', dolu: false, yanak: 0.35, ekstra: null,
   },
   fikir: {
     kas: ['M69 71 Q82 64 95 71', 'M105 71 Q118 64 131 71'],
     goz: 'buyuk', bebek: [0, -2],
-    agiz: 'M90 144 Q100 159 110 144 Z', dolu: true, yanak: 0.75,
+    agiz: 'M84 142 Q100 166 116 142 Z', dolu: true, yanak: 0.75,
     ekstra: <Baloncuklar />,
   },
   kutlama: {
     kas: ['M70 74 Q82 68 94 74', 'M106 74 Q118 68 130 74'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M86 142 Q100 166 114 142 Z', dolu: true, yanak: 0.95,
+    agiz: 'M81 141 Q100 170 119 141 Z', dolu: true, yanak: 0.95,
     ekstra: (
       <g>
         <rect x='26' y='28' width='10' height='10' fill={RENK.yanak} transform='rotate(20 31 33)' />
@@ -186,7 +186,7 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
         </g>
       )}
 
-      <path d={i.agiz} stroke={RENK.cizgi} strokeWidth='3.2'
+      <path d={i.agiz} stroke={RENK.cizgi} strokeWidth='3.6'
             fill={i.dolu ? RENK.cizgi : 'none'} strokeLinecap='round' />
       {i.ekstra}
     </svg>
