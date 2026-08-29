@@ -312,6 +312,7 @@ function Program({ ogrenci }) {
         ogrenci={ogrenci}
         duzenlenebilir
         onHucreSec={(blok, tarih, periyot) => setSecim({ blok, tarih, periyot })}
+        onRutinEkle={(gunler) => setSecim({ rutinGunler: gunler })}
       />
 
       {secim && (
@@ -331,7 +332,23 @@ function Program({ ogrenci }) {
 
 /** Bir hücreye ders atar ya da mevcut bloğu düzenler/siler. */
 function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
-  const { blok, tarih, periyot } = secim
+  const { blok, tarih, periyot, rutinGunler } = secim
+
+  if (rutinGunler) {
+    return (
+      <div className="hucre-panel">
+        <header className="hucre-basi">
+          <div>
+            <span className="hucre-gun">Rutin ekle</span>
+            <span className="hucre-saat">Seçtiğin günlere aynı görev yazılır</span>
+          </div>
+          <button className="metin-dugme" onClick={onKapat}>Kapat</button>
+        </header>
+        <RutinFormu ogrenci={ogrenci} gunler={rutinGunler} onEklendi={onDegisti} />
+      </div>
+    )
+  }
+
   const gun = new Date(tarih).toLocaleDateString('tr-TR', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
@@ -1218,6 +1235,141 @@ function BlokDuzenle({ blok, onSil, onDegisti }) {
         <Dugme onClick={kaydet} bekliyor={bekliyor}>Notu kaydet</Dugme>
         <Dugme tur="ikincil" onClick={onSil}>Bloğu sil</Dugme>
       </div>
+    </div>
+  )
+}
+
+
+const GUN_ADI = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+
+/** Rutin: saate bağlı olmayan, birden çok güne aynı anda yazılan görev.
+ *  Paragraf, problem, geometri gibi her gün tekrarlanan işler için. */
+function RutinFormu({ ogrenci, gunler, onEklendi }) {
+  const [dersler, setDersler] = useState([])
+  const [dersId, setDersId] = useState('')
+  const [tur, setTur] = useState('soru_cozumu')
+  const [hedef, setHedef] = useState('20')
+  const [aciklama, setAciklama] = useState('')
+  const [secili, setSecili] = useState(() => gunler.map(() => true))
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  useEffect(() => {
+    if (!ogrenci.katalog_id) return
+    supabase
+      .from('dersler')
+      .select('id, ad, sira')
+      .eq('katalog_id', ogrenci.katalog_id)
+      .order('sira')
+      .then(({ data }) => setDersler(data ?? []))
+  }, [ogrenci.katalog_id])
+
+  const secilenGunler = gunler.filter((_, i) => secili[i])
+
+  async function ekle() {
+    if (!dersId) {
+      setHata('Önce bir ders seç.')
+      return
+    }
+    if (secilenGunler.length === 0) {
+      setHata('En az bir gün seç.')
+      return
+    }
+    setBekliyor(true)
+    setHata('')
+
+    const ders = dersler.find((d) => String(d.id) === dersId)
+    const { error } = await supabase.from('gorevler').insert(
+      secilenGunler.map((tarih) => ({
+        ogrenci_id: ogrenci.id,
+        koc_id: ogrenci.koc_id,
+        tarih,
+        periyot: null,
+        ders_id: Number(dersId),
+        tur,
+        baslik: ders?.ad ?? 'Rutin',
+        hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
+        aciklama: aciklama.trim() || null,
+        durum: 'bekliyor',
+      })),
+    )
+
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    onEklendi()
+  }
+
+  if (!ogrenci.katalog_id) {
+    return <Bos baslik="Katalog atanmamış" aciklama="Önce öğrenciye bir konu kataloğu seçin." />
+  }
+
+  return (
+    <div className="form-kutu">
+      <Alan etiket="Ders">
+        <select value={dersId} onChange={(e) => setDersId(e.target.value)}>
+          <option value="">Ders seç</option>
+          {dersler.map((d) => (
+            <option key={d.id} value={d.id}>{d.ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      <Alan etiket="Tür">
+        <select value={tur} onChange={(e) => setTur(e.target.value)}>
+          {Object.entries(TUR_ADI).map(([k, ad]) => (
+            <option key={k} value={k}>{ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      {ADETLI.has(tur) && (
+        <Alan etiket="Günlük hedef">
+          <input
+            type="number"
+            inputMode="numeric"
+            min="1"
+            max="500"
+            value={hedef}
+            onChange={(e) => setHedef(e.target.value)}
+          />
+        </Alan>
+      )}
+
+      <Alan etiket="Günler" ipucu={`${secilenGunler.length} gün seçili`}>
+        <div className="gun-secim">
+          {gunler.map((g, i) => (
+            <button
+              key={g}
+              type="button"
+              className={`gun-kutu${secili[i] ? ' gun-kutu--secili' : ''}`}
+              aria-pressed={secili[i]}
+              onClick={() =>
+                setSecili((m) => m.map((v, j) => (j === i ? !v : v)))
+              }
+            >
+              {GUN_ADI[i]}
+            </button>
+          ))}
+        </div>
+      </Alan>
+
+      <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
+        <textarea
+          rows={2}
+          value={aciklama}
+          onChange={(e) => setAciklama(e.target.value)}
+          placeholder="Örn. Her gün 20 paragraf, süre tutarak."
+        />
+      </Alan>
+
+      <Uyari>{hata}</Uyari>
+
+      <Dugme onClick={ekle} bekliyor={bekliyor}>
+        {secilenGunler.length} güne ekle
+      </Dugme>
     </div>
   )
 }

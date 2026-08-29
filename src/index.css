@@ -1694,3 +1694,27 @@ body[data-tema='panel'] {
 
 /* Rutinler başlığı bölüm başlığı gibi dursun */
 .prg-serbest h4 { font-size: 0.9375rem; color: #b8431a; margin-bottom: 0.625rem; }
+
+/* Rutin ekleme */
+.rutin-baslik { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+.rutin-baslik h4 { margin: 0; }
+.rutin-ekle {
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid var(--sicak-kenar, #f5b694);
+  background: var(--sicak-zemin, #ffe6d8);
+  color: #b8431a; font-size: 1.25rem; line-height: 1; cursor: pointer;
+}
+.rutin-bos { font-size: 0.8125rem; color: var(--soluk); line-height: 1.5; }
+
+.gun-secim { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.gun-kutu {
+  min-width: 3rem; min-height: 40px; padding: 0.4rem 0.5rem;
+  border: 1px dashed var(--cizgi); border-radius: 8px;
+  background: transparent; color: var(--grafit);
+  font: inherit; font-size: 0.8125rem; cursor: pointer;
+}
+.gun-kutu--secili {
+  background: var(--serin-zemin, #dce9fc);
+  border: 1px solid var(--serin-kenar, #a9c7f0);
+  color: #17539f; font-weight: 600;
+}

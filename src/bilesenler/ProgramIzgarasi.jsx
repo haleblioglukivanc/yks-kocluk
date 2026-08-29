@@ -28,7 +28,7 @@ export function haftaGunleri(bas) {
  * Satırlar zaman dilimi, sütunlar gün. Koç boş hücreye ders atar,
  * öğrenci dolu hücreye dokunup bitmiş olarak işaretler.
  */
-export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, saltOkunur }) {
+export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, onRutinEkle, saltOkunur }) {
   const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
@@ -207,10 +207,27 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
             />
           )}
 
-          {gunBoyu.length > 0 && (
+          {(gunBoyu.length > 0 || duzenlenebilir) && (
             <div className="prg-serbest">
-              <h4>Rutinler</h4>
+              <div className="rutin-baslik">
+                <h4>Rutinler</h4>
+                {duzenlenebilir && (
+                  <button
+                    className="rutin-ekle"
+                    onClick={() => onRutinEkle?.(gunler.map(gunAnahtari))}
+                    aria-label="Rutin ekle"
+                    title="Rutin ekle"
+                  >
+                    +
+                  </button>
+                )}
+              </div>
               <ul>
+                {rutinler.length === 0 && duzenlenebilir && (
+                  <li className="rutin-bos">
+                    Saate bağlı olmayan tekrar eden görevler burada. Artıya dokunup ekleyin.
+                  </li>
+                )}
                 {rutinler.map((r) => (
                   <li key={r.ad} className="rutin">
                     <div className="rutin-basi">
