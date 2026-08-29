@@ -537,6 +537,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
 function Denemeler({ ogrenci }) {
   const [liste, setListe] = useState(null)
   const [formAcik, setFormAcik] = useState(false)
+  const [acikHata, setAcikHata] = useState(null)
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
@@ -607,14 +608,157 @@ function Denemeler({ ogrenci }) {
                 <strong>{Number(d.toplam_net).toFixed(2)}</strong>
                 <span>net</span>
               </div>
+              <button
+                className="metin-dugme"
+                onClick={() => setAcikHata(acikHata === d.id ? null : d.id)}
+                aria-expanded={acikHata === d.id}
+              >
+                Hata konuları
+              </button>
               <button className="sil-dugme" onClick={() => sil(d.id)} aria-label="Sil">
+                ×
+              </button>
+              {acikHata === d.id && <DenemeHatalari deneme={d} ogrenci={ogrenci} />}
+            </li>
+          ))}
+        </ul>
+      )}
+    </Kart>
+  )
+}
+
+/* Netin hangi konudan düştüğü, denemenin asıl bilgisi. Buraya girilen
+   satırlar öğrencinin deneme sekmesinde "tekrar edilmesi gereken konular"
+   listesinde birikiyor. */
+function DenemeHatalari({ deneme, ogrenci }) {
+  const [satirlar, setSatirlar] = useState(null)
+  const [dersler, setDersler] = useState([])
+  const [konular, setKonular] = useState([])
+  const [dersId, setDersId] = useState('')
+  const [konuId, setKonuId] = useState('')
+  const [adet, setAdet] = useState('1')
+  const [hata, setHata] = useState('')
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('deneme_hatalari')
+      .select('konu_id, adet, konular(ad, dersler(ad))')
+      .eq('deneme_id', deneme.id)
+    if (error) setHata(hataMetni(error))
+    setSatirlar(data ?? [])
+  }, [deneme.id])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
+
+  useEffect(() => {
+    if (!ogrenci.katalog_id) return
+    supabase
+      .from('dersler')
+      .select('id, ad')
+      .eq('katalog_id', ogrenci.katalog_id)
+      .order('sira')
+      .then(({ data }) => setDersler(data ?? []))
+  }, [ogrenci.katalog_id])
+
+  useEffect(() => {
+    setKonuId('')
+    if (!dersId) {
+      setKonular([])
+      return
+    }
+    supabase
+      .from('konular')
+      .select('id, ad')
+      .eq('ders_id', Number(dersId))
+      .order('sira')
+      .then(({ data }) => setKonular(data ?? []))
+  }, [dersId])
+
+  async function ekle() {
+    if (!konuId) return
+    const { error } = await supabase
+      .from('deneme_hatalari')
+      .upsert(
+        { deneme_id: deneme.id, konu_id: Number(konuId), adet: Math.max(1, Number(adet) || 1) },
+        { onConflict: 'deneme_id,konu_id' },
+      )
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setHata('')
+    setKonuId('')
+    setAdet('1')
+    yukle()
+  }
+
+  async function kaldir(kId) {
+    const { error } = await supabase
+      .from('deneme_hatalari')
+      .delete()
+      .eq('deneme_id', deneme.id)
+      .eq('konu_id', kId)
+    if (error) setHata(hataMetni(error))
+    else yukle()
+  }
+
+  return (
+    <div className="hata-kutu">
+      <Uyari>{hata}</Uyari>
+      {satirlar === null ? (
+        <Yukleniyor />
+      ) : satirlar.length === 0 ? (
+        <p className="kart-alt">Bu denemede konu bazlı hata girilmemiş.</p>
+      ) : (
+        <ul className="liste">
+          {satirlar.map((h) => (
+            <li key={h.konu_id} className="zayif-satir">
+              <div className="zayif-metin">
+                <span className="gorev-baslik">{h.konular?.ad}</span>
+                <span className="gorev-etiket">{h.konular?.dersler?.ad}</span>
+              </div>
+              <span className="zayif-sayi">{h.adet}</span>
+              <button className="sil-dugme" onClick={() => kaldir(h.konu_id)} aria-label="Kaldır">
                 ×
               </button>
             </li>
           ))}
         </ul>
       )}
-    </Kart>
+
+      <div className="hata-form">
+        <select value={dersId} onChange={(e) => setDersId(e.target.value)} aria-label="Ders">
+          <option value="">Ders seç</option>
+          {dersler.map((d) => (
+            <option key={d.id} value={d.id}>{d.ad}</option>
+          ))}
+        </select>
+        <select
+          value={konuId}
+          onChange={(e) => setKonuId(e.target.value)}
+          disabled={!konular.length}
+          aria-label="Konu"
+        >
+          <option value="">{konular.length ? 'Konu seç' : 'Önce ders seç'}</option>
+          {konular.map((k) => (
+            <option key={k.id} value={k.id}>{k.ad}</option>
+          ))}
+        </select>
+        <div className="hata-form-alt">
+          <input
+            type="number"
+            min="1"
+            max="99"
+            value={adet}
+            onChange={(e) => setAdet(e.target.value)}
+            aria-label="Hata adedi"
+          />
+          <Dugme tur="ikincil" onClick={ekle} disabled={!konuId}>Ekle</Dugme>
+        </div>
+      </div>
+    </div>
   )
 }
 

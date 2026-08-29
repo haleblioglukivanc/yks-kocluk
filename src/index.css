@@ -1561,3 +1561,66 @@ body[data-tema='panel'] {
 .cozulen-sayilar input { width: 100%; font-family: var(--mono); text-align: center; }
 .cozulen-eylem { display: flex; align-items: center; gap: 0.75rem; }
 .cozulen-eylem .dugme { flex: 1; }
+
+/* ---------- Denemeler ---------- */
+.tur-secim { display: flex; gap: 0.375rem; flex-wrap: wrap; }
+.tur-cip {
+  border: 1px solid var(--cizgi); background: var(--yuzey); border-radius: 999px;
+  padding: 0.3rem 0.7rem; font: inherit; font-size: 0.75rem; font-weight: 500;
+  color: var(--grafit); cursor: pointer; white-space: nowrap;
+}
+.tur-cip--etkin { background: var(--murekkep); border-color: var(--murekkep); color: var(--yuzey); }
+
+.net-ozet { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; }
+.net-ozet-etiket { display: block; font-size: 0.75rem; color: var(--soluk); }
+.net-ozet-sayi {
+  display: block; font-family: var(--mono); font-size: 1.875rem;
+  font-weight: 600; line-height: 1.1; font-variant-numeric: tabular-nums;
+}
+.net-fark { font-family: var(--mono); font-size: 0.875rem; font-weight: 600; white-space: nowrap; }
+.net-fark--artis { color: var(--isaret); }
+.net-fark--dusus { color: var(--uyari); }
+.net-cizgi { width: 100%; height: 90px; margin-top: 0.75rem; display: block; }
+
+/* Ders kutuları: dar ekranda iki, geniş ekranda üç sütun. minmax(0,1fr)
+   uzun ders adının sütunu şişirmesini engelliyor. */
+.net-kutular { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+@media (min-width: 30rem) { .net-kutular { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.net-kutu {
+  border: 1px solid var(--cizgi); border-radius: 8px; padding: 0.5rem 0.6rem;
+  background: var(--yuzey); min-width: 0;
+}
+.net-kutu-ders {
+  display: block; font-size: 0.65rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--soluk); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.net-kutu-net {
+  display: block; font-family: var(--mono); font-size: 1rem; font-weight: 600;
+  margin-top: 0.1rem; font-variant-numeric: tabular-nums;
+}
+.net-kutu .dny { margin-top: 0.2rem; }
+
+.zayif-satir {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.625rem 0; border-bottom: 1px solid var(--cizgi);
+}
+.zayif-satir:last-child { border-bottom: 0; }
+.zayif-metin { flex: 1; min-width: 0; }
+.zayif-sayi {
+  flex: 0 0 auto; font-family: var(--mono); font-size: 0.9375rem;
+  font-weight: 600; color: var(--uyari);
+}
+
+/* Denemeye konu bazlı hata girişi */
+.hata-kutu {
+  flex-basis: 100%; margin-top: 0.5rem; padding: 0.75rem;
+  background: var(--kagit); border-radius: 8px;
+}
+.hata-form { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.625rem; }
+.hata-form-alt { display: flex; gap: 0.5rem; }
+.hata-form-alt input { flex: 0 0 4.5rem; font-family: var(--mono); text-align: center; }
+.hata-form-alt .dugme { flex: 1; }
+
+/* Deneme satırı hata kutusunu alt satıra alabilsin */
+.liste-satir { flex-wrap: wrap; }
+.liste-satir > div:first-child { min-width: 0; flex: 1 1 auto; }

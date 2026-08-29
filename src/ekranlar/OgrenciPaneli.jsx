@@ -8,6 +8,7 @@ import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
+import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
@@ -161,29 +162,7 @@ export default function OgrenciPaneli({ profil }) {
       ) : sekme === 'rozetler' ? (
         <Rozetlerim ogrenciId={kayit.id} />
       ) : (
-        <Kart baslik="Denemelerim" altBaslik={`Son ${denemeler.length} kayıt`}>
-          {denemeler.length === 0 ? (
-            <Bos baslik="Deneme kaydı yok" aciklama="Koçun deneme sonuçlarını girdiğinde burada görünecek." />
-          ) : (
-            <ul className="liste">
-              {denemeler.map((d) => (
-                <li key={d.id} className="liste-satir">
-                  <div>
-                    <span className="liste-ad">{d.tur.toUpperCase()}</span>
-                    <span className="liste-alt">
-                      {new Date(d.tarih).toLocaleDateString('tr-TR')}
-                      {d.yayin ? ` · ${d.yayin}` : ''}
-                    </span>
-                  </div>
-                  <div className="net-rozet">
-                    <strong>{Number(d.toplam_net).toFixed(2)}</strong>
-                    <span>net</span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Kart>
+        <DenemePaneli />
       )}
     </>
   )

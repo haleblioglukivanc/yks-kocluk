@@ -5,6 +5,7 @@ import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
+import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
 /* Koçun "öğrenci ne görüyor" sorusuna cevabı. Salt okunur:
@@ -107,6 +108,8 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
           </ul>
         </Kart>
       )}
+
+      <DenemePaneli ogrenciId={ogrenciId} saltOkunur />
 
       <Kart baslik="Haftalık programı" altBaslik="Öğrencinin gördüğü hâliyle">
         <ProgramIzgarasi ogrenci={ogrenci} duzenlenebilir={false} saltOkunur />
