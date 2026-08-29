@@ -86,9 +86,9 @@ function Vurgulu({ metin }) {
    Telefon maketi ve içindeki ekranlar
    ═══════════════════════════════════════════════════════════════ */
 
-function Telefon({ baslik, tarih, children }) {
+function Telefon({ baslik, tarih, egik = false, children }) {
   return (
-    <div className="t-telefon" aria-hidden="true">
+    <div className={`t-telefon ${egik ? 't-telefon--egik' : ''}`} aria-hidden="true">
       <div className="t-telefon-ekran">
         <div className="t-telefon-cizgi" />
         <div className="t-ekran-basi">
@@ -277,7 +277,8 @@ function Ustluk({ ad, onGiris }) {
 
           <nav className="t-nav">
             {baglar.map(([adres, metin]) => <a key={adres} href={adres}>{metin}</a>)}
-            <button className="t-dugme t-dugme--cizgi" onClick={onGiris}>Giriş yap</button>
+            <button className="t-dugme t-dugme--cizgi t-dugme--kucuk" onClick={onGiris}>Giriş yap</button>
+            <a className="t-dugme t-dugme--ana t-dugme--kucuk" href="#iletisim">Ücretsiz tanışma</a>
           </nav>
 
           <button
@@ -322,16 +323,13 @@ function VideoKart({ video }) {
             <span>Video henüz eklenmedi</span>
           </div>
         )}
+        <span className="t-sure">{video.sure}</span>
       </div>
       <div className="t-video-govde">
         <span className="t-video-tur">{video.tur}</span>
         <h3>{video.baslik}</h3>
         <p>{video.ozet}</p>
-        <div className="t-video-ayak">
-          <span>{video.sure}</span>
-          <span>·</span>
-          <span>{video.tarih}</span>
-        </div>
+        <div className="t-video-ayak">{video.tarih}</div>
       </div>
     </article>
   )
@@ -353,6 +351,60 @@ function SeminerKart({ seminer }) {
         </div>
       </div>
     </article>
+  )
+}
+
+function YorumDongusu({ liste }) {
+  const [i, setI] = useState(0)
+  const [durdu, setDurdu] = useState(false)
+
+  useEffect(() => {
+    if (durdu || liste.length < 2 || azHareketMi()) return
+    const z = setInterval(() => setI((v) => (v + 1) % liste.length), 6500)
+    return () => clearInterval(z)
+  }, [durdu, liste.length])
+
+  const y = liste[i]
+  const basHarf = y.kisi.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2)
+
+  return (
+    <div
+      className="t-dongu"
+      onMouseEnter={() => setDurdu(true)}
+      onMouseLeave={() => setDurdu(false)}
+    >
+      <blockquote key={i} className="t-dongu-yorum">
+        <p>{y.metin}</p>
+        <footer>
+          <span className="t-yorum-im" aria-hidden="true">{basHarf}</span>
+          <span>
+            <span className="t-yorum-kisi">{y.kisi}</span>
+            <span className="t-yorum-rol">{y.rol}</span>
+          </span>
+        </footer>
+      </blockquote>
+
+      <div className="t-dongu-kontrol">
+        <button
+          className="t-ok" aria-label="Önceki yorum"
+          onClick={() => setI((v) => (v - 1 + liste.length) % liste.length)}
+        >←</button>
+        <div className="t-benekler">
+          {liste.map((_, n) => (
+            <button
+              key={n}
+              className={`t-benek ${n === i ? 't-benek--etkin' : ''}`}
+              aria-label={`Yorum ${n + 1}`}
+              onClick={() => setI(n)}
+            />
+          ))}
+        </div>
+        <button
+          className="t-ok" aria-label="Sonraki yorum"
+          onClick={() => setI((v) => (v + 1) % liste.length)}
+        >→</button>
+      </div>
+    </div>
   )
 }
 
@@ -414,7 +466,10 @@ export default function Tanitim({ onGiris }) {
           </div>
 
           <div className="t-telefon-yuva">
-            <Telefon baslik="Bugün" tarih="Pzt · 14 Ekim">
+            <div className="t-yuzen t-yuzen--1" aria-hidden="true">🔥 <b>14 gün</b>&nbsp;çalışma serisi</div>
+            <div className="t-yuzen t-yuzen--2" aria-hidden="true">📈 <b>+23 net</b>&nbsp;Nisan → Eylül</div>
+            <div className="t-yuzen t-yuzen--3" aria-hidden="true">✓ Fizik · <b>25 soru</b></div>
+            <Telefon egik baslik="Bugün" tarih="Pzt · 14 Ekim">
               <EkranGorev gorevler={vitrin.maket.gorevler} />
             </Telefon>
           </div>
@@ -422,7 +477,7 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Sayılar ---------- */}
-      <section className="t-bant t-bant--dar">
+      <section className="t-bant t-bant--sayilar">
         <div className="t-kap">
           <Belir>
             <div className="t-serit">
@@ -502,12 +557,14 @@ export default function Tanitim({ onGiris }) {
             <h2 className="t-baslik">{yaklasim.baslik}</h2>
             <p className="t-alt-metin">{yaklasim.aciklama}</p>
             <div className="t-ilkeler">
-              {yaklasim.ilkeler.map((i) => (
-                <article className="t-ilke" key={i.baslik}>
-                  <div className="t-ilke-im" aria-hidden="true">{i.emoji}</div>
-                  <h3>{i.baslik}</h3>
-                  <p>{i.metin}</p>
-                </article>
+              {yaklasim.ilkeler.map((ilke, n) => (
+                <Belir key={ilke.baslik} gecikme={n * 80} className="t-hucre">
+                  <article className="t-ilke">
+                    <div className="t-ilke-im" aria-hidden="true">{ilke.emoji}</div>
+                    <h3>{ilke.baslik}</h3>
+                    <p>{ilke.metin}</p>
+                  </article>
+                </Belir>
               ))}
             </div>
           </Belir>
@@ -521,12 +578,13 @@ export default function Tanitim({ onGiris }) {
             <p className="t-etiket">Süreç</p>
             <h2 className="t-baslik">{nasil.baslik}</h2>
             <p className="t-alt-metin">{nasil.aciklama}</p>
-            <ol className="t-adimlar">
+            <ol className="t-yol">
               {nasil.adimlar.map((a, i) => (
-                <li key={a.baslik} className="t-adim">
-                  <span className="t-adim-no">ADIM {String(i + 1).padStart(2, '0')}</span>
+                <li key={a.baslik} className="t-durak">
+                  <span className="t-durak-no" aria-hidden="true">{i + 1}</span>
                   <h3>{a.baslik}</h3>
                   <p>{a.metin}</p>
+                  {i === 0 && <span className="t-cip">ÜCRETSİZ</span>}
                 </li>
               ))}
             </ol>
@@ -551,7 +609,11 @@ export default function Tanitim({ onGiris }) {
               )}
             </div>
             <div className="t-videolar">
-              {videolar.liste.map((v) => <VideoKart key={v.baslik} video={v} />)}
+              {videolar.liste.map((v, n) => (
+                <Belir key={v.baslik} gecikme={(n % 3) * 90} className="t-hucre t-video-hucre">
+                  <VideoKart video={v} />
+                </Belir>
+              ))}
             </div>
           </Belir>
         </div>
@@ -565,7 +627,11 @@ export default function Tanitim({ onGiris }) {
             <h2 className="t-baslik">{seminerler.baslik}</h2>
             <p className="t-alt-metin">{seminerler.aciklama}</p>
             <div className="t-galeri">
-              {seminerler.liste.map((s) => <SeminerKart key={s.baslik} seminer={s} />)}
+              {seminerler.liste.map((sm, n) => (
+                <Belir key={sm.baslik} gecikme={(n % 3) * 90} className="t-hucre">
+                  <SeminerKart seminer={sm} />
+                </Belir>
+              ))}
             </div>
           </Belir>
         </div>
@@ -643,23 +709,7 @@ export default function Tanitim({ onGiris }) {
             <Belir>
               <p className="t-etiket">Geri bildirim</p>
               <h2 className="t-baslik">{yorumlar.baslik}</h2>
-              <div className="t-yorumlar">
-                {yorumlar.liste.map((y) => (
-                  <blockquote key={y.kisi} className="t-yorum">
-                    <span className="t-tirnak" aria-hidden="true">”</span>
-                    <p>{y.metin}</p>
-                    <footer>
-                      <span className="t-yorum-im" aria-hidden="true">
-                        {y.kisi.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2)}
-                      </span>
-                      <span>
-                        <span className="t-yorum-kisi">{y.kisi}</span>
-                        <span className="t-yorum-rol">{y.rol}</span>
-                      </span>
-                    </footer>
-                  </blockquote>
-                ))}
-              </div>
+              <YorumDongusu liste={yorumlar.liste} />
             </Belir>
           </div>
         </section>
