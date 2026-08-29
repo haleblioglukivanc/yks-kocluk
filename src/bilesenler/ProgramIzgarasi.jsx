@@ -40,7 +40,7 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec })
   const yukle = useCallback(async () => {
     const { data, error } = await supabase
       .from('gorevler')
-      .select('id, tarih, periyot, tur, baslik, hedef_adet, yapilan_adet, durum, dersler(ad), konular(ad)')
+      .select('id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, dersler(ad), konular(ad)')
       .eq('ogrenci_id', ogrenci.id)
       .gte('tarih', ilk)
       .lte('tarih', son)
@@ -136,7 +136,11 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec })
                                 duzenlenebilir ? onHucreSec?.(blok, gunAnahtari(g), si + 1) : bittiIsaretle(blok)
                               }
                               aria-pressed={bitti}
-                              title={`${blok.baslik}${blok.hedef_adet ? ` · ${blok.yapilan_adet}/${blok.hedef_adet}` : ''}`}
+                              title={[
+                                blok.baslik,
+                                blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null,
+                                blok.aciklama,
+                              ].filter(Boolean).join(' · ')}
                             >
                               {blok.dersler?.ad ?? blok.baslik}
                             </button>

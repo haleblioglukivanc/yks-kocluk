@@ -350,17 +350,7 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
       </header>
 
       {blok ? (
-        <div className="hucre-mevcut">
-          <div>
-            <span className="liste-ad">{blok.baslik}</span>
-            <span className="liste-alt">
-              {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur],
-                blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null]
-                .filter(Boolean).join(' · ')}
-            </span>
-          </div>
-          <Dugme tur="ikincil" onClick={sil}>Bloğu sil</Dugme>
-        </div>
+        <BlokDuzenle blok={blok} onSil={sil} onDegisti={onDegisti} />
       ) : (
         <GorevFormu
           ogrenci={ogrenci}
@@ -385,6 +375,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [konuId, setKonuId] = useState('')
   const [tur, setTur] = useState('konu_anlatimi')
   const [hedef, setHedef] = useState('')
+  const [aciklama, setAciklama] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
 
@@ -433,6 +424,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       tur,
       baslik,
       hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
+      aciklama: aciklama.trim() || null,
       durum: 'bekliyor',
     })
 
@@ -500,6 +492,15 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           />
         </Alan>
       )}
+
+      <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
+        <textarea
+          rows={2}
+          value={aciklama}
+          onChange={(e) => setAciklama(e.target.value)}
+          placeholder="Örn. Önce çıkmış soruları çöz, sonra deneme kitabına geç."
+        />
+      </Alan>
 
       <Uyari>{hata}</Uyari>
 
@@ -1156,5 +1157,64 @@ function SeriVeRozet({ ogrenciId }) {
       {seri} günlük seri · {veri.rozetler.length} rozet
       {sonRozet ? ` · son: ${sonRozet.rozetler?.ad}` : ''}
     </p>
+  )
+}
+
+
+/** Mevcut bloğun notunu düzenler. Not, öğrencinin görev altında
+ *  gördüğü tek serbest metin: "önce çıkmış sorular" gibi yönlendirmeler. */
+function BlokDuzenle({ blok, onSil, onDegisti }) {
+  const [not, setNot] = useState(blok.aciklama ?? '')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+  const [kaydedildi, setKaydedildi] = useState(false)
+
+  async function kaydet() {
+    setBekliyor(true)
+    setHata('')
+    const { error } = await supabase
+      .from('gorevler')
+      .update({ aciklama: not.trim() || null })
+      .eq('id', blok.id)
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setKaydedildi(true)
+    onDegisti()
+  }
+
+  return (
+    <div className="form-kutu">
+      <div>
+        <span className="liste-ad">{blok.baslik}</span>
+        <span className="liste-alt">
+          {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur],
+            blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null]
+            .filter(Boolean).join(' · ')}
+        </span>
+      </div>
+
+      <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
+        <textarea
+          rows={3}
+          value={not}
+          onChange={(e) => {
+            setNot(e.target.value)
+            setKaydedildi(false)
+          }}
+          placeholder="Örn. Önce çıkmış soruları çöz."
+        />
+      </Alan>
+
+      <Uyari>{hata}</Uyari>
+      {kaydedildi && <Uyari tur="bilgi">Not kaydedildi.</Uyari>}
+
+      <div className="ikili">
+        <Dugme onClick={kaydet} bekliyor={bekliyor}>Notu kaydet</Dugme>
+        <Dugme tur="ikincil" onClick={onSil}>Bloğu sil</Dugme>
+      </div>
+    </div>
   )
 }

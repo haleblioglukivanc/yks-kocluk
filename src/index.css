@@ -1618,3 +1618,14 @@ body[data-tema='panel'] {
 .uygulama .sekme--etkin { background: var(--sicak-zemin); border: 1px solid var(--sicak-kenar); color: #b8431a; }
 .uygulama .sekmeler { background: var(--yuzey-2); }
 .uygulama .iskelet { background: var(--cizgi); }
+
+/* Görev notu: koçun serbest metni, öğrencinin gördüğü yönlendirme */
+.gorev-not {
+  display: block; margin-top: 0.3rem;
+  padding: 0.4rem 0.55rem;
+  background: var(--altin-zemin, #fcefd0);
+  border-left: 3px solid var(--altin, #d99a12);
+  border-radius: 0 6px 6px 0;
+  font-size: 0.8125rem; line-height: 1.45;
+  white-space: pre-wrap;
+}

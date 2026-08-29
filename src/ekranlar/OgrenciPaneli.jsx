@@ -246,6 +246,7 @@ function BugunKarti({ ozet, onDegisti }) {
                         .filter(Boolean)
                         .join(' · ')}
                     </span>
+                    {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
                   </span>
                 </label>
               </li>
