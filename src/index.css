@@ -1374,3 +1374,93 @@ body[data-tema='panel'] {
 
 /* Sıfır seri sarı vurguyla kutlanacak bir şey gibi durmasın */
 .kimlik-seri--sifir { color: var(--soluk); }
+
+/* ============================================================
+   Renk sistemi — sıcak "dikkat", soğuk "yolunda"
+   Renkler süs değil bilgi: panele bakınca neyin acil olduğu
+   okumadan anlaşılsın.
+   ============================================================ */
+
+.uygulama {
+  --serin:       #4c8dff;   /* mavi — iyi giden, nötr veri */
+  --serin-zemin: #12244a;
+  --serin-kenar: #22406f;
+  --sicak:       #f2764b;   /* turuncu — dikkat ister */
+  --sicak-zemin: #3a1c12;
+  --sicak-kenar: #6b3220;
+  --kizil:       #e8705f;   /* kırmızı — acil */
+  --kizil-zemin: #3d1512;
+}
+
+/* KPI kartları: durumuna göre sıcak ya da soğuk */
+.kpi-satir { gap: 0.75rem; padding: 0; }
+.kpi-kart {
+  border-radius: var(--r);
+  padding: 0.875rem 0.9rem;
+  border: 1px solid transparent;
+}
+.uygulama .kpi-kart--serin {
+  background: linear-gradient(160deg, var(--serin-zemin), var(--yuzey) 85%);
+  border-color: var(--serin-kenar);
+}
+.uygulama .kpi-kart--serin .kpi-sayi { color: #9fc2ff; }
+.uygulama .kpi-kart--sicak {
+  background: linear-gradient(160deg, var(--sicak-zemin), var(--yuzey) 85%);
+  border-color: var(--sicak-kenar);
+}
+.uygulama .kpi-kart--sicak .kpi-sayi { color: #ffb08c; }
+.uygulama .kpi-alt--iyi { color: #7fd0a8; }
+.uygulama .kpi-alt--kotu { color: var(--sicak); }
+
+/* Üst barın altında ince sıcak çizgi — imza öğe */
+.uygulama .ust-bar {
+  border-bottom: 0;
+  box-shadow: inset 0 -2px 0 0 var(--sicak);
+}
+
+/* Kartların üstünde saç teli inceliğinde renkli çizgi yok; ayrım
+   başlıkların yanındaki noktayla yapılıyor: daha sessiz. */
+.uygulama .kart-basi h2::before {
+  content: '';
+  display: inline-block;
+  width: 6px; height: 6px;
+  margin-right: 0.5rem;
+  border-radius: 50%;
+  background: var(--serin);
+  vertical-align: middle;
+}
+
+/* Risk radarı: acil kırmızı, izle turuncu */
+.uygulama .risk-bas--acil { background: var(--kizil-zemin); color: #ff9b8a; }
+.uygulama .risk-bas--izle { background: var(--sicak-zemin); color: #ffb08c; }
+.uygulama .risk-bas--iyi  { background: #12301f; color: #7fd0a8; }
+.uygulama .rozet--uyari { background: var(--kizil-zemin); color: #ff9b8a; }
+
+/* Isı haritası çubuğu turuncudan kırmızıya */
+.uygulama .isi-cubuk span {
+  background: linear-gradient(90deg, var(--sicak), var(--kizil));
+}
+
+/* Alt gezinme: etkin sekme sıcak vurgulu */
+.uygulama .alt-bag--etkin {
+  color: var(--murekkep);
+  box-shadow: inset 0 2px 0 var(--sicak);
+}
+
+/* Kâmil serin tarafta kalıyor: yardımcı, uyarıcı değil */
+.uygulama .kalem-balon,
+.uygulama .kalem-kabarcik {
+  background: linear-gradient(160deg, var(--serin-zemin), var(--yuzey) 90%);
+  border-color: var(--serin-kenar);
+}
+.uygulama .kalem-ad,
+.uygulama .kalem-kabarcik-ad { color: #8fb6ff; }
+
+/* İlerleme ve program blokları */
+.uygulama .ilerleme-dolu { background: var(--serin); }
+.uygulama .prg-cubuk div { background: var(--serin); }
+.uygulama .hucre--dolu { background: #1d2c48; color: #a9c5f5; border-color: var(--serin-kenar); }
+.uygulama .hucre--bitti { background: #133024; color: #7fd0a8; border-color: #245943; }
+.uygulama .dugme--birincil { background: var(--serin); color: #08132b; }
+.uygulama .balon--benden { background: var(--serin); color: #08132b; }
+.uygulama .sekme--etkin { background: var(--serin-zemin); border-color: var(--serin-kenar); color: #cfe0ff; }

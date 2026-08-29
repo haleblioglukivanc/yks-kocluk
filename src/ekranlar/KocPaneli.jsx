@@ -42,6 +42,8 @@ function NetGrafigi({ veri }) {
   const cizgi = veri.map((d, i) => `${i ? 'L' : 'M'}${x(i)} ${y(Number(d.ort))}`).join(' ')
   const alan = `${cizgi} L${x(veri.length - 1)} ${Y} L${x(0)} ${Y} Z`
   const son = Number(veri[veri.length - 1].ort)
+  // Yükselen eğri mavi, düşen eğri turuncu: renk yönü de anlatsın
+  const renk = son >= Number(veri[0].ort) ? '#4c8dff' : '#f2764b'
 
   return (
     <svg
@@ -50,11 +52,17 @@ function NetGrafigi({ veri }) {
       role="img"
       aria-label={`Sınıf ortalaması net grafiği, son değer ${son.toFixed(1)}`}
     >
-      <path d={alan} fill="#4a90e2" opacity="0.14" />
-      <path d={cizgi} fill="none" stroke="#4a90e2" strokeWidth="2"
+      <defs>
+        <linearGradient id="netDolgu" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={renk} stopOpacity="0.32" />
+          <stop offset="100%" stopColor={renk} stopOpacity="0.02" />
+        </linearGradient>
+      </defs>
+      <path d={alan} fill="url(#netDolgu)" />
+      <path d={cizgi} fill="none" stroke={renk} strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={x(veri.length - 1)} cy={y(son)} r="4.5"
-              fill="#4a90e2" stroke="#1e1f23" strokeWidth="2.5" />
+              fill={renk} stroke="#1e1f23" strokeWidth="2.5" />
     </svg>
   )
 }
@@ -62,17 +70,19 @@ function NetGrafigi({ veri }) {
 function Ozetler({ ozet }) {
   const riskli = ozet.riskliOgrenciler ?? []
   const sessiz = riskli.filter((o) => (o.gunGecti ?? 0) >= 3 || o.hicBaslamadi).length
+  const tamamlama = ozet.planTamamlama ?? 0
   const net = ozet.sinifNetDegisimi
 
   return (
     <>
+      {/* Renk bilgi taşıyor: sıcak ton dikkat ister, soğuk ton iyi gidiyor. */}
       <div className="kpi-satir">
-        <div>
+        <div className={`kpi-kart ${tamamlama >= 60 ? 'kpi-kart--serin' : 'kpi-kart--sicak'}`}>
           <p className="kpi-etiket">Plan tamamlama</p>
-          <p className="kpi-sayi">%{ozet.planTamamlama ?? 0}</p>
+          <p className="kpi-sayi">%{tamamlama}</p>
           <p className="kpi-alt">son 7 gün</p>
         </div>
-        <div>
+        <div className={`kpi-kart ${sessiz ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}>
           <p className="kpi-etiket">Aktif öğrenci</p>
           <p className="kpi-sayi">
             {ozet.aktifOgrenci ?? 0}/{ozet.toplamOgrenci ?? 0}
