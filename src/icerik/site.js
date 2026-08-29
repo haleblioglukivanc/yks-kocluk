@@ -163,6 +163,86 @@ export const site = {
     ],
   },
 
+  // ── Kayan şerit: takip edilen dersler ───────────────────────────
+  kayan: {
+    baslik: 'Sistemde takibi yapılan dersler',
+    dersler: [
+      'TYT Türkçe', 'TYT Matematik', 'TYT Geometri', 'TYT Fizik', 'TYT Kimya',
+      'TYT Biyoloji', 'TYT Tarih', 'TYT Coğrafya', 'TYT Felsefe', 'TYT Din Kültürü',
+      'AYT Matematik', 'AYT Geometri', 'AYT Fizik', 'AYT Kimya', 'AYT Biyoloji',
+      'AYT Edebiyat', 'AYT Tarih', 'AYT Coğrafya', 'AYT Felsefe Grubu',
+      'LGS Matematik', 'LGS Fen Bilimleri', 'LGS Türkçe', 'LGS İnkılap',
+    ],
+  },
+
+  // ── Vitrin: sekmeli ürün bölümü ─────────────────────────────────
+  // Her sekmenin bir maketi var. Maket türleri: gorev, ilerleme, net, veli.
+  vitrin: {
+    baslik: 'Sistemin içi',
+    aciklama:
+      'Ekran görüntüsü değil; aşağıdaki maketler öğrencinin ve velinin telefonunda ' +
+      'gerçekten gördüğü ekranların birebir aynısı.',
+    sekmeler: [
+      {
+        anahtar: 'gorev',
+        emoji: '🗓️',
+        ad: 'Bugün ne yapacağım',
+        not: 'Öğrenci telefonu açtığında tek bir liste görür. Yarını değil, bugünü.',
+        ekran: { baslik: 'Bugün', tarih: 'Pzt · 14 Ekim' },
+      },
+      {
+        anahtar: 'ilerleme',
+        emoji: '📖',
+        ad: 'Konu ilerlemesi',
+        not: 'Her ders için nerede kalındığı. Tahmin değil, işaretlenmiş konu sayısı.',
+        ekran: { baslik: 'Konular', tarih: 'TYT · Sayısal' },
+      },
+      {
+        anahtar: 'net',
+        emoji: '📈',
+        ad: 'Deneme netleri',
+        not: 'Her denemeden sonra net değişimi ve hangi konudan kaybedildiği.',
+        ekran: { baslik: 'Denemeler', tarih: 'Son 6 deneme' },
+      },
+      {
+        anahtar: 'veli',
+        emoji: '👪',
+        ad: 'Velinin gördüğü',
+        not: 'Veli haftalık özeti görür, hiçbir şeyi değiştiremez. Süreç öğrenciyle koç arasındadır.',
+        ekran: { baslik: 'Haftalık özet', tarih: '7–13 Ekim' },
+      },
+    ],
+    // Maket verileri — demo, gerçek öğrenci verisi değil.
+    maket: {
+      gorevler: [
+        { ad: 'AYT Matematik · Türev', adet: '40 soru', bitti: true },
+        { ad: 'TYT Türkçe · Paragraf', adet: '30 soru', bitti: true },
+        { ad: 'AYT Fizik · Çembersel hareket', adet: 'konu + 25 soru', bitti: false },
+        { ad: 'TYT Kimya · Karışımlar', adet: '20 soru', bitti: false },
+        { ad: 'Tekrar · Dünkü yanlışlar', adet: '15 soru', bitti: false },
+      ],
+      ilerlemeler: [
+        { ad: 'AYT Matematik', oran: 72, not: '31/43 konu' },
+        { ad: 'AYT Fizik', oran: 54, not: '18/33 konu' },
+        { ad: 'TYT Türkçe', oran: 88, not: '22/25 konu' },
+        { ad: 'AYT Kimya', oran: 41, not: '12/29 konu' },
+      ],
+      netler: [
+        { ay: 'Nis', net: 58 }, { ay: 'May', net: 61 }, { ay: 'Haz', net: 67 },
+        { ay: 'Tem', net: 66 }, { ay: 'Ağu', net: 74 }, { ay: 'Eyl', net: 81 },
+      ],
+      veli: {
+        satirlar: [
+          { ad: 'Tamamlanan görev', deger: '19 / 22' },
+          { ad: 'Çözülen soru', deger: '1.240' },
+          { ad: 'Çalışma süresi', deger: '26 sa 40 dk' },
+          { ad: 'Son deneme neti', deger: '81,25' },
+        ],
+        not: 'Bu hafta fizik programın gerisinde kaldı. Önümüzdeki hafta fizik ağırlıklı ilerleyeceğiz.',
+      },
+    },
+  },
+
   sorular: {
     baslik: 'Sık sorulanlar',
     liste: [
