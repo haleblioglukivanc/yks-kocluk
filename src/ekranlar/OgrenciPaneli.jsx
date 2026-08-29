@@ -7,7 +7,7 @@ import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import { KalemBalonu } from '../bilesenler/Kalem.jsx'
-import { kalemiCalistir } from '../lib/kalemMotoru.js'
+import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
@@ -15,10 +15,12 @@ export default function OgrenciPaneli({ profil }) {
   const [kayit, setKayit] = useState(null)
   const [denemeler, setDenemeler] = useState([])
   const [netDurumu, setNetDurumu] = useState(null)
-  const [sekme, setSekme] = useState('program')
+  const [sekme, setSekme] = useState('bugun')
   const [hata, setHata] = useState('')
   const [kalemOlaylari, setKalemOlaylari] = useState([])
   const [ozet, setOzet] = useState(null)
+  const [tazele, setTazele] = useState(0)
+  const yenile = () => setTazele((n) => n + 1)
 
   useEffect(() => {
     ;(async () => {
@@ -59,7 +61,7 @@ export default function OgrenciPaneli({ profil }) {
         )
       }
     })()
-  }, [profil.id, profil.ad_soyad])
+  }, [profil.id, profil.ad_soyad, tazele])
 
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
@@ -75,7 +77,10 @@ export default function OgrenciPaneli({ profil }) {
         <KalemBalonu
           key={olay.kod}
           olay={{ ...olay, yipranma: ozet?.yipranma ?? 0 }}
-          onKapat={(o) => setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))}
+          onKapat={(o) => {
+            kalemiKapat(o)
+            setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))
+          }}
         />
       ))}
 
@@ -103,6 +108,12 @@ export default function OgrenciPaneli({ profil }) {
               ayt={kayit.hedef_ayt_net}
               durum={netDurumu}
             />
+            {(ozet?.guncelSeri ?? 0) > 0 && (
+              <p className="kimlik-seri">
+                {ozet.guncelSeri} günlük seri
+                {ozet.calismaDkBugun ? ` · bugün ${ozet.calismaDkBugun} dk` : ''}
+              </p>
+            )}
           </div>
           {sonNet !== null && (
             <div className="son-net">
@@ -120,6 +131,7 @@ export default function OgrenciPaneli({ profil }) {
 
       <nav className="sekmeler sekmeler--genis">
         {[
+          ['bugun', 'Bugün'],
           ['program', 'Program'],
           ['konular', 'Konularım'],
           ['denemeler', 'Denemelerim'],
@@ -134,9 +146,13 @@ export default function OgrenciPaneli({ profil }) {
         ))}
       </nav>
 
-      {sekme === 'program' ? (
+      {sekme === 'bugun' ? (
         <>
-          <CalismaSayaci ogrenciId={kayit.id} />
+          <CalismaSayaci ogrenciId={kayit.id} onKaydedildi={yenile} />
+          <BugunKarti ozet={ozet} onDegisti={yenile} />
+        </>
+      ) : sekme === 'program' ? (
+        <>
           <Kart baslik="Haftalık programım" altBaslik="Bitirdiğin bloğa dokun">
             <ProgramIzgarasi ogrenci={kayit} duzenlenebilir={false} />
           </Kart>
@@ -169,5 +185,92 @@ export default function OgrenciPaneli({ profil }) {
         </Kart>
       )}
     </>
+  )
+}
+
+
+const TUR_ETIKET = {
+  konu_anlatimi: 'Konu',
+  soru_cozumu: 'Soru',
+  tekrar: 'Tekrar',
+  deneme: 'Deneme',
+  okuma: 'Okuma',
+  diger: 'Diğer',
+}
+
+/** Bugünün görevleri. Tek dokunuşla tamamlanır; dokunuşun beklememesi için
+ *  önce ekranda değişir, sonra sunucuya yazılır. Hata olursa geri alınır. */
+function BugunKarti({ ozet, onDegisti }) {
+  const [gorevler, setGorevler] = useState(ozet?.gorevler ?? [])
+  const [hata, setHata] = useState('')
+
+  useEffect(() => {
+    setGorevler(ozet?.gorevler ?? [])
+  }, [ozet])
+
+  const biten = gorevler.filter((g) => g.durum === 'tamamlandi').length
+
+  async function degistir(gorev, bittiMi) {
+    const onceki = gorevler
+    setGorevler((m) =>
+      m.map((g) => (g.id === gorev.id ? { ...g, durum: bittiMi ? 'tamamlandi' : 'bekliyor' } : g)),
+    )
+    const { error } = await supabase
+      .from('gorevler')
+      .update({ durum: bittiMi ? 'tamamlandi' : 'bekliyor' })
+      .eq('id', gorev.id)
+    if (error) {
+      setGorevler(onceki)
+      setHata(hataMetni(error))
+      return
+    }
+    setHata('')
+    onDegisti?.()
+  }
+
+  return (
+    <Kart
+      baslik="Bugünün görevleri"
+      altBaslik={gorevler.length ? `${biten}/${gorevler.length} tamamlandı` : undefined}
+    >
+      <Uyari>{hata}</Uyari>
+
+      {gorevler.length === 0 ? (
+        <Bos
+          baslik="Bugün planında bir şey yok"
+          aciklama="Sayaçla serbest çalışabilir ya da dinlenebilirsin."
+        />
+      ) : (
+        <>
+          <div className="ilerleme">
+            <div
+              className="ilerleme-dolu"
+              style={{ width: `${(biten / gorevler.length) * 100}%` }}
+            />
+          </div>
+          <ul className="liste">
+            {gorevler.map((g) => (
+              <li key={g.id}>
+                <label className={`gorev${g.durum === 'tamamlandi' ? ' gorev--bitti' : ''}`}>
+                  <input
+                    type="checkbox"
+                    checked={g.durum === 'tamamlandi'}
+                    onChange={(e) => degistir(g, e.target.checked)}
+                  />
+                  <span>
+                    <span className="liste-ad">{g.baslik}</span>
+                    <span className="liste-alt">
+                      {[TUR_ETIKET[g.tur] ?? g.tur, g.ders, g.hedef_adet ? `${g.hedef_adet} soru` : null]
+                        .filter(Boolean)
+                        .join(' · ')}
+                    </span>
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Kart>
   )
 }

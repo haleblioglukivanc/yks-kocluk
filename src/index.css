@@ -1092,3 +1092,18 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .uygulama .balon--ondan { background: var(--yuzey-2); border-color: var(--cizgi); }
 .uygulama .veli-yorum { background: var(--yuzey-2); border-color: var(--cizgi); }
 .uygulama .derleme-damgasi { color: var(--soluk); }
+
+/* Öğrenci: bugünün görevleri */
+.kimlik-seri { margin: 0.4rem 0 0; font-size: 0.8125rem; color: var(--fosfor); }
+.gorev { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.75rem 0; cursor: pointer; }
+.gorev input[type='checkbox'] {
+  flex: 0 0 auto; width: 22px; height: 22px; margin: 1px 0 0;
+  accent-color: var(--isaret); cursor: pointer;
+}
+.gorev--bitti .liste-ad { text-decoration: line-through; color: var(--soluk); }
+.ilerleme {
+  height: 6px; background: var(--yuzey-2, #e9edf2); border-radius: 999px;
+  overflow: hidden; margin-bottom: 0.5rem;
+}
+.ilerleme-dolu { height: 100%; background: var(--isaret); border-radius: 999px; transition: width 240ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .ilerleme-dolu { transition: none; } }

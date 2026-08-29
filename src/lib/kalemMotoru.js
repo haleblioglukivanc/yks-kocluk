@@ -2,8 +2,11 @@ import { supabase } from './supabase.js'
 import { kalemNeDesin, olayKaydiOlustur } from './kalem-kurallari.js'
 
 /**
- * Kâmil'in bağlamını hazırlar, kuralları çalıştırır ve gösterilen
- * mesajları kaydeder. Hangi kuralın işe yaradığı sonradan ölçülebilsin diye.
+ * Kâmil'in ne diyeceğini belirler.
+ *
+ * Önemli: bugün gösterilmiş ama kapatılmamış bir mesaj varsa yenisi
+ * üretilmez, duran mesaj geri döner. Aksi halde mesaj bir kez görünüp
+ * ilk sayfa yenilemesinde kayboluyordu.
  */
 export async function kalemiCalistir({ profilId, rol, ad, veri }) {
   const simdi = new Date()
@@ -12,7 +15,7 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
   const [gecmis, ayar] = await Promise.all([
     supabase
       .from('kalem_olaylari')
-      .select('kural_kodu, gosterildi')
+      .select('id, kural_kodu, ruh, mesaj, gosterildi, kapatildi_mi')
       .eq('profil_id', profilId)
       .order('gosterildi', { ascending: false })
       .limit(80),
@@ -23,13 +26,30 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
       .maybeSingle(),
   ])
 
-  const sonGosterim = {}
-  for (const s of gecmis.data ?? []) {
-    if (!sonGosterim[s.kural_kodu]) sonGosterim[s.kural_kodu] = new Date(s.gosterildi)
+  const kayitlar = gecmis.data ?? []
+  const sessizBitis = ayar.data?.sessiz_bitis ? new Date(ayar.data.sessiz_bitis) : null
+  if (sessizBitis && sessizBitis > simdi) return []
+
+  const gunlukLimit = ayar.data?.gunluk_limit ?? 2
+
+  // Bugün gösterilmiş ve henüz kapatılmamış mesajlar hâlâ geçerli
+  const acikOlanlar = kayitlar.filter(
+    (k) => new Date(k.gosterildi) >= gunBasi && !k.kapatildi_mi,
+  )
+  if (acikOlanlar.length > 0) {
+    return acikOlanlar.slice(0, gunlukLimit).map((k) => ({
+      id: k.id,
+      kod: k.kural_kodu,
+      ruh: k.ruh ?? 'bekliyor',
+      mesaj: k.mesaj,
+    }))
   }
-  const bugunGosterilen = (gecmis.data ?? []).filter(
-    (s) => new Date(s.gosterildi) >= gunBasi,
-  ).length
+
+  const sonGosterim = {}
+  for (const k of kayitlar) {
+    if (!sonGosterim[k.kural_kodu]) sonGosterim[k.kural_kodu] = new Date(k.gosterildi)
+  }
+  const bugunGosterilen = kayitlar.filter((k) => new Date(k.gosterildi) >= gunBasi).length
 
   const baglam = { rol, ad, saat: simdi.getHours(), gunIlkGirisMi: bugunGosterilen === 0 }
   if (rol === 'ogrenci') baglam.ogrenci = veri
@@ -38,19 +58,25 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
 
   const olaylar = kalemNeDesin(
     baglam,
-    {
-      sonGosterim,
-      buOturumdaGosterilen: bugunGosterilen,
-      sessizBitis: ayar.data?.sessiz_bitis ? new Date(ayar.data.sessiz_bitis) : null,
-      gunlukLimit: ayar.data?.gunluk_limit ?? 2,
-    },
+    { sonGosterim, buOturumdaGosterilen: bugunGosterilen, sessizBitis, gunlukLimit },
     simdi,
   )
+  if (olaylar.length === 0) return []
 
-  if (olaylar.length) {
-    await supabase
-      .from('kalem_olaylari')
-      .insert(olaylar.map((o) => olayKaydiOlustur(profilId, o)))
-  }
-  return olaylar
+  const { data: yazilan } = await supabase
+    .from('kalem_olaylari')
+    .insert(olaylar.map((o) => olayKaydiOlustur(profilId, o)))
+    .select('id, kural_kodu')
+
+  // Kapatma işlemi için satır kimliğini mesaja iliştir
+  return olaylar.map((o) => ({
+    ...o,
+    id: (yazilan ?? []).find((y) => y.kural_kodu === o.kod)?.id ?? null,
+  }))
+}
+
+/** Kapatılan mesaj bir daha o gün geri gelmez. */
+export async function kalemiKapat(olay) {
+  if (!olay?.id) return
+  await supabase.from('kalem_olaylari').update({ kapatildi_mi: true }).eq('id', olay.id)
 }

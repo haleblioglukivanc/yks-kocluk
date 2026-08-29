@@ -4,7 +4,7 @@ import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/
 import { Avatar } from '../bilesenler/Fotograf.jsx'
 import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import { KalemBalonu } from '../bilesenler/Kalem.jsx'
-import { kalemiCalistir } from '../lib/kalemMotoru.js'
+import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 const ALAN_ADI = {
   sayisal: 'Sayısal',
@@ -103,7 +103,10 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
         <KalemBalonu
           key={olay.kod}
           olay={olay}
-          onKapat={(o) => setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))}
+          onKapat={(o) => {
+            kalemiKapat(o)
+            setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))
+          }}
           onEylem={(e) => onGit?.(e.hedef)}
         />
       ))}
