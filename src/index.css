@@ -1651,3 +1651,18 @@ body[data-tema='panel'] {
 }
 .gozuyle-serit strong { font-size: 0.875rem; color: #17539f; }
 .geri-dugme { align-self: flex-start; padding: 0.5rem 0; }
+
+/* Öğrencinin bloğa dokununca gördüğü ayrıntı */
+.blok-ayrinti {
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  background: var(--yuzey-2, #f1f6fd);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--r);
+}
+.blok-hedef { margin: 0.25rem 0 0; font-size: 0.9375rem; }
+.blok-hedef strong { color: var(--sicak, #e2571f); }
+.blok-ayrinti .gorev-not { margin-top: 0.625rem; }
+.blok-eylem { display: flex; align-items: flex-end; gap: 0.75rem; margin-top: 0.875rem; }
+.blok-eylem .alan { flex: 0 0 7rem; }
+.blok-eylem .dugme { flex: 1; }

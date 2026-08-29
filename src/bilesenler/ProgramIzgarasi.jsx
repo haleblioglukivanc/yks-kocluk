@@ -32,6 +32,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
   const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
+  // Öğrenci bloğa dokununca önce ayrıntı açılır; "bitti" oradan işaretlenir.
+  // Doğrudan işaretlemek, koçun yazdığı notu ve hedefi görünmez kılıyordu.
+  const [secilen, setSecilen] = useState(null)
 
   const gunler = haftaGunleri(bas)
   const ilk = gunAnahtari(gunler[0])
@@ -51,11 +54,17 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
 
   useEffect(() => { yukle() }, [yukle])
 
-  async function bittiIsaretle(g) {
+  async function bittiIsaretle(g, yapilan) {
     const yeni = g.durum === 'tamamlandi' ? 'bekliyor' : 'tamamlandi'
-    const { error } = await supabase.from('gorevler').update({ durum: yeni }).eq('id', g.id)
-    if (error) setHata(hataMetni(error))
-    else yukle()
+    const guncelleme = { durum: yeni }
+    if (yapilan != null) guncelleme.yapilan_adet = yapilan
+    const { error } = await supabase.from('gorevler').update(guncelleme).eq('id', g.id)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setSecilen(null)
+    yukle()
   }
 
   const bugun = gunAnahtari(new Date())
@@ -132,11 +141,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
                           <td key={anahtar}>
                             <button
                               className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}`}
-                              disabled={saltOkunur}
                               onClick={() => {
-                                if (saltOkunur) return
                                 if (duzenlenebilir) onHucreSec?.(blok, gunAnahtari(g), si + 1)
-                                else bittiIsaretle(blok)
+                                else setSecilen(blok)
                               }}
                               aria-pressed={bitti}
                               title={[
@@ -171,11 +178,20 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
 
           <p className="prg-ipucu">
             {saltOkunur
-              ? 'Önizleme: buradan değişiklik yapılamaz.'
+              ? 'Önizleme: bloğa dokunup ayrıntıyı görebilirsin, değişiklik yapılamaz.'
               : duzenlenebilir
                 ? 'Boş hücreye dokunup ders atayın. Yeşil bloklar öğrencinin tamamladıklarıdır.'
-                : 'Etüdü bitirince bloğa dokunun. Yeşile döner.'}
+                : 'Bloğa dokun: ne çözeceğini ve koçunun notunu gösterir.'}
           </p>
+
+          {secilen && (
+            <BlokAyrinti
+              blok={secilen}
+              saltOkunur={saltOkunur}
+              onKapat={() => setSecilen(null)}
+              onBitir={(yapilan) => bittiIsaretle(secilen, yapilan)}
+            />
+          )}
 
           {gunBoyu.length > 0 && (
             <div className="prg-serbest">
@@ -185,11 +201,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
                   <li key={g.id}>
                     <button
                       className={`serbest${g.durum === 'tamamlandi' ? ' serbest--bitti' : ''}`}
-                      disabled={saltOkunur}
                       onClick={() => {
-                        if (saltOkunur) return
                         if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
-                        else bittiIsaretle(g)
+                        else setSecilen(g)
                       }}
                     >
                       <span className="serbest-gun">
@@ -206,6 +220,74 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, s
             </div>
           )}
         </>
+      )}
+    </div>
+  )
+}
+
+
+const TUR_ADI = {
+  konu_anlatimi: 'Konu anlatımı',
+  soru_cozumu: 'Soru çözümü',
+  tekrar: 'Tekrar',
+  deneme: 'Deneme',
+  okuma: 'Okuma',
+  diger: 'Diğer',
+}
+
+/** Öğrencinin bloğa dokununca gördüğü ayrıntı: hangi konu, kaç soru,
+ *  koçun notu. Bitirme de buradan yapılır. */
+function BlokAyrinti({ blok, saltOkunur, onKapat, onBitir }) {
+  const [yapilan, setYapilan] = useState(
+    blok.yapilan_adet != null ? String(blok.yapilan_adet) : '',
+  )
+  const bitti = blok.durum === 'tamamlandi'
+
+  return (
+    <div className="blok-ayrinti">
+      <header className="hucre-basi">
+        <div>
+          <span className="hucre-gun">{blok.baslik}</span>
+          <span className="hucre-saat">
+            {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur] ?? blok.tur]
+              .filter(Boolean)
+              .join(' · ')}
+          </span>
+        </div>
+        <button className="metin-dugme" onClick={onKapat}>Kapat</button>
+      </header>
+
+      {blok.hedef_adet != null && (
+        <p className="blok-hedef">
+          Hedef: <strong>{blok.hedef_adet}</strong> soru
+        </p>
+      )}
+
+      {blok.aciklama && <p className="gorev-not">{blok.aciklama}</p>}
+
+      {!saltOkunur && (
+        <div className="blok-eylem">
+          {blok.hedef_adet != null && (
+            <label className="alan">
+              <span className="alan-etiket">Kaç tane çözdün?</span>
+              <input
+                type="number"
+                inputMode="numeric"
+                min="0"
+                max="999"
+                value={yapilan}
+                onChange={(e) => setYapilan(e.target.value)}
+                placeholder="0"
+              />
+            </label>
+          )}
+          <button
+            className="dugme dugme--birincil"
+            onClick={() => onBitir(yapilan === '' ? null : Number(yapilan))}
+          >
+            {bitti ? 'Geri al' : 'Bitirdim'}
+          </button>
+        </div>
       )}
     </div>
   )
