@@ -5,6 +5,8 @@ import { Avatar } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
+import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
+import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
@@ -130,6 +132,22 @@ export default function OgrenciPaneli({ profil }) {
         <>
           <CalismaSayaci ogrenciId={kayit.id} onKaydedildi={yenile} />
           <BugunKarti ozet={ozet} onDegisti={yenile} />
+          <GunlukRutinler
+            ogrenciId={kayit.id}
+            rutinler={ozet?.rutinler}
+            haftaBasi={ozet?.haftaBasi}
+            bugun={ozet?.bugun}
+            onDegisti={yenile}
+          />
+          {ozet?.bugun && (
+            <BugunCozulen
+              ogrenciId={kayit.id}
+              katalogId={kayit.katalog_id}
+              kayitlar={ozet?.bugunSoru}
+              tarih={ozet.bugun}
+              onDegisti={yenile}
+            />
+          )}
         </>
       ) : sekme === 'program' ? (
         <>
@@ -212,8 +230,14 @@ function BugunKarti({ ozet, onDegisti }) {
 
   return (
     <Kart
-      baslik="Bugünün görevleri"
-      altBaslik={gorevler.length ? `${biten}/${gorevler.length} tamamlandı` : undefined}
+      baslik="Günün hedefleri"
+      eylem={
+        gorevler.length ? (
+          <span className="hedef-sayac">
+            {biten}/{gorevler.length}
+          </span>
+        ) : null
+      }
     >
       <Uyari>{hata}</Uyari>
 
@@ -224,33 +248,54 @@ function BugunKarti({ ozet, onDegisti }) {
         />
       ) : (
         <>
-          <div className="ilerleme">
-            <div
-              className="ilerleme-dolu"
-              style={{ width: `${(biten / gorevler.length) * 100}%` }}
-            />
-          </div>
-          <ul className="liste">
+          {/* Yüzde çubuğu yerine hedef başına bir baloncuk: kaç tane kaldığı
+              sayılabiliyor, "%60" soyut kalıyordu. */}
+          <div className="baloncuk-serit" aria-hidden="true">
             {gorevler.map((g) => (
-              <li key={g.id}>
-                <label className={`gorev${g.durum === 'tamamlandi' ? ' gorev--bitti' : ''}`}>
-                  <input
-                    type="checkbox"
-                    checked={g.durum === 'tamamlandi'}
-                    onChange={(e) => degistir(g, e.target.checked)}
-                  />
-                  <span>
-                    <span className="liste-ad">{g.baslik}</span>
-                    <span className="liste-alt">
-                      {[TUR_ETIKET[g.tur] ?? g.tur, g.ders, g.hedef_adet ? `${g.hedef_adet} soru` : null]
-                        .filter(Boolean)
-                        .join(' · ')}
-                    </span>
-                    {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
-                  </span>
-                </label>
-              </li>
+              <span
+                key={g.id}
+                className={`baloncuk${g.durum === 'tamamlandi' ? ' baloncuk--dolu' : ''}`}
+              />
             ))}
+          </div>
+
+          <ul className="liste gorev-liste">
+            {gorevler.map((g) => {
+              const bitti = g.durum === 'tamamlandi'
+              const etiket = [g.ders, g.konu].filter(Boolean).join(' · ')
+              return (
+                <li key={g.id} className={`gorev-satir${bitti ? ' gorev-satir--bitti' : ''}`}>
+                  <button
+                    className="gorev-tik"
+                    role="checkbox"
+                    aria-checked={bitti}
+                    aria-label={`${g.baslik} tamamlandı`}
+                    onClick={() => degistir(g, !bitti)}
+                  >
+                    <svg viewBox="0 0 12 12" aria-hidden="true">
+                      <path
+                        d="M2 6.2l2.6 2.6L10 3.4"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </button>
+                  <div className="gorev-govde">
+                    <span className="gorev-baslik">
+                      {g.baslik}
+                      {g.hedef_adet && !/\d/.test(g.baslik) ? ` — ${g.hedef_adet} soru` : ''}
+                    </span>
+                    {(etiket || g.tur) && (
+                      <span className="gorev-etiket">{etiket || TUR_ETIKET[g.tur] || g.tur}</span>
+                    )}
+                    {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
+                  </div>
+                </li>
+              )
+            })}
           </ul>
         </>
       )}

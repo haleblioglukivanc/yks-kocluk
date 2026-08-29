@@ -1463,3 +1463,101 @@ body[data-tema='panel'] {
 
 /* Koyu sayfa açıkken gövde zemini de koyu — mobilde aşırı kaydırmada
    arkadan açık renk sızmasın diye. Tanitim ve Giris ekleyip kaldırıyor. */
+
+/* ============================================================
+   Öğrencinin işaretlediği ekranlar
+   Günün hedefleri, günlük rutinler, bugün çözülen.
+   Ortak dil: optik form baloncuğu. Yüzde çubuğu soyut kalıyordu,
+   baloncuk sayılabiliyor — "iki tane kaldı" görülebilir bir şey.
+   ============================================================ */
+
+.baloncuk {
+  display: inline-block; width: 14px; height: 14px; flex: 0 0 14px;
+  border-radius: 50%; border: 1.5px solid var(--marka-cizgi-2, #c8cbd6);
+  background: transparent; padding: 0;
+  transition: background 0.15s, border-color 0.15s;
+}
+.baloncuk--dolu { background: var(--isaret); border-color: var(--isaret); }
+/* Dokunulabilir baloncuk 14px görünür ama 44px'lik hedef alanı taşır */
+.baloncuk--dokun { position: relative; cursor: pointer; }
+.baloncuk--dokun::after {
+  content: ''; position: absolute; inset: -15px; border-radius: 50%;
+}
+.baloncuk-serit { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
+
+/* ---------- Günün hedefleri ---------- */
+.hedef-sayac { font-family: var(--mono); font-size: 0.875rem; color: var(--soluk); }
+.gorev-liste { display: block; }
+.gorev-satir {
+  display: flex; align-items: flex-start; gap: 11px;
+  padding: 11px 0; border-bottom: 1px solid var(--cizgi);
+}
+.gorev-satir:last-child { border-bottom: 0; padding-bottom: 0; }
+.gorev-tik {
+  flex: 0 0 auto; width: 22px; height: 22px; margin-top: 1px;
+  border-radius: 50%; border: 1.5px solid var(--marka-cizgi-2, #c8cbd6);
+  background: transparent; padding: 0; cursor: pointer;
+  display: grid; place-items: center; color: transparent;
+}
+.gorev-tik svg { width: 12px; height: 12px; }
+.gorev-tik[aria-checked="true"] {
+  background: var(--isaret); border-color: var(--isaret); color: #fff;
+}
+.gorev-govde { flex: 1; min-width: 0; }
+.gorev-baslik { display: block; font-size: 0.9375rem; line-height: 1.35; overflow-wrap: anywhere; }
+.gorev-satir--bitti .gorev-baslik { color: var(--soluk); text-decoration: line-through; }
+.gorev-etiket {
+  display: inline-block; margin-top: 5px; padding: 2px 7px; border-radius: 5px;
+  background: var(--yuzey-2, #f0f1ec); color: var(--grafit);
+  font-size: 0.6875rem; font-weight: 500;
+}
+
+/* ---------- Günlük rutinler ---------- */
+.rutin-sarmal { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-inline: -0.25rem; padding-inline: 0.25rem; }
+.rutin-izgara { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.rutin-izgara th {
+  font-weight: 500; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.05em;
+  color: var(--soluk); padding-bottom: 6px; text-align: center;
+}
+.rutin-izgara th.rutin-bugun { color: var(--dolgu); font-weight: 700; }
+.rutin-izgara td { text-align: center; padding: 3px 0; }
+.rutin-ad {
+  text-align: left !important; padding-right: 8px !important;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 8.5rem;
+}
+.rutin-sil, .cozulen-sil {
+  background: none; border: 0; padding: 0 4px; font-size: 1.125rem; line-height: 1;
+  color: var(--soluk); cursor: pointer;
+}
+.rutin-ekle { display: flex; gap: 0.5rem; margin-top: 0.875rem; }
+.rutin-ekle input { flex: 1; min-width: 0; }
+.rutin-ekle .dugme { flex: 0 0 auto; }
+
+/* ---------- Bugün çözülen ---------- */
+.cozulen-toplam { font-family: var(--mono); font-size: 0.8125rem; color: var(--soluk); white-space: nowrap; }
+.cozulen-toplam strong { font-size: 1.25rem; font-weight: 600; color: var(--murekkep); }
+.cozulen-satir {
+  display: flex; align-items: center; gap: 0.5rem;
+  padding: 7px 0; border-bottom: 1px solid var(--cizgi);
+}
+.cozulen-satir:last-child { border-bottom: 0; }
+.cozulen-ders {
+  flex: 1; min-width: 0; text-align: left; background: none; border: 0; padding: 0;
+  font: inherit; font-size: 0.875rem; color: inherit; cursor: pointer;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.dny { display: flex; gap: 0.5rem; font-family: var(--mono); font-size: 0.75rem; white-space: nowrap; }
+.dny b { font-weight: 600; }
+.dny-d { color: var(--isaret); }
+.dny-y { color: var(--uyari); }
+.dny-b { color: #a8760c; }
+.uygulama .dny-b { color: var(--fosfor); }
+
+.cozulen-ac { width: 100%; margin-top: 0.875rem; }
+.cozulen-form { margin-top: 0.875rem; display: flex; flex-direction: column; gap: 0.625rem; }
+.cozulen-sayilar { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; }
+.cozulen-sayilar label { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.cozulen-sayilar span { font-size: 0.6875rem; color: var(--soluk); }
+.cozulen-sayilar input { width: 100%; font-family: var(--mono); text-align: center; }
+.cozulen-eylem { display: flex; align-items: center; gap: 0.75rem; }
+.cozulen-eylem .dugme { flex: 1; }
