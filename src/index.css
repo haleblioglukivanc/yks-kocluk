@@ -1,26 +1,35 @@
 :root {
-  --kagit: #edeff3;
-  --yuzey: #ffffff;
-  --murekkep: #131c33;
-  --grafit: #5a6478;
-  --soluk: #8b93a3;
-  --dolgu: #2a4a7f;
-  --isaret: #0e7c5a;
-  --uyari: #b3261e;
-  --cizgi: #d7dce4;
+  /* Kareli defter dili. Tanıtım sayfasında zaten kullanılıyordu,
+     artık panel de aynı dili konuşuyor. */
+  --kagit:    #fbfaf7;   /* kâğıt */
+  --kare:     #dfe6ea;   /* kare çizgisi */
+  --yuzey:    #ffffff;
+  --murekkep: #1b2a4a;   /* tükenmez kalem lacivert */
+  --grafit:   #5c6373;   /* kurşun kalem grisi */
+  --soluk:    #8d94a1;
+  --dolgu:    #2a4a7f;
+  --isaret:   #0f7a58;
+  --uyari:    #c8322b;   /* öğretmen kalemi */
+  --fosfor:   #ffe26b;   /* fosforlu kalem */
+  --cizgi:    #dfe6ea;
 
-  --display: 'Archivo', system-ui, sans-serif;
-  --govde: 'Inter', system-ui, sans-serif;
+  --display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --govde: 'Karla', system-ui, sans-serif;
   --mono: 'JetBrains Mono', ui-monospace, monospace;
 
-  --r: 10px;
+  --r: 12px;
 }
 
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 
 body {
-  background: var(--kagit);
+  background-color: var(--kagit);
+  /* Kareli defter dokusu. Fark edilmeden hissedilecek kadar hafif. */
+  background-image:
+    linear-gradient(var(--kare) 1px, transparent 1px),
+    linear-gradient(90deg, var(--kare) 1px, transparent 1px);
+  background-size: 26px 26px;
   color: var(--murekkep);
   font-family: var(--govde);
   font-size: 15px;
@@ -911,3 +920,80 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 @media (prefers-reduced-motion: reduce) {
   .kalem-baloncuk { animation: none; opacity: 0.8; }
 }
+
+
+/* ============================================================
+   Defter dilinin panele uygulanması
+   ============================================================ */
+
+/* Kartlar kâğıdın üstünde duran fişler: gölge yok, kenar saç teli inceliğinde */
+.kart {
+  border-color: var(--kare);
+  box-shadow: none;
+}
+.kart-basi h2 { font-family: var(--display); font-weight: 700; letter-spacing: -0.01em; }
+.sekme--etkin { box-shadow: none; border: 1px solid var(--kare); }
+
+/* Üst barın altında öğretmen kalemi çizgisi — imza öğe */
+.ust-bar { border-bottom: 2px solid var(--uyari); background: var(--yuzey); }
+
+/* İKİNCİ İMZA ÖĞE: fosforlu kalem vurgusu.
+   Yalnızca ekranın tek önemli sayısında kullanılır. Yayarsak süs olur. */
+.fosfor {
+  position: relative;
+  display: inline-block;
+  z-index: 0;
+}
+.fosfor::after {
+  content: '';
+  position: absolute;
+  left: -5px; right: -5px; bottom: 2px;
+  height: 44%;
+  background: var(--fosfor);
+  opacity: 0.65;
+  transform: rotate(-1.4deg);
+  border-radius: 40% 60% 55% 45% / 60% 40% 60% 40%;
+  z-index: -1;
+}
+
+/* Öğrencinin son neti sayfanın tek vurgusu.
+   strong varsayılan olarak block; fosforlu şerit sayıyı değil tüm sütunu
+   boyar. inline-block yapıp genişliği metne daraltıyoruz. */
+.son-net > strong {
+  font-family: var(--display);
+  display: inline-block;
+}
+.son-net > strong::after {
+  content: '';
+  position: absolute;
+  inset: auto -5px 2px -5px;
+  height: 40%;
+  background: var(--fosfor);
+  opacity: 0.65;
+  transform: rotate(-1.4deg);
+  border-radius: 40% 60% 55% 45% / 60% 40% 60% 40%;
+  z-index: -1;
+}
+.son-net { position: relative; }
+.son-net > strong { position: relative; z-index: 0; }
+
+/* Kâmil balonu defter diline uysun */
+.kalem-balon {
+  background: var(--yuzey);
+  border-color: var(--kare);
+  border-left-color: var(--fosfor);
+}
+.kalem-ad { font-family: var(--display); }
+
+/* Alt gezinme kâğıdın parçası gibi dursun */
+.alt-gezinme { background: var(--yuzey); border-top-color: var(--kare); }
+.alt-bag--etkin { box-shadow: inset 0 2px 0 var(--fosfor); }
+
+/* Sayaç halkası fosforlu, konu çubuğu öğretmen kalemi kırmızısı */
+.konu-cubuk--tekrar { background: var(--uyari); }
+.konu-cubuk--bitti { background: var(--isaret); }
+.konu-cubuk--calisiliyor { background: var(--dolgu); }
+.balon--benden { background: var(--dolgu); }
+.balon--ondan { background: var(--kagit); border: 1px solid var(--kare); }
+.veli-yorum { background: var(--kagit); border: 1px solid var(--kare); font-family: var(--display); font-weight: 500; }
+.ozet-sayi { font-family: var(--display); }
