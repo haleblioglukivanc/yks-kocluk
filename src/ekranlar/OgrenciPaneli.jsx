@@ -4,6 +4,10 @@ import { Bos, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Avatar } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
+import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
+import KonuHaritasi from './KonuHaritasi.jsx'
+import { KalemBalonu } from '../bilesenler/Kalem.jsx'
+import { kalemiCalistir } from '../lib/kalemMotoru.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
@@ -13,6 +17,8 @@ export default function OgrenciPaneli({ profil }) {
   const [netDurumu, setNetDurumu] = useState(null)
   const [sekme, setSekme] = useState('program')
   const [hata, setHata] = useState('')
+  const [kalemOlaylari, setKalemOlaylari] = useState([])
+  const [ozet, setOzet] = useState(null)
 
   useEffect(() => {
     ;(async () => {
@@ -39,8 +45,21 @@ export default function OgrenciPaneli({ profil }) {
         .from('ogrenci_net_durumu')
         .select('tur, son_net, en_yuksek_net')
       setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
+
+      const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti')
+      if (bugun) {
+        setOzet(bugun)
+        setKalemOlaylari(
+          await kalemiCalistir({
+            profilId: profil.id,
+            rol: 'ogrenci',
+            ad: profil.ad_soyad,
+            veri: bugun,
+          }),
+        )
+      }
     })()
-  }, [])
+  }, [profil.id, profil.ad_soyad])
 
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
@@ -52,6 +71,14 @@ export default function OgrenciPaneli({ profil }) {
 
   return (
     <>
+      {kalemOlaylari.map((olay) => (
+        <KalemBalonu
+          key={olay.kod}
+          olay={{ ...olay, yipranma: ozet?.yipranma ?? 0 }}
+          onKapat={(o) => setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))}
+        />
+      ))}
+
       <Kart>
         <div className="kimlik">
           <Avatar yol={kayit.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
@@ -94,6 +121,7 @@ export default function OgrenciPaneli({ profil }) {
       <nav className="sekmeler sekmeler--genis">
         {[
           ['program', 'Program'],
+          ['konular', 'Konularım'],
           ['denemeler', 'Denemelerim'],
         ].map(([k, e]) => (
           <button
@@ -107,9 +135,14 @@ export default function OgrenciPaneli({ profil }) {
       </nav>
 
       {sekme === 'program' ? (
-        <Kart baslik="Haftalık programım" altBaslik="Bitirdiğin bloğa dokun">
-          <ProgramIzgarasi ogrenci={kayit} duzenlenebilir={false} />
-        </Kart>
+        <>
+          <CalismaSayaci ogrenciId={kayit.id} />
+          <Kart baslik="Haftalık programım" altBaslik="Bitirdiğin bloğa dokun">
+            <ProgramIzgarasi ogrenci={kayit} duzenlenebilir={false} />
+          </Kart>
+        </>
+      ) : sekme === 'konular' ? (
+        <KonuHaritasi profilId={kayit.id} />
       ) : (
         <Kart baslik="Denemelerim" altBaslik={`Son ${denemeler.length} kayıt`}>
           {denemeler.length === 0 ? (

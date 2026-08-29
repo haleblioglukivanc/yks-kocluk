@@ -7,6 +7,8 @@ import KocPaneli from './ekranlar/KocPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
+import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
+import Mesajlar from './ekranlar/Mesajlar.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
@@ -61,6 +63,20 @@ export default function App() {
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
 
+  // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
+  const baglantilar = kocMu
+    ? [['/', 'Panel'], ['/veli-ozetleri', 'Veli'], ['/mesajlar', 'Mesajlar']]
+    : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim'], ['/mesajlar', 'Mesajlar']]
+
+  function icerik() {
+    if (yol === '/mesajlar') return <Mesajlar profil={profil} />
+    if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
+    if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/')} />
+    if (kocMu) return <KocPaneli profil={profil} onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
+    if (profil.rol === 'veli') return <VeliPaneli />
+    return <OgrenciPaneli profil={profil} />
+  }
+
   return (
     <div className="uygulama">
       <header className="ust-bar">
@@ -84,20 +100,24 @@ export default function App() {
       </header>
 
       <main>
-        <div className="panel">
-          {kocMu ? (
-            ogrenciId ? (
-              <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/')} />
-            ) : (
-              <KocPaneli onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
-            )
-          ) : profil.rol === 'veli' ? (
-            <VeliPaneli />
-          ) : (
-            <OgrenciPaneli profil={profil} />
-          )}
-        </div>
+        <div className="panel">{icerik()}</div>
       </main>
+
+      <nav className="alt-gezinme" aria-label="Ana gezinme">
+        {baglantilar.map(([hedef, ad]) => {
+          const etkin = hedef === '/' ? yol === '/' || yol.startsWith('/ogrenci/') : yol === hedef
+          return (
+            <button
+              key={hedef}
+              className={etkin ? 'alt-bag alt-bag--etkin' : 'alt-bag'}
+              aria-current={etkin ? 'page' : undefined}
+              onClick={() => git(hedef)}
+            >
+              {ad}
+            </button>
+          )
+        })}
+      </nav>
     </div>
   )
 }

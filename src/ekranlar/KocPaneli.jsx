@@ -2,6 +2,9 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Avatar } from '../bilesenler/Fotograf.jsx'
+import RiskRadari from '../bilesenler/RiskRadari.jsx'
+import { KalemBalonu } from '../bilesenler/Kalem.jsx'
+import { kalemiCalistir } from '../lib/kalemMotoru.js'
 
 const ALAN_ADI = {
   sayisal: 'Sayısal',
@@ -33,11 +36,12 @@ async function kullaniciOlustur(govde) {
   return data
 }
 
-export default function KocPaneli({ onOgrenciAc }) {
+export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
+  const [kalemOlaylari, setKalemOlaylari] = useState([])
 
   const yukle = useCallback(async () => {
     const [o, k] = await Promise.all([
@@ -60,9 +64,49 @@ export default function KocPaneli({ onOgrenciAc }) {
     yukle()
   }, [yukle])
 
+  // Kâmil'in günlük teşhisi
+  useEffect(() => {
+    if (!profil?.id) return
+    let iptal = false
+    ;(async () => {
+      const { data } = await supabase.rpc('koc_panel_ozeti')
+      if (iptal || !data) return
+      const olaylar = await kalemiCalistir({
+        profilId: profil.id,
+        rol: 'koc',
+        ad: profil.ad_soyad,
+        veri: {
+          toplamOgrenci: data.toplamOgrenci ?? 0,
+          aktifOgrenci: data.aktifOgrenci ?? 0,
+          riskliOgrenciler: data.riskliOgrenciler ?? [],
+          bekleyenVeliOzeti: data.bekleyenVeliOzeti ?? 0,
+          okunmamisMesaj: data.okunmamisMesaj ?? 0,
+          buHaftaGirilenDeneme: data.buHaftaGirilenDeneme ?? 0,
+          sinifNetDegisimi: data.sinifNetDegisimi,
+          yeniSeriKuranlar: data.yeniSeriKuranlar ?? [],
+        },
+      })
+      if (!iptal) setKalemOlaylari(olaylar)
+    })()
+    return () => {
+      iptal = true
+    }
+  }, [profil?.id, profil?.ad_soyad])
+
   return (
     <div className="panel">
       <Uyari>{hata}</Uyari>
+
+      {kalemOlaylari.map((olay) => (
+        <KalemBalonu
+          key={olay.kod}
+          olay={olay}
+          onKapat={(o) => setKalemOlaylari((m) => m.filter((x) => x.kod !== o.kod))}
+          onEylem={(e) => onGit?.(e.hedef)}
+        />
+      ))}
+
+      <RiskRadari onOgrenciAc={onOgrenciAc} />
 
       <Kart
         baslik="Öğrencilerim"
