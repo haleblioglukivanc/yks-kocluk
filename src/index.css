@@ -1303,3 +1303,24 @@ body[data-tema='panel'] {
   min-height: 2.4rem;
 }
 .hucre--bos { min-height: 2.4rem; }
+
+/* ---------- Konu ısı haritası ---------- */
+.isi-suzgec { font-size: 0.8125rem; padding: 0.4rem 0.6rem; max-width: 9rem; }
+.isi-satir { border-top: 1px solid var(--cizgi); }
+.isi-satir:first-child { border-top: 0; }
+.isi-dugme {
+  display: flex; align-items: center; gap: 0.75rem; width: 100%;
+  padding: 0.75rem 0; min-height: 44px;
+  background: none; border: 0; font: inherit; color: inherit;
+  text-align: left; cursor: pointer;
+}
+.isi-ad { flex: 1; min-width: 0; }
+.isi-ad .liste-ad { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.isi-cubuk {
+  flex: 0 0 4rem; height: 8px; border-radius: 999px;
+  background: var(--yuzey-2, #e9edf2); overflow: hidden;
+}
+.isi-cubuk span { display: block; height: 100%; background: var(--uyari); }
+.isi-sayi { flex: 0 0 1.25rem; text-align: right; font-family: var(--mono); font-size: 0.8125rem; }
+.isi-detay { padding: 0 0 0.75rem; }
+.isi-kim { margin: 0 0 0.25rem; font-size: 0.875rem; }

@@ -9,6 +9,7 @@ import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
+import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
@@ -78,11 +79,12 @@ export default function App() {
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   const baglantilar = kocMu
-    ? [['/', 'Panel'], ['/veli-ozetleri', 'Veli'], ['/mesajlar', 'Mesajlar']]
+    ? [['/', 'Panel'], ['/konular', 'Konular'], ['/veli-ozetleri', 'Veli'], ['/mesajlar', 'Mesajlar']]
     : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim'], ['/mesajlar', 'Mesajlar']]
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
+    if (kocMu && yol === '/konular') return <KonuIsiHaritasi />
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
     if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/')} />
     if (kocMu) return <KocPaneli profil={profil} onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
