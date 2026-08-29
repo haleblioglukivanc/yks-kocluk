@@ -28,7 +28,7 @@ export function haftaGunleri(bas) {
  * Satırlar zaman dilimi, sütunlar gün. Koç boş hücreye ders atar,
  * öğrenci dolu hücreye dokunup bitmiş olarak işaretler.
  */
-export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec }) {
+export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, saltOkunur }) {
   const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
@@ -132,9 +132,12 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec })
                           <td key={anahtar}>
                             <button
                               className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}`}
-                              onClick={() =>
-                                duzenlenebilir ? onHucreSec?.(blok, gunAnahtari(g), si + 1) : bittiIsaretle(blok)
-                              }
+                              disabled={saltOkunur}
+                              onClick={() => {
+                                if (saltOkunur) return
+                                if (duzenlenebilir) onHucreSec?.(blok, gunAnahtari(g), si + 1)
+                                else bittiIsaretle(blok)
+                              }}
                               aria-pressed={bitti}
                               title={[
                                 blok.baslik,
@@ -167,9 +170,11 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec })
           </div>
 
           <p className="prg-ipucu">
-            {duzenlenebilir
-              ? 'Boş hücreye dokunup ders atayın. Yeşil bloklar öğrencinin tamamladıklarıdır.'
-              : 'Etüdü bitirince bloğa dokunun. Yeşile döner.'}
+            {saltOkunur
+              ? 'Önizleme: buradan değişiklik yapılamaz.'
+              : duzenlenebilir
+                ? 'Boş hücreye dokunup ders atayın. Yeşil bloklar öğrencinin tamamladıklarıdır.'
+                : 'Etüdü bitirince bloğa dokunun. Yeşile döner.'}
           </p>
 
           {gunBoyu.length > 0 && (
@@ -180,7 +185,12 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec })
                   <li key={g.id}>
                     <button
                       className={`serbest${g.durum === 'tamamlandi' ? ' serbest--bitti' : ''}`}
-                      onClick={() => (duzenlenebilir ? onHucreSec?.(g, g.tarih, null) : bittiIsaretle(g))}
+                      disabled={saltOkunur}
+                      onClick={() => {
+                        if (saltOkunur) return
+                        if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
+                        else bittiIsaretle(g)
+                      }}
                     >
                       <span className="serbest-gun">
                         {new Date(g.tarih).toLocaleDateString('tr-TR', { weekday: 'short' })}

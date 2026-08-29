@@ -5,6 +5,7 @@ import { Avatar, FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR, gunAnahtari } from '../bilesenler/ProgramIzgarasi.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
+import Rozetlerim from './Rozetlerim.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const TUR_ADI = {
@@ -134,6 +135,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
           ['program', 'Program'],
           ['denemeler', 'Denemeler'],
           ['konular', 'Konular'],
+          ['rozetler', 'Rozetler'],
           ['notlar', 'Notlar'],
           ['veli', 'Veli'],
         ].map(([k, e]) => (
@@ -150,6 +152,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
       {sekme === 'program' && <Program ogrenci={ogrenci} />}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
+      {sekme === 'rozetler' && <Rozetlerim ogrenciId={ogrenci.id} />}
       {sekme === 'notlar' && <Notlar ogrenci={ogrenci} />}
       {sekme === 'veli' && <Veliler ogrenci={ogrenci} />}
     </div>

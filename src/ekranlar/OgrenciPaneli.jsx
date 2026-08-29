@@ -140,7 +140,7 @@ export default function OgrenciPaneli({ profil }) {
       ) : sekme === 'konular' ? (
         <KonuHaritasi profilId={kayit.id} />
       ) : sekme === 'rozetler' ? (
-        <Rozetlerim ozet={ozet} />
+        <Rozetlerim ogrenciId={kayit.id} />
       ) : (
         <Kart baslik="Denemelerim" altBaslik={`Son ${denemeler.length} kayıt`}>
           {denemeler.length === 0 ? (

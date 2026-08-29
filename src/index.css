@@ -1629,3 +1629,25 @@ body[data-tema='panel'] {
   font-size: 0.8125rem; line-height: 1.45;
   white-space: pre-wrap;
 }
+
+/* ---------- Öğrenci gözüyle ---------- */
+.ogrenci-sarmal { display: flex; align-items: center; gap: 0.25rem; }
+.ogrenci-sarmal .ogrenci-satir { flex: 1; min-width: 0; }
+.goz-dugme {
+  flex: 0 0 auto; width: 44px; height: 44px;
+  display: grid; place-items: center;
+  background: none; border: 0; border-radius: 8px;
+  color: var(--serin); cursor: pointer;
+}
+.goz-dugme:hover { background: var(--serin-zemin); }
+
+.gozuyle-serit {
+  display: flex; flex-direction: column; gap: 0.15rem;
+  padding: 0.75rem 0.9rem; margin-bottom: 1rem;
+  background: var(--serin-zemin, #dce9fc);
+  border: 1px solid var(--serin-kenar, #a9c7f0);
+  border-radius: var(--r);
+  font-size: 0.8125rem; line-height: 1.45;
+}
+.gozuyle-serit strong { font-size: 0.875rem; color: #17539f; }
+.geri-dugme { align-self: flex-start; padding: 0.5rem 0; }

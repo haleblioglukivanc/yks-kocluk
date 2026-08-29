@@ -11,7 +11,7 @@ const ALAN_ADI = {
   dil: 'Dil',
 }
 
-export default function Ogrencilerim({ onOgrenciAc }) {
+export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [hata, setHata] = useState('')
@@ -63,7 +63,7 @@ export default function Ogrencilerim({ onOgrenciAc }) {
         ) : (
           <ul className="liste">
             {ogrenciler.map((o) => (
-              <li key={o.id}>
+              <li key={o.id} className="ogrenci-sarmal">
                 <button
                   className={`ogrenci-satir${o.aktif ? '' : ' ogrenci-satir--pasif'}`}
                   onClick={() => onOgrenciAc(o.id)}
@@ -83,6 +83,19 @@ export default function Ogrencilerim({ onOgrenciAc }) {
                   </div>
                   {!o.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
                   <span className="ok" aria-hidden="true">›</span>
+                </button>
+                <button
+                  className="goz-dugme"
+                  onClick={() => onGozuyle(o.id)}
+                  aria-label={`${o.profiller?.ad_soyad ?? 'Öğrenci'} gözüyle gör`}
+                  title="Öğrenci gözüyle gör"
+                >
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"
+                       fill="none" stroke="currentColor" strokeWidth="1.8"
+                       strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z" />
+                    <circle cx="12" cy="12" r="3.2" />
+                  </svg>
                 </button>
               </li>
             ))}
