@@ -27,7 +27,7 @@ export default defineConfig({
         scope: taban,
         display: 'standalone',
         orientation: 'portrait',
-        theme_color: '#131C33',
+        theme_color: '#ffffff',
         background_color: '#EDEFF3',
         icons: [
           { src: taban + 'icon-192.png', sizes: '192x192', type: 'image/png' },

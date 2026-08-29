@@ -256,7 +256,9 @@ function Ustluk({ ad, onGiris }) {
   const basHarf = ad.split(' ').map((k) => k[0]).join('').slice(0, 2)
   const baglar = [
     ['#sistem', 'Sistem'],
-    ['#nasil', 'Nasıl çalışıyoruz'],
+    ['#nasil', 'Süreç'],
+    ['#videolar', 'Videolar'],
+    ['#seminerler', 'Seminerler'],
     ['#belgeler', 'Belgeler'],
     ['#sorular', 'Sorular'],
   ]
@@ -302,6 +304,58 @@ function Ustluk({ ad, onGiris }) {
   )
 }
 
+function VideoKart({ video }) {
+  return (
+    <article className="t-video">
+      <div className="t-video-cerceve">
+        {video.youtube ? (
+          <iframe
+            src={`https://www.youtube-nocookie.com/embed/${video.youtube}`}
+            title={video.baslik}
+            loading="lazy"
+            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        ) : (
+          <div className="t-video-bos">
+            <span className="t-oynat" aria-hidden="true" />
+            <span>Video henüz eklenmedi</span>
+          </div>
+        )}
+      </div>
+      <div className="t-video-govde">
+        <span className="t-video-tur">{video.tur}</span>
+        <h3>{video.baslik}</h3>
+        <p>{video.ozet}</p>
+        <div className="t-video-ayak">
+          <span>{video.sure}</span>
+          <span>·</span>
+          <span>{video.tarih}</span>
+        </div>
+      </div>
+    </article>
+  )
+}
+
+function SeminerKart({ seminer }) {
+  return (
+    <article className="t-seminer">
+      <div className="t-seminer-gorsel">
+        {seminer.gorsel
+          ? <img src={seminer.gorsel} alt={seminer.baslik} loading="lazy" />
+          : <span className="t-seminer-bos">Görsel henüz eklenmedi</span>}
+      </div>
+      <div className="t-seminer-govde">
+        <h3>{seminer.baslik}</h3>
+        <p className="t-seminer-yer">{seminer.yer}</p>
+        <div className="t-seminer-bilgi">
+          {seminer.etiketler.map((e) => <span className="t-cip" key={e}>{e}</span>)}
+        </div>
+      </div>
+    </article>
+  )
+}
+
 function Soru({ soru, cevap }) {
   const [acik, setAcik] = useState(false)
   return (
@@ -320,13 +374,11 @@ function Soru({ soru, cevap }) {
    ═══════════════════════════════════════════════════════════════ */
 
 export default function Tanitim({ onGiris }) {
-  const { koc, sayilar, kayan, vitrin, belgeler, nasil, kimler, yorumlar, sorular, cagri, iletisim } = site
+  const {
+    koc, sayilar, kayan, vitrin, yaklasim, videolar, seminerler,
+    belgeler, nasil, kimler, yorumlar, sorular, cagri, iletisim,
+  } = site
   const [sekme, setSekme] = useState(vitrin.sekmeler[0].anahtar)
-
-  useEffect(() => {
-    document.body.classList.add('karanlik')
-    return () => document.body.classList.remove('karanlik')
-  }, [])
 
   const etkin = vitrin.sekmeler.find((s) => s.anahtar === sekme) ?? vitrin.sekmeler[0]
   const basHarf = koc.ad.split(' ').map((k) => k[0]).join('').slice(0, 2)
@@ -340,8 +392,6 @@ export default function Tanitim({ onGiris }) {
 
   return (
     <div className="tanitim" id="tepe">
-      <div className="t-isik" aria-hidden="true" />
-
       <Ustluk ad={koc.ad} onGiris={onGiris} />
 
       {/* ---------- Kahraman ---------- */}
@@ -372,25 +422,27 @@ export default function Tanitim({ onGiris }) {
       </section>
 
       {/* ---------- Sayılar ---------- */}
-      <section className="t-kap">
-        <Belir>
-          <div className="t-serit">
-            {sayilar.map((s) => (
-              <div key={s.not} className="t-serit-oge">
-                {s.emoji && <span className="t-serit-em" aria-hidden="true">{s.emoji}</span>}
-                <div className="t-serit-sayi">
-                  <SayanSayi metin={s.sayi} />
-                  <span className="t-serit-birim">{s.birim}</span>
+      <section className="t-bant t-bant--dar">
+        <div className="t-kap">
+          <Belir>
+            <div className="t-serit">
+              {sayilar.map((s) => (
+                <div key={s.not} className="t-serit-oge">
+                  {s.emoji && <span className="t-serit-em" aria-hidden="true">{s.emoji}</span>}
+                  <div className="t-serit-sayi">
+                    <SayanSayi metin={s.sayi} />
+                    <span className="t-serit-birim">{s.birim}</span>
+                  </div>
+                  <span className="t-serit-not">{s.not}</span>
                 </div>
-                <span className="t-serit-not">{s.not}</span>
-              </div>
-            ))}
-          </div>
-        </Belir>
+              ))}
+            </div>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Kayan ders şeridi ---------- */}
-      <section className="t-kayan">
+      <section className="t-bant t-bant--dar t-bant--gri">
         <p className="t-kayan-baslik">{kayan.baslik}</p>
         <div className="t-ray-dis">
           <div className="t-ray-ic">
@@ -403,205 +455,293 @@ export default function Tanitim({ onGiris }) {
         </div>
       </section>
 
-      {/* ---------- Vitrin ---------- */}
-      <section className="t-bolum t-kap" id="sistem">
-        <Belir>
-          <div className="t-vitrin-ic">
-            <div>
-              <p className="t-etiket">Platform</p>
-              <h2>{vitrin.baslik}</h2>
-              <p className="t-bolum-alt">{vitrin.aciklama}</p>
+      {/* ---------- Vitrin (koyu bant) ---------- */}
+      <section className="t-bant t-bant--koyu" id="sistem">
+        <div className="t-kap">
+          <Belir>
+            <div className="t-vitrin-ic">
+              <div>
+                <p className="t-etiket">Platform</p>
+                <h2 className="t-baslik">{vitrin.baslik}</h2>
+                <p className="t-alt-metin">{vitrin.aciklama}</p>
 
-              <div className="t-sekmeler" role="tablist" aria-label="Ekranlar">
-                {vitrin.sekmeler.map((s) => (
-                  <button
-                    key={s.anahtar}
-                    role="tab"
-                    aria-selected={s.anahtar === sekme}
-                    className={`t-sekme ${s.anahtar === sekme ? 't-sekme--etkin' : ''}`}
-                    onClick={() => setSekme(s.anahtar)}
-                  >
-                    <span className="t-sekme-im" aria-hidden="true">{s.emoji}</span>
-                    <span>
-                      <span className="t-sekme-ad">{s.ad}</span>
-                      <span className="t-sekme-not">{s.not}</span>
-                    </span>
-                  </button>
-                ))}
+                <div className="t-sekmeler" role="tablist" aria-label="Ekranlar">
+                  {vitrin.sekmeler.map((s) => (
+                    <button
+                      key={s.anahtar}
+                      role="tab"
+                      aria-selected={s.anahtar === sekme}
+                      className={`t-sekme ${s.anahtar === sekme ? 't-sekme--etkin' : ''}`}
+                      onClick={() => setSekme(s.anahtar)}
+                    >
+                      <span className="t-sekme-im" aria-hidden="true">{s.emoji}</span>
+                      <span>
+                        <span className="t-sekme-ad">{s.ad}</span>
+                        <span className="t-sekme-not">{s.not}</span>
+                      </span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="t-telefon-yuva">
+                <Telefon key={etkin.anahtar} baslik={etkin.ekran.baslik} tarih={etkin.ekran.tarih}>
+                  <Ekran anahtar={etkin.anahtar} maket={vitrin.maket} />
+                </Telefon>
               </div>
             </div>
+          </Belir>
+        </div>
+      </section>
 
-            <div className="t-telefon-yuva">
-              <Telefon key={etkin.anahtar} baslik={etkin.ekran.baslik} tarih={etkin.ekran.tarih}>
-                <Ekran anahtar={etkin.anahtar} maket={vitrin.maket} />
-              </Telefon>
+      {/* ---------- Yaklaşım ---------- */}
+      <section className="t-bant">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Yaklaşım</p>
+            <h2 className="t-baslik">{yaklasim.baslik}</h2>
+            <p className="t-alt-metin">{yaklasim.aciklama}</p>
+            <div className="t-ilkeler">
+              {yaklasim.ilkeler.map((i) => (
+                <article className="t-ilke" key={i.baslik}>
+                  <div className="t-ilke-im" aria-hidden="true">{i.emoji}</div>
+                  <h3>{i.baslik}</h3>
+                  <p>{i.metin}</p>
+                </article>
+              ))}
             </div>
-          </div>
-        </Belir>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Nasıl çalışıyoruz ---------- */}
-      <section className="t-bolum t-kap" id="nasil">
-        <Belir>
-          <p className="t-etiket">Süreç</p>
-          <h2>{nasil.baslik}</h2>
-          <p className="t-bolum-alt">{nasil.aciklama}</p>
-          <ol className="t-adimlar">
-            {nasil.adimlar.map((a, i) => (
-              <li key={a.baslik} className="t-adim">
-                <span className="t-adim-no">ADIM {String(i + 1).padStart(2, '0')}</span>
-                <h3>{a.baslik}</h3>
-                <p>{a.metin}</p>
-              </li>
-            ))}
-          </ol>
-        </Belir>
+      <section className="t-bant t-bant--gri" id="nasil">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Süreç</p>
+            <h2 className="t-baslik">{nasil.baslik}</h2>
+            <p className="t-alt-metin">{nasil.aciklama}</p>
+            <ol className="t-adimlar">
+              {nasil.adimlar.map((a, i) => (
+                <li key={a.baslik} className="t-adim">
+                  <span className="t-adim-no">ADIM {String(i + 1).padStart(2, '0')}</span>
+                  <h3>{a.baslik}</h3>
+                  <p>{a.metin}</p>
+                </li>
+              ))}
+            </ol>
+          </Belir>
+        </div>
+      </section>
+
+      {/* ---------- Videolar ---------- */}
+      <section className="t-bant" id="videolar">
+        <div className="t-kap">
+          <Belir>
+            <div className="t-video-baslik">
+              <div>
+                <p className="t-etiket">Videolar</p>
+                <h2 className="t-baslik">{videolar.baslik}</h2>
+                <p className="t-alt-metin">{videolar.aciklama}</p>
+              </div>
+              {videolar.kanal && (
+                <a className="t-dugme t-dugme--cizgi" href={videolar.kanal} target="_blank" rel="noreferrer">
+                  Kanala git
+                </a>
+              )}
+            </div>
+            <div className="t-videolar">
+              {videolar.liste.map((v) => <VideoKart key={v.baslik} video={v} />)}
+            </div>
+          </Belir>
+        </div>
+      </section>
+
+      {/* ---------- Seminerler ---------- */}
+      <section className="t-bant t-bant--gri" id="seminerler">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Sahne</p>
+            <h2 className="t-baslik">{seminerler.baslik}</h2>
+            <p className="t-alt-metin">{seminerler.aciklama}</p>
+            <div className="t-galeri">
+              {seminerler.liste.map((s) => <SeminerKart key={s.baslik} seminer={s} />)}
+            </div>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Kim ---------- */}
-      <section className="t-bolum t-kap" id="kim">
-        <Belir>
-          <div className="t-kim">
-            <div className="t-portre">
-              {koc.portre ? <img src={koc.portre} alt={koc.ad} /> : <span>{basHarf}</span>}
+      <section className="t-bant" id="kim">
+        <div className="t-kap">
+          <Belir>
+            <div className="t-kim">
+              <div className="t-portre">
+                {koc.portre ? <img src={koc.portre} alt={koc.ad} /> : <span>{basHarf}</span>}
+              </div>
+              <div className="t-kim-metin">
+                <p className="t-etiket">Koç</p>
+                <h2 className="t-baslik">Kimim</h2>
+                {koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}
+              </div>
             </div>
-            <div className="t-kim-metin">
-              <p className="t-etiket">Koç</p>
-              <h2>Kimim</h2>
-              {koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}
-            </div>
-          </div>
-        </Belir>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Belgeler ---------- */}
-      <section className="t-bolum t-kap" id="belgeler">
-        <Belir>
-          <p className="t-etiket">Belgeler</p>
-          <h2>{belgeler.baslik}</h2>
-          <p className="t-bolum-alt">{belgeler.aciklama}</p>
-          <div className="t-belge-serit">
-            <ul className="t-belge-raf">
-              {belgeler.liste.map((b) => (
-                <li key={b.ad} className="t-belge">
-                  <div className="t-belge-gorsel">
-                    {b.gorsel
-                      ? <img src={b.gorsel} alt={b.ad} loading="lazy" />
-                      : <span className="t-belge-bos">Görsel eklenmedi</span>}
-                  </div>
-                  <h3>{b.ad}</h3>
-                  <p className="t-belge-kurum">{b.kurum}</p>
-                  <p className="t-belge-yil">{b.yil}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <p className="t-kaydir-ipucu">← yana kaydırın →</p>
-        </Belir>
+      <section className="t-bant t-bant--sicak" id="belgeler">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Belgeler</p>
+            <h2 className="t-baslik">{belgeler.baslik}</h2>
+            <p className="t-alt-metin">{belgeler.aciklama}</p>
+            <div className="t-belge-serit">
+              <ul className="t-belge-raf">
+                {belgeler.liste.map((b) => (
+                  <li key={b.ad} className="t-belge">
+                    <div className="t-belge-gorsel">
+                      {b.gorsel
+                        ? <img src={b.gorsel} alt={b.ad} loading="lazy" />
+                        : <span className="t-belge-bos">Görsel eklenmedi</span>}
+                    </div>
+                    <h3>{b.ad}</h3>
+                    <p className="t-belge-kurum">{b.kurum}</p>
+                    <p className="t-belge-yil">{b.yil}</p>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p className="t-kaydir-ipucu">← yana kaydırın →</p>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Kimler için ---------- */}
-      <section className="t-bolum t-kap">
-        <Belir>
-          <p className="t-etiket">Kapsam</p>
-          <h2>{kimler.baslik}</h2>
-          <div className="t-gruplar">
-            {kimler.gruplar.map((g) => (
-              <div key={g.ad} className="t-grup">
-                {g.emoji && <span className="t-grup-em" aria-hidden="true">{g.emoji}</span>}
-                <span className="t-grup-ad">{g.ad}</span>
-                <span className="t-grup-alt">{g.aciklama}</span>
-              </div>
-            ))}
-          </div>
-        </Belir>
+      <section className="t-bant">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Kapsam</p>
+            <h2 className="t-baslik">{kimler.baslik}</h2>
+            <div className="t-gruplar">
+              {kimler.gruplar.map((g) => (
+                <div key={g.ad} className="t-grup">
+                  {g.emoji && <span className="t-grup-em" aria-hidden="true">{g.emoji}</span>}
+                  <span className="t-grup-ad">{g.ad}</span>
+                  <span className="t-grup-alt">{g.aciklama}</span>
+                </div>
+              ))}
+            </div>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Yorumlar ---------- */}
       {yorumlar.liste.length > 0 && (
-        <section className="t-bolum t-kap">
-          <Belir>
-            <p className="t-etiket">Geri bildirim</p>
-            <h2>{yorumlar.baslik}</h2>
-            <div className="t-yorumlar">
-              {yorumlar.liste.map((y) => (
-                <blockquote key={y.kisi} className="t-yorum">
-                  <span className="t-tirnak" aria-hidden="true">”</span>
-                  <p>{y.metin}</p>
-                  <footer>
-                    <span className="t-yorum-im" aria-hidden="true">{y.kisi.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2)}</span>
-                    <span>
-                      <span className="t-yorum-kisi">{y.kisi}</span>
-                      <span className="t-yorum-rol">{y.rol}</span>
-                    </span>
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
-          </Belir>
+        <section className="t-bant t-bant--gri">
+          <div className="t-kap">
+            <Belir>
+              <p className="t-etiket">Geri bildirim</p>
+              <h2 className="t-baslik">{yorumlar.baslik}</h2>
+              <div className="t-yorumlar">
+                {yorumlar.liste.map((y) => (
+                  <blockquote key={y.kisi} className="t-yorum">
+                    <span className="t-tirnak" aria-hidden="true">”</span>
+                    <p>{y.metin}</p>
+                    <footer>
+                      <span className="t-yorum-im" aria-hidden="true">
+                        {y.kisi.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2)}
+                      </span>
+                      <span>
+                        <span className="t-yorum-kisi">{y.kisi}</span>
+                        <span className="t-yorum-rol">{y.rol}</span>
+                      </span>
+                    </footer>
+                  </blockquote>
+                ))}
+              </div>
+            </Belir>
+          </div>
         </section>
       )}
 
       {/* ---------- Sık sorulanlar ---------- */}
-      <section className="t-bolum t-kap" id="sorular">
-        <Belir>
-          <p className="t-etiket">Sorular</p>
-          <h2>{sorular.baslik}</h2>
-          <div className="t-sss-liste">
-            {sorular.liste.map((s) => <Soru key={s.soru} {...s} />)}
-          </div>
-        </Belir>
+      <section className="t-bant" id="sorular">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Sorular</p>
+            <h2 className="t-baslik">{sorular.baslik}</h2>
+            <div className="t-sss-liste">
+              {sorular.liste.map((s) => <Soru key={s.soru} {...s} />)}
+            </div>
+          </Belir>
+        </div>
       </section>
 
       {/* ---------- Kapanış ---------- */}
-      <section className="t-bolum t-kap" id="iletisim">
-        <Belir>
-          <div className="t-cagri">
-            <p className="t-etiket">İletişim</p>
-            <h2>{cagri.baslik}</h2>
-            <p className="t-cagri-metin">{cagri.metin}</p>
+      <section className="t-bant t-bant--sicak t-cagri" id="iletisim">
+        <div className="t-kap">
+          <Belir>
+            <div className="t-cagri-ic">
+              <div>
+                <p className="t-etiket">İletişim</p>
+                <h2>{cagri.baslik}</h2>
+                <p className="t-cagri-metin">{cagri.metin}</p>
+                <div className="t-cagri-eylem">
+                  {iletisim.whatsapp && (
+                    <a className="t-dugme t-dugme--ana" href={`https://wa.me/${iletisim.whatsapp}`} target="_blank" rel="noreferrer">
+                      WhatsApp’tan yaz
+                    </a>
+                  )}
+                  {iletisim.eposta && (
+                    <a
+                      className={`t-dugme ${iletisim.whatsapp ? 't-dugme--cizgi' : 't-dugme--ana'}`}
+                      href={`mailto:${iletisim.eposta}`}
+                    >
+                      E-posta gönder
+                    </a>
+                  )}
+                </div>
+              </div>
 
-            <div className="t-cagri-eylem">
-              {iletisim.whatsapp && (
-                <a className="t-dugme t-dugme--ana" href={`https://wa.me/${iletisim.whatsapp}`} target="_blank" rel="noreferrer">
-                  WhatsApp’tan yaz
-                </a>
-              )}
-              {iletisim.eposta && (
-                <a
-                  className={`t-dugme ${iletisim.whatsapp ? 't-dugme--cizgi' : 't-dugme--ana'}`}
-                  href={`mailto:${iletisim.eposta}`}
-                >
-                  E-posta gönder
-                </a>
+              {bagAdres.length > 0 && (
+                <ul className="t-iletisim">
+                  {bagAdres.map((b) => (
+                    <li key={b.ad}>
+                      <span className="t-iletisim-ad">{b.ad}</span>
+                      <a href={b.adres} target={b.adres.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+                        {b.metin}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               )}
             </div>
-
-            {bagAdres.length > 0 && (
-              <ul className="t-iletisim">
-                {bagAdres.map((b) => (
-                  <li key={b.ad}>
-                    <span className="t-iletisim-ad">{b.ad}</span>
-                    <a href={b.adres} target={b.adres.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
-                      {b.metin}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </Belir>
+          </Belir>
+        </div>
       </section>
 
       <footer className="t-alt">
-        <div className="t-kap t-alt-ic">
-          <span>{koc.ad} · {new Date().getFullYear()}</span>
-          <div className="t-alt-bag">
-            <a href="#sistem">Sistem</a>
-            <a href="#nasil">Süreç</a>
-            <a href="#sorular">Sorular</a>
-            <button onClick={onGiris}>Giriş yap</button>
+        <div className="t-kap">
+          <div className="t-alt-ic">
+            <div>
+              <span className="t-alt-marka">{koc.ad}</span>
+              <p className="t-alt-not">
+                YKS ve LGS koçluğu. Haftalık program, konu takibi ve deneme analizi tek sistemde.
+              </p>
+            </div>
+            <div className="t-alt-bag">
+              <a href="#sistem">Sistem</a>
+              <a href="#nasil">Süreç</a>
+              <a href="#videolar">Videolar</a>
+              <a href="#seminerler">Seminerler</a>
+              <a href="#belgeler">Belgeler</a>
+              <a href="#sorular">Sorular</a>
+              <a href="#iletisim">İletişim</a>
+              <button onClick={onGiris}>Giriş yap</button>
+            </div>
           </div>
+          <div className="t-alt-cizgi">© {new Date().getFullYear()} {koc.ad}</div>
         </div>
       </footer>
     </div>

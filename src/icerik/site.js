@@ -243,6 +243,155 @@ export const site = {
     },
   },
 
+  // ── Yaklaşım: dört ilke ─────────────────────────────────────────
+  yaklasim: {
+    baslik: 'Neye göre çalışıyoruz',
+    aciklama:
+      'Koçlukta yöntem, kişiye göre değişmeyen birkaç ilkeye dayanır. ' +
+      'Program değişir; bu dördü değişmez.',
+    ilkeler: [
+      {
+        emoji: '📐',
+        baslik: 'Ölçmeden program yazılmaz',
+        metin:
+          'Önce mevcut durum çıkarılır: hangi konular bitti, deneme netleri nerede, ' +
+          'günde gerçekte kaç saat kalıyor. Program bu üçünün üstüne kurulur.',
+      },
+      {
+        emoji: '🔁',
+        baslik: 'Haftalık geri bildirim',
+        metin:
+          'Ay sonunu beklemek geç kalmaktır. Sapma olduğu hafta konuşulur, ' +
+          'nedeni bulunur ve program bir sonraki hafta güncellenir.',
+      },
+      {
+        emoji: '🔍',
+        baslik: 'Net değil, konu takibi',
+        metin:
+          'Deneme neti sonuçtur, sebep değildir. Her denemede kaybedilen sorular ' +
+          'konu bazında çıkarılır; eksik konu doğrudan programa girer.',
+      },
+      {
+        emoji: '🤝',
+        baslik: 'Veli bilgilenir, süreç bozulmaz',
+        metin:
+          'Veli kendi hesabından ilerlemeyi görür. Öğrencinin bilgisi dâhilinde, ' +
+          'görüntüleme yetkisiyle. Süreç öğrenciyle koç arasında kalır.',
+      },
+    ],
+  },
+
+  // ── Videolar ────────────────────────────────────────────────────
+  // ⚠️ DEMO. Gerçek videoyu eklemek için:
+  //    YouTube adresindeki v= sonrası kimliği `youtube` alanına yazın.
+  //    Örn. https://www.youtube.com/watch?v=AbCdEf12345 → youtube: 'AbCdEf12345'
+  //    Alan boşken kart yer tutucu olarak görünür, sayfa bozulmaz.
+  videolar: {
+    baslik: 'Videolar',
+    aciklama:
+      'Sınav sürecinde en çok sorulan konuları kısa videolarda anlatıyorum. ' +
+      'Öğrenciye de veliye de açık; izlemek için kayıt gerekmiyor.',
+    kanal: '', // örn. 'https://youtube.com/@kullaniciadi'
+    liste: [
+      {
+        youtube: '',
+        tur: 'Program',
+        baslik: 'Haftalık program nasıl kurulur?',
+        ozet: 'Okul, dershane ve yol saatleri düşüldükten sonra kalan zamana gerçekçi bir program yazmanın adımları.',
+        sure: '12:40',
+        tarih: 'Eylül 2026',
+      },
+      {
+        youtube: '',
+        tur: 'Deneme',
+        baslik: 'Deneme sonucunu okumanın doğru yolu',
+        ozet: 'Net sayısına bakıp geçmek yerine, hangi konudan kaç soru kaybedildiğini çıkarmak.',
+        sure: '09:15',
+        tarih: 'Ağustos 2026',
+      },
+      {
+        youtube: '',
+        tur: 'Veliye',
+        baslik: 'Veliye: ne zaman sormalı, ne zaman susmalı',
+        ozet: 'Takip ile baskı arasındaki fark ve evde motivasyonu bozmadan destek olmanın sınırları.',
+        sure: '14:05',
+        tarih: 'Ağustos 2026',
+      },
+      {
+        youtube: '',
+        tur: 'Verimlilik',
+        baslik: 'Günde 8 saat masada, 2 saat verim',
+        ozet: 'Çalışma süresi ile çalışma verimi neden aynı şey değil; süre yerine neyi ölçmeli.',
+        sure: '11:22',
+        tarih: 'Temmuz 2026',
+      },
+      {
+        youtube: '',
+        tur: 'Tercih',
+        baslik: 'Tercih döneminde en sık yapılan üç hata',
+        ozet: 'Sıralama okumak, taban puan yanılgısı ve bölüm seçerken atlanan sorular.',
+        sure: '16:48',
+        tarih: 'Temmuz 2026',
+      },
+      {
+        youtube: '',
+        tur: 'Mezun',
+        baslik: 'Mezun yılını ilk yıldan farklı kılan şey',
+        ozet: 'Aynı kaynakları tekrar etmek yerine, ikinci yılda neyin değişmesi gerektiği.',
+        sure: '10:33',
+        tarih: 'Haziran 2026',
+      },
+    ],
+  },
+
+  // ── Seminerler ve konuşmalar ────────────────────────────────────
+  // ⚠️ DEMO. Görselleri public/seminerler/ içine koyup `gorsel` alanına
+  //    yolunu yazın: '/seminerler/ornek.jpg'. Boşsa yer tutucu görünür.
+  seminerler: {
+    baslik: 'Seminerler ve konuşmalar',
+    aciklama:
+      'Okullarda ve veli toplantılarında yaptığım sunumlardan bir seçki. ' +
+      'Davet için iletişim bölümünden ulaşabilirsiniz.',
+    liste: [
+      {
+        gorsel: '',
+        baslik: 'Sınav kaygısıyla baş etmek',
+        yer: 'Anadolu Lisesi · Veli semineri',
+        etiketler: ['2026', '210 katılımcı'],
+      },
+      {
+        gorsel: '',
+        baslik: 'Son 100 gün: gerçekçi planlama',
+        yer: 'Fen Lisesi · 12. sınıf seminerleri',
+        etiketler: ['2026', '140 katılımcı'],
+      },
+      {
+        gorsel: '',
+        baslik: 'LGS’den YKS’ye geçiş',
+        yer: 'Rehberlik servisi çalıştayı',
+        etiketler: ['2025', '90 katılımcı'],
+      },
+      {
+        gorsel: '',
+        baslik: 'Veli-öğrenci iletişimi',
+        yer: 'Belediye gençlik merkezi',
+        etiketler: ['2025', '160 katılımcı'],
+      },
+      {
+        gorsel: '',
+        baslik: 'Çalışma alışkanlığı kurmak',
+        yer: 'Ortaokul veli toplantısı',
+        etiketler: ['2025', '120 katılımcı'],
+      },
+      {
+        gorsel: '',
+        baslik: 'Tercih dönemi bilgilendirmesi',
+        yer: 'Online oturum',
+        etiketler: ['2024', '400+ izleyici'],
+      },
+    ],
+  },
+
   sorular: {
     baslik: 'Sık sorulanlar',
     liste: [
