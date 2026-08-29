@@ -228,18 +228,19 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 
 /* ═══════════════════════════════════════════════════════════
-   TANITIM SAYFASI — kareli sınav defteri
+   TANITIM SAYFASI — mat gece lacivertı
    Kendi belirteçleri var; panel stillerine karışmaz.
    ═══════════════════════════════════════════════════════════ */
 
 .sayfa-kagit {
-  --defter:  #fbfaf7;   /* kâğıt */
-  --kare:    #dfe6ea;   /* kare çizgisi */
-  --murekkep:#1b2a4a;   /* tükenmez kalem lacivert */
-  --kirmizi: #c8322b;   /* öğretmen kalemi */
-  --fosfor:  #ffe26b;   /* fosforlu */
-  --kursun:  #5c6373;   /* kurşun kalem grisi */
-  --silik:   #8d94a1;
+  --defter:  #0b1020;   /* zemin — siyaha çalan lacivert */
+  --yuzey:   #131a2c;   /* kart ve görsel yüzeyi, zeminden bir ton açık */
+  --kare:    #232c44;   /* ayırıcı çizgi — görülmesin, hissedilsin */
+  --murekkep:#eef2fb;   /* ana metin */
+  --kirmizi: #5b8cff;   /* aksan — eskiden kırmızıydı, artık mavi */
+  --fosfor:  #24386e;   /* vurgu bandı: mat, doygun olmayan mavi */
+  --kursun:  #a9b3c9;   /* gövde metni */
+  --silik:   #6d7891;
 
   --def: 'Bricolage Grotesque', 'Archivo', system-ui, sans-serif;
   --gov: 'Karla', system-ui, sans-serif;
@@ -248,24 +249,13 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   position: relative;
   min-height: 100dvh;
   background-color: var(--defter);
+  /* Tek bir yumuşak ışık. Parlaklık değil, derinlik için. */
   background-image:
-    linear-gradient(var(--kare) 1px, transparent 1px),
-    linear-gradient(90deg, var(--kare) 1px, transparent 1px);
-  background-size: 26px 26px;
+    radial-gradient(120% 70% at 50% -10%, #16203a 0%, transparent 60%);
+  background-repeat: no-repeat;
   color: var(--murekkep);
   font-family: var(--gov);
   font-size: 16px;
-}
-
-/* Defterin kırmızı marj çizgisi */
-.sayfa-kagit .marj {
-  position: fixed;
-  top: 0; bottom: 0;
-  left: clamp(0.75rem, 4vw, 3.5rem);
-  width: 1.5px;
-  background: var(--kirmizi);
-  opacity: 0.35;
-  pointer-events: none;
 }
 
 .sayfa-kagit > * {
@@ -293,11 +283,11 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 @media (max-width: 34rem) { .sayfa-kagit .ust-nav a { display: none; } }
 
 .sayfa-kagit .kucuk-dugme {
-  padding: 0.4rem 0.8rem; border: 1.5px solid var(--murekkep); border-radius: 2px;
+  padding: 0.4rem 0.8rem; border: 1.5px solid var(--kare); border-radius: 2px;
   background: transparent; color: var(--murekkep);
   font: inherit; font-size: 0.8125rem; font-weight: 500; cursor: pointer;
 }
-.sayfa-kagit .kucuk-dugme:hover { background: var(--murekkep); color: var(--defter); }
+.sayfa-kagit .kucuk-dugme:hover { border-color: var(--kirmizi); color: var(--kirmizi); }
 
 /* ---------- Kahraman ---------- */
 
@@ -316,7 +306,8 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 .fosfor {
   background: linear-gradient(transparent 12%, var(--fosfor) 12%, var(--fosfor) 86%, transparent 86%);
-  color: inherit; padding-inline: 0.1em;
+  box-shadow: inset 0 -1.5px 0 var(--kirmizi);
+  color: inherit; padding-inline: 0.12em;
 }
 
 .sayfa-kagit .kahraman-alt {
@@ -380,7 +371,7 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   display: grid; grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
   gap: clamp(1.25rem, 4vw, 2.5rem);
   padding-block: 1.75rem;
-  border-block: 1.5px solid var(--murekkep);
+  border-block: 1px solid var(--kare);
 }
 .serit-oge strong {
   display: block; font-family: var(--def); font-weight: 800;
@@ -405,8 +396,8 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 @media (max-width: 40rem) { .sayfa-kagit .kim { grid-template-columns: 1fr; } }
 
 .portre {
-  aspect-ratio: 1; border: 1.5px solid var(--murekkep); border-radius: 2px;
-  display: grid; place-items: center; overflow: hidden; background: #fff;
+  aspect-ratio: 1; border: 1px solid var(--kare); border-radius: 2px;
+  display: grid; place-items: center; overflow: hidden; background: var(--yuzey);
   max-width: 8.5rem;
 }
 .portre img { width: 100%; height: 100%; object-fit: cover; }
@@ -446,15 +437,15 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 .belge-gorsel {
   aspect-ratio: 620 / 840;
-  border: 1.5px solid var(--kare); border-radius: 2px;
-  background: #fff; display: grid; place-items: center;
+  border: 1px solid var(--kare); border-radius: 2px;
+  background: var(--yuzey); display: grid; place-items: center;
   overflow: hidden; margin-bottom: 0.75rem;
-  box-shadow: 0 1px 3px rgb(27 42 74 / 0.07);
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.35);
   transition: transform 180ms ease, box-shadow 180ms ease;
 }
 .belge:hover .belge-gorsel {
   transform: translateY(-3px);
-  box-shadow: 0 6px 16px rgb(27 42 74 / 0.12);
+  box-shadow: 0 8px 20px rgb(0 0 0 / 0.45);
 }
 .belge-gorsel img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .belge-bos { font-size: 0.75rem; color: var(--silik); text-align: center; padding: 0.5rem; }
@@ -486,9 +477,10 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .adimlar li { display: grid; grid-template-columns: 2.25rem 1fr; gap: 1.125rem; align-items: start; }
 .adim-no {
   width: 2.25rem; height: 2.25rem; border-radius: 50%;
-  border: 1.5px solid var(--murekkep);
+  border: 1.5px solid var(--kare);
   display: grid; place-items: center;
   font-family: var(--mon); font-size: 0.8125rem; font-weight: 700;
+  color: var(--kirmizi);
 }
 .adimlar h3 { font-family: var(--def); font-size: 1.0625rem; font-weight: 700; margin: 0.2rem 0 0.35rem; }
 .adimlar p { margin: 0; font-size: 0.9375rem; line-height: 1.62; color: var(--kursun); max-width: 54ch; }
@@ -521,15 +513,15 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 /* ---------- Gruplar ---------- */
 
-.gruplar { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1px; background: var(--kare); border: 1.5px solid var(--murekkep); }
-.grup { background: var(--defter); padding: 1.125rem 1.25rem; }
+.gruplar { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1px; background: var(--kare); border: 1px solid var(--kare); }
+.grup { background: var(--yuzey); padding: 1.125rem 1.25rem; }
 .grup-ad { display: block; font-family: var(--def); font-weight: 700; font-size: 1.0625rem; }
 .grup-alt { display: block; font-size: 0.8125rem; color: var(--kursun); margin-top: 0.3rem; line-height: 1.45; }
 
 /* ---------- Yorumlar ---------- */
 
 .yorumlar { display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: 1.5rem; }
-.yorum { margin: 0; padding: 1.25rem 1.375rem; background: #fff; border: 1px solid var(--kare); border-left: 3px solid var(--fosfor); border-radius: 2px; }
+.yorum { margin: 0; padding: 1.25rem 1.375rem; background: var(--yuzey); border: 1px solid var(--kare); border-left: 3px solid var(--kirmizi); border-radius: 2px; }
 .yorum p { margin: 0 0 1rem; font-size: 0.9375rem; line-height: 1.65; }
 .yorum footer { display: flex; flex-direction: column; gap: 0.15rem; }
 .yorum-kisi { font-weight: 600; font-size: 0.875rem; }
@@ -560,12 +552,12 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 .iletisim { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.875rem; }
 .iletisim li { display: flex; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
 .iletisim-ad { font-family: var(--mon); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--silik); min-width: 5.5rem; }
-.iletisim a { color: var(--murekkep); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--fosfor); text-decoration-thickness: 3px; }
-.iletisim a:hover { text-decoration-color: var(--kirmizi); }
+.iletisim a { color: var(--murekkep); text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--kirmizi); text-decoration-thickness: 2px; }
+.iletisim a:hover { text-decoration-color: var(--murekkep); }
 
 .sayfa-kagit .alt {
   display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
-  padding-block: 1.5rem 2.5rem; border-top: 1.5px solid var(--murekkep);
+  padding-block: 1.5rem 2.5rem; border-top: 1px solid var(--kare);
   font-size: 0.8125rem; color: var(--silik);
 }
 
@@ -576,27 +568,39 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
   .net-nokta { animation: none; opacity: 1; }
 }
 
-/* Giriş ekranı, tanıtım sayfasıyla aynı kâğıt dilinde */
+/* Giriş ekranı, tanıtım sayfasıyla aynı koyu dilde */
 .giris-kagit {
-  --defter: #fbfaf7;
-  --kare: #dfe6ea;
-  background-color: var(--defter);
+  --kagit:    #0b1020;
+  --yuzey:    #131a2c;
+  --cizgi:    #232c44;
+  --murekkep: #eef2fb;
+  --grafit:   #a9b3c9;
+  --soluk:    #6d7891;
+  --dolgu:    #5b8cff;
+
+  background-color: var(--kagit);
   background-image:
-    linear-gradient(var(--kare) 1px, transparent 1px),
-    linear-gradient(90deg, var(--kare) 1px, transparent 1px);
-  background-size: 26px 26px;
+    radial-gradient(120% 80% at 50% -20%, #16203a 0%, transparent 60%);
+  background-repeat: no-repeat;
+  color: var(--murekkep);
 }
 .giris-kagit .giris-kutu {
-  border: 1.5px solid #1b2a4a;
+  border: 1px solid var(--cizgi);
   border-radius: 2px;
-  background: #fff;
+  background: var(--yuzey);
 }
+.giris-kagit .sekme--etkin { background: #1d2740; box-shadow: none; }
+.giris-kagit .sekmeler { background: #0f1524; }
+.giris-kagit .uyari--hata { background: #2a1418; color: #ff8f86; }
+.giris-kagit .uyari--bilgi { background: #10251d; color: #5fd3a5; }
+.giris-kagit input, .giris-kagit select { background: #0f1524; }
 .giris-kagit .giris-basi h1 {
   font-family: 'Bricolage Grotesque', system-ui, sans-serif;
   font-weight: 800; font-size: 2rem; letter-spacing: -0.03em;
 }
-.giris-kagit .dugme--birincil { background: #1b2a4a; border-radius: 2px; }
-.giris-kagit .dugme--birincil:hover { background: #c8322b; }
+.giris-kagit .dugme--birincil { background: var(--murekkep); color: #0b1020; border-radius: 2px; }
+.giris-kagit .dugme--birincil:hover { background: var(--dolgu); color: #0b1020; }
+.giris-kagit .dugme--ikincil { background: transparent; border-color: var(--cizgi); }
 
 /* ═══════════ Öğrenci detay ═══════════ */
 
@@ -1726,3 +1730,10 @@ body[data-tema='panel'] {
   background-image: none;
 }
 .uygulama { --kagit: #dbe5f0; }
+
+/* Koyu sayfa açıkken gövde zemini de koyu — mobilde aşırı kaydırmada
+   arkadan açık renk sızmasın diye. Tanitim ve Giris ekleyip kaldırıyor. */
+body.karanlik {
+  background-color: #0b1020;
+  background-image: none;
+}

@@ -111,10 +111,14 @@ export default function Tanitim({ onGiris }) {
 
   const basHarf = koc.ad.split(' ').map((k) => k[0]).join('').slice(0, 2)
 
+  // Sayfa koyu; mobilde aşırı kaydırınca arkadan açık renk sızmasın.
+  useEffect(() => {
+    document.body.classList.add('karanlik')
+    return () => document.body.classList.remove('karanlik')
+  }, [])
+
   return (
     <div className="sayfa-kagit">
-      <div className="marj" aria-hidden="true" />
-
       <header className="ust">
         <span className="ust-ad">{koc.ad}</span>
         <nav className="ust-nav">

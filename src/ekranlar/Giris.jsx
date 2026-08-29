@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari } from '../bilesenler/Ortak.jsx'
 
@@ -7,6 +7,11 @@ export default function Giris({ onGeri }) {
   const [sifre, setSifre] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
+
+  useEffect(() => {
+    document.body.classList.add('karanlik')
+    return () => document.body.classList.remove('karanlik')
+  }, [])
 
   async function gonder() {
     setHata('')
