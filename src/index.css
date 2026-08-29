@@ -1016,3 +1016,79 @@ main { max-width: 44rem; margin: 0 auto; padding: clamp(1rem, 4vw, 1.75rem); }
 
 /* Kareli doku yalnızca uygulama gövdesinde; başlık ve gezinme düz kâğıt */
 .ust-bar, .alt-gezinme { background: var(--yuzey); }
+
+/* ============================================================
+   Panel koyu tema — ilk tasarımdaki görünüm
+   Tanıtım sayfası kâğıt dilinde kalır; panel gece çalışan bir
+   öğrencinin ve koçun uzun süre baktığı ekran, koyu daha rahat.
+   ============================================================ */
+
+.uygulama {
+  --kagit:    #17181b;
+  --yuzey:    #1e1f23;
+  --yuzey-2:  #26282d;
+  --murekkep: #ecedef;
+  --grafit:   #a0a4ad;
+  --soluk:    #7c8089;
+  --cizgi:    #2b2d33;
+  --dolgu:    #4a90e2;
+  --isaret:   #5fbf7f;
+  --uyari:    #e8705f;
+  --fosfor:   #ffd84d;
+
+  background: var(--kagit);
+  color: var(--murekkep);
+}
+
+/* Koyu zeminde kareli doku kirli görünüyor, düz kâğıt kalsın */
+.uygulama .ust-bar,
+.uygulama .alt-gezinme { background: var(--kagit); border-color: var(--cizgi); }
+.uygulama .ust-bar { border-bottom: 1px solid var(--cizgi); }
+.uygulama .kart { background: var(--yuzey); border-color: var(--cizgi); }
+.uygulama .dugme--ikincil { background: var(--yuzey-2); color: var(--murekkep); border-color: var(--cizgi); }
+.uygulama .dugme--birincil { background: var(--dolgu); color: #0d1117; }
+.uygulama .metin-dugme { color: var(--grafit); }
+.uygulama input,
+.uygulama select,
+.uygulama textarea {
+  background: var(--yuzey-2); color: var(--murekkep); border-color: var(--cizgi);
+}
+.uygulama .liste-satir,
+.uygulama .ogrenci-satir { border-color: var(--cizgi); }
+.uygulama .rozet--notr { background: var(--yuzey-2); color: var(--grafit); }
+.uygulama .rozet--sonuk { background: var(--yuzey-2); color: var(--soluk); }
+.uygulama .uyari--hata { background: #3a1512; color: #f08a7a; }
+.uygulama .uyari--bilgi { background: #10301f; color: #6bcf9a; }
+
+/* Risk rozetleri: ilk tasarımdaki renk kodları */
+.uygulama .risk-bas--acil { background: #3a1512; color: #f08a7a; }
+.uygulama .risk-bas--izle { background: #3a2a10; color: #e0b062; }
+.uygulama .risk-bas--iyi  { background: #10301f; color: #6bcf9a; }
+
+/* Kâmil şeridi: koyu lacivert kutu, mavi metin */
+.uygulama .kalem-balon {
+  background: #10243f;
+  border: 1px solid #1c3b63;
+  border-left: 1px solid #1c3b63;
+  border-radius: 12px;
+}
+.uygulama .kalem-ad { color: #6aa6f5; opacity: 1; }
+.uygulama .kalem-mesaj { color: #9cc4f2; }
+.uygulama .kalem-kapat { color: #6aa6f5; }
+
+/* KPI satırı */
+.kpi-satir { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0.25rem 0.25rem 0.5rem; }
+.kpi-etiket { margin: 0; font-size: 0.9375rem; color: var(--grafit); }
+.kpi-sayi {
+  margin: 0.35rem 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 2rem; line-height: 1; letter-spacing: -0.02em;
+}
+.kpi-alt { margin: 0.35rem 0 0; font-size: 0.875rem; color: var(--soluk); }
+.kpi-alt--iyi { color: var(--isaret); }
+.kpi-alt--kotu { color: var(--uyari); }
+
+.net-grafik { width: 100%; height: auto; display: block; }
+.uygulama .konu-cubuk { background: var(--yuzey-2); }
+.uygulama .balon--ondan { background: var(--yuzey-2); border-color: var(--cizgi); }
+.uygulama .veli-yorum { background: var(--yuzey-2); border-color: var(--cizgi); }
+.uygulama .derleme-damgasi { color: var(--soluk); }
