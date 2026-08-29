@@ -231,9 +231,9 @@ export default function DenemePaneli({
           <Bos
             baslik="Konu bazlı hata girilmemiş"
             aciklama={
-              saltOkunur
-                ? 'Denemeye hata konusu eklerseniz burada birikir.'
-                : 'Koçun denemelerde hata çıkan konuları işaretledikçe burası dolacak.'
+              duzenlenebilir
+                ? 'Denemenin yanındaki “Hata konuları”ndan işaretledikçe burada birikir.'
+                : 'Denemelerde hata çıkan konular işaretlendikçe burası dolacak.'
             }
           />
         ) : (
