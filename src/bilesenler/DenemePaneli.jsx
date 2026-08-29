@@ -1,13 +1,17 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Bos, Kart, Uyari, Yukleniyor } from './Ortak.jsx'
+import { Bos, Dugme, Kart, Uyari, Yukleniyor } from './Ortak.jsx'
+import DenemeFormu from './DenemeFormu.jsx'
 
 /* Deneme sekmesi. Öğrenci panelinde ve koçun "öğrenci gözüyle" ekranında
    aynı dosyadan çiziliyor; ikisi de salt okunur, denemeyi koç giriyor.
 
    Sıralama bilinçli: önce net nereye gidiyor, sonra hangi ders taşıyor,
    en sonda ne çalışılacak. Grafikle başlayıp konuyla bitmek, "iyi/kötü"
-   duygusunu eyleme bağlıyor. */
+   duygusunu eyleme bağlıyor.
+
+   Denemeyi koç da öğrenci de girebiliyor — sonucu zaten ikisi de biliyor,
+   girişi tek tarafa kilitlemek sadece kaydı geciktiriyordu. */
 
 const TUR_ADI = { tyt: 'TYT', ayt: 'AYT', ydt: 'YDT', brans: 'Branş' }
 const DURUM_ETIKET = {
@@ -64,28 +68,40 @@ function NetCizgisi({ seri }) {
   )
 }
 
-export default function DenemePaneli({ ogrenciId = null, saltOkunur = false }) {
+export default function DenemePaneli({
+  ogrenciId = null,
+  katalogId = null,
+  duzenlenebilir = false,
+}) {
   const [veri, setVeri] = useState(null)
   const [tur, setTur] = useState(null)
   const [hata, setHata] = useState('')
+  const [formAcik, setFormAcik] = useState(false)
+  const [acikHata, setAcikHata] = useState(null)
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase.rpc('deneme_paneli', {
+      p_ogrenci: ogrenciId,
+      p_limit: 12,
+    })
+    if (error) {
+      setHata(hataMetni(error))
+      setVeri({ denemeler: [], zayif: [] })
+      return
+    }
+    setHata('')
+    setVeri(data ?? { denemeler: [], zayif: [] })
+  }, [ogrenciId])
 
   useEffect(() => {
-    let iptal = false
-    supabase
-      .rpc('deneme_paneli', { p_ogrenci: ogrenciId, p_limit: 12 })
-      .then(({ data, error }) => {
-        if (iptal) return
-        if (error) {
-          setHata(hataMetni(error))
-          setVeri({ denemeler: [], zayif: [] })
-          return
-        }
-        setVeri(data ?? { denemeler: [], zayif: [] })
-      })
-    return () => {
-      iptal = true
-    }
-  }, [ogrenciId])
+    yukle()
+  }, [yukle])
+
+  async function sil(id) {
+    const { error } = await supabase.from('denemeler').delete().eq('id', id)
+    if (error) setHata(hataMetni(error))
+    else yukle()
+  }
 
   const denemeler = veri?.denemeler ?? []
 
@@ -98,26 +114,40 @@ export default function DenemePaneli({ ogrenciId = null, saltOkunur = false }) {
   const seciliTur = tur ?? turler[0] ?? null
   const suzulmus = denemeler.filter((d) => d.tur === seciliTur)
 
-  if (hata && !denemeler.length) {
-    return (
-      <Kart baslik="Denemeler">
-        <Uyari>{hata}</Uyari>
-      </Kart>
-    )
-  }
   if (veri === null) return <Yukleniyor />
 
   if (denemeler.length === 0) {
     return (
-      <Kart baslik="Denemeler">
-        <Bos
-          baslik="Deneme kaydı yok"
-          aciklama={
-            saltOkunur
-              ? 'Öğrenci henüz boş bir ekran görüyor.'
-              : 'Koçun deneme sonuçlarını girdiğinde net gelişimin burada görünecek.'
-          }
-        />
+      <Kart
+        baslik="Denemeler"
+        eylem={
+          duzenlenebilir ? (
+            <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
+              {formAcik ? 'Kapat' : 'Deneme ekle'}
+            </Dugme>
+          ) : null
+        }
+      >
+        <Uyari>{hata}</Uyari>
+        {formAcik ? (
+          <DenemeFormu
+            ogrenciId={ogrenciId}
+            katalogId={katalogId}
+            onEklendi={() => {
+              setFormAcik(false)
+              yukle()
+            }}
+          />
+        ) : (
+          <Bos
+            baslik="Deneme kaydı yok"
+            aciklama={
+              duzenlenebilir
+                ? 'İlk denemeyi ekleyince net gelişimi burada görünecek.'
+                : 'Deneme girildiğinde net gelişimi burada görünecek.'
+            }
+          />
+        )}
       </Kart>
     )
   }
@@ -223,7 +253,30 @@ export default function DenemePaneli({ ogrenciId = null, saltOkunur = false }) {
         )}
       </Kart>
 
-      <Kart baslik="Tüm denemeler" altBaslik={`${denemeler.length} kayıt`}>
+      <Kart
+        baslik="Tüm denemeler"
+        altBaslik={`${denemeler.length} kayıt`}
+        eylem={
+          duzenlenebilir ? (
+            <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
+              {formAcik ? 'Kapat' : 'Deneme ekle'}
+            </Dugme>
+          ) : null
+        }
+      >
+        <Uyari>{hata}</Uyari>
+
+        {formAcik && (
+          <DenemeFormu
+            ogrenciId={ogrenciId}
+            katalogId={katalogId}
+            onEklendi={() => {
+              setFormAcik(false)
+              yukle()
+            }}
+          />
+        )}
+
         <ul className="liste">
           {denemeler.map((d) => (
             <li key={d.id} className="liste-satir">
@@ -239,10 +292,166 @@ export default function DenemePaneli({ ogrenciId = null, saltOkunur = false }) {
                 <strong>{Number(d.toplamNet).toFixed(2)}</strong>
                 <span>net</span>
               </div>
+              {duzenlenebilir && (
+                <>
+                  <button
+                    className="metin-dugme"
+                    onClick={() => setAcikHata(acikHata === d.id ? null : d.id)}
+                    aria-expanded={acikHata === d.id}
+                  >
+                    Hata konuları
+                  </button>
+                  <button className="sil-dugme" onClick={() => sil(d.id)} aria-label="Denemeyi sil">
+                    ×
+                  </button>
+                  {acikHata === d.id && (
+                    <DenemeHatalari deneme={d} katalogId={katalogId} onDegisti={yukle} />
+                  )}
+                </>
+              )}
             </li>
           ))}
         </ul>
       </Kart>
     </>
+  )
+}
+
+/* Netin hangi konudan düştüğü, denemenin asıl bilgisi. Buraya girilen
+   satırlar öğrencinin deneme sekmesinde "tekrar edilmesi gereken konular"
+   listesinde birikiyor. */
+function DenemeHatalari({ deneme, katalogId, onDegisti }) {
+  const [satirlar, setSatirlar] = useState(null)
+  const [dersler, setDersler] = useState([])
+  const [konular, setKonular] = useState([])
+  const [dersId, setDersId] = useState('')
+  const [konuId, setKonuId] = useState('')
+  const [adet, setAdet] = useState('1')
+  const [hata, setHata] = useState('')
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase
+      .from('deneme_hatalari')
+      .select('konu_id, adet, konular(ad, dersler(ad))')
+      .eq('deneme_id', deneme.id)
+    if (error) setHata(hataMetni(error))
+    setSatirlar(data ?? [])
+  }, [deneme.id])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
+
+  useEffect(() => {
+    if (!katalogId) return
+    supabase
+      .from('dersler')
+      .select('id, ad')
+      .eq('katalog_id', katalogId)
+      .order('sira')
+      .then(({ data }) => setDersler(data ?? []))
+  }, [katalogId])
+
+  useEffect(() => {
+    setKonuId('')
+    if (!dersId) {
+      setKonular([])
+      return
+    }
+    supabase
+      .from('konular')
+      .select('id, ad')
+      .eq('ders_id', Number(dersId))
+      .order('sira')
+      .then(({ data }) => setKonular(data ?? []))
+  }, [dersId])
+
+  async function ekle() {
+    if (!konuId) return
+    const { error } = await supabase
+      .from('deneme_hatalari')
+      .upsert(
+        { deneme_id: deneme.id, konu_id: Number(konuId), adet: Math.max(1, Number(adet) || 1) },
+        { onConflict: 'deneme_id,konu_id' },
+      )
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setHata('')
+    setKonuId('')
+    setAdet('1')
+    yukle()
+    onDegisti?.()
+  }
+
+  async function kaldir(kId) {
+    const { error } = await supabase
+      .from('deneme_hatalari')
+      .delete()
+      .eq('deneme_id', deneme.id)
+      .eq('konu_id', kId)
+    if (error) setHata(hataMetni(error))
+    else {
+      yukle()
+      onDegisti?.()
+    }
+  }
+
+  return (
+    <div className="hata-kutu">
+      <Uyari>{hata}</Uyari>
+      {satirlar === null ? (
+        <Yukleniyor />
+      ) : satirlar.length === 0 ? (
+        <p className="kart-alt">Bu denemede konu bazlı hata girilmemiş.</p>
+      ) : (
+        <ul className="liste">
+          {satirlar.map((h) => (
+            <li key={h.konu_id} className="zayif-satir">
+              <div className="zayif-metin">
+                <span className="gorev-baslik">{h.konular?.ad}</span>
+                <span className="gorev-etiket">{h.konular?.dersler?.ad}</span>
+              </div>
+              <span className="zayif-sayi">{h.adet}</span>
+              <button className="sil-dugme" onClick={() => kaldir(h.konu_id)} aria-label="Kaldır">
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="hata-form">
+        <select value={dersId} onChange={(e) => setDersId(e.target.value)} aria-label="Ders">
+          <option value="">Ders seç</option>
+          {dersler.map((d) => (
+            <option key={d.id} value={d.id}>{d.ad}</option>
+          ))}
+        </select>
+        <select
+          value={konuId}
+          onChange={(e) => setKonuId(e.target.value)}
+          disabled={!konular.length}
+          aria-label="Konu"
+        >
+          <option value="">{konular.length ? 'Konu seç' : 'Önce ders seç'}</option>
+          {konular.map((k) => (
+            <option key={k.id} value={k.id}>{k.ad}</option>
+          ))}
+        </select>
+        <div className="hata-form-alt">
+          <input
+            type="number"
+            min="1"
+            max="99"
+            value={adet}
+            onChange={(e) => setAdet(e.target.value)}
+            aria-label="Hata adedi"
+          />
+          <Dugme tur="ikincil" onClick={ekle} disabled={!konuId}>Ekle</Dugme>
+        </div>
+      </div>
+    </div>
   )
 }

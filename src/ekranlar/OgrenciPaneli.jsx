@@ -162,7 +162,7 @@ export default function OgrenciPaneli({ profil }) {
       ) : sekme === 'rozetler' ? (
         <Rozetlerim ogrenciId={kayit.id} />
       ) : (
-        <DenemePaneli />
+        <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
       )}
     </>
   )

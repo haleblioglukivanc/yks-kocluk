@@ -109,7 +109,7 @@ export default function OgrenciGozuyle({ ogrenciId, onGeri }) {
         </Kart>
       )}
 
-      <DenemePaneli ogrenciId={ogrenciId} saltOkunur />
+      <DenemePaneli ogrenciId={ogrenciId} />
 
       <Kart baslik="Haftalık programı" altBaslik="Öğrencinin gördüğü hâliyle">
         <ProgramIzgarasi ogrenci={ogrenci} duzenlenebilir={false} saltOkunur />
