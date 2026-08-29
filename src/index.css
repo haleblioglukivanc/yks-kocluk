@@ -1624,3 +1624,17 @@ body[data-tema='panel'] {
 /* Deneme satırı hata kutusunu alt satıra alabilsin */
 .liste-satir { flex-wrap: wrap; }
 .liste-satir > div:first-child { min-width: 0; flex: 1 1 auto; }
+
+/* Hata sınırı ekranı — telefonda konsol olmadığı için hata metni görünür */
+.cokme { max-width: 40rem; margin: 0 auto; padding: 1.5rem 1.25rem; }
+.cokme h1 { font-size: 1.25rem; margin-bottom: 0.5rem; }
+.cokme p { color: var(--grafit); font-size: 0.9375rem; }
+.cokme-iz {
+  margin: 1rem 0; padding: 0.75rem; border-radius: 8px;
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  font-family: var(--mono); font-size: 0.6875rem; line-height: 1.5;
+  white-space: pre-wrap; overflow-wrap: anywhere; max-height: 45vh; overflow: auto;
+}
+.cokme-sur { font-family: var(--mono); font-size: 0.75rem; color: var(--soluk); }
+.cokme-dugmeler { display: flex; gap: 0.625rem; margin-top: 1rem; }
+.cokme-dugmeler .dugme { flex: 1; }
