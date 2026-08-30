@@ -86,12 +86,30 @@ export default function OgrenciKimlikKarti({
     ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
   ].filter(Boolean)
 
-  // Hedef çubuğu: TYT varsa o, yoksa AYT. İkisi de yoksa çubuk hiç çıkmaz.
-  const hedefTur = ogrenci.hedef_tyt_net != null ? 'tyt' : ogrenci.hedef_ayt_net != null ? 'ayt' : null
-  const hedef = hedefTur === 'tyt' ? Number(ogrenci.hedef_tyt_net) : hedefTur === 'ayt' ? Number(ogrenci.hedef_ayt_net) : null
-  const sonNet = netDurumu?.[hedefTur]?.son_net != null ? Number(netDurumu[hedefTur].son_net) : null
-  const oran = hedef && sonNet != null ? Math.min(100, Math.max(0, (sonNet / hedef) * 100)) : 0
-  const kalan = hedef != null && sonNet != null ? hedef - sonNet : null
+  /* Hedef çubukları: hangi hedef girilmişse o çıkar. Mezun ve 12. sınıfta
+     AYT en az TYT kadar belirleyici; tek çubuk göstermek bilgi saklıyordu. */
+  const hedefler = [
+    { ad: 'TYT', hedef: ogrenci.hedef_tyt_net, d: netDurumu?.tyt },
+    { ad: 'AYT', hedef: ogrenci.hedef_ayt_net, d: netDurumu?.ayt },
+  ]
+    .filter((h) => h.hedef != null)
+    .map((h) => {
+      const hedef = Number(h.hedef)
+      const son = h.d?.son_net != null ? Number(h.d.son_net) : null
+      const enIyi = h.d?.en_yuksek_net != null ? Number(h.d.en_yuksek_net) : null
+      return {
+        ad: h.ad,
+        hedef,
+        son,
+        oran: son != null && hedef > 0 ? Math.min(100, Math.max(0, (son / hedef) * 100)) : 0,
+        // En iyi net çubuk üstünde ince bir çentik: sayı yazmadan tavanı gösteriyor.
+        enIyiOran:
+          enIyi != null && enIyi > (son ?? 0) && hedef > 0
+            ? Math.min(100, (enIyi / hedef) * 100)
+            : null,
+        kalan: son != null ? hedef - son : null,
+      }
+    })
 
   const gosterilenNet =
     netDurumu?.tyt?.son_net ?? netDurumu?.ayt?.son_net ?? null
@@ -158,25 +176,38 @@ export default function OgrenciKimlikKarti({
           </div>
         </div>
 
-        {hedefTur && (
-          <div className="kk-hedef">
+        {ogrenci.hedef_universite || ogrenci.hedef_bolum ? (
+          <p className="kk-varis">
+            {[ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')}
+          </p>
+        ) : null}
+
+        {hedefler.map((h) => (
+          <div className="kk-hedef" key={h.ad}>
             <div className="kk-hedef-satir">
               <span className="kk-hedef-etiket">
-                {hedefTur.toUpperCase()} hedefi · {sonNet != null ? sonNet.toFixed(2) : '—'} / {hedef.toFixed(2)}
+                {h.ad} hedefi · {h.son != null ? h.son.toFixed(2) : '—'} / {h.hedef.toFixed(2)}
               </span>
               <span className="kk-hedef-deger">
-                {kalan == null ? 'deneme yok' : kalan <= 0 ? 'hedefe ulaştı' : `${kalan.toFixed(2)} net kaldı`}
+                {h.kalan == null
+                  ? 'deneme yok'
+                  : h.kalan <= 0
+                    ? 'hedefe ulaştı'
+                    : `${h.kalan.toFixed(2)} net kaldı`}
               </span>
             </div>
             <div
               className="kk-cubuk"
               role="img"
-              aria-label={`${hedefTur.toUpperCase()} hedefine ${Math.round(oran)}% ulaşıldı`}
+              aria-label={`${h.ad} hedefine %${Math.round(h.oran)} ulaşıldı`}
             >
-              <span style={{ width: `${oran}%` }} />
+              <span style={{ width: `${h.oran}%` }} />
+              {h.enIyiOran != null && (
+                <i className="kk-eniyi" style={{ left: `${h.enIyiOran}%` }} aria-hidden="true" />
+              )}
             </div>
           </div>
-        )}
+        ))}
 
         {!aktif && (
           <p className="kk-kapali">

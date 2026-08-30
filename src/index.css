@@ -1702,9 +1702,9 @@ body[data-tema='panel'] {
 }
 .kk-risk { display: inline-flex; align-items: center; gap: 0.35rem; }
 .kk-nokta { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.kk-risk--iyi  { background: rgba(47, 163, 107, 0.34); color: #8ff0c0; }
-.kk-risk--izle { background: rgba(240, 160, 32, 0.26); color: #ffce85; }
-.kk-risk--acil { background: rgba(236, 95, 43, 0.30); color: #ffab90; }
+.kk-risk--iyi  { background: #c6f2dc; color: #0d4a31; }
+.kk-risk--izle { background: #ffe6b3; color: #6b4405; }
+.kk-risk--acil { background: #ffd9cc; color: #8c2f0e; }
 
 .kk-eylem { display: flex; flex-direction: column; align-items: flex-end; gap: 0.7rem; flex: 0 0 auto; }
 .kk-ikonlar { display: flex; gap: 0.4rem; }
@@ -1780,7 +1780,6 @@ body[data-tema='panel'] {
   background: rgba(200, 50, 43, 0.12); color: var(--uyari);
   font-size: 0.8125rem; font-weight: 600;
 }
-.uygulama .kk-gecikme { background: #3a1512; color: #f08a7a; }
 
 @media (prefers-reduced-motion: reduce) {
   .kimlik-kart, .anahtar-kizak, .anahtar-kizak::before, .kk-cubuk span { transition: none; }
@@ -1845,3 +1844,27 @@ body[data-tema='panel'] {
 .erisim-kapali p { margin: 0; font-size: 0.875rem; color: var(--grafit); line-height: 1.55; }
 .erisim-kapali .erisim-alt { font-size: 0.8125rem; color: var(--soluk); }
 .erisim-kapali .dugme { margin-top: 0.4rem; }
+
+/* Kartın kendi başlığı sıcak renge boyanmasın: koyu yeşil zeminde okunmuyor.
+   .uygulama h2 kuralını yenmek için iki sınıf gerekiyor. */
+.uygulama .kimlik-kart .kk-ad { color: #ffffff; }
+
+/* Hedef üniversite / bölüm — tek satır, sessiz */
+.kk-varis {
+  position: relative;
+  margin: 0.85rem 0 0; font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.72); overflow-wrap: anywhere;
+}
+.kk-varis + .kk-hedef { margin-top: 0.7rem; }
+
+/* İkinci hedef çubuğu birinciye yapışmasın */
+.kk-hedef + .kk-hedef { margin-top: 0.7rem; }
+
+/* En iyi net: çubuk üstünde ince çentik, sayı yazmadan tavanı gösterir */
+.kk-eniyi {
+  position: absolute; top: -2px; bottom: -2px; width: 2px;
+  background: rgba(255, 255, 255, 0.75); border-radius: 2px;
+  transform: translateX(-1px);
+}
+.kk-cubuk { position: relative; overflow: visible; }
+.kk-cubuk span { position: relative; z-index: 1; }
