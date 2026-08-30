@@ -24,7 +24,7 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
     <div className="panel">
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       {ozet && <Ozetler ozet={ozet} />}
-      <RiskRadari onOgrenciAc={onOgrenciAc} />
+      <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
       <OnayKuyrugu onOgrenciAc={onOgrenciAc} />
     </div>
   )

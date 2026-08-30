@@ -2045,3 +2045,18 @@ body[data-tema='panel'] {
 
 /* Koç başlığındaki kısayollar, kimlik kartındakiyle aynı şerit. */
 .ob .kk-kisayol { margin-top: 0.95rem; }
+
+/* Risk radarındaki satır eylemi. Satırın kendisi öğrenciyi açıyor,
+   bu düğme doğrudan mesaja götürüyor: liste rapor değil, yapılacaklar. */
+.satir-eylem {
+  flex: 0 0 auto; width: 42px; align-self: stretch;
+  display: grid; place-items: center;
+  border: 1px solid var(--cizgi); border-radius: 12px;
+  background: var(--yuzey); color: var(--grafit); cursor: pointer;
+}
+.satir-eylem:hover { color: var(--sicak); border-color: var(--sicak-kenar); }
+.ogrenci-sarmal .ogrenci-satir { flex: 1; min-width: 0; }
+
+/* Plan eksiği koçun kendi açığı: risk renkleriyle karışmasın diye
+   kendi tonu var. */
+.risk-bas--plan { background: #ede7fb; color: #4a2f8f; }
