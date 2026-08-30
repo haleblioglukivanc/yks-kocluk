@@ -273,25 +273,29 @@ function Program({ ogrenci }) {
 
   return (
     <Kart baslik="Haftalık program" altBaslik="Zaman dilimine göre">
+      {/* Form ızgaranın altında değil, dokunulan hücrenin altında açılıyor.
+          Yerleşimi ortak bileşen yönetiyor; öğrenci paneli de aynı yeri kullanır. */}
       <ProgramIzgarasi
         key={tazele}
         ogrenci={ogrenci}
         duzenlenebilir
         onHucreSec={(blok, tarih, periyot) => setSecim({ blok, tarih, periyot })}
         onRutinEkle={(gunler) => setSecim({ rutinGunler: gunler })}
+        acikSecim={secim}
+        panel={
+          secim ? (
+            <HucreDuzenle
+              ogrenci={ogrenci}
+              secim={secim}
+              onKapat={() => setSecim(null)}
+              onDegisti={() => {
+                setSecim(null)
+                setTazele((t) => t + 1)
+              }}
+            />
+          ) : null
+        }
       />
-
-      {secim && (
-        <HucreDuzenle
-          ogrenci={ogrenci}
-          secim={secim}
-          onKapat={() => setSecim(null)}
-          onDegisti={() => {
-            setSecim(null)
-            setTazele((t) => t + 1)
-          }}
-        />
-      )}
     </Kart>
   )
 }

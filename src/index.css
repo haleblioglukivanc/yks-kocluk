@@ -964,6 +964,7 @@ body[data-tema='panel'] {
   width: 100%;
   table-layout: fixed;
   border-spacing: 2px;
+  --saat-gen: 2.4rem; /* açılır panelin oku bu genişliği baz alır */
 }
 
 .prg-tablo th { font-size: 0.625rem; padding-bottom: 0.25rem; }
@@ -985,12 +986,13 @@ body[data-tema='panel'] {
 
 /* Biraz geniş telefonlarda nefes payı */
 @media (min-width: 24rem) {
-  .prg-tablo { border-spacing: 3px; }
+  .prg-tablo { border-spacing: 3px; --saat-gen: 2.7rem; }
   .prg-saat { width: 2.7rem; font-size: 0.625rem; }
   .hucre { font-size: 0.625rem; padding: 0.6rem 0.25rem; }
 }
 
 @media (min-width: 34rem) {
+  .prg-tablo { --saat-gen: 3.25rem; }
   .prg-saat { width: 3.25rem; font-size: 0.6875rem; }
   .hucre { font-size: 0.75rem; padding: 0.7rem 0.4rem; }
 }
@@ -2071,3 +2073,72 @@ body[data-tema='panel'] {
 /* Plan eksiği koçun kendi açığı: risk renkleriyle karışmasın diye
    kendi tonu var. */
 .risk-bas--plan { background: #ede7fb; color: #4a2f8f; }
+
+
+/* ============================================================
+   Hücre açılır paneli
+   Veri girişi tablonun en altında değil, dokunulan hücrenin hemen
+   altında açılıyor: hangi güne/saate yazdığın gözden kaçmıyor.
+   Koç formu ve öğrencinin blok ayrıntısı aynı kabuğu kullanır.
+   ============================================================ */
+.prg-acilir-satir > td { padding: 0; }
+
+.prg-acilir {
+  position: relative;
+  margin: 0.45rem 0 0.7rem;
+  padding: 0.85rem 0.9rem 0.9rem;
+  text-align: left;
+  background: var(--yuzey-2, #f1f6fd);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--r, 12px);
+  box-shadow: 0 6px 18px rgb(15 23 42 / 0.08);
+  animation: prg-acilir-gir 160ms ease-out;
+}
+
+/* Ok, açık hücrenin ortasını gösterir. Sütunlar eşit (table-layout: fixed),
+   saat sütunu sabit; konum bu ikisinden hesaplanıyor. */
+.prg-acilir-ok {
+  position: absolute;
+  top: -6px;
+  width: 11px;
+  height: 11px;
+  background: inherit;
+  border-left: 1px solid var(--cizgi);
+  border-top: 1px solid var(--cizgi);
+  transform: rotate(45deg);
+  left: calc(
+    var(--saat-gen, 2.4rem)
+    + (100% - var(--saat-gen, 2.4rem)) * ((var(--ok-sutun, 0) + 0.5) / 7)
+    - 5.5px
+  );
+}
+
+/* İçerideki kabuklar kendi zeminini/boşluğunu bırakır, iki çerçeve olmasın */
+.prg-acilir .hucre-panel,
+.prg-acilir .blok-ayrinti,
+.prg-alt-panel .hucre-panel,
+.prg-alt-panel .blok-ayrinti {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+.prg-alt-panel { margin-top: 0.75rem; }
+
+/* Açık hücre işaretli kalsın */
+.hucre--secili {
+  box-shadow: 0 0 0 2px var(--sicak, #e2571f);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes prg-acilir-gir {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .prg-acilir { animation: none; }
+}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 
@@ -15,6 +15,14 @@ export function haftaBasi(tarih) {
   return t
 }
 
+/** Açık panelin kimliği. Değişince panel görünür alana kaydırılır. */
+const acikTarihAnahtari = (acikSecim, secilen) => {
+  const s = acikSecim ?? secilen
+  if (!s) return null
+  if (s.rutinGunler) return 'rutin'
+  return `${s.tarih ?? ''}-${s.periyot ?? ''}`
+}
+
 export function haftaGunleri(bas) {
   return Array.from({ length: 7 }, (_, i) => {
     const t = new Date(bas)
@@ -28,13 +36,22 @@ export function haftaGunleri(bas) {
  * Satırlar zaman dilimi, sütunlar gün. Koç boş hücreye ders atar,
  * öğrenci dolu hücreye dokunup bitmiş olarak işaretler.
  */
-export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, onRutinEkle, saltOkunur }) {
+export default function ProgramIzgarasi({
+  ogrenci,
+  duzenlenebilir,
+  onHucreSec,
+  onRutinEkle,
+  saltOkunur,
+  acikSecim,
+  panel,
+}) {
   const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
   // Öğrenci bloğa dokununca önce ayrıntı açılır; "bitti" oradan işaretlenir.
   // Doğrudan işaretlemek, koçun yazdığı notu ve hedefi görünmez kılıyordu.
   const [secilen, setSecilen] = useState(null)
+  const acilirRef = useRef(null)
 
   const gunler = haftaGunleri(bas)
   const ilk = gunAnahtari(gunler[0])
@@ -53,6 +70,13 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
   }, [ogrenci.id, ilk, son])
 
   useEffect(() => { yukle() }, [yukle])
+
+  // Panel açılınca ekranda görünür olsun; klavye açılan telefonlarda şart.
+  const acilirAnahtar = acikTarihAnahtari(acikSecim, secilen)
+  useEffect(() => {
+    if (!acilirAnahtar) return
+    acilirRef.current?.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+  }, [acilirAnahtar])
 
   async function bittiIsaretle(g, yapilan) {
     const yeni = g.durum === 'tamamlandi' ? 'bekliyor' : 'tamamlandi'
@@ -91,6 +115,26 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
   const bloklar = (gorevler ?? []).filter((g) => g.periyot)
   const biten = bloklar.filter((g) => g.durum === 'tamamlandi').length
   const oran = bloklar.length ? Math.round((biten / bloklar.length) * 100) : 0
+
+  /* Veri girişi tablonun altında değil, dokunulan hücrenin hemen altında
+     açılır. Hangi güne/saate yazdığın gözden kaçmasın diye.
+     Koç tarafında panel dışarıdan (acikSecim + panel), öğrenci tarafında
+     içeriden (secilen -> BlokAyrinti) gelir; yerleşim ikisinde de aynı. */
+  const acikTarih = acikSecim?.tarih ?? secilen?.tarih ?? null
+  const acikPeriyot = acikSecim?.periyot ?? secilen?.periyot ?? null
+  const acikSutun = acikTarih ? gunler.findIndex((g) => gunAnahtari(g) === acikTarih) : -1
+
+  const panelIcerik = secilen ? (
+    <BlokAyrinti
+      blok={secilen}
+      saltOkunur={saltOkunur}
+      onKapat={() => setSecilen(null)}
+      onBitir={(yapilan) => bittiIsaretle(secilen, yapilan)}
+    />
+  ) : (acikSecim ? panel : null)
+
+  // Rutin / gün boyu görevlerin hücresi yok: onlar tablonun altında açılır.
+  const satirdaAcik = Boolean(panelIcerik) && acikSutun >= 0 && acikPeriyot != null
 
   return (
     <div className="prg">
@@ -144,7 +188,8 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
               </thead>
               <tbody>
                 {PERIYOTLAR.map((saat, si) => (
-                  <tr key={saat}>
+                  <Fragment key={saat}>
+                  <tr>
                     <td className="prg-saat">{saat}</td>
                     {gunler.map((g) => {
                       const anahtar = `${gunAnahtari(g)}-${si + 1}`
@@ -154,7 +199,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
                         return (
                           <td key={anahtar}>
                             <button
-                              className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}`}
+                              className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}${
+                                anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
+                              }`}
                               onClick={() => {
                                 if (duzenlenebilir) onHucreSec?.(blok, gunAnahtari(g), si + 1)
                                 else setSecilen(blok)
@@ -174,7 +221,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
                       return (
                         <td key={anahtar}>
                           <button
-                            className="hucre hucre--bos"
+                            className={`hucre hucre--bos${
+                              anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
+                            }`}
                             disabled={!duzenlenebilir}
                             onClick={() => onHucreSec?.(null, gunAnahtari(g), si + 1)}
                             aria-label="Blok ekle"
@@ -185,6 +234,21 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
                       )
                     })}
                   </tr>
+                  {satirdaAcik && acikPeriyot === si + 1 && (
+                    <tr className="prg-acilir-satir">
+                      <td colSpan={8}>
+                        <div
+                          className="prg-acilir"
+                          ref={acilirRef}
+                          style={{ '--ok-sutun': acikSutun }}
+                        >
+                          <span className="prg-acilir-ok" aria-hidden="true" />
+                          {panelIcerik}
+                        </div>
+                      </td>
+                    </tr>
+                  )}
+                  </Fragment>
                 ))}
               </tbody>
             </table>
@@ -198,13 +262,9 @@ export default function ProgramIzgarasi({ ogrenci, duzenlenebilir, onHucreSec, o
                 : 'Bloğa dokun: ne çözeceğini ve koçunun notunu gösterir.'}
           </p>
 
-          {secilen && (
-            <BlokAyrinti
-              blok={secilen}
-              saltOkunur={saltOkunur}
-              onKapat={() => setSecilen(null)}
-              onBitir={(yapilan) => bittiIsaretle(secilen, yapilan)}
-            />
+          {/* Hücresi olmayan görevler (rutin, gün boyu) tablonun altında açılır */}
+          {panelIcerik && !satirdaAcik && (
+            <div className="prg-alt-panel" ref={acilirRef}>{panelIcerik}</div>
           )}
 
           {(gunBoyu.length > 0 || duzenlenebilir) && (
