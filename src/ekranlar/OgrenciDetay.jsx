@@ -5,6 +5,7 @@ import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
+import { aksanStili } from '../lib/sekmeAksani.js'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import Rozetlerim from './Rozetlerim.jsx'
 
@@ -95,6 +96,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         </Kart>
       )}
 
+      <div className="sekme-govde" style={aksanStili(sekme)}>
       <nav className="sekmeler sekmeler--genis">
         {[
           ['program', 'Program'],
@@ -118,6 +120,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
       {sekme === 'rozetler' && <Rozetlerim ogrenciId={ogrenci.id} />}
       {sekme === 'notlar' && <Notlar ogrenci={ogrenci} />}
       {sekme === 'veli' && <Veliler ogrenci={ogrenci} />}
+      </div>
     </div>
   )
 }

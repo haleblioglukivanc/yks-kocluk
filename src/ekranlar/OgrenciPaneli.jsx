@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
+import { aksanStili } from '../lib/sekmeAksani.js'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
@@ -75,6 +76,7 @@ export default function OgrenciPaneli({ profil }) {
         onSekme={setSekme}
       />
 
+      <div className="sekme-govde" style={aksanStili(sekme)}>
       <nav className="sekmeler sekmeler--genis">
         {[
           ['bugun', 'Bugün'],
@@ -139,6 +141,7 @@ export default function OgrenciPaneli({ profil }) {
           <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
         </>
       )}
+      </div>
     </>
   )
 }

@@ -2019,3 +2019,26 @@ body[data-tema='panel'] {
   font-weight: 600;
 }
 .uygulama .sekmeler--genis .sekme:hover { border-color: var(--sicak-kenar); }
+
+/* ═══════════ Sekme aksanı ═══════════
+   Renk sekmenin kendisine bağlı, ekrana değil: koç panelindeki "Konular"
+   ile öğrenci panelindeki "Konular" aynı indigoyu alıyor.
+
+   Aksan sekmede ve kartın üst kenarında durur, kartın içine girmez.
+   İçerideki nokta ve çubuklar anlamlı renk taşıyor (yeşil bitti, mavi
+   çalışılıyor, kırmızı tekrar) ve aksan onları bozmamalı. */
+
+.sekme-govde { display: block; }
+
+.uygulama .sekme-govde .sekme--etkin {
+  background: var(--yuzey);
+  border: 1px solid var(--ak);
+  color: var(--ak);
+  box-shadow: inset 0 -2px 0 var(--ak);
+}
+
+/* Yalnızca doğrudan çocuklar: iç içe kartlar boyanmasın. */
+.sekme-govde > .kart,
+.sekme-govde > * > .kart {
+  border-top: 2px solid var(--ak);
+}

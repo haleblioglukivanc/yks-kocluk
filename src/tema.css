@@ -25,6 +25,17 @@
   --marka-cizgi-2: #d3daea;   /* belirgin kenarlar */
   --marka-koyu:    #0e1626;   /* koyu bantlar, footer */
 
+  /* — sekme aksanları —
+     Renk sekmeye bağlı, role değil: koç da öğrenci de "Konular" deyince
+     aynı indigoyu görüyor. Böylece renk bilgi taşıyor, süs olmuyor.
+     Yeşil bilerek yok: o "bitti" demek ve konu haritasında iş yapıyor. */
+  --aksan-bugun:     #b87d0e;
+  --aksan-program:   #7a4fd0;
+  --aksan-konular:   #3050b8;
+  --aksan-denemeler: #a34a22;
+  --aksan-notlar:    #4b6480;
+  --aksan-varsayilan: #b8431a;
+
   /* — durum yeşili: "yolunda" anlamı taşır, zemin rengi değildir — */
   --marka-yesil-acik:  #2fa36b;
 
