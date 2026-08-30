@@ -74,12 +74,20 @@ function varsayilanSoz(ozet, saat) {
   return { ruh: 'fikir', mesaj: `Sırada ${baslik}${adet}.` }
 }
 
-export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme }) {
+export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false }) {
   const [olay, setOlay] = useState(null)
   const [rozetSayisi, setRozetSayisi] = useState(null)
 
   const yukle = useCallback(async () => {
     if (!profil?.id || !ozet) return
+    /* Vekalette Kâmil'in olay kaydı tutulmaz: kalem_olaylari politikası
+       profil_id = auth.uid() olduğu için motor koçun kendi maskot
+       satırlarına yazardı. Kâmil konuşmaya devam eder (varsayilanSoz),
+       sadece kayıt tutmaz. */
+    if (vekaleten) {
+      setOlay(null)
+      return
+    }
     const olaylar = await kalemiCalistir({
       profilId: profil.id,
       rol: 'ogrenci',
@@ -87,7 +95,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
       veri: ozet,
     })
     setOlay(olaylar[0] ?? null)
-  }, [profil?.id, profil?.ad_soyad, ozet])
+  }, [profil?.id, profil?.ad_soyad, ozet, vekaleten])
 
   useEffect(() => {
     yukle()
@@ -119,7 +127,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const is = siradakiIs(ozet)
 
   function kapat() {
-    kalemiKapat(olay)
+    if (!vekaleten) kalemiKapat(olay)
     setOlay(null)
   }
 

@@ -14,7 +14,11 @@ import KonuHaritasi from './KonuHaritasi.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
 
-export default function OgrenciPaneli({ profil }) {
+export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, onCik }) {
+  /* Vekalet: koç öğrencinin panelini onun verisiyle açar. Kendi JWT'siyle
+     kalır; yetkiyi RLS (private.ogrencim_mi) verir, yazılan satırlara
+     islem_yapan damgası düşer. */
+  const hedefId = ogrenciId ?? profil.id
   const [kayit, setKayit] = useState(null)
   const [denemeler, setDenemeler] = useState([])
   const [netDurumu, setNetDurumu] = useState(null)
@@ -31,6 +35,7 @@ export default function OgrenciPaneli({ profil }) {
         .select(
           'id, koc_id, alan, sinif, katalog_id, hedef_universite, hedef_bolum, hedef_tyt_net, hedef_ayt_net, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)',
         )
+        .eq('id', hedefId)
         .maybeSingle()
       if (error) {
         setHata(hataMetni(error))
@@ -41,6 +46,7 @@ export default function OgrenciPaneli({ profil }) {
       const { data: d } = await supabase
         .from('deneme_ozet')
         .select('id, tarih, tur, yayin, toplam_net')
+        .eq('ogrenci_id', hedefId)
         .order('tarih', { ascending: false })
         .limit(8)
       setDenemeler(d ?? [])
@@ -48,13 +54,16 @@ export default function OgrenciPaneli({ profil }) {
       const { data: nd } = await supabase
         .from('ogrenci_net_durumu')
         .select('tur, son_net, en_yuksek_net')
+        .eq('ogrenci_id', hedefId)
       setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
 
-      const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti')
+      const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti', {
+        p_ogrenci_id: hedefId,
+      })
       // Kâmil artık uygulama kabuğunda, köşede duruyor; burada sadece veri
       if (bugun) setOzet(bugun)
     })()
-  }, [profil.id, profil.ad_soyad, tazele])
+  }, [hedefId, tazele])
 
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
@@ -67,10 +76,26 @@ export default function OgrenciPaneli({ profil }) {
 
   return (
     <>
+      {vekaleten && (
+        <div className="gozuyle-serit gozuyle-serit--vekalet">
+          <strong>{kayit.profiller?.ad_soyad} adına işlem yapıyorsun</strong>
+          <span>
+            Yaptığın her şey öğrencinin verisine yazılır ve senin adınla kaydedilir.
+          </span>
+          <button className="metin-dugme vekalet-cik" onClick={onCik}>
+            Vekaletten çık
+          </button>
+        </div>
+      )}
 
       <OgrenciBasligi
-        profil={profil}
+        profil={
+          vekaleten
+            ? { id: hedefId, rol: 'ogrenci', ad_soyad: kayit.profiller?.ad_soyad }
+            : profil
+        }
         ogrenciId={kayit.id}
+        vekaleten={vekaleten}
         ozet={ozet}
         sekme={sekme}
         onSekme={setSekme}

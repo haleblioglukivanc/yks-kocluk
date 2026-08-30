@@ -11,7 +11,6 @@ import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
-import OgrenciGozuyle from './ekranlar/OgrenciGozuyle.jsx'
 import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
@@ -133,9 +132,12 @@ export default function App() {
 
   /* Panel ekranları Kâmil'i başlıkta gösteriyor; köşedeki kopya orada
      fazlalık olurdu. Bir ekranda iki maskot olmaz. */
-  const basliktaKalemVar = yol === '/' && (kocMu || profil.rol === 'ogrenci')
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
   const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null
+  /* Vekalette de öğrenci başlığı (dolayısıyla Kâmil) ekranda: köşedeki
+     kopyası orada da gizlenmeli, yoksa iki maskot olur. */
+  const basliktaKalemVar =
+    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) || Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   const baglantilar = kocMu
@@ -160,7 +162,14 @@ export default function App() {
         />
       )
     if (kocMu && gozuyleId)
-      return <OgrenciGozuyle ogrenciId={gozuyleId} onGeri={() => git('/ogrenciler')} />
+      return (
+        <OgrenciPaneli
+          profil={profil}
+          ogrenciId={gozuyleId}
+          vekaleten
+          onCik={() => git('/ogrenciler')}
+        />
+      )
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
     if (kocMu && yol === '/raporlar')
       return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />

@@ -1395,6 +1395,17 @@ body[data-tema='panel'] {
   font-size: 0.8125rem; line-height: 1.45;
 }
 .gozuyle-serit strong { font-size: 0.875rem; color: #17539f; }
+
+/* Vekalet bandı: koç öğrenci adına yazarken ekranın tepesinde kalır.
+   Rengi bilerek uyarı tonunda; koçun hangi bağlamda olduğundan bir an
+   bile şüphe etmemesi gerekiyor. */
+.gozuyle-serit--vekalet {
+  position: sticky; top: 0; z-index: 20;
+  background: var(--uyari-zemin, #fdf0d5);
+  border-color: var(--uyari-kenar, #e0a83c);
+}
+.gozuyle-serit--vekalet strong { color: #92400e; }
+.vekalet-cik { align-self: flex-start; padding: 0.35rem 0; color: #92400e; }
 .geri-dugme { align-self: flex-start; padding: 0.5rem 0; }
 
 /* Öğrencinin bloğa dokununca gördüğü ayrıntı */
