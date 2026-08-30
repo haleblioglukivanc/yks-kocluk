@@ -2042,3 +2042,6 @@ body[data-tema='panel'] {
 .sekme-govde > * > .kart {
   border-top: 2px solid var(--ak);
 }
+
+/* Koç başlığındaki kısayollar, kimlik kartındakiyle aynı şerit. */
+.ob .kk-kisayol { margin-top: 0.95rem; }

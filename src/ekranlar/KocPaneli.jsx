@@ -3,10 +3,11 @@ import { supabase } from '../lib/supabase.js'
 import { Kart } from '../bilesenler/Ortak.jsx'
 import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
+import KocBasligi from '../bilesenler/KocBasligi.jsx'
 
 /** Koçun günlük durum ekranı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün ne oluyor" sorusuna cevap verir. */
-export default function KocPaneli({ onOgrenciAc }) {
+export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
   const [ozet, setOzet] = useState(null)
 
   useEffect(() => {
@@ -21,6 +22,7 @@ export default function KocPaneli({ onOgrenciAc }) {
 
   return (
     <div className="panel">
+      <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       {ozet && <Ozetler ozet={ozet} />}
       <RiskRadari onOgrenciAc={onOgrenciAc} />
       <OnayKuyrugu onOgrenciAc={onOgrenciAc} />

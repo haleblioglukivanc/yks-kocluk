@@ -130,6 +130,10 @@ export default function App() {
   }
 
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
+
+  /* Panel ekranları Kâmil'i başlıkta gösteriyor; köşedeki kopya orada
+     fazlalık olurdu. Bir ekranda iki maskot olmaz. */
+  const basliktaKalemVar = yol === '/' && (kocMu || profil.rol === 'ogrenci')
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
   const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null
 
@@ -161,7 +165,14 @@ export default function App() {
     if (kocMu && yol === '/raporlar')
       return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/ogrenciler')} />
-    if (kocMu) return <KocPaneli onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
+    if (kocMu)
+      return (
+        <KocPaneli
+          profil={profil}
+          onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
+          onGit={git}
+        />
+      )
     if (profil.rol === 'veli') return <VeliPaneli />
     return <OgrenciPaneli profil={profil} />
   }
@@ -221,9 +232,10 @@ export default function App() {
         })}
       </nav>
 
-      {/* Öğrenci panelinde Kâmil başlığın kendisi; köşedeki kopyası
-          gizleniyor. Bir ekranda iki maskot olmaz. */}
-      {profil.rol !== 'ogrenci' && <KalemKosede profil={profil} />}
+      {/* Kâmil panel ekranlarında başlığın kendisi olduğu için köşedeki
+          kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
+          Kâmil köşede kalmalı. */}
+      {!basliktaKalemVar && <KalemKosede profil={profil} />}
     </div>
   )
 }
