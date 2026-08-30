@@ -1068,15 +1068,26 @@ body[data-tema='panel'] {
 .not-satir { align-items: flex-start; }
 .not-metin { display: block; font-size: 0.9375rem; line-height: 1.5; white-space: pre-wrap; }
 
-/* Beş sekme dar ekrana tek satırda sığmıyor. Yatay kaydırma denendi ama
+/* Altı sekme dar ekrana tek satırda sığmıyor. Yatay kaydırma denendi ama
    kaydırılabildiği anlaşılmıyor, sağdaki sekmeler görünmez kalıyordu.
-   Alt satıra sarmak hepsini görünür tutuyor. */
-.sekmeler--genis { flex-wrap: wrap; }
+   Sarmak da işe yaramadı: flex artık alanı son satıra yayınca iki sekme
+   boşlukta kalıyordu. Sabit ızgara hepsini eşit ve hizalı tutuyor. */
+.sekmeler--genis {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+}
 .sekmeler--genis .sekme {
-  flex: 1 1 auto;
-  min-width: 5.5rem;
-  padding-inline: 0.5rem;
+  min-width: 0;
+  padding-inline: 0.35rem;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Çok dar ekranlarda üç sütun sıkışıyor; ikiye düşüyor. */
+@media (max-width: 20rem) {
+  .sekmeler--genis { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* ---------- Seri ve rozetler ---------- */
@@ -1774,12 +1785,16 @@ body[data-tema='panel'] {
 }
 .kk-kutu-ad { font-size: 0.7rem; font-weight: 600; color: var(--soluk); }
 
+/* Kartın içinde, hedef çubuğunun hemen altında: koç iyi haberi (üç kutu)
+   okumadan önce kötü haberi görsün. */
 .kk-gecikme {
+  position: relative;
   display: flex; align-items: center; gap: 0.45rem;
-  margin: 0.55rem 0 0; padding: 0.65rem 0.85rem; border-radius: 10px;
-  background: rgba(200, 50, 43, 0.12); color: var(--uyari);
+  margin: 0.85rem 0 0; padding: 0.6rem 0.8rem; border-radius: 10px;
+  background: rgba(236, 95, 43, 0.18); color: #ff9c78;
   font-size: 0.8125rem; font-weight: 600;
 }
+.kk-gecikme + .kk-kapali { margin-top: 0.5rem; }
 
 @media (prefers-reduced-motion: reduce) {
   .kimlik-kart, .anahtar-kizak, .anahtar-kizak::before, .kk-cubuk span { transition: none; }

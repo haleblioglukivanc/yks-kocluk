@@ -209,6 +209,17 @@ export default function OgrenciKimlikKarti({
           </div>
         ))}
 
+        {gecikmis > 0 && (
+          <p className="kk-gecikme">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                 strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7.5v5M12 16.2v.2" />
+            </svg>
+            {gecikmis} görev gecikti
+          </p>
+        )}
+
         {!aktif && (
           <p className="kk-kapali">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
@@ -243,17 +254,6 @@ export default function OgrenciKimlikKarti({
           cizim={<path d="m3 17 5-6 4 4 5-7 4 5" />}
         />
       </div>
-
-      {gecikmis > 0 && (
-        <p className="kk-gecikme">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-               strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="9" />
-            <path d="M12 7.5v5M12 16.2v.2" />
-          </svg>
-          {gecikmis} görev gecikti
-        </p>
-      )}
     </>
   )
 }
