@@ -63,12 +63,12 @@ const IFADE = {
   bekliyor: {
     kas: ['M72 84 L92 84', 'M108 84 L128 84'],
     goz: 'acik', bebek: [0, 0],
-    agiz: 'M86 146 Q100 161 114 146', dolu: false, yanak: 0.55, ekstra: null,
+    agiz: 'M86 146 Q100 161 114 146', dolu: false, yanak: 0.55, kol: 'asagi', ekstra: null,
   },
   dusunuyor: {
     kas: ['M72 79 L92 87', 'M108 84 L128 84'],
     goz: 'acik', bebek: [-4, -4],
-    agiz: 'M85 150 Q92.5 142 100 150 T115 150', dolu: false, yanak: 0.45,
+    agiz: 'M85 150 Q92.5 142 100 150 T115 150', dolu: false, yanak: 0.45, kol: 'asagi',
     ekstra: (
       <g fill={RENK.halka}>
         <circle cx='150' cy='92' r='4' />
@@ -80,17 +80,17 @@ const IFADE = {
   sevinc: {
     kas: ['M70 76 Q82 70 94 76', 'M106 76 Q118 70 130 76'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M83 142 Q100 168 117 142 Z', dolu: true, yanak: 0.9, ekstra: null,
+    agiz: 'M83 142 Q100 168 117 142 Z', dolu: true, yanak: 0.9, kol: 'yukari', ekstra: null,
   },
   sasirdi: {
     kas: ['M69 72 Q82 65 95 72', 'M105 72 Q118 65 131 72'],
     goz: 'buyuk', bebek: [0, 0],
-    agiz: 'M91 144 a9 11.5 0 1 0 18 0 a9 11.5 0 1 0 -18 0', dolu: true, yanak: 0.6, ekstra: null,
+    agiz: 'M91 144 a9 11.5 0 1 0 18 0 a9 11.5 0 1 0 -18 0', dolu: true, yanak: 0.6, kol: 'yana', ekstra: null,
   },
   uyku: {
     kas: ['M72 88 L92 88', 'M108 88 L128 88'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M90 149 Q100 158 110 149', dolu: false, yanak: 0.4,
+    agiz: 'M90 149 Q100 158 110 149', dolu: false, yanak: 0.4, kol: 'asagi',
     ekstra: (
       <g fill='#888780'>
         <text x='146' y='86' fontSize='21'>z</text>
@@ -101,18 +101,18 @@ const IFADE = {
   endise: {
     kas: ['M72 79 L92 89', 'M108 89 L128 79'],
     goz: 'acik', bebek: [0, 3],
-    agiz: 'M86 155 Q100 142 114 155', dolu: false, yanak: 0.35, ekstra: null,
+    agiz: 'M86 155 Q100 142 114 155', dolu: false, yanak: 0.35, kol: 'asagi', ekstra: null,
   },
   fikir: {
     kas: ['M69 71 Q82 64 95 71', 'M105 71 Q118 64 131 71'],
     goz: 'buyuk', bebek: [0, -2],
-    agiz: 'M84 142 Q100 166 116 142 Z', dolu: true, yanak: 0.75,
+    agiz: 'M84 142 Q100 166 116 142 Z', dolu: true, yanak: 0.75, kol: 'yukari',
     ekstra: <Baloncuklar />,
   },
   kutlama: {
     kas: ['M70 74 Q82 68 94 74', 'M106 74 Q118 68 130 74'],
     goz: 'kapali', bebek: [0, 0],
-    agiz: 'M81 141 Q100 170 119 141 Z', dolu: true, yanak: 0.95,
+    agiz: 'M81 141 Q100 170 119 141 Z', dolu: true, yanak: 0.95, kol: 'yukari',
     ekstra: (
       <g>
         <rect x='26' y='28' width='10' height='10' fill={RENK.yanak} transform='rotate(20 31 33)' />
@@ -122,6 +122,19 @@ const IFADE = {
       </g>
     ),
   },
+};
+
+// Kollar gövdenin sol yanından çıkar; sağ kol aynasıyla çizilir.
+// Üç duruş: yanlarda sarkan, yukarı kalkan, iki yana açılan.
+const KOL_YOL = {
+  asagi:  (y) => `M64 ${y} Q43 ${y + 10} 37 ${y + 28}`,
+  yukari: (y) => `M64 ${y} Q43 ${y - 14} 37 ${y - 34}`,
+  yana:   (y) => `M64 ${y} Q45 ${y - 3} 32 ${y - 6}`,
+};
+const KOL_EL = {
+  asagi:  (y) => [34, y + 32],
+  yukari: (y) => [34, y - 38],
+  yana:   (y) => [29, y - 7],
 };
 
 // Kalemin boyu çalışma saatiyle kısalır, ay başında açılıp uzar.
@@ -149,6 +162,9 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
   const olcek = h / 132;
   const yuzY = 45 + (h * 71) / 132;
   const yuzDonusum = `translate(100 ${yuzY.toFixed(2)}) scale(${olcek.toFixed(4)}) translate(-100 -116)`;
+  const kol = i.kol ?? 'asagi';
+  const kolY = 45 + h * 0.72;
+  const [elX, elY] = KOL_EL[kol](kolY);
   const acik = i.goz !== 'kapali';
   const rx = i.goz === 'buyuk' ? 17.5 : 15;
   const ry = kirpiyor ? 2.5 : (i.goz === 'buyuk' ? 19.5 : 17);
@@ -164,6 +180,18 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
       <rect x='64' y='45' width='11' height={h} fill={RENK.govdeGolge} opacity='0.32' />
       <polygon points={`64,${ucY} 136,${ucY} 100,${ucY + 51}`} fill={RENK.tahta} />
       <polygon points={`86,${ucY + 30} 114,${ucY + 30} 100,${ucY + 51}`} fill={RENK.uc} />
+
+      <ellipse cx='72' cy={ucY + 44} rx='18' ry='9' fill={RENK.govdeGolge} />
+      <ellipse cx='128' cy={ucY + 44} rx='18' ry='9' fill={RENK.govdeGolge} />
+
+      {[false, true].map((sag) => (
+        <g key={String(sag)} transform={sag ? 'translate(200 0) scale(-1 1)' : undefined}>
+          <path d={KOL_YOL[kol](kolY)} stroke={RENK.govdeGolge}
+                strokeWidth='9' strokeLinecap='round' fill='none' />
+          <circle cx={elX} cy={elY} r='8.5' fill={RENK.govde}
+                  stroke={RENK.govdeGolge} strokeWidth='2' />
+        </g>
+      ))}
 
       <g transform={yuzDonusum}>
         <ellipse cx='70' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />
