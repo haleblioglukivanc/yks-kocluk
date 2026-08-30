@@ -78,6 +78,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         duzenleAcik={duzenle}
         onDuzenle={() => setDuzenle((v) => !v)}
         onDegisti={yukle}
+        sekme={sekme}
+        onSekme={setSekme}
       />
 
       {duzenle && (
@@ -98,9 +100,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
           ['program', 'Program'],
           ['denemeler', 'Denemeler'],
           ['konular', 'Konular'],
-          ['rozetler', 'Rozetler'],
           ['notlar', 'Notlar'],
-          ['veli', 'Veli'],
         ].map(([k, e]) => (
           <button
             key={k}

@@ -1883,3 +1883,37 @@ body[data-tema='panel'] {
 }
 .kk-cubuk { position: relative; overflow: visible; }
 .kk-cubuk span { position: relative; z-index: 1; }
+
+/* Kartın altındaki gezinme kısayolları. Sağ üstteki ikonlar kaydı
+   değiştiriyor, buradakiler ekran açıyor — bu yüzden ayrı bir şerit. */
+.kk-kisayol {
+  position: relative;
+  display: flex; gap: 0.4rem;
+  margin-top: 0.95rem; padding-top: 0.8rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+.kk-yol {
+  flex: 1; min-width: 0;
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.5rem 0.7rem; border: 0; border-radius: 11px; cursor: pointer;
+  background: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.88);
+  font: inherit; transition: background 0.15s ease;
+}
+.kk-yol:hover { background: rgba(255, 255, 255, 0.16); }
+.kk-yol:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.kk-yol svg { flex: 0 0 auto; }
+.kk-yol-sayi { font-family: var(--display); font-size: 1rem; font-weight: 700; line-height: 1; }
+.kk-yol-ad {
+  font-size: 0.75rem; font-weight: 600; opacity: 0.72;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.kk-yol--etkin {
+  background: var(--marka-koyu-amber); color: #22160a;
+}
+.kk-yol--etkin .kk-yol-ad { opacity: 0.8; }
+
+/* Dört sekme dar ekranda da tek satıra sığıyor; ızgara ikiye bölünmesin. */
+.sekmeler--genis { grid-template-columns: repeat(4, 1fr); }
+@media (max-width: 22rem) {
+  .sekmeler--genis { grid-template-columns: repeat(2, 1fr); }
+}

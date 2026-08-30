@@ -28,6 +28,8 @@ export default function OgrenciKimlikKarti({
   duzenleAcik,
   onDuzenle,
   onDegisti,
+  sekme,
+  onSekme,
 }) {
   const [ek, setEk] = useState(null)
   const [aktif, setAktif] = useState(ogrenci.aktif)
@@ -39,7 +41,7 @@ export default function OgrenciKimlikKarti({
   useEffect(() => {
     let iptal = false
     ;(async () => {
-      const [r, s] = await Promise.all([
+      const [r, s, rz, v] = await Promise.all([
         supabase
           .from('ogrenci_risk')
           .select('risk_seviyesi, tamamlama_yuzdesi, gecikmis_gorev, gun_gecti, hic_baslamadi')
@@ -50,8 +52,24 @@ export default function OgrenciKimlikKarti({
           .select('guncel_seri, son_aktif_gun')
           .eq('ogrenci_id', ogrenci.id)
           .maybeSingle(),
+        // Kısayolların yanındaki sayılar: basmadan da bilgi versinler.
+        supabase
+          .from('ogrenci_rozet')
+          .select('rozet_id', { count: 'exact', head: true })
+          .eq('ogrenci_id', ogrenci.id),
+        supabase
+          .from('veli_ogrenci')
+          .select('veli_id', { count: 'exact', head: true })
+          .eq('ogrenci_id', ogrenci.id),
       ])
-      if (!iptal) setEk({ risk: r.data, seri: seriDuzelt(s.data) })
+      if (!iptal) {
+        setEk({
+          risk: r.data,
+          seri: seriDuzelt(s.data),
+          rozet: rz.count ?? 0,
+          veli: v.count ?? 0,
+        })
+      }
     })()
     return () => {
       iptal = true
@@ -218,6 +236,41 @@ export default function OgrenciKimlikKarti({
             </svg>
             {gecikmis} görev gecikti
           </p>
+        )}
+
+        {onSekme && (
+          /* Gezinme kısayolları. Sağ üstteki ikonlardan bilerek ayrı:
+             oradakiler kaydı değiştiriyor, buradakiler ekran açıyor. */
+          <div className="kk-kisayol">
+            <button
+              className={`kk-yol${sekme === 'rozetler' ? ' kk-yol--etkin' : ''}`}
+              onClick={() => onSekme('rozetler')}
+              aria-pressed={sekme === 'rozetler'}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                   strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <circle cx="12" cy="9" r="5.5" />
+                <path d="m8.5 13.8-1.4 6.4 4.9-2.6 4.9 2.6-1.4-6.4" />
+              </svg>
+              <span className="kk-yol-sayi">{ek?.rozet ?? '—'}</span>
+              <span className="kk-yol-ad">Rozet</span>
+            </button>
+
+            <button
+              className={`kk-yol${sekme === 'veli' ? ' kk-yol--etkin' : ''}`}
+              onClick={() => onSekme('veli')}
+              aria-pressed={sekme === 'veli'}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                   strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M16 20v-1.6a3.4 3.4 0 0 0-3.4-3.4H6.4A3.4 3.4 0 0 0 3 18.4V20" />
+                <circle cx="9.5" cy="7.5" r="3.4" />
+                <path d="M17 4.2a3.4 3.4 0 0 1 0 6.6M21 20v-1.6a3.4 3.4 0 0 0-2.6-3.3" />
+              </svg>
+              <span className="kk-yol-sayi">{ek?.veli ?? '—'}</span>
+              <span className="kk-yol-ad">Veli</span>
+            </button>
+          </div>
         )}
 
         {!aktif && (
