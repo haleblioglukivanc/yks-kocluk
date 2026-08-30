@@ -2210,3 +2210,92 @@ body[data-tema='panel'] {
 /* Bugün sütunu: "bugün ne var" en sık sorulan soru, göz oraya gitsin */
 .prg-bugun-sutun { background: var(--sicak-zemin, #fff3ec); border-radius: 6px; }
 .uygulama .prg-bugun-sutun { background: rgb(255 255 255 / 0.04); }
+
+/* ============================================================
+   Kutlama katmanı — konfeti + Kâmil
+   Ortak bileşen (KutlamaKatmani.jsx). Öğrenci paneli ve vekaleten
+   açılan panel aynı sınıfları kullanır; burada yapılan düzeltme
+   hepsinde birden geçerli olur.
+   ============================================================ */
+
+.konfeti-tuval {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.kutlama-katman {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--kagit) 86%, transparent);
+  backdrop-filter: blur(6px);
+  animation: kutlama-gir 220ms ease-out;
+}
+
+.kutlama-kart {
+  width: min(24rem, 100%);
+  text-align: center;
+  padding: 2rem 1.5rem 1.5rem;
+  border-radius: calc(var(--r) * 1.5);
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+}
+
+.kutlama-kalem {
+  animation: kutlama-zipla 620ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.kutlama-ad {
+  margin: 0.25rem 0 0;
+  font-family: var(--marka-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--soluk);
+}
+
+.kutlama-baslik {
+  margin: 0.5rem 0 0.35rem;
+  font-family: var(--marka-baslik);
+  font-size: 1.625rem;
+  line-height: 1.2;
+  color: var(--murekkep);
+}
+
+.kutlama-mesaj {
+  margin: 0;
+  color: var(--grafit, var(--soluk));
+  overflow-wrap: anywhere;
+}
+
+.kutlama-seri {
+  margin: 0.75rem 0 0;
+  font-family: var(--marka-mono);
+  font-size: 0.8125rem;
+  color: var(--soluk);
+}
+
+.kutlama-buton {
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+@keyframes kutlama-gir {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes kutlama-zipla {
+  0%   { transform: scale(0.4) translateY(1.25rem); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kutlama-katman,
+  .kutlama-kalem { animation: none; }
+}

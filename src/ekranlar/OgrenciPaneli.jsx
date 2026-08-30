@@ -1,5 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
+import { kutlamaKontrol } from '../lib/kutlama.js'
+import KutlamaKatmani from '../bilesenler/KutlamaKatmani.jsx'
 import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
@@ -26,7 +28,16 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
   const [hata, setHata] = useState('')
   const [ozet, setOzet] = useState(null)
   const [tazele, setTazele] = useState(0)
-  const yenile = () => setTazele((n) => n + 1)
+  const [kutlamalar, setKutlamalar] = useState([])
+
+  /* Kutlama, ilk açılışta değil yalnızca bir eylemden sonra bakılır.
+     Bayrak yenile() ile kalkar, özet tazelendikten sonra tüketilir —
+     böylece konfeti patladığında panel zaten güncel sayıyı gösteriyor. */
+  const kutlamaBekliyor = useRef(false)
+  const yenile = () => {
+    kutlamaBekliyor.current = true
+    setTazele((n) => n + 1)
+  }
 
   useEffect(() => {
     ;(async () => {
@@ -62,8 +73,18 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
       })
       // Kâmil artık uygulama kabuğunda, köşede duruyor; burada sadece veri
       if (bugun) setOzet(bugun)
+
+      // Vekaletteyken çağırmıyoruz: RPC auth.uid()'e bakar, koç öğrenci
+      // olmadığı için zaten boş dönerdi — boşuna gidip gelmesin.
+      if (kutlamaBekliyor.current) {
+        kutlamaBekliyor.current = false
+        if (!vekaleten) {
+          const yeni = await kutlamaKontrol()
+          if (yeni.length) setKutlamalar(yeni)
+        }
+      }
     })()
-  }, [hedefId, tazele])
+  }, [hedefId, tazele, vekaleten])
 
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
@@ -167,6 +188,8 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
         </>
       )}
       </div>
+
+      <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>
   )
 }
