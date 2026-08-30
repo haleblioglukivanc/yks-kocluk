@@ -1951,3 +1951,52 @@ body[data-tema='panel'] {
 .kk-fark--artis { color: var(--marka-basari); }
 .kk-fark--dusus { color: var(--uyari); }
 .uygulama .kk-fark--artis { color: #0f7a58; }
+
+/* ═══════════ Öğrenci başlığı: Kâmil konuşuyor ═══════════
+   Kimlik kartının yerini aldı. Öğrenci kendi ekranında kim olduğunu
+   biliyor; ekranın tepesi "şimdi ne yapmalıyım" sorusunu cevaplıyor. */
+
+.ob {
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  border-radius: 18px; padding: 1rem 1.05rem 0.9rem;
+}
+.ob-ust { display: flex; align-items: flex-start; gap: 0.85rem; }
+.ob-kalem { flex: 0 0 auto; margin-top: -0.35rem; }
+.ob-soz { flex: 1; min-width: 0; }
+
+.ob-selam { margin: 0; font-size: 0.75rem; font-weight: 600; color: var(--soluk); }
+.ob-mesaj {
+  margin: 0.2rem 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 1.0625rem; line-height: 1.35; letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
+}
+
+.ob-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
+.ob-basla, .ob-tamam {
+  font: inherit; font-size: 0.8125rem; font-weight: 700; cursor: pointer;
+  padding: 0.45rem 0.95rem; border-radius: 999px; border: 0;
+}
+.ob-basla { background: var(--marka-koyu-gecis); color: #1a0f06; }
+.ob-tamam { background: transparent; color: var(--grafit); border: 1px solid var(--cizgi); }
+
+.ob-olcum {
+  display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.4rem;
+  margin-top: 0.85rem; padding-top: 0.7rem; border-top: 1px solid var(--cizgi);
+  font-size: 0.8125rem; color: var(--grafit);
+}
+.ob-olcum strong { font-family: var(--display); font-size: 0.9375rem; color: var(--murekkep); }
+
+.ob-gecikme {
+  margin: 0.6rem 0 0; padding: 0.55rem 0.75rem; border-radius: 10px;
+  background: rgba(240, 160, 32, 0.14); color: #7a5205;
+  font-size: 0.8125rem; line-height: 1.45;
+}
+.uygulama .ob-gecikme { background: rgba(240, 160, 32, 0.16); color: #7a5205; }
+
+.net-fark { margin: 0.7rem 0 0; font-size: 0.8125rem; font-weight: 700; }
+.net-fark--artis { color: var(--marka-basari); }
+.net-fark--dusus { color: var(--uyari); }
+
+/* Öğrenci sekmeleri beş oldu; ızgara buna göre. */
+.sekmeler--genis { grid-template-columns: repeat(3, 1fr); }
+@media (min-width: 26rem) { .sekmeler--genis { grid-template-columns: repeat(4, 1fr); } }

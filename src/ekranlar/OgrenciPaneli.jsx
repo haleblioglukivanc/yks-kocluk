@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
-import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
+import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
+import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
@@ -60,19 +61,13 @@ export default function OgrenciPaneli({ profil }) {
   const sonNet = denemeler[0] ? Number(denemeler[0].toplam_net) : null
   const oncekiNet = denemeler[1] ? Number(denemeler[1].toplam_net) : null
   const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
+  const hedefAlt =
+    [kayit.hedef_universite, kayit.hedef_bolum].filter(Boolean).join(' · ') || undefined
 
   return (
     <>
 
-      <OgrenciKimlikKarti
-        ogrenci={{ ...kayit, aktif: true }}
-        netDurumu={netDurumu}
-        rol="ogrenci"
-        ozet={ozet}
-        netFarki={fark}
-        sekme={sekme}
-        onSekme={setSekme}
-      />
+      <OgrenciBasligi profil={profil} ozet={ozet} onBugun={() => setSekme('bugun')} />
 
       <nav className="sekmeler sekmeler--genis">
         {[
@@ -80,6 +75,7 @@ export default function OgrenciPaneli({ profil }) {
           ['program', 'Program'],
           ['konular', 'Konularım'],
           ['denemeler', 'Denemelerim'],
+          ['rozetler', 'Rozetlerim'],
         ].map(([k, e]) => (
           <button
             key={k}
@@ -123,7 +119,20 @@ export default function OgrenciPaneli({ profil }) {
       ) : sekme === 'rozetler' ? (
         <Rozetlerim ogrenciId={kayit.id} />
       ) : (
-        <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+        <>
+          {/* Hedef çubukları buraya taşındı: ayda bir, deneme girildikçe
+              değişiyorlar. Her gün açılan ekranın tepesinde durmaları
+              yanlıştı; ait oldukları yer denemelerin yanı. */}
+          <Kart baslik="Hedefe göre durumum" altBaslik={hedefAlt}>
+            <HedefNet tyt={kayit.hedef_tyt_net} ayt={kayit.hedef_ayt_net} durum={netDurumu} />
+            {fark !== null && fark !== 0 && (
+              <p className={`net-fark net-fark--${fark > 0 ? 'artis' : 'dusus'}`}>
+                Son denemede {fark > 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)} net
+              </p>
+            )}
+          </Kart>
+          <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+        </>
       )}
     </>
   )

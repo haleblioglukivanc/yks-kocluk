@@ -221,7 +221,9 @@ export default function App() {
         })}
       </nav>
 
-      <KalemKosede profil={profil} />
+      {/* Öğrenci panelinde Kâmil başlığın kendisi; köşedeki kopyası
+          gizleniyor. Bir ekranda iki maskot olmaz. */}
+      {profil.rol !== 'ogrenci' && <KalemKosede profil={profil} />}
     </div>
   )
 }
