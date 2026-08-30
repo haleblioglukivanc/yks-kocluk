@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { supabase } from './lib/supabase.js'
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
@@ -39,6 +40,7 @@ function useYol() {
 export default function App() {
   const { durum, profil, cikisYap } = useOturum()
   const [yol, git] = useYol()
+  const [bekleyenOzet, setBekleyenOzet] = useState(0)
 
   /* Koyu tema gövdeye de yazılır. Sadece .uygulama üzerinde olduğunda,
      sayfa yatayda taştığı anda taşan şeridi body'nin kâğıt zemini
@@ -51,6 +53,24 @@ export default function App() {
       delete document.body.dataset.tema
     }
   }, [panelAcik])
+
+  /* Koçun "Özetler"e girmeden is olup olmadigini bilmesi lazim. Yolu
+     bagimliliga koyuyoruz: ekrandan cikinca sayi tazeleniyor. */
+  const kocRolu = profil?.rol === 'koc' || profil?.rol === 'yonetici'
+  useEffect(() => {
+    if (!kocRolu) return
+    let iptal = false
+    supabase
+      .from('veli_haftalik_ozet')
+      .select('id', { count: 'exact', head: true })
+      .eq('yayinlandi', false)
+      .then(({ count }) => {
+        if (!iptal) setBekleyenOzet(count ?? 0)
+      })
+    return () => {
+      iptal = true
+    }
+  }, [kocRolu, yol])
 
   if (durum === 'yukleniyor') {
     return (
@@ -191,6 +211,11 @@ export default function App() {
               onClick={() => git(hedef)}
             >
               {ad}
+              {hedef === '/veli-ozetleri' && bekleyenOzet > 0 && (
+                <span className="alt-rozet" aria-label={`${bekleyenOzet} özet bekliyor`}>
+                  {bekleyenOzet > 9 ? '9+' : bekleyenOzet}
+                </span>
+              )}
             </button>
           )
         })}

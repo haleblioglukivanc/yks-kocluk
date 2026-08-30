@@ -1933,3 +1933,14 @@ body[data-tema='panel'] {
   font-size: 0.8125rem; line-height: 1.55; color: var(--grafit);
   white-space: pre-wrap;
 }
+
+/* Bekleyen veli özeti sayısı. Koç ekrana girmeden iş var mı görsün. */
+.alt-bag { position: relative; }
+.alt-rozet {
+  display: inline-grid; place-items: center;
+  min-width: 1.05rem; height: 1.05rem; padding: 0 0.25rem;
+  margin-left: 0.25rem; border-radius: 999px;
+  background: var(--marka-alev); color: #fff;
+  font-size: 0.625rem; font-weight: 700; line-height: 1;
+  vertical-align: 0.1em;
+}
