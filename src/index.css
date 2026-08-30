@@ -2005,3 +2005,17 @@ body[data-tema='panel'] {
 
 /* Kâmil koyu zeminde: başlık beyaz, ölçüm satırı soluk beyaz. */
 .uygulama .ob .ob-mesaj { color: #fff; }
+
+/* Tek kısayol varken tüm genişliğe yayılmasın. */
+.kk-kisayol--tek { border-top: 0; padding-top: 0; margin-top: 0.85rem; }
+.kk-kisayol--tek .kk-yol { flex: 0 0 auto; }
+
+/* Sekmeler tıklanabilir görünsün. Şeffaf zeminde yalnızca etkin olan
+   kutulu duruyordu, diğerleri düz yazı gibi okunuyordu. Koç ve öğrenci
+   ekranı aynı kuralı paylaşıyor. */
+.uygulama .sekmeler--genis .sekme {
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  font-weight: 600;
+}
+.uygulama .sekmeler--genis .sekme:hover { border-color: var(--sicak-kenar); }

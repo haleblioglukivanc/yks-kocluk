@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase.js'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
@@ -73,8 +74,9 @@ function varsayilanSoz(ozet, saat) {
   return { ruh: 'fikir', mesaj: `Sırada ${baslik}${adet}.` }
 }
 
-export default function OgrenciBasligi({ profil, ozet, onBugun }) {
+export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme }) {
   const [olay, setOlay] = useState(null)
+  const [rozetSayisi, setRozetSayisi] = useState(null)
 
   const yukle = useCallback(async () => {
     if (!profil?.id || !ozet) return
@@ -90,6 +92,21 @@ export default function OgrenciBasligi({ profil, ozet, onBugun }) {
   useEffect(() => {
     yukle()
   }, [yukle])
+
+  useEffect(() => {
+    if (!ogrenciId) return
+    let iptal = false
+    supabase
+      .from('ogrenci_rozet')
+      .select('rozet_id', { count: 'exact', head: true })
+      .eq('ogrenci_id', ogrenciId)
+      .then(({ count }) => {
+        if (!iptal) setRozetSayisi(count ?? 0)
+      })
+    return () => {
+      iptal = true
+    }
+  }, [ogrenciId, ozet])
 
   const saat = new Date().getHours()
   const varsayilan = varsayilanSoz(ozet, saat)
@@ -124,7 +141,7 @@ export default function OgrenciBasligi({ profil, ozet, onBugun }) {
 
           <div className="ob-dugmeler">
             {is && (
-              <button className="ob-basla" onClick={onBugun}>
+              <button className="ob-basla" onClick={() => onSekme('bugun')}>
                 Başla
               </button>
             )}
@@ -152,6 +169,22 @@ export default function OgrenciBasligi({ profil, ozet, onBugun }) {
         <span>
           <strong>{ozet?.guncelSeri ?? 0}</strong> gün seri
         </span>
+      </div>
+
+      <div className="kk-kisayol kk-kisayol--tek">
+        <button
+          className={`kk-yol${sekme === 'rozetler' ? ' kk-yol--etkin' : ''}`}
+          onClick={() => onSekme('rozetler')}
+          aria-pressed={sekme === 'rozetler'}
+        >
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+               strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <circle cx="12" cy="9" r="5.5" />
+            <path d="m8.5 13.8-1.4 6.4 4.9-2.6 4.9 2.6-1.4-6.4" />
+          </svg>
+          <span className="kk-yol-sayi">{rozetSayisi ?? '—'}</span>
+          <span className="kk-yol-ad">Rozetler</span>
+        </button>
       </div>
 
       {gecikmis > 0 && (

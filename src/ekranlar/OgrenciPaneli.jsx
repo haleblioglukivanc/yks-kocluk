@@ -67,15 +67,20 @@ export default function OgrenciPaneli({ profil }) {
   return (
     <>
 
-      <OgrenciBasligi profil={profil} ozet={ozet} onBugun={() => setSekme('bugun')} />
+      <OgrenciBasligi
+        profil={profil}
+        ogrenciId={kayit.id}
+        ozet={ozet}
+        sekme={sekme}
+        onSekme={setSekme}
+      />
 
       <nav className="sekmeler sekmeler--genis">
         {[
           ['bugun', 'Bugün'],
           ['program', 'Program'],
-          ['konular', 'Konularım'],
-          ['denemeler', 'Denemelerim'],
-          ['rozetler', 'Rozetlerim'],
+          ['konular', 'Konular'],
+          ['denemeler', 'Denemeler'],
         ].map(([k, e]) => (
           <button
             key={k}
