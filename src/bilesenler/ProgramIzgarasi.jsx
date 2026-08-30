@@ -233,7 +233,7 @@ export default function ProgramIzgarasi({
                             onClick={() => onHucreSec?.(null, gunAnahtari(g), si + 1)}
                             aria-label="Blok ekle"
                           >
-                            {duzenlenebilir ? '+' : '·'}
+                            <span className="hucre-isaret">{duzenlenebilir ? '+' : '·'}</span>
                           </button>
                         </td>
                       )

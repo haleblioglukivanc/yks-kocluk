@@ -2194,19 +2194,18 @@ body[data-tema='panel'] {
 }
 
 /* Boş hücreler: 42 hücrenin çoğu boş, artılar gürültü yapıyordu.
-   Çerçeve kalıyor, artı soluyor; dokunulunca netleşiyor. */
-.hucre--bos { color: transparent; }
-.hucre--bos::after {
-  content: '+';
-  color: var(--soluk);
+   Çerçeve kalıyor, işaret soluyor; dokunulunca netleşiyor.
+   İşaret JSX'te tek bir span; ::after ile ikinci bir artı üretmiyoruz. */
+.hucre-isaret {
   opacity: 0.3;
   font-size: 0.875rem;
+  line-height: 1;
   transition: opacity 140ms ease;
 }
-.hucre--bos:disabled::after { content: ''; }
-.hucre--bos:not(:disabled):hover::after,
-.hucre--bos:not(:disabled):focus-visible::after,
-.hucre--bos.hucre--secili::after { opacity: 1; }
+.hucre--bos:not(:disabled):hover .hucre-isaret,
+.hucre--bos:not(:disabled):focus-visible .hucre-isaret,
+.hucre--secili .hucre-isaret { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .hucre-isaret { transition: none; } }
 
 /* Bugün sütunu: "bugün ne var" en sık sorulan soru, göz oraya gitsin */
 .prg-bugun-sutun { background: var(--sicak-zemin, #fff3ec); border-radius: 6px; }
