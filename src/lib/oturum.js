@@ -20,7 +20,24 @@ export function useOturum() {
       console.error('Profil okunamadı:', error)
       return null
     }
-    return data
+    if (!data) return null
+
+    /* Koç, öğrencinin uygulama erişimini kapatabiliyor (ogrenciler.aktif).
+       Bunu profille birlikte okuyoruz ki App tek yerden kapıyı tutabilsin.
+       Not: bu istemci tarafı bir kapı; sunucu tarafı kısıt ileride
+       politikalara eklenecek. */
+    if (data.rol === 'ogrenci') {
+      const { data: o } = await supabase
+        .from('ogrenciler')
+        .select('aktif')
+        .eq('id', id)
+        .maybeSingle()
+      // Satır okunamazsa erişimi kapatmıyoruz: geçici bir ağ hatası
+      // öğrenciyi uygulamadan atmasın.
+      return { ...data, erisim_acik: o ? o.aktif : true }
+    }
+
+    return { ...data, erisim_acik: true }
   }, [])
 
   const yenile = useCallback(async () => {

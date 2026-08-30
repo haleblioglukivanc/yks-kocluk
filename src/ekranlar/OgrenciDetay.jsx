@@ -1,10 +1,10 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import { Avatar, FotografYukle } from '../bilesenler/Fotograf.jsx'
+import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
-import HedefNet from '../bilesenler/HedefNet.jsx'
+import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import Rozetlerim from './Rozetlerim.jsx'
 
@@ -72,39 +72,16 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         ← Öğrenci listesi
       </button>
 
-      <Kart>
-        <div className="kimlik">
-          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
-          <div className="kimlik-metin">
-            <h2 className="kimlik-ad">{ad}</h2>
-            <p className="kimlik-alt">
-              {[
-                ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null,
-                ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
-                ogrenci.kataloglar?.ad,
-              ]
-                .filter(Boolean)
-                .join(' · ') || 'Bilgi girilmemiş'}
-            </p>
-            {(ogrenci.hedef_universite || ogrenci.hedef_bolum) && (
-              <p className="kimlik-hedef">
-                Hedef: {[ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')}
-              </p>
-            )}
-            <HedefNet
-              tyt={ogrenci.hedef_tyt_net}
-              ayt={ogrenci.hedef_ayt_net}
-              durum={netDurumu}
-            />
-            <SeriVeRozet ogrenciId={ogrenci.id} />
-            {!ogrenci.aktif && <Rozet ton="sonuk">Pasif</Rozet>}
-          </div>
-          <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
-            {duzenle ? 'Kapat' : 'Düzenle'}
-          </Dugme>
-        </div>
+      <OgrenciKimlikKarti
+        ogrenci={ogrenci}
+        netDurumu={netDurumu}
+        duzenleAcik={duzenle}
+        onDuzenle={() => setDuzenle((v) => !v)}
+        onDegisti={yukle}
+      />
 
-        {duzenle ? (
+      {duzenle && (
+        <Kart>
           <BilgiFormu
             ogrenci={ogrenci}
             kataloglar={kataloglar}
@@ -113,23 +90,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
               await yukle()
             }}
           />
-        ) : (
-          <dl className="kunye">
-            <div>
-              <dt>Telefon</dt>
-              <dd>{ogrenci.profiller?.telefon || 'Belirtilmedi'}</dd>
-            </div>
-            <div>
-              <dt>Kayıt</dt>
-              <dd>{new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR')}</dd>
-            </div>
-            <div>
-              <dt>Durum</dt>
-              <dd>{ogrenci.aktif ? 'Aktif' : 'Pasif'}</dd>
-            </div>
-          </dl>
-        )}
-      </Kart>
+        </Kart>
+      )}
 
       <nav className="sekmeler sekmeler--genis">
         {[
@@ -959,52 +921,6 @@ function Veliler({ ogrenci }) {
 
 /** Koçun tebrik fırsatını kaçırmaması için: seri ve son kazanılan rozet.
  *  Öğrenci bunları kendi panelinde görüyor, koç göremiyordu. */
-function SeriVeRozet({ ogrenciId }) {
-  const [veri, setVeri] = useState(null)
-
-  useEffect(() => {
-    let iptal = false
-    ;(async () => {
-      const [s, r] = await Promise.all([
-        supabase
-          .from('seriler')
-          .select('guncel_seri, en_uzun_seri, son_aktif_gun')
-          .eq('ogrenci_id', ogrenciId)
-          .maybeSingle(),
-        supabase
-          .from('ogrenci_rozet')
-          .select('kazanildi, rozetler(ad)')
-          .eq('ogrenci_id', ogrenciId)
-          .order('kazanildi', { ascending: false }),
-      ])
-      if (!iptal) setVeri({ seri: s.data, rozetler: r.data ?? [] })
-    })()
-    return () => {
-      iptal = true
-    }
-  }, [ogrenciId])
-
-  if (!veri) return null
-
-  /* Tablodaki seri yalnızca aktivite oldukça güncelleniyor. Son aktiflik
-     dünden eskiyse seri kopmuştur; okurken düzeltiyoruz. */
-  const bugun = new Date()
-  bugun.setHours(0, 0, 0, 0)
-  const sonAktif = veri.seri?.son_aktif_gun ? new Date(veri.seri.son_aktif_gun) : null
-  const kopmus = !sonAktif || (bugun - sonAktif) / 864e5 > 1
-  const seri = kopmus ? 0 : (veri.seri?.guncel_seri ?? 0)
-  const sonRozet = veri.rozetler[0]
-
-  /* Sıfırlar da yazılıyor: "0 günlük seri · 0 rozet" koça öğrencinin
-     yeni ya da durmuş olduğunu söyler. Satırın hiç çıkmaması bu bilgiyi
-     gizliyordu. */
-  return (
-    <p className={`kimlik-seri${seri === 0 ? ' kimlik-seri--sifir' : ''}`}>
-      {seri} günlük seri · {veri.rozetler.length} rozet
-      {sonRozet ? ` · son: ${sonRozet.rozetler?.ad}` : ''}
-    </p>
-  )
-}
 
 
 /** Mevcut bloğun notunu düzenler. Not, öğrencinin görev altında

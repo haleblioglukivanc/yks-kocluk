@@ -77,6 +77,38 @@ export default function App() {
     )
   }
 
+  // Koç erişimi kapattıysa öğrenci panele hiç girmesin.
+  if (profil.rol === 'ogrenci' && profil.erisim_acik === false) {
+    return (
+      <div className="giris-sayfa">
+        <div className="giris-kutu erisim-kapali">
+          <span className="erisim-kilit" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor"
+                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+          </span>
+          <h1>Erişimin şu an kapalı</h1>
+          <p>
+            Koçun hesabını geçici olarak durdurdu. Çalışmaların ve verilerin duruyor;
+            erişim yeniden açıldığında kaldığın yerden devam edebilirsin.
+          </p>
+          <p className="erisim-alt">Ne zaman açılacağını öğrenmek için koçunla konuş.</p>
+          <button
+            className="dugme dugme--ikincil"
+            onClick={async () => {
+              await cikisYap()
+              git('/')
+            }}
+          >
+            Çıkış yap
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
   const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null

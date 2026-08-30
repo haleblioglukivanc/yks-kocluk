@@ -1,0 +1,241 @@
+import { useCallback, useEffect, useState } from 'react'
+import { supabase, hataMetni } from '../lib/supabase.js'
+import { Avatar } from './Fotograf.jsx'
+
+const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
+const RISK_ADI = { iyi: 'Yolunda', izle: 'İzlemede', acil: 'Acil' }
+
+/** Tabloda tutulan seri yalnızca aktivite oldukça güncelleniyor.
+ *  Son aktiflik dünden eskiyse seri kopmuştur; okurken düzeltiyoruz. */
+function seriDuzelt(satir) {
+  const bugun = new Date()
+  bugun.setHours(0, 0, 0, 0)
+  const sonAktif = satir?.son_aktif_gun ? new Date(satir.son_aktif_gun) : null
+  const kopmus = !sonAktif || (bugun - sonAktif) / 864e5 > 1
+  return kopmus ? 0 : (satir?.guncel_seri ?? 0)
+}
+
+/**
+ * Öğrenci detayının tepesindeki kimlik kartı.
+ *
+ * Tasarım kararı: durum bir yazı değil, kartın kendi görünümü.
+ * Erişim kapatıldığında kart soluklaşır ve altında bir şerit belirir;
+ * ayrıca "Durum: Pasif" satırı yazmıyoruz.
+ */
+export default function OgrenciKimlikKarti({
+  ogrenci,
+  netDurumu,
+  duzenleAcik,
+  onDuzenle,
+  onDegisti,
+}) {
+  const [ek, setEk] = useState(null)
+  const [aktif, setAktif] = useState(ogrenci.aktif)
+  const [kaydediyor, setKaydediyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  useEffect(() => setAktif(ogrenci.aktif), [ogrenci.aktif])
+
+  useEffect(() => {
+    let iptal = false
+    ;(async () => {
+      const [r, s] = await Promise.all([
+        supabase
+          .from('ogrenci_risk')
+          .select('risk_seviyesi, tamamlama_yuzdesi, gecikmis_gorev, gun_gecti, hic_baslamadi')
+          .eq('ogrenci_id', ogrenci.id)
+          .maybeSingle(),
+        supabase
+          .from('seriler')
+          .select('guncel_seri, son_aktif_gun')
+          .eq('ogrenci_id', ogrenci.id)
+          .maybeSingle(),
+      ])
+      if (!iptal) setEk({ risk: r.data, seri: seriDuzelt(s.data) })
+    })()
+    return () => {
+      iptal = true
+    }
+  }, [ogrenci.id])
+
+  const erisimDegistir = useCallback(
+    async (yeni) => {
+      if (!yeni && !window.confirm('Öğrencinin uygulama erişimi durdurulsun mu? Verileri silinmez.')) {
+        return
+      }
+      setAktif(yeni) // iyimser: anahtar anında tepki versin
+      setKaydediyor(true)
+      setHata('')
+      const { error } = await supabase.from('ogrenciler').update({ aktif: yeni }).eq('id', ogrenci.id)
+      setKaydediyor(false)
+      if (error) {
+        setAktif(!yeni)
+        setHata(hataMetni(error))
+        return
+      }
+      await onDegisti?.()
+    },
+    [ogrenci.id, onDegisti],
+  )
+
+  const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
+  const telefon = ogrenci.profiller?.telefon
+
+  const cipler = [
+    ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null,
+    ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
+  ].filter(Boolean)
+
+  // Hedef çubuğu: TYT varsa o, yoksa AYT. İkisi de yoksa çubuk hiç çıkmaz.
+  const hedefTur = ogrenci.hedef_tyt_net != null ? 'tyt' : ogrenci.hedef_ayt_net != null ? 'ayt' : null
+  const hedef = hedefTur === 'tyt' ? Number(ogrenci.hedef_tyt_net) : hedefTur === 'ayt' ? Number(ogrenci.hedef_ayt_net) : null
+  const sonNet = netDurumu?.[hedefTur]?.son_net != null ? Number(netDurumu[hedefTur].son_net) : null
+  const oran = hedef && sonNet != null ? Math.min(100, Math.max(0, (sonNet / hedef) * 100)) : 0
+  const kalan = hedef != null && sonNet != null ? hedef - sonNet : null
+
+  const gosterilenNet =
+    netDurumu?.tyt?.son_net ?? netDurumu?.ayt?.son_net ?? null
+  const gecikmis = Number(ek?.risk?.gecikmis_gorev ?? 0)
+  const riskSeviyesi = ek?.risk?.risk_seviyesi ?? null
+
+  return (
+    <>
+      <div className={`kimlik-kart${aktif ? '' : ' kimlik-kart--kapali'}`}>
+        <div className="kk-ust">
+          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
+
+          <div className="kk-kimlik">
+            <h2 className="kk-ad">{ad}</h2>
+            <div className="kk-cipler">
+              {cipler.map((c) => (
+                <span key={c} className="kk-cip">
+                  {c}
+                </span>
+              ))}
+              {riskSeviyesi && (
+                <span className={`kk-cip kk-risk kk-risk--${riskSeviyesi}`}>
+                  <i className="kk-nokta" aria-hidden="true" />
+                  {RISK_ADI[riskSeviyesi] ?? riskSeviyesi}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="kk-eylem">
+            <label className="anahtar" title={aktif ? 'Uygulama erişimi açık' : 'Uygulama erişimi kapalı'}>
+              <input
+                type="checkbox"
+                checked={aktif}
+                disabled={kaydediyor}
+                onChange={(e) => erisimDegistir(e.target.checked)}
+                aria-label="Uygulama erişimi"
+              />
+              <span className="anahtar-kizak" />
+            </label>
+
+            <div className="kk-ikonlar">
+              {telefon && (
+                <a className="kk-ikon" href={`tel:${telefon.replace(/\s/g, '')}`} aria-label={`${ad} — ara`}>
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                       strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8.1 9.8a16 16 0 0 0 6 6l1.3-1.2a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.8 2.1Z" />
+                  </svg>
+                </a>
+              )}
+              <button
+                className={`kk-ikon${duzenleAcik ? ' kk-ikon--etkin' : ''}`}
+                onClick={onDuzenle}
+                aria-label={duzenleAcik ? 'Düzenlemeyi kapat' : 'Öğrenciyi düzenle'}
+                aria-pressed={duzenleAcik}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                     strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <circle cx="12" cy="12" r="3" />
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.5.6.87 1.13.91H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {hedefTur && (
+          <div className="kk-hedef">
+            <div className="kk-hedef-satir">
+              <span className="kk-hedef-etiket">
+                {hedefTur.toUpperCase()} hedefi · {sonNet != null ? sonNet.toFixed(2) : '—'} / {hedef.toFixed(2)}
+              </span>
+              <span className="kk-hedef-deger">
+                {kalan == null ? 'deneme yok' : kalan <= 0 ? 'hedefe ulaştı' : `${kalan.toFixed(2)} net kaldı`}
+              </span>
+            </div>
+            <div
+              className="kk-cubuk"
+              role="img"
+              aria-label={`${hedefTur.toUpperCase()} hedefine ${Math.round(oran)}% ulaşıldı`}
+            >
+              <span style={{ width: `${oran}%` }} />
+            </div>
+          </div>
+        )}
+
+        {!aktif && (
+          <p className="kk-kapali">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                 strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            Uygulama erişimi kapalı
+          </p>
+        )}
+      </div>
+
+      {hata && <p className="uyari uyari--hata">{hata}</p>}
+
+      <div className="kk-kutular">
+        <Kutu
+          renk="var(--marka-yesil-acik)"
+          deger={ek?.risk?.tamamlama_yuzdesi != null ? `%${ek.risk.tamamlama_yuzdesi}` : '—'}
+          ad="Tamamlama"
+          cizim={<path d="M20 6 9 17l-5-5" />}
+        />
+        <Kutu
+          renk="var(--fosfor)"
+          deger={ek ? ek.seri : '—'}
+          ad="Gün seri"
+          cizim={<path d="M12 3c1.5 3.5-1 5-1 7a3 3 0 0 0 6 0c0-1-.4-2-1-2.7 2.5 1.4 4 3.9 4 6.7a8 8 0 1 1-13.3-6C8.4 6.4 10.6 4.6 12 3Z" />}
+        />
+        <Kutu
+          renk="var(--dolgu)"
+          deger={gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
+          ad="Son net"
+          cizim={<path d="m3 17 5-6 4 4 5-7 4 5" />}
+        />
+      </div>
+
+      {gecikmis > 0 && (
+        <p className="kk-gecikme">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+               strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 7.5v5M12 16.2v.2" />
+          </svg>
+          {gecikmis} görev gecikti
+        </p>
+      )}
+    </>
+  )
+}
+
+function Kutu({ renk, deger, ad, cizim }) {
+  return (
+    <div className="kk-kutu">
+      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke={renk}
+           strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+        {cizim}
+      </svg>
+      <span className="kk-kutu-deger">{deger}</span>
+      <span className="kk-kutu-ad">{ad}</span>
+    </div>
+  )
+}
