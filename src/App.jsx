@@ -119,7 +119,7 @@ export default function App() {
         ['/', 'Panel'],
         ['/ogrenciler', 'Öğrenciler'],
         ['/konular', 'Konular'],
-        ['/veli-ozetleri', 'Veli'],
+        ['/veli-ozetleri', 'Özetler'],
         ['/raporlar', 'Rapor'],
         ['/mesajlar', 'Mesajlar'],
       ]

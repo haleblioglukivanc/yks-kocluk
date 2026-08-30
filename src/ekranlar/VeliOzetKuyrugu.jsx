@@ -18,6 +18,7 @@ function taslakYorum(k) {
 
 export default function VeliOzetKuyrugu() {
   const [kayitlar, setKayitlar] = useState(null)
+  const [gonderilen, setGonderilen] = useState([])
   const [yorumlar, setYorumlar] = useState({})
   const [islemde, setIslemde] = useState(null)
   const [hata, setHata] = useState('')
@@ -34,6 +35,17 @@ export default function VeliOzetKuyrugu() {
     const liste = data ?? []
     setKayitlar(liste)
     setYorumlar(Object.fromEntries(liste.map((k) => [k.id, k.yorum ?? taslakYorum(k)])))
+
+    /* Kuyruk yalnızca bekleyenleri gösteriyordu; hepsi yayınlanınca ekran
+       bomboş kalıyor ve "hiç veri yok" gibi okunuyordu. Son gönderilenleri
+       de listeliyoruz: koç veliye ne gittiğini görebilsin. */
+    const { data: g } = await supabase
+      .from('veli_haftalik_ozet')
+      .select('id, hafta_baslangic, koc_yorumu, yayin_zamani, ogrenci_id, ogrenciler(profiller!ogrenciler_id_fkey(ad_soyad))')
+      .eq('yayinlandi', true)
+      .order('yayin_zamani', { ascending: false })
+      .limit(5)
+    setGonderilen(g ?? [])
   }, [])
 
   useEffect(() => {
@@ -73,6 +85,7 @@ export default function VeliOzetKuyrugu() {
     }
     setBilgi(`${kayit.ad} için özet yayınlandı.`)
     setKayitlar((m) => m.filter((k) => k.id !== kayit.id))
+    await yukle()
   }
 
   return (
@@ -91,7 +104,14 @@ export default function VeliOzetKuyrugu() {
       {kayitlar === null ? (
         <Yukleniyor />
       ) : kayitlar.length === 0 ? (
-        <Bos baslik='Kuyruk boş' aciklama='Bu haftanın taslaklarını hazırlayarak başla.' />
+        <Bos
+          baslik={gonderilen.length ? 'Bekleyen özet yok' : 'Kuyruk boş'}
+          aciklama={
+            gonderilen.length
+              ? 'Hazırlanan her özet veliye gönderildi. Yeni hafta için taslak üretebilirsin.'
+              : 'Bu haftanın taslaklarını hazırlayarak başla.'
+          }
+        />
       ) : (
         kayitlar.map((k) => (
           <div key={k.id} className='ozet-kayit'>
@@ -112,6 +132,25 @@ export default function VeliOzetKuyrugu() {
             </Dugme>
           </div>
         ))
+      )}
+
+      {gonderilen.length > 0 && (
+        <div className='gonderilen'>
+          <h3 className='gonderilen-baslik'>Veliye gönderilenler</h3>
+          {gonderilen.map((g) => (
+            <div key={g.id} className='gonderilen-satir'>
+              <span className='liste-ad'>{g.ogrenciler?.profiller?.ad_soyad ?? 'Öğrenci'}</span>
+              <span className='liste-alt'>
+                {new Date(g.hafta_baslangic).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })}{' '}
+                haftası
+                {g.yayin_zamani
+                  ? ` · ${new Date(g.yayin_zamani).toLocaleDateString('tr-TR')} tarihinde gönderildi`
+                  : ''}
+              </span>
+              <p className='gonderilen-yorum'>{g.koc_yorumu}</p>
+            </div>
+          ))}
+        </div>
       )}
     </Kart>
   )

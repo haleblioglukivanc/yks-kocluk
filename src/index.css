@@ -1917,3 +1917,19 @@ body[data-tema='panel'] {
 @media (max-width: 22rem) {
   .sekmeler--genis { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Veliye gönderilmiş özetler: kuyruk boşaldığında ekran ölü kalmasın,
+   koç veliye tam olarak neyin gittiğini görebilsin. */
+.gonderilen { margin-top: 1.1rem; padding-top: 0.9rem; border-top: 1px solid var(--cizgi); }
+.gonderilen-baslik {
+  margin: 0 0 0.6rem; font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--soluk);
+}
+.gonderilen-satir { padding: 0.7rem 0; border-bottom: 1px solid var(--cizgi); }
+.gonderilen-satir:last-child { border-bottom: 0; padding-bottom: 0; }
+.gonderilen-yorum {
+  margin: 0.45rem 0 0; padding-left: 0.7rem;
+  border-left: 2px solid var(--cizgi-2, var(--cizgi));
+  font-size: 0.8125rem; line-height: 1.55; color: var(--grafit);
+  white-space: pre-wrap;
+}
