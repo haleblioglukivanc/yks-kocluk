@@ -2299,3 +2299,76 @@ body[data-tema='panel'] {
   .kutlama-katman,
   .kutlama-kalem { animation: none; }
 }
+
+/* ============================================================
+   Haftalık İlham — haftanın kitabı + haftanın sözü
+   Tek bileşen üç yerde: öğrenci paneli, veli paneli, tanıtım.
+   Renkler --yuzey / --cizgi / --murekkep üzerinden okunuyor;
+   `.uygulama` bunları koyu palete çevirdiği için ayrı bir koyu
+   sürüm yazmıyoruz. Buradaki bir değişiklik üç ekranda birden
+   geçerli olur.
+   ============================================================ */
+
+.haftalik-ilham { display: grid; gap: 0.75rem; min-width: 0; }
+
+.hi-kutu {
+  display: flex; gap: 0.875rem; align-items: flex-start;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: var(--r);
+  padding: 1rem 1.125rem;
+  min-width: 0;
+}
+
+/* Üst çizgi sadece kutuyu ayırt etmek için; içerideki anlamlı
+   renklere (yeşil = bitti, kırmızı = hata) karışmıyor. */
+.hi-kutu--kitap { border-top: 3px solid var(--marka-amber); }
+.hi-kutu--soz   { border-top: 3px solid var(--marka-mavi); }
+.uygulama .hi-kutu--kitap { border-top-color: var(--marka-koyu-amber); }
+.uygulama .hi-kutu--soz   { border-top-color: var(--marka-koyu-mavi); }
+
+.hi-em { font-size: 1.5rem; line-height: 1.15; flex: none; }
+.hi-govde { flex: 1; min-width: 0; }
+
+.hi-etiket {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--soluk);
+}
+
+.hi-kapak { display: block; width: 4.5rem; border-radius: 6px; margin-bottom: 0.5rem; }
+
+.hi-ad {
+  margin: 0; font-family: var(--display);
+  font-size: 1.0625rem; font-weight: 700;
+  overflow-wrap: anywhere;
+}
+.hi-yazar { margin: 0.15rem 0 0.5rem; font-size: 0.8125rem; color: var(--grafit); }
+.hi-neden { margin: 0; font-size: 0.875rem; line-height: 1.55; color: var(--grafit); }
+
+.hi-alinti {
+  margin: 0.625rem 0 0; padding-left: 0.75rem;
+  border-left: 2px solid var(--cizgi);
+  font-style: italic; font-size: 0.875rem;
+  color: var(--murekkep);
+}
+
+.hi-rozetler { display: flex; flex-wrap: wrap; gap: 0.375rem; margin-top: 0.625rem; }
+.hi-rozet {
+  font-size: 0.6875rem; white-space: nowrap;
+  padding: 0.2rem 0.5rem; border-radius: 999px;
+  background: var(--kagit); color: var(--grafit);
+  border: 1px solid var(--cizgi);
+}
+.uygulama .hi-rozet { background: var(--yuzey-2); }
+
+.hi-soz {
+  margin: 0; font-family: var(--display);
+  font-size: 1.0625rem; line-height: 1.45; font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.hi-kaynak {
+  display: block; margin-top: 0.4rem;
+  font-size: 0.8125rem; font-style: normal; color: var(--soluk);
+}

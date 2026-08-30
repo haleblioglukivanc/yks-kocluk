@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
 const TREND = {
   yukseliyor: { yazi: 'Yükseliyor', ok: '↗' },
@@ -77,6 +78,8 @@ export default function VeliPaneli() {
       {ozetler.map((o) => (
         <HaftalikOzet key={o.ogrenciId} o={o} />
       ))}
+
+      <HaftalikIlham />
 
       {ozetler.length === 0 && cocuklar !== null && cocuklar.length > 0 && (
         <Kart baslik="Bu hafta">

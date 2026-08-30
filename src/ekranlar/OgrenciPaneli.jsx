@@ -11,6 +11,7 @@ import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
@@ -160,6 +161,9 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
               onDegisti={yenile}
             />
           )}
+          {/* Günün sonunda okunacak kutu: kitap + söz. Kritik değil,
+              o yüzden bugünün işlerinin altında duruyor. */}
+          <HaftalikIlham />
         </>
       ) : sekme === 'program' ? (
         <>

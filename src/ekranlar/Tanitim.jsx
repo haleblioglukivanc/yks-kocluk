@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import '../tanitim.css'
 
 /* ═══════════════════════════════════════════════════════════════
@@ -512,6 +513,21 @@ export default function Tanitim({ onGiris }) {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ---------- Haftalık ilham ---------- */}
+      <section className="t-bant" id="haftalik">
+        <div className="t-kap">
+          <Belir>
+            <p className="t-etiket">Bu hafta</p>
+            <h2 className="t-baslik">Haftanın kitabı ve sözü</h2>
+            <p className="t-alt-metin">
+              Her hafta öğrencilere bir kitap ve bir söz bırakıyoruz. Aynısı
+              öğrencinin ve velinin panelinde de görünür.
+            </p>
+            <HaftalikIlham />
+          </Belir>
         </div>
       </section>
 
