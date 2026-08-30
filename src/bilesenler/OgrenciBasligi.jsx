@@ -107,7 +107,7 @@ export default function OgrenciBasligi({ profil, ozet, onBugun }) {
   }
 
   return (
-    <section className="ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
+    <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
       <div className="ob-ust">
         <div className="ob-kalem" aria-hidden="true">
           <Kalem ruh={soz.ruh} boyut={76} yipranma={ozet?.yipranma ?? 0} />

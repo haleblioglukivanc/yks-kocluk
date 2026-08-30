@@ -149,7 +149,7 @@ export default function OgrenciKimlikKarti({
 
   return (
     <>
-      <div className={`kimlik-kart${kocGorunumu && !aktif ? ' kimlik-kart--kapali' : ''}`}>
+      <div className={`hero-yuzey kimlik-kart${kocGorunumu && !aktif ? ' kimlik-kart--kapali' : ''}`}>
         <div className="kk-ust">
           <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
 
