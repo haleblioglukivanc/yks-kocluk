@@ -2142,3 +2142,72 @@ body[data-tema='panel'] {
 @media (prefers-reduced-motion: reduce) {
   .prg-acilir { animation: none; }
 }
+
+/* ============================================================
+   Izgara okunabilirliği
+   Yedi sütun telefonda ~40px kalıyor. Ders adı sığmıyordu:
+   hücrede kısa kod, ders rengi ince sol şerit, tam ad panelde.
+   ============================================================ */
+
+/* Kod satırı: tek satır, kırpılmasın diye kısa. */
+.hucre--dolu {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 0.45rem;
+  overflow: hidden;
+  /* iki satıra sarma kuralı artık gerekmiyor */
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
+/* Ders rengi: zemin durumu (bekliyor/bitti) gösterdiği için renk
+   kenarda duruyor. Yeşil = bitti kuralı bozulmuyor. */
+.hucre--dolu::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--ders-renk, transparent);
+  border-radius: 6px 0 0 6px;
+}
+
+.hucre-kod {
+  font-family: var(--mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+.hucre-tam { display: none; }
+
+/* Geniş ekranda tam ad sığıyor, kod gizlenir */
+@media (min-width: 48rem) {
+  .hucre-kod { display: none; }
+  .hucre-tam {
+    display: block;
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+    font-size: 0.75rem;
+  }
+}
+
+/* Boş hücreler: 42 hücrenin çoğu boş, artılar gürültü yapıyordu.
+   Çerçeve kalıyor, artı soluyor; dokunulunca netleşiyor. */
+.hucre--bos { color: transparent; }
+.hucre--bos::after {
+  content: '+';
+  color: var(--soluk);
+  opacity: 0.3;
+  font-size: 0.875rem;
+  transition: opacity 140ms ease;
+}
+.hucre--bos:disabled::after { content: ''; }
+.hucre--bos:not(:disabled):hover::after,
+.hucre--bos:not(:disabled):focus-visible::after,
+.hucre--bos.hucre--secili::after { opacity: 1; }
+
+/* Bugün sütunu: "bugün ne var" en sık sorulan soru, göz oraya gitsin */
+.prg-bugun-sutun { background: var(--sicak-zemin, #fff3ec); border-radius: 6px; }
+.uygulama .prg-bugun-sutun { background: rgb(255 255 255 / 0.04); }

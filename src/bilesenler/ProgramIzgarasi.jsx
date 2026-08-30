@@ -1,6 +1,7 @@
 import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
+import { dersGorunumu } from '../lib/dersGorunum.js'
 
 export const PERIYOTLAR = ['09—11', '11—13', '14—16', '16—18', '19—21', '21—23']
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
@@ -194,10 +195,12 @@ export default function ProgramIzgarasi({
                     {gunler.map((g) => {
                       const anahtar = `${gunAnahtari(g)}-${si + 1}`
                       const blok = harita[anahtar]
+                      const bugunSutunu = gunAnahtari(g) === bugun
                       if (blok) {
                         const bitti = blok.durum === 'tamamlandi'
+                        const gor = dersGorunumu(blok.dersler?.ad ?? blok.baslik)
                         return (
-                          <td key={anahtar}>
+                          <td key={anahtar} className={bugunSutunu ? 'prg-bugun-sutun' : undefined}>
                             <button
                               className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}${
                                 anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
@@ -212,14 +215,16 @@ export default function ProgramIzgarasi({
                                 blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null,
                                 blok.aciklama,
                               ].filter(Boolean).join(' · ')}
+                              style={{ '--ders-renk': gor.renk }}
                             >
-                              {blok.dersler?.ad ?? blok.baslik}
+                              <span className="hucre-kod">{gor.kod}</span>
+                              <span className="hucre-tam">{gor.ad || blok.baslik}</span>
                             </button>
                           </td>
                         )
                       }
                       return (
-                        <td key={anahtar}>
+                        <td key={anahtar} className={bugunSutunu ? 'prg-bugun-sutun' : undefined}>
                           <button
                             className={`hucre hucre--bos${
                               anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
