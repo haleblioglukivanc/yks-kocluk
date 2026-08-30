@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Bos, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import { Avatar } from '../bilesenler/Fotograf.jsx'
+import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
-import HedefNet from '../bilesenler/HedefNet.jsx'
+import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
@@ -12,7 +11,6 @@ import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 
-const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 
 export default function OgrenciPaneli({ profil }) {
   const [kayit, setKayit] = useState(null)
@@ -59,7 +57,6 @@ export default function OgrenciPaneli({ profil }) {
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
 
-  const ad = kayit.profiller?.ad_soyad ?? profil.ad_soyad
   const sonNet = denemeler[0] ? Number(denemeler[0].toplam_net) : null
   const oncekiNet = denemeler[1] ? Number(denemeler[1].toplam_net) : null
   const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
@@ -67,57 +64,21 @@ export default function OgrenciPaneli({ profil }) {
   return (
     <>
 
-      <Kart>
-        <div className="kimlik">
-          <Avatar yol={kayit.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
-          <div className="kimlik-metin">
-            <h2 className="kimlik-ad">{ad}</h2>
-            <p className="kimlik-alt">
-              {[
-                kayit.sinif ? (kayit.sinif === 13 ? 'Mezun' : `${kayit.sinif}. sınıf`) : null,
-                kayit.alan ? ALAN_ADI[kayit.alan] : null,
-                kayit.kataloglar?.ad,
-              ]
-                .filter(Boolean)
-                .join(' · ')}
-            </p>
-            {(kayit.hedef_universite || kayit.hedef_bolum) && (
-              <p className="kimlik-hedef">
-                Hedef: {[kayit.hedef_universite, kayit.hedef_bolum].filter(Boolean).join(' · ')}
-              </p>
-            )}
-            <HedefNet
-              tyt={kayit.hedef_tyt_net}
-              ayt={kayit.hedef_ayt_net}
-              durum={netDurumu}
-            />
-            {ozet && (
-              <p className={`kimlik-seri${ozet.guncelSeri ? '' : ' kimlik-seri--sifir'}`}>
-                {ozet.guncelSeri ?? 0} günlük seri
-                {ozet.calismaDkBugun ? ` · bugün ${ozet.calismaDkBugun} dk` : ''}
-              </p>
-            )}
-          </div>
-          {sonNet !== null && (
-            <div className="son-net">
-              <strong>{sonNet.toFixed(2)}</strong>
-              <span>son net</span>
-              {fark !== null && fark !== 0 && (
-                <Rozet ton="notr">
-                  {fark > 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)}
-                </Rozet>
-              )}
-            </div>
-          )}
-        </div>
-      </Kart>
+      <OgrenciKimlikKarti
+        ogrenci={{ ...kayit, aktif: true }}
+        netDurumu={netDurumu}
+        rol="ogrenci"
+        ozet={ozet}
+        netFarki={fark}
+        sekme={sekme}
+        onSekme={setSekme}
+      />
 
       <nav className="sekmeler sekmeler--genis">
         {[
           ['bugun', 'Bugün'],
           ['program', 'Program'],
           ['konular', 'Konularım'],
-          ['rozetler', 'Rozetlerim'],
           ['denemeler', 'Denemelerim'],
         ].map(([k, e]) => (
           <button

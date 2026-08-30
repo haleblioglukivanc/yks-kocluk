@@ -1944,3 +1944,10 @@ body[data-tema='panel'] {
   font-size: 0.625rem; font-weight: 700; line-height: 1;
   vertical-align: 0.1em;
 }
+
+/* Son net kutusundaki değişim. Etiketin yanında, küçük. Eski tasarımda
+   ayrı bir rozet olarak duruyordu ve "75.50" ile üst üste biniyordu. */
+.kk-fark { margin-left: 0.3rem; font-weight: 700; }
+.kk-fark--artis { color: var(--marka-basari); }
+.kk-fark--dusus { color: var(--uyari); }
+.uygulama .kk-fark--artis { color: #0f7a58; }

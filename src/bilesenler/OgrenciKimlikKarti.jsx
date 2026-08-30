@@ -25,12 +25,21 @@ function seriDuzelt(satir) {
 export default function OgrenciKimlikKarti({
   ogrenci,
   netDurumu,
+  rol = 'koc',
+  ozet,
+  netFarki,
   duzenleAcik,
   onDuzenle,
   onDegisti,
   sekme,
   onSekme,
 }) {
+  /* Aynı kart, iki farklı okuyucu. Görsel dil ortak; içerik değil.
+     Öğrenci kendi kartında erişim anahtarını, düzenleme çarkını ve risk
+     seviyesini görmez: ilk ikisi koçun yetkisi, üçüncüsü koçun öğrenci
+     hakkındaki değerlendirmesi. "Acil" etiketini öğrenciye göstermek
+     yardımcı olmaz. */
+  const kocGorunumu = rol === 'koc'
   const [ek, setEk] = useState(null)
   const [aktif, setAktif] = useState(ogrenci.aktif)
   const [kaydediyor, setKaydediyor] = useState(false)
@@ -42,11 +51,13 @@ export default function OgrenciKimlikKarti({
     let iptal = false
     ;(async () => {
       const [r, s, rz, v] = await Promise.all([
-        supabase
-          .from('ogrenci_risk')
-          .select('risk_seviyesi, tamamlama_yuzdesi, gecikmis_gorev, gun_gecti, hic_baslamadi')
-          .eq('ogrenci_id', ogrenci.id)
-          .maybeSingle(),
+        kocGorunumu
+          ? supabase
+              .from('ogrenci_risk')
+              .select('risk_seviyesi, tamamlama_yuzdesi, gecikmis_gorev, gun_gecti, hic_baslamadi')
+              .eq('ogrenci_id', ogrenci.id)
+              .maybeSingle()
+          : Promise.resolve({ data: null }),
         supabase
           .from('seriler')
           .select('guncel_seri, son_aktif_gun')
@@ -57,10 +68,12 @@ export default function OgrenciKimlikKarti({
           .from('ogrenci_rozet')
           .select('rozet_id', { count: 'exact', head: true })
           .eq('ogrenci_id', ogrenci.id),
-        supabase
-          .from('veli_ogrenci')
-          .select('veli_id', { count: 'exact', head: true })
-          .eq('ogrenci_id', ogrenci.id),
+        kocGorunumu
+          ? supabase
+              .from('veli_ogrenci')
+              .select('veli_id', { count: 'exact', head: true })
+              .eq('ogrenci_id', ogrenci.id)
+          : Promise.resolve({ count: 0 }),
       ])
       if (!iptal) {
         setEk({
@@ -74,7 +87,7 @@ export default function OgrenciKimlikKarti({
     return () => {
       iptal = true
     }
-  }, [ogrenci.id])
+  }, [ogrenci.id, kocGorunumu])
 
   const erisimDegistir = useCallback(
     async (yeni) => {
@@ -136,7 +149,7 @@ export default function OgrenciKimlikKarti({
 
   return (
     <>
-      <div className={`kimlik-kart${aktif ? '' : ' kimlik-kart--kapali'}`}>
+      <div className={`kimlik-kart${kocGorunumu && !aktif ? ' kimlik-kart--kapali' : ''}`}>
         <div className="kk-ust">
           <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
 
@@ -148,7 +161,7 @@ export default function OgrenciKimlikKarti({
                   {c}
                 </span>
               ))}
-              {riskSeviyesi && (
+              {kocGorunumu && riskSeviyesi && (
                 <span className={`kk-cip kk-risk kk-risk--${riskSeviyesi}`}>
                   <i className="kk-nokta" aria-hidden="true" />
                   {RISK_ADI[riskSeviyesi] ?? riskSeviyesi}
@@ -157,6 +170,7 @@ export default function OgrenciKimlikKarti({
             </div>
           </div>
 
+          {kocGorunumu && (
           <div className="kk-eylem">
             <label className="anahtar" title={aktif ? 'Uygulama erişimi açık' : 'Uygulama erişimi kapalı'}>
               <input
@@ -192,6 +206,7 @@ export default function OgrenciKimlikKarti({
               </button>
             </div>
           </div>
+          )}
         </div>
 
         {ogrenci.hedef_universite || ogrenci.hedef_bolum ? (
@@ -227,7 +242,7 @@ export default function OgrenciKimlikKarti({
           </div>
         ))}
 
-        {gecikmis > 0 && (
+        {kocGorunumu && gecikmis > 0 && (
           <p className="kk-gecikme">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                  strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -256,6 +271,7 @@ export default function OgrenciKimlikKarti({
               <span className="kk-yol-ad">Rozet</span>
             </button>
 
+            {kocGorunumu && (
             <button
               className={`kk-yol${sekme === 'veli' ? ' kk-yol--etkin' : ''}`}
               onClick={() => onSekme('veli')}
@@ -270,10 +286,11 @@ export default function OgrenciKimlikKarti({
               <span className="kk-yol-sayi">{ek?.veli ?? '—'}</span>
               <span className="kk-yol-ad">Veli</span>
             </button>
+            )}
           </div>
         )}
 
-        {!aktif && (
+        {kocGorunumu && !aktif && (
           <p className="kk-kapali">
             <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
                  strokeWidth="2" strokeLinecap="round" aria-hidden="true">
@@ -288,15 +305,26 @@ export default function OgrenciKimlikKarti({
       {hata && <p className="uyari uyari--hata">{hata}</p>}
 
       <div className="kk-kutular">
-        <Kutu
-          renk="var(--marka-yesil-acik)"
-          deger={ek?.risk?.tamamlama_yuzdesi != null ? `%${ek.risk.tamamlama_yuzdesi}` : '—'}
-          ad="Tamamlama"
-          cizim={<path d="M20 6 9 17l-5-5" />}
-        />
+        {kocGorunumu ? (
+          <Kutu
+            renk="var(--marka-yesil-acik)"
+            deger={ek?.risk?.tamamlama_yuzdesi != null ? `%${ek.risk.tamamlama_yuzdesi}` : '—'}
+            ad="Tamamlama"
+            cizim={<path d="M20 6 9 17l-5-5" />}
+          />
+        ) : (
+          /* Öğrenciye tamamlama yüzdesi yerine bugün çalıştığı süre:
+             geçmişin özeti değil, bugün etki edebileceği sayı. */
+          <Kutu
+            renk="var(--marka-yesil-acik)"
+            deger={ozet?.calismaDkBugun ? `${ozet.calismaDkBugun}dk` : '0dk'}
+            ad="Bugün"
+            cizim={<><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5V12l3 1.8" /></>}
+          />
+        )}
         <Kutu
           renk="var(--fosfor)"
-          deger={ek ? ek.seri : '—'}
+          deger={kocGorunumu ? (ek ? ek.seri : '—') : (ozet?.guncelSeri ?? 0)}
           ad="Gün seri"
           cizim={<path d="M12 3c1.5 3.5-1 5-1 7a3 3 0 0 0 6 0c0-1-.4-2-1-2.7 2.5 1.4 4 3.9 4 6.7a8 8 0 1 1-13.3-6C8.4 6.4 10.6 4.6 12 3Z" />}
         />
@@ -304,6 +332,7 @@ export default function OgrenciKimlikKarti({
           renk="var(--dolgu)"
           deger={gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
           ad="Son net"
+          fark={netFarki}
           cizim={<path d="m3 17 5-6 4 4 5-7 4 5" />}
         />
       </div>
@@ -311,7 +340,10 @@ export default function OgrenciKimlikKarti({
   )
 }
 
-function Kutu({ renk, deger, ad, cizim }) {
+function Kutu({ renk, deger, ad, cizim, fark }) {
+  /* Bir önceki denemeye göre değişim. Sıfırsa yazmıyoruz: "±0.00"
+     bilgi vermeden yer kaplıyor. */
+  const yon = fark == null || fark === 0 ? null : fark > 0 ? 'artis' : 'dusus'
   return (
     <div className="kk-kutu">
       <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke={renk}
@@ -319,7 +351,14 @@ function Kutu({ renk, deger, ad, cizim }) {
         {cizim}
       </svg>
       <span className="kk-kutu-deger">{deger}</span>
-      <span className="kk-kutu-ad">{ad}</span>
+      <span className="kk-kutu-ad">
+        {ad}
+        {yon && (
+          <span className={`kk-fark kk-fark--${yon}`}>
+            {yon === 'artis' ? '▲' : '▼'} {Math.abs(fark).toFixed(2)}
+          </span>
+        )}
+      </span>
     </div>
   )
 }
