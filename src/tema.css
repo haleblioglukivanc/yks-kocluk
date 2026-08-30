@@ -25,9 +25,7 @@
   --marka-cizgi-2: #d3daea;   /* belirgin kenarlar */
   --marka-koyu:    #0e1626;   /* koyu bantlar, footer */
 
-  /* — öğrenci kimlik kartı: koyu yeşil zemin, amber vurgu — */
-  --marka-yesil-koyu:  #0f4a34;
-  --marka-yesil-orta:  #176b48;
+  /* — durum yeşili: "yolunda" anlamı taşır, zemin rengi değildir — */
   --marka-yesil-acik:  #2fa36b;
 
   /* — anlamı sabit renkler (markadan bağımsız) — */
@@ -54,6 +52,8 @@
 
   /* — sıkça kullanılan türevler — */
   --marka-gecis: linear-gradient(135deg, var(--marka-amber), var(--marka-alev));
-  --marka-yesil-gecis: linear-gradient(148deg, var(--marka-yesil-orta) 0%, var(--marka-yesil-koyu) 72%);
+  /* Kimlik kartı zemini. Nötr mürekkep: üstündeki yeşil/amber/kırmızı
+     durum renkleri anlamını korusun diye bilerek renksiz. */
+  --marka-kart-gecis: linear-gradient(148deg, var(--marka-koyu-yuzey-2) 0%, var(--marka-koyu-zemin) 74%);
   --marka-koyu-gecis: linear-gradient(135deg, var(--marka-koyu-amber), var(--marka-koyu-alev));
 }

@@ -1668,10 +1668,10 @@ body[data-tema='panel'] {
 .kimlik-kart {
   position: relative; overflow: hidden;
   border-radius: 20px;
-  background: var(--marka-yesil-gecis);
+  background: var(--marka-kart-gecis);
   color: #fff;
   padding: 1.15rem 1.15rem 1.25rem;
-  box-shadow: 0 12px 28px -16px rgba(8, 40, 28, 0.75);
+  box-shadow: 0 12px 30px -16px rgba(14, 22, 38, 0.7);
   transition: filter 0.28s ease;
 }
 .kimlik-kart::after {
@@ -1702,9 +1702,9 @@ body[data-tema='panel'] {
 }
 .kk-risk { display: inline-flex; align-items: center; gap: 0.35rem; }
 .kk-nokta { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
-.kk-risk--iyi  { background: #c6f2dc; color: #0d4a31; }
-.kk-risk--izle { background: #ffe6b3; color: #6b4405; }
-.kk-risk--acil { background: #ffd9cc; color: #8c2f0e; }
+.kk-risk--iyi  { background: rgba(47, 163, 107, 0.22); color: #7fe0b0; }
+.kk-risk--izle { background: rgba(240, 160, 32, 0.22); color: #ffca70; }
+.kk-risk--acil { background: rgba(236, 95, 43, 0.26); color: #ff9c78; }
 
 .kk-eylem { display: flex; flex-direction: column; align-items: flex-end; gap: 0.7rem; flex: 0 0 auto; }
 .kk-ikonlar { display: flex; gap: 0.4rem; }
@@ -1801,7 +1801,7 @@ body[data-tema='panel'] {
   border: 1px solid var(--cizgi);
 }
 .suzgec--etkin {
-  background: var(--marka-yesil-koyu); border-color: var(--marka-yesil-koyu); color: #fff;
+  background: var(--marka-koyu); border-color: var(--marka-koyu); color: #fff;
 }
 .suzgec-sayi { opacity: 0.6; font-weight: 500; margin-left: 0.15rem; }
 
@@ -1838,7 +1838,7 @@ body[data-tema='panel'] {
 .erisim-kilit {
   width: 52px; height: 52px; border-radius: 16px;
   display: grid; place-items: center;
-  background: rgba(15, 74, 52, 0.1); color: var(--marka-yesil-koyu);
+  background: rgba(14, 22, 38, 0.08); color: var(--marka-koyu);
 }
 .erisim-kapali h1 { font-size: 1.1875rem; }
 .erisim-kapali p { margin: 0; font-size: 0.875rem; color: var(--grafit); line-height: 1.55; }
