@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import { supabase } from './lib/supabase.js'
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
@@ -28,9 +29,24 @@ function useYol() {
   }, [])
 
   const git = (hedef) => {
-    window.history.pushState({}, '', hedef)
-    setYol(hedef)
-    window.scrollTo(0, 0)
+    const uygula = () => {
+      window.history.pushState({}, '', hedef)
+      setYol(hedef)
+      window.scrollTo(0, 0)
+    }
+
+    /* Ekranlar arası geçiş. Tarayıcı desteklemiyorsa (Firefox) veya
+       kullanıcı hareket azaltma istiyorsa eskisi gibi anında değişir —
+       animasyon bir süs, gezinmenin çalışması ona bağlı olamaz.
+       flushSync şart: React güncellemeyi geciktirirse tarayıcı eski
+       ekranın fotoğrafını çeker ve geçiş boş kalır. */
+    const azHareket =
+      window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    if (typeof document.startViewTransition !== 'function' || azHareket) {
+      uygula()
+      return
+    }
+    document.startViewTransition(() => flushSync(uygula))
   }
 
   return [yol, git]
@@ -70,6 +86,48 @@ const ikonOzellik = {
   strokeLinecap: 'round',
   strokeLinejoin: 'round',
   'aria-hidden': true,
+}
+
+/* Alt gezinme ikonları. Üst bardaki düğmelerle aynı çizgi kalınlığı ve
+   yuvarlak uçlar — iki çubuk aynı kalemden çıkmış görünsün. Anahtar yol
+   olduğu için yeni sekme eklendiğinde ikonu da burada tanımlanır. */
+const GEZINME_IKONU = {
+  '/': (
+    <>
+      <path d="m3 10.5 9-7 9 7" />
+      <path d="M5.5 9.4V20h13V9.4" />
+      <path d="M9.75 20v-6h4.5v6" />
+    </>
+  ),
+  '/ogrenciler': (
+    <>
+      <path d="M16.5 20v-1.5a3.5 3.5 0 0 0-3.5-3.5H6a3.5 3.5 0 0 0-3.5 3.5V20" />
+      <circle cx="9.5" cy="7.5" r="3.5" />
+      <path d="M21.5 20v-1.5a3.5 3.5 0 0 0-2.6-3.38" />
+      <path d="M16 4.13a3.5 3.5 0 0 1 0 6.74" />
+    </>
+  ),
+  '/konular': (
+    <>
+      <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9l1.6 2H18a1.5 1.5 0 0 1 1.5 1.5V9" />
+      <path d="M4 9h16l-1.4 9.2a1.5 1.5 0 0 1-1.5 1.3H6.9a1.5 1.5 0 0 1-1.5-1.3z" />
+      <path d="m10 13.7 1.6 1.6 3-3.2" />
+    </>
+  ),
+  '/veli-ozetleri': (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3.5 7 7.4 5.2a2 2 0 0 0 2.2 0L20.5 7" />
+    </>
+  ),
+  '/raporlar': (
+    <>
+      <path d="M4 20h16" />
+      <rect x="5.5" y="12" width="3.6" height="6" rx="1" />
+      <rect x="10.2" y="8" width="3.6" height="10" rx="1" />
+      <rect x="14.9" y="4.5" width="3.6" height="13.5" rx="1" />
+    </>
+  ),
 }
 
 export default function App() {
@@ -342,11 +400,19 @@ export default function App() {
               aria-current={etkin ? 'page' : undefined}
               onClick={() => git(hedef)}
             >
-              {ad}
+              <span className="alt-bag-ikon">
+                <svg {...ikonOzellik} width={22} height={22}>
+                  {GEZINME_IKONU[hedef]}
+                </svg>
+                {hedef === '/veli-ozetleri' && bekleyenOzet > 0 && (
+                  <span className="alt-rozet" aria-hidden="true">
+                    {bekleyenOzet > 9 ? '9+' : bekleyenOzet}
+                  </span>
+                )}
+              </span>
+              <span className="alt-bag-ad">{ad}</span>
               {hedef === '/veli-ozetleri' && bekleyenOzet > 0 && (
-                <span className="alt-rozet" aria-label={`${bekleyenOzet} özet bekliyor`}>
-                  {bekleyenOzet > 9 ? '9+' : bekleyenOzet}
-                </span>
+                <span className="gorsel-gizli">{bekleyenOzet} özet bekliyor</span>
               )}
             </button>
           )
