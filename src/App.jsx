@@ -15,22 +15,40 @@ import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
+import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
+/* GitHub Pages projeyi alt dizinde yayınlıyor (/yks-kocluk/), Cloudflare
+   kökte. Yollar şimdiye kadar mutlak yazılıyordu: alt dizinde çalışırken
+   `git('/mesajlar')` adres çubuğunu sitenin dışına, /mesajlar'a taşıyordu.
+   Sayfa açık kaldığı sürece görünmüyor ama yenilendiği anda 404. Aynı
+   nedenle açılışta yol '/yks-kocluk/' okunuyordu; '/' ile karşılaştıran
+   her yer sessizce yanlış cevap veriyordu (Panel sekmesi hiç etkin
+   görünmüyordu, panelde iki Kâmil birden çıkıyordu).
+
+   Çözüm: dışarıda tam adres, içeride her zaman '/' ile başlayan yol. */
+const TABAN = import.meta.env.BASE_URL.replace(/\/+$/, '')
+
+const icYol = () => {
+  const tam = window.location.pathname
+  const ic = TABAN && tam.startsWith(TABAN) ? tam.slice(TABAN.length) : tam
+  return ic.startsWith('/') ? ic : `/${ic}`
+}
+
 /** Küçük yol yönetimi: /giris girişi, diğer her şey tanıtımı açar. */
 function useYol() {
-  const [yol, setYol] = useState(() => window.location.pathname)
+  const [yol, setYol] = useState(icYol)
 
   useEffect(() => {
-    const geri = () => setYol(window.location.pathname)
+    const geri = () => setYol(icYol())
     window.addEventListener('popstate', geri)
     return () => window.removeEventListener('popstate', geri)
   }, [])
 
   const git = (hedef) => {
     const uygula = () => {
-      window.history.pushState({}, '', hedef)
+      window.history.pushState({}, '', TABAN + hedef)
       setYol(hedef)
       window.scrollTo(0, 0)
     }
@@ -214,7 +232,7 @@ export default function App() {
   if (durum === 'yukleniyor') {
     return (
       <div className="giris-sayfa">
-        <Yukleniyor />
+        <Yukleniyor sade />
       </div>
     )
   }
@@ -231,7 +249,7 @@ export default function App() {
   if (!profil) {
     return (
       <div className="giris-sayfa">
-        <Yukleniyor metin="Profil hazırlanıyor" />
+        <Yukleniyor sade metin="Profil hazırlanıyor" />
       </div>
     )
   }
@@ -424,6 +442,8 @@ export default function App() {
           kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
           Kâmil köşede kalmalı. */}
       {!basliktaKalemVar && <KalemKosede profil={profil} />}
+
+      <KurulumDaveti />
     </div>
   )
 }

@@ -48,8 +48,22 @@ export function Bos({ baslik, aciklama, children }) {
   )
 }
 
-export function Yukleniyor({ metin = 'Yükleniyor' }) {
-  return <p className="yukleniyor">{metin}…</p>
+/* Yükleme göstergesi tek yerde tanımlı; buradaki değişiklik onu kullanan
+   bütün ekranlara aynı anda yansıyor. "Yükleniyor…" yazısı ekranı boş
+   bırakıyordu — iskelet, gelecek içeriğin şeklini şimdiden gösterdiği
+   için aynı sürede daha hızlı hissettiriyor ve içerik gelince sayfa
+   zıplamıyor. `sade` yalnızca tam ekran bekleme kutularında: orada
+   iskelet, olmayan bir kartı vaat etmiş olurdu. */
+export function Yukleniyor({ metin = 'Yükleniyor', satir = 3, sade = false }) {
+  if (sade) return <p className="yukleniyor">{metin}…</p>
+  return (
+    <div className="iskelet" role="status" aria-busy="true">
+      <p className="gorsel-gizli">{metin}…</p>
+      {Array.from({ length: satir }, (_, i) => (
+        <span key={i} className="iskelet-satir" aria-hidden="true" />
+      ))}
+    </div>
+  )
 }
 
 export function Rozet({ children, ton = 'notr' }) {
