@@ -2372,3 +2372,68 @@ body[data-tema='panel'] {
   display: block; margin-top: 0.4rem;
   font-size: 0.8125rem; font-style: normal; color: var(--soluk);
 }
+
+/* ═══════════ Üst bar eylemleri — uygulama düğmeleri ═══════════
+   Mesajlar alt gezinmeden buraya taşındı. Telefon uygulamalarında
+   bildirim taşıyan şey başlığın sağ köşesinde durur; alt çubuk
+   yalnızca ana bölümler için kalır. Çıkış da aynı dilde bir düğme:
+   altı çizili metin bağlantısı web sayfası hissi veriyordu. */
+
+.ust-eylemler {
+  display: flex; align-items: center; gap: 0.5rem;
+  flex: 0 0 auto;
+  -webkit-user-select: none; user-select: none;
+}
+
+.ust-dugme {
+  position: relative;
+  display: inline-grid; place-items: center;
+  width: 2.5rem; height: 2.5rem; padding: 0;
+  border: 1px solid var(--cizgi); border-radius: 12px;
+  background: var(--yuzey); color: var(--grafit);
+  font: inherit; cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 120ms ease, color 120ms ease, border-color 120ms ease;
+}
+.ust-dugme:active { transform: scale(0.93); }
+.ust-dugme:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
+/* Açık ekranda (tanıtım dili) da aynı düğme çalışsın */
+.ust-dugme--etkin { color: var(--fosfor); border-color: var(--fosfor); }
+
+/* Bildirim rozeti: köşeye taşan, zemine halka açan nokta.
+   Halka zemin renginde olduğu için düğmeden kopuk görünüyor —
+   mobil uygulamalardaki alışıldık görüntü bu. */
+.ust-rozet {
+  position: absolute; top: -0.3rem; right: -0.3rem;
+  display: grid; place-items: center;
+  min-width: 1.15rem; height: 1.15rem; padding: 0 0.28rem;
+  border-radius: 999px;
+  background: var(--marka-alev); color: #fff;
+  border: 2px solid var(--kagit);
+  font-size: 0.625rem; font-weight: 700; line-height: 1;
+  animation: rozet-gir 200ms ease-out;
+}
+@keyframes rozet-gir {
+  from { transform: scale(0.4); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+/* Alt çubuk yoksa sayfa altındaki 4.5rem'lik pay boşluk olarak kalıyordu */
+.uygulama--gezinmesiz > main { padding-bottom: clamp(1rem, 4vw, 1.75rem); }
+
+/* ═══════════ Dokunma cilası ═══════════
+   Gri dokunma parıltısı ve metin seçimi, uygulamayı web sayfasına
+   benzeten iki küçük detaydı. Basınca hafif küçülme ise dokunduğunu
+   anlatan geri bildirim — yerel uygulamalarda standart. */
+.ust-bar, .alt-gezinme { -webkit-user-select: none; user-select: none; }
+.alt-bag, .dugme, .metin-dugme, .ogrenci-satir {
+  -webkit-tap-highlight-color: transparent;
+}
+.dugme, .alt-bag { transition: transform 120ms ease, opacity 120ms ease; }
+.dugme:not(:disabled):active { transform: scale(0.97); }
+.alt-bag:active { transform: scale(0.96); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ust-dugme, .ust-rozet, .dugme, .alt-bag { transition: none; animation: none; }
+  .ust-dugme:active, .dugme:not(:disabled):active, .alt-bag:active { transform: none; }
+}

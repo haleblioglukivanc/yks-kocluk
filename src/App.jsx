@@ -36,10 +36,47 @@ function useYol() {
   return [yol, git]
 }
 
+/** Üst bardaki uygulama düğmeleri: ikon + isteğe bağlı bildirim rozeti. */
+function UstDugme({ etiket, etkin, rozet, vurgulu, onClick, children }) {
+  const sinif = ['ust-dugme']
+  if (etkin) sinif.push('ust-dugme--etkin')
+  if (vurgulu) sinif.push('ust-dugme--vurgulu')
+  return (
+    <button
+      type="button"
+      className={sinif.join(' ')}
+      onClick={onClick}
+      title={etiket}
+      aria-label={rozet > 0 ? `${etiket}, ${rozet} okunmamış` : etiket}
+      aria-current={etkin ? 'page' : undefined}
+    >
+      {children}
+      {rozet > 0 && (
+        <span className="ust-rozet" aria-hidden="true">
+          {rozet > 9 ? '9+' : rozet}
+        </span>
+      )}
+    </button>
+  )
+}
+
+const ikonOzellik = {
+  viewBox: '0 0 24 24',
+  width: 20,
+  height: 20,
+  fill: 'none',
+  stroke: 'currentColor',
+  strokeWidth: 1.8,
+  strokeLinecap: 'round',
+  strokeLinejoin: 'round',
+  'aria-hidden': true,
+}
+
 export default function App() {
   const { durum, profil, cikisYap } = useOturum()
   const [yol, git] = useYol()
   const [bekleyenOzet, setBekleyenOzet] = useState(0)
+  const [okunmamisMesaj, setOkunmamisMesaj] = useState(0)
 
   /* Koyu tema gövdeye de yazılır. Sadece .uygulama üzerinde olduğunda,
      sayfa yatayda taştığı anda taşan şeridi body'nin kâğıt zemini
@@ -48,8 +85,13 @@ export default function App() {
   useEffect(() => {
     if (panelAcik) document.body.dataset.tema = 'panel'
     else delete document.body.dataset.tema
+    /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
+       Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
+    const etiket = document.querySelector('meta[name="theme-color"]')
+    if (etiket) etiket.setAttribute('content', panelAcik ? '#0e1626' : '#ffffff')
     return () => {
       delete document.body.dataset.tema
+      if (etiket) etiket.setAttribute('content', '#ffffff')
     }
   }, [panelAcik])
 
@@ -70,6 +112,46 @@ export default function App() {
       iptal = true
     }
   }, [kocRolu, yol])
+
+  /* Okunmamış mesaj sayısı. Rozet başlıkta durduğu için her ekranda
+     görünür; bu yüzden hem gerçek zamanlı olay hem de yol değişimi ve
+     sekmeye dönüş sayıyı tazeliyor. Tek kaynağa güvenmiyoruz: realtime
+     bağlantısı düşerse rozet takılı kalmasın. */
+  const kullaniciId = profil?.id ?? null
+  useEffect(() => {
+    if (!kullaniciId) {
+      setOkunmamisMesaj(0)
+      return
+    }
+    let iptal = false
+    const say = () =>
+      supabase
+        .from('mesajlar')
+        .select('id', { count: 'exact', head: true })
+        .eq('alici_id', kullaniciId)
+        .eq('okundu_mu', false)
+        .then(({ count }) => {
+          if (!iptal) setOkunmamisMesaj(count ?? 0)
+        })
+
+    say()
+
+    const kanal = supabase
+      .channel('mesaj-rozeti')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'mesajlar' }, () => say())
+      .subscribe()
+
+    const geriDon = () => {
+      if (document.visibilityState === 'visible') say()
+    }
+    document.addEventListener('visibilitychange', geriDon)
+
+    return () => {
+      iptal = true
+      document.removeEventListener('visibilitychange', geriDon)
+      supabase.removeChannel(kanal)
+    }
+  }, [kullaniciId, yol])
 
   if (durum === 'yukleniyor') {
     return (
@@ -140,6 +222,8 @@ export default function App() {
     (yol === '/' && (kocMu || profil.rol === 'ogrenci')) || Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
+  /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
+     sağ köşesi. Alt çubuk yalnızca ana bölümleri gezmek için. */
   const baglantilar = kocMu
     ? [
         ['/', 'Panel'],
@@ -147,9 +231,13 @@ export default function App() {
         ['/konular', 'Konular'],
         ['/veli-ozetleri', 'Özetler'],
         ['/raporlar', 'Rapor'],
-        ['/mesajlar', 'Mesajlar'],
       ]
-    : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim'], ['/mesajlar', 'Mesajlar']]
+    : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim']]
+
+  /* Tek sekmelik bir çubuk gezinme değil, süs olur. Öğrenci ve velide
+     alt çubuk hiç çizilmiyor; ekranı da o kadar uzatıyor. */
+  const gezinmeVar = baglantilar.length > 1
+  const mesajlardaMi = yol === '/mesajlar'
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
@@ -187,7 +275,7 @@ export default function App() {
   }
 
   return (
-    <div className="uygulama">
+    <div className={gezinmeVar ? 'uygulama' : 'uygulama uygulama--gezinmesiz'}>
       <header className="ust-bar">
         <div>
           <span className="marka">
@@ -200,21 +288,45 @@ export default function App() {
               tahmin etmek yerine ölçmeyi sağlıyor. */}
           <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
         </div>
-        <button
-          className="metin-dugme"
-          onClick={async () => {
-            await cikisYap()
-            git('/')
-          }}
-        >
-          Çıkış
-        </button>
+        <div className="ust-eylemler">
+          <UstDugme
+            etiket={mesajlardaMi ? 'Mesajlardan çık' : 'Mesajlar'}
+            etkin={mesajlardaMi}
+            rozet={mesajlardaMi ? 0 : okunmamisMesaj}
+            onClick={() => git(mesajlardaMi ? '/' : '/mesajlar')}
+          >
+            {mesajlardaMi ? (
+              <svg {...ikonOzellik}>
+                <path d="M18 6 6 18M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg {...ikonOzellik}>
+                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
+              </svg>
+            )}
+          </UstDugme>
+
+          <UstDugme
+            etiket="Çıkış yap"
+            onClick={async () => {
+              await cikisYap()
+              git('/')
+            }}
+          >
+            <svg {...ikonOzellik}>
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+              <path d="m16 17 5-5-5-5" />
+              <path d="M21 12H9" />
+            </svg>
+          </UstDugme>
+        </div>
       </header>
 
       <main>
         <div className="panel">{icerik()}</div>
       </main>
 
+      {gezinmeVar && (
       <nav className="alt-gezinme" aria-label="Ana gezinme">
         {baglantilar.map(([hedef, ad]) => {
           const etkin =
@@ -240,6 +352,7 @@ export default function App() {
           )
         })}
       </nav>
+      )}
 
       {/* Kâmil panel ekranlarında başlığın kendisi olduğu için köşedeki
           kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
