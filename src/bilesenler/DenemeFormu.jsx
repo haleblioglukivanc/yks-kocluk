@@ -48,7 +48,7 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
       return s.dogru || s.yanlis || s.bos
     })
     if (girilen.length === 0) {
-      setHata('En az bir ders için sonuç girin.')
+      setHata('En az bir dersin sonucunu gir, gerisi sonra da eklenebilir.')
       return
     }
 

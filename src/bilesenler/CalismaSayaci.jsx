@@ -71,7 +71,7 @@ export default function CalismaSayaci({ ogrenciId, onKaydedildi }) {
       yaz(null)
 
       if (dk < 1) {
-        setUyari('Bir dakikadan kısa oturumlar kaydedilmiyor.')
+        setUyari('Bir dakikadan kısa sürdü, bunu saymadım. Bir dahakine biraz daha kal.')
         return
       }
       const { error } = await supabase.from('calisma_oturumlari').insert({
@@ -80,7 +80,7 @@ export default function CalismaSayaci({ ogrenciId, onKaydedildi }) {
         baslangic: new Date(Date.now() - gecenMs).toISOString(),
       })
       if (error) {
-        setUyari('Çalışma kaydedilemedi.')
+        setUyari('Süre kaydedilemedi. Bağlantıyı kontrol edip bir daha dene, emeğin boşa gitmesin.')
         return
       }
       setUyari('')

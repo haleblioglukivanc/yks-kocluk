@@ -140,10 +140,10 @@ export default function DenemePaneli({
           />
         ) : (
           <Bos
-            baslik="Deneme kaydı yok"
+            baslik="Henüz deneme yok"
             aciklama={
               duzenlenebilir
-                ? 'İlk denemeyi ekleyince net gelişimi burada görünecek.'
+                ? 'İlk denemeni ekleyince net çizgin burada başlar. Nereden başladığın önemli değil, yön önemli.'
                 : 'Deneme girildiğinde net gelişimi burada görünecek.'
             }
           />
@@ -202,7 +202,7 @@ export default function DenemePaneli({
         }`}
       >
         {son.dersler.length === 0 ? (
-          <Bos baslik="Ders kırılımı yok" aciklama="Bu denemede ders sonucu girilmemiş." />
+          <Bos baslik="Ders ders sonuç yok" aciklama="Bu denemede sadece toplam net var. Bir dahakine ders ders girersen hangi taraf zorlamış görürüz." />
         ) : (
           <>
             <div className="net-kutular">
@@ -224,15 +224,15 @@ export default function DenemePaneli({
       </Kart>
 
       <Kart
-        baslik="Tekrar edilmesi gereken konular"
+        baslik="Bir daha bakılacak konular"
         altBaslik="Denemelerde hata çıkan başlıklar"
       >
         {zayif.length === 0 ? (
           <Bos
-            baslik="Konu bazlı hata girilmemiş"
+            baslik="Henüz işaretli konu yok"
             aciklama={
               duzenlenebilir
-                ? 'Denemenin yanındaki “Hata konuları”ndan işaretledikçe burada birikir.'
+                ? 'Denemenin yanındaki “Hata konuları”ndan işaretledikçe burada toplanır. Hata, nereye bakacağını söyler.'
                 : 'Denemelerde hata çıkan konular işaretlendikçe burası dolacak.'
             }
           />

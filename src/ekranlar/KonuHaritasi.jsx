@@ -52,7 +52,7 @@ export default function KonuHaritasi({ profilId }) {
       <Uyari>{hata}</Uyari>
       {dersler.length === 0 ? (
         <Kart baslik='Konu haritası'>
-          <Bos baslik='Katalog atanmamış' aciklama='Koçun sana bir konu kataloğu tanımlamalı.' />
+          <Bos baslik='Yol henüz çizilmedi' aciklama='Koçun konu listeni tanımlayınca harita burada belirir.' />
         </Kart>
       ) : (
         <Kart baslik='Konu haritası' altBaslik='Dersi aç, yoldaki durağa dokun'>

@@ -42,7 +42,7 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
   async function kaydet() {
     const sayi = (v) => Math.max(0, Number(v) || 0)
     if (!form.ders_id) {
-      setHata('Önce ders seç.')
+      setHata('Hangi ders? Önce onu seç.')
       return
     }
     const satir = {
@@ -55,7 +55,7 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
       guncellendi: new Date().toISOString(),
     }
     if (satir.dogru + satir.yanlis + satir.bos === 0) {
-      setHata('En az bir soru gir.')
+      setHata('Bir soru bile olsa yaz, sıfır kaydedilmiyor.')
       return
     }
 
@@ -104,7 +104,7 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
 
       {liste.length === 0 ? (
         <Bos
-          baslik="Bugün için kayıt yok"
+          baslik="Bugün henüz soru girilmedi"
           aciklama={saltOkunur ? 'Öğrenci bugün soru kaydı girmemiş.' : 'Çözdüğün soruları ders ders ekle.'}
         />
       ) : (

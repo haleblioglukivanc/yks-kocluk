@@ -166,7 +166,7 @@ export default function Mesajlar({ profil }) {
       {kutu === null ? (
         <Yukleniyor />
       ) : kutu.length === 0 ? (
-        <Bos baslik='Kimse yok' aciklama='Yazışabileceğin biri tanımlanmamış.' />
+        <Bos baslik='Henüz kimse yok' aciklama='Koçun seni eklediğinde burada yazışabilirsiniz.' />
       ) : (
         <ul className='liste'>
           {kutu.map((k) => (

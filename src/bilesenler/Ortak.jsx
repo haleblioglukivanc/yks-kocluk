@@ -54,7 +54,7 @@ export function Bos({ baslik, aciklama, children }) {
    için aynı sürede daha hızlı hissettiriyor ve içerik gelince sayfa
    zıplamıyor. `sade` yalnızca tam ekran bekleme kutularında: orada
    iskelet, olmayan bir kartı vaat etmiş olurdu. */
-export function Yukleniyor({ metin = 'Yükleniyor', satir = 3, sade = false }) {
+export function Yukleniyor({ metin = 'Geliyor', satir = 3, sade = false }) {
   if (sade) return <p className="yukleniyor">{metin}…</p>
   return (
     <div className="iskelet" role="status" aria-busy="true">
