@@ -2438,60 +2438,42 @@ body[data-tema='panel'] {
   .ust-dugme:active, .dugme:not(:disabled):active, .alt-bag:active { transform: none; }
 }
 
-/* ═══════════ Alt gezinme: ikon + etiket ═══════════
-   Yalnız metinden oluşan sekmeler tarayıcı menüsü gibi duruyordu.
-   İkonlar üst bardaki düğmelerle aynı çizgi kalınlığında; iki çubuk
-   aynı kalemden çıkmış görünsün diye. Etiket kalıyor: ikon tek başına
-   tahmin ettiriyor, birlikte söylüyorlar. */
+/* --- Haftalık ilham takvimi (yalnızca koç paneli) --- */
+.hit-liste { display: grid; gap: 0.5rem; }
+.hit-satir { border: 1px solid var(--cizgi); border-radius: 10px; overflow: hidden; }
 
-.alt-bag {
-  display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 0.2rem;
-  padding: 0.5rem 0.25rem calc(0.55rem + env(safe-area-inset-bottom, 0px));
-  min-height: 56px;
-  font-size: 0.6875rem; line-height: 1.2;
+.hit-bas {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  width: 100%; padding: 0.75rem 0.875rem;
+  background: none; border: 0; text-align: left; cursor: pointer;
+  color: inherit; font: inherit;
 }
-.alt-bag-ikon { position: relative; display: inline-grid; place-items: center; }
-.alt-bag-ad {
-  display: block; max-width: 100%;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-}
-/* Alt çubuk kendi payını sekmenin içine aldı; iki kez eklenmesin */
-.alt-gezinme { padding-bottom: 0; }
+.hit-bas:hover { background: var(--kagit); }
+.uygulama .hit-bas:hover { background: var(--yuzey-2); }
 
-/* Rozet artık etiketin yanında değil, ikonun köşesinde — telefon
-   uygulamalarındaki yer burası. */
-.alt-rozet {
-  position: absolute; top: -0.3rem; left: 55%;
-  display: grid; place-items: center;
-  min-width: 1.05rem; height: 1.05rem; padding: 0 0.25rem;
-  margin: 0; border-radius: 999px;
-  background: var(--marka-alev); color: #fff;
-  border: 2px solid var(--kagit);
-  font-size: 0.5625rem; font-weight: 700; line-height: 1;
-  vertical-align: baseline;
+.hit-tarih {
+  flex: none; width: 5.5rem;
+  font-family: var(--mono); font-size: 0.75rem; color: var(--grafit);
+  display: flex; flex-direction: column; gap: 0.15rem;
+}
+.hit-simdi {
+  font-family: var(--govde); font-style: normal;
+  font-size: 0.625rem; font-weight: 700; letter-spacing: 0.04em;
+  text-transform: uppercase; color: var(--fosfor);
 }
 
-/* Ekran okuyucuya söylenen, gözle görülmeyen metin */
-.gorsel-gizli {
-  position: absolute; width: 1px; height: 1px;
-  padding: 0; margin: -1px; overflow: hidden;
-  clip-path: inset(50%); white-space: nowrap; border: 0;
+.hit-icerik { flex: 1; min-width: 0; display: grid; gap: 0.2rem; }
+.hit-kitap { font-size: 0.875rem; font-weight: 600; overflow-wrap: anywhere; }
+.hit-soz {
+  font-size: 0.75rem; color: var(--soluk);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* ═══════════ Ekran geçişleri ═══════════
-   Sekme değişimi anlık zıplama yerine kısa bir kayma. Üst bar ve alt
-   çubuk kendi adlarını aldığı için geçişe katılmıyor: sadece içerik
-   değişiyor, kabuk sabit duruyor — uygulamalarda olduğu gibi. */
-.ust-bar { view-transition-name: ust-bar; }
-.alt-gezinme { view-transition-name: alt-gezinme; }
-
-::view-transition-old(root) { animation: ekran-cik 110ms ease-in both; }
-::view-transition-new(root) { animation: ekran-gir 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-
-@keyframes ekran-cik { to { opacity: 0; transform: translateY(-6px); } }
-@keyframes ekran-gir { from { opacity: 0; transform: translateY(12px); } }
-
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+.hit-duzen {
+  display: grid; gap: 0.75rem;
+  padding: 0.875rem; border-top: 1px solid var(--cizgi);
+  background: var(--kagit);
 }
+.uygulama .hit-duzen { background: var(--yuzey-2); }
+.hit-eylem { display: flex; flex-wrap: wrap; gap: 0.5rem; }
