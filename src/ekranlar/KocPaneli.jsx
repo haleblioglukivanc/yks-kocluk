@@ -4,6 +4,7 @@ import { Kart } from '../bilesenler/Ortak.jsx'
 import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
 /** Koçun günlük durum ekranı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün ne oluyor" sorusuna cevap verir. */
@@ -26,6 +27,9 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
       {ozet && <Ozetler ozet={ozet} />}
       <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
       <OnayKuyrugu onOgrenciAc={onOgrenciAc} />
+      {/* Ogrencilere ve velilere o hafta ne gittigini kocun da gormesi
+          gerekiyor; ayni bilesen, ayni veri. */}
+      <HaftalikIlham />
     </div>
   )
 }
