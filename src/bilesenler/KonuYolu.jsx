@@ -49,6 +49,9 @@ function soz(rol, durak, bolge, olay) {
   if (olay === 'bitti') return ben
     ? <><b>{durak.ad}</b> bitti mi? Süper. Koçun bakınca durak yeşile döner.</>
     : <><b>{durak.ad}</b> bitti olarak işaretlendi.</>
+  if (olay === 'hata') return ben
+    ? <>Denemelerde <b>{durak.ad}</b> {durak.hata_adet} kez takılmış. {durak.yol === 'onayli' ? 'Onaylı olsa da bir tur daha bakmak iyi olur.' : 'Sırası gelince buraya biraz fazla zaman ayıralım.'}</>
+    : <><b>{durak.ad}</b> konusunda {durak.hata_adet} deneme hatası var. {durak.yol === 'onayli' ? 'Tekrar işaretlemek isteyebilirsin.' : 'Plan yaparken göz önünde bulundur.'}</>
   if (!durak) return ben
     ? 'Bu derste açık bir konu yok. Koçunla bir sonraki durağı seçin.'
     : 'Bu derste şu an çalışılan konu yok.'
@@ -149,14 +152,23 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
 
   useEffect(() => {
     if (!yol) return
-    setBalon({ olay: null, durak: simdiki, bolge: null })
+    /* Açılışta: çalışılan konu varsa onu anlat; yoksa denemelerde en çok
+       takılınan durağı göster. Deneme verisi böylece haritaya bağlanıyor. */
+    const enCokHata = [...duraklar].filter((d) => (d.hata_adet ?? 0) >= 2).sort((a, b) => b.hata_adet - a.hata_adet)[0]
+    if (!duraklar.some((d) => d.yol === 'simdi') && enCokHata) {
+      setBalon({ olay: 'hata', durak: enCokHata, bolge: null })
+      setRuh('dusunuyor')
+    } else {
+      setBalon({ olay: null, durak: simdiki, bolge: null })
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yol])
 
   function ac(d) {
     setSecili(d)
-    setBalon({ olay: null, durak: d, bolge: null })
-    setRuh(d.yol === 'onayli' ? 'sevinc' : d.yol === 'tekrar' ? 'endise' : 'bekliyor')
+    const hataVar = (d.hata_adet ?? 0) >= 2
+    setBalon({ olay: hataVar ? 'hata' : null, durak: d, bolge: null })
+    setRuh(hataVar ? 'dusunuyor' : d.yol === 'onayli' ? 'sevinc' : d.yol === 'tekrar' ? 'endise' : 'bekliyor')
   }
 
   function kapat() {
@@ -257,13 +269,16 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                     type="button"
                     style={{ left: `${X[i % 3]}%` }}
                     onClick={() => ac({ ...d, bolge: b.ad })}
-                    aria-label={`${d.ad}, ${ETIKET[d.yol]}`}
+                    aria-label={`${d.ad}, ${ETIKET[d.yol]}${(d.hata_adet ?? 0) >= 2 ? `, denemelerde ${d.hata_adet} hata` : ''}`}
                   >
                     <span className="yol-nokta-sar">
                       <span className={`yol-nokta${patlayan === d.id ? ' yol-nokta--pat' : ''}`}>
                         {d.yol === 'onayli' ? '✓' : i + 1}
                       </span>
                       {d.yol === 'bekliyor' && <span className="yol-nabiz" />}
+                      {(d.hata_adet ?? 0) >= 2 && (
+                        <span className="yol-hata" title={`Denemelerde ${d.hata_adet} hata`}>{d.hata_adet}</span>
+                      )}
                     </span>
                     <span className="yol-ad">{d.ad}</span>
                   </button>
