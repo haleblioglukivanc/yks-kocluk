@@ -12,7 +12,7 @@ import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
-import KonuIsiHaritasi from './ekranlar/KonuIsiHaritasi.jsx'
+import KonuOncelik from './ekranlar/KonuOncelik.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
@@ -317,7 +317,7 @@ export default function App() {
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
-    if (kocMu && yol === '/konular') return <KonuIsiHaritasi />
+    if (kocMu && yol === '/konular') return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (kocMu && yol === '/ogrenciler')
       return (
         <Ogrencilerim

@@ -1355,6 +1355,21 @@ body[data-tema='panel'] {
 .uygulama .konu-cubuk { background: var(--yuzey-2); }
 .uygulama .isi-cubuk { background: var(--yuzey-2); }
 .uygulama .isi-cubuk span { background: linear-gradient(90deg, var(--altin), var(--kizil)); }
+/* Çubuk rengi anlam taşıyor: sınıf sorunu kızıl, bireysel altın.
+   Tek gradient her satırda aynıydı, şiddet anlatmıyordu. */
+.uygulama .isi-cubuk--sinif span    { background: var(--kizil); }
+.uygulama .isi-cubuk--bireysel span { background: var(--altin); opacity: 0.8; }
+
+/* Detaydaki öğrenci çipleri: dokununca öğrenci sayfasına gider */
+.oncelik-kisiler { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.5rem; }
+.oncelik-kisi {
+  font: inherit; font-size: 0.8125rem;
+  padding: 0.3rem 0.65rem; border-radius: 999px;
+  border: 1px solid var(--cizgi); background: var(--yuzey-2);
+  color: var(--murekkep); cursor: pointer; min-height: 32px;
+}
+.oncelik-kisi:active { transform: scale(0.97); }
+.oncelik-gorev { margin-top: 0.5rem; }
 .uygulama .veli-yorum { background: var(--altin-zemin); border-color: #eccf8f; }
 .uygulama .rozet-kart { background: var(--yuzey-2); border-color: var(--cizgi); }
 .uygulama .seri-sayi { color: var(--altin); }
