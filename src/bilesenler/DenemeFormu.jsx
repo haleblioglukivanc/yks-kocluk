@@ -15,6 +15,11 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
   const [sonuc, setSonuc] = useState({})
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
+  /* Adım 2: deneme kaydedildikten sonra "yanlışlar nereden geldi?"
+     Sadece yanlışı olan dersler sorulur; konular dokununca sayılır. */
+  const [kayitli, setKayitli] = useState(null) // { id, dersler: [{id, ad, yanlis}] }
+  const [konular, setKonular] = useState({}) // dersId -> [{id, ad}]
+  const [isaret, setIsaret] = useState({}) // konuId -> adet
 
   useEffect(() => {
     if (!katalogId) return
@@ -81,12 +86,116 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
         throw sHata
       }
 
-      onEklendi()
+      const yanlisli = satirlar
+        .filter((s) => s.yanlis > 0)
+        .map((s) => ({ id: s.ders_id, ad: uygun.find((d) => d.id === s.ders_id)?.ad ?? '', yanlis: s.yanlis }))
+      if (yanlisli.length === 0) {
+        onEklendi()
+        return
+      }
+      const { data: kl } = await supabase
+        .from('konular')
+        .select('id, ad, ders_id')
+        .in('ders_id', yanlisli.map((d) => d.id))
+        .order('sira')
+      const grup = {}
+      for (const k of kl ?? []) (grup[k.ders_id] ??= []).push(k)
+      setKonular(grup)
+      setKayitli({ id: deneme.id, dersler: yanlisli })
     } catch (e) {
       setHata(hataMetni(e))
     } finally {
       setBekliyor(false)
     }
+  }
+
+  /* Dokun: +1. Dersin yanlış sayısına ulaşınca bir sonraki dokunuş sıfırlar. */
+  function dokun(dersId, konuId) {
+    const ust = kayitli.dersler.find((d) => d.id === dersId)?.yanlis ?? 1
+    setIsaret((o) => {
+      const simdi = o[konuId] ?? 0
+      const yeni = simdi >= ust ? 0 : simdi + 1
+      const kopya = { ...o }
+      if (yeni === 0) delete kopya[konuId]
+      else kopya[konuId] = yeni
+      return kopya
+    })
+  }
+
+  async function hatalariKaydet() {
+    const satirlar = Object.entries(isaret).map(([konu_id, adet]) => ({
+      deneme_id: kayitli.id,
+      konu_id: Number(konu_id),
+      adet,
+    }))
+    if (satirlar.length === 0) {
+      onEklendi()
+      return
+    }
+    setBekliyor(true)
+    setHata('')
+    const { error } = await supabase.from('deneme_hatalari').insert(satirlar)
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    onEklendi()
+  }
+
+  if (kayitli) {
+    const toplamIsaret = Object.values(isaret).reduce((t, n) => t + n, 0)
+    return (
+      <div className="form-kutu">
+        <p className="hata-adim-baslik">Deneme kaydedildi. Yanlışlar nereden geldi?</p>
+        <p className="kart-alt">
+          Konuya dokundukça sayılır. Tam bilmiyorsan tahmin yeter; bu liste haritada “bir daha bak” işareti olur.
+        </p>
+        {kayitli.dersler.map((d) => {
+          const dersIsaret = (konular[d.id] ?? []).reduce((t, k) => t + (isaret[k.id] ?? 0), 0)
+          return (
+            <div key={d.id} className="hata-ders">
+              <div className="hata-ders-basi">
+                <span className="liste-ad">{d.ad}</span>
+                <span className="kart-alt">
+                  {dersIsaret} / {d.yanlis} yanlış
+                </span>
+              </div>
+              {(konular[d.id] ?? []).length === 0 ? (
+                <p className="kart-alt">Bu dersin konu listesi henüz yok.</p>
+              ) : (
+                <div className="hata-cipler">
+                  {konular[d.id].map((k) => {
+                    const n = isaret[k.id] ?? 0
+                    return (
+                      <button
+                        key={k.id}
+                        type="button"
+                        className={n ? 'hata-cip hata-cip--secili' : 'hata-cip'}
+                        onClick={() => dokun(d.id, k.id)}
+                        aria-pressed={n > 0}
+                      >
+                        {k.ad}
+                        {n > 0 && <span className="hata-cip-sayi">{n}</span>}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+          )
+        })}
+        <Uyari>{hata}</Uyari>
+        <div className="hata-adim-dugmeler">
+          <button type="button" className="metin-dugme" onClick={onEklendi} disabled={bekliyor}>
+            Şimdi değil
+          </button>
+          <Dugme onClick={hatalariKaydet} bekliyor={bekliyor}>
+            {toplamIsaret ? `${toplamIsaret} işareti kaydet` : 'Bitir'}
+          </Dugme>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -109,7 +218,7 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
 
       {uygun.length === 0 ? (
         <Uyari tur="bilgi">
-          Katalog atanmamış ya da seçilen türde ders yok.
+          Bu türde ders listesi yok. Koçun konu listeni tanımlayınca burası dolar.
         </Uyari>
       ) : (
         <div className="sonuc-tablo">
