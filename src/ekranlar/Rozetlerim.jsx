@@ -24,11 +24,7 @@ export default function Rozetlerim({ ogrenciId }) {
           .from('ogrenci_rozet')
           .select('rozet_id, kazanildi')
           .eq('ogrenci_id', ogrenciId),
-        supabase
-          .from('seriler')
-          .select('guncel_seri, en_uzun_seri, son_aktif_gun')
-          .eq('ogrenci_id', ogrenciId)
-          .maybeSingle(),
+        supabase.rpc('seri_durumu', { p_ogrenci_id: ogrenciId }),
       ])
       if (!iptal) {
         setVeri({
@@ -45,18 +41,17 @@ export default function Rozetlerim({ ogrenciId }) {
 
   if (!veri) return <Yukleniyor />
 
-  /* Tablodaki seri yalnızca aktivite oldukça güncelleniyor.
-     Son aktiflik dünden eskiyse seri kopmuştur; okurken düzeltiyoruz. */
-  const bugun = new Date()
-  bugun.setHours(0, 0, 0, 0)
-  const sonAktif = veri.seri?.son_aktif_gun ? new Date(veri.seri.son_aktif_gun) : null
-  const kopmus = !sonAktif || (bugun - sonAktif) / 864e5 > 1
-  const seri = kopmus ? 0 : (veri.seri?.guncel_seri ?? 0)
-  const enUzun = veri.seri?.en_uzun_seri ?? 0
+  /* Seri sayısını sunucu hesaplar (seri_durumu): haftada bir boş gün hakkı
+     var, istemcinin bunu bilmesi gerekmiyor. */
+  const sd = veri.seri ?? {}
+  const seri = sd.etkin ?? 0
+  const enUzun = sd.enUzun ?? 0
+  const hakVar = sd.dondurmaHakki !== false
+  const sonSans = Boolean(sd.bugunSonSans)
 
   return (
     <>
-      <Kart baslik="Seri" altBaslik="Her gün bir şey yapıldığında sürüyor">
+      <Kart baslik="Seri" altBaslik="Her gün bir şey yapıldığında sürüyor. Haftada bir boş gün serbest.">
         <div className="seri-kutu">
           <div>
             <span className={`seri-sayi${seri ? '' : ' seri-sayi--sonuk'}`}>{seri}</span>
@@ -68,7 +63,15 @@ export default function Rozetlerim({ ogrenciId }) {
           </div>
         </div>
         {seri === 0 && enUzun > 0 && (
-          <p className="kart-alt">Seri kopmuş. Bugün yapılan tek bir şey yeniden başlatır.</p>
+          <p className="kart-alt">Seri durmuş. Bugün yapılan tek bir şey yenisini başlatır.</p>
+        )}
+        {seri > 0 && sonSans && (
+          <p className="kart-alt">Dün boş geçti, bu haftanın hakkı kullanıldı. Seri bugün yapılan bir şeyle sürer.</p>
+        )}
+        {seri > 0 && !sonSans && (
+          <p className="kart-alt">
+            {hakVar ? 'Bu hafta bir boş gün hakkın var, seri bozulmaz.' : 'Bu haftanın boş gün hakkı kullanıldı. Bir sonraki Pazartesi yenilenir.'}
+          </p>
         )}
       </Kart>
 

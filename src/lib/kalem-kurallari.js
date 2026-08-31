@@ -48,6 +48,13 @@ const OGRENCI_KURALLARI = [
     eylem: () => ({ etiket: 'Haritaya bak', sekme: 'konular' }),
   },
   {
+    kod: 'seri_son_sans',
+    rol: 'ogrenci', oncelik: 82, tekrar: 'gunde_bir', ruh: 'fikir',
+    kosul: (b) => Boolean(o(b).seriDurumu?.bugunSonSans) && (o(b).seriDurumu?.etkin ?? 0) >= 3,
+    mesaj: (b) => `Dün boştu, sorun değil; haftalık boş gün hakkın onu karşıladı. ${o(b).seriDurumu.etkin} günlük serin bugün yapılan tek bir şeyle sürer.`,
+    eylem: () => ({ etiket: 'Bugünü aç', sekme: 'bugun' }),
+  },
+  {
     kod: 'seri_kirildi',
     rol: 'ogrenci', oncelik: 78, tekrar: 'gunde_bir', ruh: 'bekliyor',
     kosul: (b) => Boolean(o(b).seriKirildi),
