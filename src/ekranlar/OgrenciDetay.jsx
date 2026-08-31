@@ -5,6 +5,7 @@ import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
+import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import Rozetlerim from './Rozetlerim.jsx'
@@ -19,13 +20,6 @@ const TUR_ADI = {
   diger: 'Diğer',
 }
 const DURUM_ADI = { bekliyor: 'Bekliyor', devam: 'Devam ediyor', tamamlandi: 'Tamamlandı', atlandi: 'Atlandı' }
-const ILERLEME_ADI = {
-  baslanmadi: 'Başlanmadı',
-  calisiliyor: 'Çalışılıyor',
-  tamamlandi: 'Tamamlandı',
-  tekrar_gerekli: 'Tekrar gerekli',
-}
-
 export default function OgrenciDetay({ ogrenciId, onGeri }) {
   const [ogrenci, setOgrenci] = useState(null)
   const [netDurumu, setNetDurumu] = useState(null)
@@ -517,9 +511,6 @@ function Denemeler({ ogrenci }) {
 function Konular({ ogrenci }) {
   const [dersler, setDersler] = useState(null)
   const [acikDers, setAcikDers] = useState(null)
-  const [konular, setKonular] = useState([])
-  const [ilerleme, setIlerleme] = useState({})
-  const [hata, setHata] = useState('')
 
   useEffect(() => {
     if (!ogrenci.katalog_id) {
@@ -534,120 +525,24 @@ function Konular({ ogrenci }) {
       .then(({ data }) => setDersler(data ?? []))
   }, [ogrenci.katalog_id])
 
-  const dersAc = useCallback(
-    async (dersId) => {
-      if (acikDers === dersId) {
-        setAcikDers(null)
-        return
-      }
-      setAcikDers(dersId)
-      const [k, i] = await Promise.all([
-        supabase.from('konular').select('id, ad, unite').eq('ders_id', dersId).order('sira'),
-        supabase
-          .from('konu_ilerleme')
-          .select('konu_id, durum, koc_onayi')
-          .eq('ogrenci_id', ogrenci.id),
-      ])
-      setKonular(k.data ?? [])
-      setIlerleme(Object.fromEntries((i.data ?? []).map((x) => [x.konu_id, x])))
-    },
-    [acikDers, ogrenci.id],
-  )
-
-  async function durumYaz(konuId, durum) {
-    const { error } = await supabase
-      .from('konu_ilerleme')
-      .upsert({ ogrenci_id: ogrenci.id, konu_id: konuId, durum, guncellendi: new Date().toISOString() })
-    if (error) setHata(hataMetni(error))
-    // Durum tamamlandıdan çıkarsa onay tetikleyicide düşüyor; ekran da düşürsün.
-    else
-      setIlerleme((o) => ({
-        ...o,
-        [konuId]: { konu_id: konuId, durum, koc_onayi: durum === 'tamamlandi' && (o[konuId]?.koc_onayi ?? false) },
-      }))
-  }
-
-  /* Öğrenci "bitti" dedi diye konu bitmiş sayılmıyor: koç kontrol edip
-     tiki atınca sayılıyor. Tik yalnızca tamamlandı satırlarında açılır. */
-  async function onayYaz(konuId, onay) {
-    const oncesi = ilerleme[konuId]
-    setIlerleme((o) => ({ ...o, [konuId]: { ...o[konuId], koc_onayi: onay } }))
-    const { error } = await supabase
-      .from('konu_ilerleme')
-      .update({ koc_onayi: onay })
-      .eq('ogrenci_id', ogrenci.id)
-      .eq('konu_id', konuId)
-    if (error) {
-      setIlerleme((o) => ({ ...o, [konuId]: oncesi }))
-      setHata(hataMetni(error))
-    }
-  }
-
   if (dersler === null) return <Kart baslik="Konular"><Yukleniyor /></Kart>
 
-  const bekleyen = Object.values(ilerleme).filter(
-    (x) => x.durum === 'tamamlandi' && !x.koc_onayi,
-  ).length
-
+  /* Öğrencinin gördüğü yolun aynısı; fark eylemler: koç durum seçer ve onaylar.
+     Onay verilince öğrencinin haritasında durak yeşile döner. */
   return (
-    <Kart
-      baslik="Konu ilerlemesi"
-      altBaslik={
-        acikDers && bekleyen
-          ? `${bekleyen} konu kontrolünü bekliyor`
-          : ogrenci.kataloglar?.ad
-      }
-    >
-      <Uyari>{hata}</Uyari>
+    <Kart baslik="Konu yolu" altBaslik={ogrenci.kataloglar?.ad}>
       {dersler.length === 0 ? (
         <Bos baslik="Katalog atanmamış" aciklama="Bilgileri düzenleyip bir katalog seçin." />
       ) : (
         <ul className="ders-liste">
           {dersler.map((d) => (
             <li key={d.id}>
-              <button className="ders-satir" onClick={() => dersAc(d.id)} aria-expanded={acikDers === d.id}>
+              <button className="ders-satir" onClick={() => setAcikDers((a) => (a === d.id ? null : d.id))} aria-expanded={acikDers === d.id}>
                 <span className="liste-ad">{d.ad}</span>
                 <span className="liste-alt">{d.kapsam.replace('_', '+').toUpperCase()}</span>
                 <span className="sayi">{d.konular?.[0]?.count ?? 0} konu</span>
               </button>
-
-              {acikDers === d.id && (
-                <ul className="konu-liste">
-                  {konular.map((k) => (
-                    <li key={k.id}>
-                      <span className="konu-ad">
-                        {k.ad}
-                        {k.unite && <span className="konu-unite">{k.unite}</span>}
-                      </span>
-                      <select
-                        value={ilerleme[k.id]?.durum ?? 'baslanmadi'}
-                        onChange={(e) => durumYaz(k.id, e.target.value)}
-                        className={`ilerleme ilerleme--${ilerleme[k.id]?.durum ?? 'baslanmadi'}`}
-                      >
-                        {Object.entries(ILERLEME_ADI).map(([kk, vv]) => (
-                          <option key={kk} value={kk}>
-                            {vv}
-                          </option>
-                        ))}
-                      </select>
-                      {ilerleme[k.id]?.durum === 'tamamlandi' && (
-                        <label
-                          className={
-                            ilerleme[k.id]?.koc_onayi ? 'onay-kutu onay-kutu--acik' : 'onay-kutu'
-                          }
-                        >
-                          <input
-                            type="checkbox"
-                            checked={Boolean(ilerleme[k.id]?.koc_onayi)}
-                            onChange={(e) => onayYaz(k.id, e.target.checked)}
-                          />
-                          <span>{ilerleme[k.id]?.koc_onayi ? 'Kontrol ettim' : 'Kontrol et'}</span>
-                        </label>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              {acikDers === d.id && <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" />}
             </li>
           ))}
         </ul>
