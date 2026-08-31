@@ -572,6 +572,11 @@ main {
   cursor: pointer; padding: 0 4px; opacity: 0.5; color: inherit;
 }
 
+/* Boştaki sayaç kart başlığının sağında duruyor: tek satır.
+   Üç geniş düğme günün hedeflerini ekranın altına itiyordu. */
+.sayac-secim { display: flex; gap: 6px; flex-wrap: wrap; }
+.dugme--ufak { padding: 0.4rem 0.7rem; font-size: 0.8125rem; border-radius: 10px; }
+
 .sayac-halka { display: flex; justify-content: center; margin: 4px 0 12px; }
 .sayac-dugmeler { display: flex; gap: 8px; flex-wrap: wrap; }
 .sayac-dugmeler .dugme { flex: 1 1 auto; min-width: 96px; }
@@ -1964,6 +1969,32 @@ body[data-tema='panel'] {
 }
 .kk-yol--etkin .kk-yol-ad { opacity: 0.8; }
 
+/* Çalışan sayaç. Şerit koç başlığı ve öğrenci kimlik kartıyla ortak
+   olduğu için rozet de burada tanımlı: yarın koç tarafında canlı bir
+   sayaç gerekirse ayrıca yazılmayacak.
+   Duraklıyken nabız durur ve renk soğur — bakışta "işliyor mu" sorusunun
+   cevabı sayının kendisinde değil, zeminde. */
+.kk-yol--canli {
+  background: var(--marka-koyu-amber); color: #22160a;
+  animation: sayac-nabiz 2.4s ease-in-out infinite;
+}
+.kk-yol--canli .kk-yol-sayi { font-variant-numeric: tabular-nums; }
+.kk-yol--canli .kk-yol-ad { opacity: 0.78; }
+.kk-yol--canli:hover { background: var(--marka-koyu-amber); filter: brightness(1.06); }
+.kk-yol--durakli {
+  background: rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.9);
+  animation: none;
+}
+.kk-yol--durakli:hover { background: rgba(255, 255, 255, 0.2); }
+
+@keyframes sayac-nabiz {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(240, 176, 72, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(240, 176, 72, 0.18); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kk-yol--canli { animation: none; }
+}
+
 /* Dört sekme dar ekranda da tek satıra sığıyor; ızgara ikiye bölünmesin. */
 .sekmeler--genis { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 22rem) {
@@ -2054,8 +2085,10 @@ body[data-tema='panel'] {
 .uygulama .ob .ob-mesaj { color: #fff; }
 
 /* Tek kısayol varken tüm genişliğe yayılmasın. */
-.kk-kisayol--tek { border-top: 0; padding-top: 0; margin-top: 0.85rem; }
-.kk-kisayol--tek .kk-yol { flex: 0 0 auto; }
+/* Şerit ölçüm satırının hemen altında; ikinci bir ayraç çizgisi
+   gereksiz. Rozetler genişliğe yayılmasın, içerikleri kadar dursun. */
+.kk-kisayol--sade { border-top: 0; padding-top: 0; margin-top: 0.85rem; flex-wrap: wrap; }
+.kk-kisayol--sade .kk-yol { flex: 0 0 auto; }
 
 /* Sekmeler tıklanabilir görünsün. Şeffaf zeminde yalnızca etkin olan
    kutulu duruyordu, diğerleri düz yazı gibi okunuyordu. Koç ve öğrenci

@@ -8,6 +8,7 @@ import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
+import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
@@ -110,6 +111,7 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
         </div>
       )}
 
+      <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
       <OgrenciBasligi
         profil={
           vekaleten
@@ -143,7 +145,7 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
 
       {sekme === 'bugun' ? (
         <>
-          <CalismaSayaci ogrenciId={kayit.id} onKaydedildi={yenile} />
+          <CalismaSayaci />
           <GunHedefleri gorevler={ozet?.gorevler} onDegisti={yenile} />
           <GunlukRutinler
             ogrenciId={kayit.id}
@@ -192,6 +194,7 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
         </>
       )}
       </div>
+      </SayacSaglayici>
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>

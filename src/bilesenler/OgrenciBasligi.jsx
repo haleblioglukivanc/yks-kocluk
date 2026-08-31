@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
+import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
 
 /**
  * Öğrenci panelinin başlığı.
@@ -116,6 +117,13 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
     }
   }, [ogrenciId, ozet])
 
+  /* Sayaç şeridi başlıkta duruyor çünkü başlık her sekmede ekranda.
+     Buradaki rozet durumu gösterir ve Bugün'e götürür; duraklat/bitir
+     kartta kalır — tepesi alet çubuğuna dönüşmesin. */
+  const sayac = useSayac()
+  const sayacDurumu = sayac?.durum ?? null
+  useSayacTiki(!!sayacDurumu?.calisiyor)
+
   const saat = new Date().getHours()
   const varsayilan = varsayilanSoz(ozet, saat)
   const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilan
@@ -190,7 +198,31 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         </span>
       </div>
 
-      <div className="kk-kisayol kk-kisayol--tek">
+      <div className="kk-kisayol kk-kisayol--sade">
+        {sayacDurumu ? (
+          <button
+            className={`kk-yol kk-yol--canli${sayacDurumu.calisiyor ? '' : ' kk-yol--durakli'}`}
+            onClick={() => onSekme('bugun')}
+          >
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" />
+              <path d="M12 7.5V12l3 1.8" />
+            </svg>
+            <span className="kk-yol-sayi">{bicimle(kalanMs(sayacDurumu))}</span>
+            <span className="kk-yol-ad">{sayacDurumu.calisiyor ? 'Çalışıyor' : 'Duraklı'}</span>
+          </button>
+        ) : (
+          <button className="kk-yol" onClick={() => onSekme('bugun')}>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                 strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="8.5" />
+              <path d="M12 7.5V12l3 1.8" />
+            </svg>
+            <span className="kk-yol-ad">Sayaç</span>
+          </button>
+        )}
+
         <button
           className={`kk-yol${sekme === 'rozetler' ? ' kk-yol--etkin' : ''}`}
           onClick={() => onSekme('rozetler')}
