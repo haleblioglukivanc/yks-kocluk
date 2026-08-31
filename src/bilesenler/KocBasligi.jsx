@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
+import { maskotuDevral } from '../lib/maskotNobeti.js'
 
 /**
  * Koç panelinin başlığı.
@@ -77,6 +78,9 @@ export default function KocBasligi({ profil, ozet, onGit }) {
   useEffect(() => {
     yukle()
   }, [yukle])
+
+  // Kâmil başlıkta: köşedeki kopya kenara çekilsin.
+  useEffect(() => maskotuDevral(), [])
 
   const saat = new Date().getHours()
   const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilanSoz(ozet)

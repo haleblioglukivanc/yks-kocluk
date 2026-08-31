@@ -30,6 +30,12 @@ const OGRENCI_KURALLARI = [
     eylem: () => ({ etiket: 'Rozetlerim', hedef: '/rozetler' }),
   },
   {
+    kod: 'haftalik_hedef_tutuldu',
+    rol: 'ogrenci', oncelik: 97, tekrar: 'haftada_bir', ruh: 'bilendi',
+    kosul: (b) => Boolean(o(b).kalemtiras?.hedefTutuldu),
+    mesaj: () => 'Bu haftanın çalışma hedefini tamamladın. Kâmil bilendi, önümüzdeki hafta tam boy başlıyor.',
+  },
+  {
     kod: 'seri_kilometre',
     rol: 'ogrenci', oncelik: 95, tekrar: 'gunde_bir', ruh: 'kutlama',
     kosul: (b) => [7, 14, 30, 50, 100].includes(o(b).guncelSeri),

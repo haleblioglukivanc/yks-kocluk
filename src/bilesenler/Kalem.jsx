@@ -6,7 +6,7 @@ export const KALEM_ADI = 'Kâmil';
 export const RUHLAR = [
   'bekliyor', 'dusunuyor', 'sevinc', 'sasirdi',
   'uyku', 'endise', 'fikir', 'kutlama',
-  'isaret', 'anlatiyor',
+  'isaret', 'anlatiyor', 'bilendi',
 ];
 
 const RENK = {
@@ -136,6 +136,23 @@ IFADE.isaret = {
   hareket: 'kalem-salinim 2.8s ease-in-out infinite',
   kol: { sol: 'isaret', sag: 'asagi' }, ekstra: null,
 };
+// Haftalik hedef tutunca: kalem bilenmis, uc pirildar, gogus gererek durur.
+IFADE.bilendi = {
+  kas: ['M70 72 Q82 65 94 72', 'M106 72 Q118 65 130 72'],
+  goz: 'acik', bebek: [0, -2],
+  agiz: 'M82 141 Q100 166 118 141 Z', dolu: true, yanak: 0.9,
+  hareket: 'kalem-bilen 2.2s ease-in-out infinite',
+  kol: 'yukari',
+  ekstra: (
+    <g className='kalem-pirilti' stroke='#FFF1C2' strokeWidth='3.5' strokeLinecap='round'>
+      <path d='M150 150 L166 150' />
+      <path d='M158 142 L158 158' />
+      <path d='M40 128 L52 128' />
+      <path d='M46 122 L46 134' />
+    </g>
+  ),
+};
+
 IFADE.anlatiyor = {
   kas: ['M70 74 Q82 68 94 74', 'M106 74 Q118 68 130 74'],
   goz: 'acik', bebek: [0, 2],
@@ -179,6 +196,18 @@ const HAREKET_STILI = `
   0%,100% { transform: translateY(0) scale(1); }
   50%     { transform: translateY(-8px) scale(1.035); }
 }
+@keyframes kalem-bilen {
+  0%,100% { transform: translateY(0) scale(1); }
+  45%     { transform: translateY(-9px) scale(1.04); }
+}
+@keyframes kalem-pirilti-parla {
+  0%,100% { opacity: 0.15; transform: scale(0.7); }
+  50%     { opacity: 1; transform: scale(1.15); }
+}
+.kalem-pirilti {
+  animation: kalem-pirilti-parla 1.6s ease-in-out infinite;
+  transform-box: fill-box; transform-origin: center;
+}
 @keyframes kalem-kol-salla {
   0%,100% { transform: rotate(-7deg); }
   50%     { transform: rotate(7deg); }
@@ -186,7 +215,7 @@ const HAREKET_STILI = `
 .kalem-govde { transform-box: fill-box; transform-origin: 50% 97%; }
 .kalem-kol   { animation: kalem-kol-salla 2.8s ease-in-out infinite; }
 @media (prefers-reduced-motion: reduce) {
-  .kalem-govde, .kalem-kol { animation: none !important; }
+  .kalem-govde, .kalem-kol, .kalem-pirilti { animation: none !important; opacity: 1; }
 }`;
 
 // Kollar gövdenin sol yanından çıkar; sağ kol aynasıyla çizilir.
@@ -204,7 +233,7 @@ const KOL_EL = {
   isaret: (y) => [13, y - 11],
 };
 
-// Kalemin boyu çalışma saatiyle kısalır, ay başında açılıp uzar.
+// Kalemin boyu haftalık çalışmayla kısalır, pazartesi bilenip tam boya döner.
 // yipranma: 0 (yepyeni) → 1 (kısalmış)
 const govdeYuksekligi = (y = 0) => 132 - Math.min(Math.max(y, 0), 1) * 42;
 

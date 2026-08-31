@@ -24,6 +24,10 @@ export default function KalemKosede({ profil }) {
 
   const yukle = useCallback(async () => {
     if (!profil?.id) return
+    /* Ekranda zaten bir Kâmil varsa buradan hiç sorgu atma: yoksa kural
+       motoru ikinci kez çalışıp kalem_olaylari'na çift kayıt atıyor ve
+       gunluk_limit tek girişte tükeniyor. */
+    if (ekrandaMaskotVar) return
     const kocMu = KOC_ROLLERI.includes(profil.rol)
 
     let veri = null
@@ -61,7 +65,7 @@ export default function KalemKosede({ profil }) {
       setOlay(olaylar[0])
       setAcik(true)
     }
-  }, [profil?.id, profil?.rol, profil?.ad_soyad])
+  }, [profil?.id, profil?.rol, profil?.ad_soyad, ekrandaMaskotVar])
 
   useEffect(() => {
     yukle()

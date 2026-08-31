@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
+import { maskotuDevral } from '../lib/maskotNobeti.js'
 import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
 
 /**
@@ -36,6 +37,19 @@ function selamlama(saat) {
 }
 
 /** Bugünün ilk bitmemiş görevi. Sıra zaten durum + id'ye göre geliyor. */
+/* Kalemtıraş döngüsü: kalem hafta boyunca kısalır, hedef tutunca bilenir.
+   Tek satır, suçlayıcı olmayan dil — hedefin altındayken bile kalanı söyler. */
+function kalemtirasMetni(t) {
+  if (!t || !t.hedefDk) return null
+  if (t.hedefTutuldu) return 'Kâmil bu hafta bilendi'
+  const kalan = t.kalanDk ?? 0
+  if (kalan <= 0) return null
+  const saat = Math.floor(kalan / 60)
+  const dk = kalan % 60
+  const sure = saat > 0 ? (dk > 0 ? `${saat} sa ${dk} dk` : `${saat} sa`) : `${dk} dk`
+  return `Bilenmesine ${sure}`
+}
+
 function siradakiIs(ozet) {
   return (ozet?.gorevler ?? []).find((g) => g.durum !== 'tamamlandi') ?? null
 }
@@ -102,6 +116,11 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
     yukle()
   }, [yukle])
 
+  /* Kâmil burada görünüyor: nöbeti devral ki köşedeki kopya kenara çekilsin.
+     Devir yapılmazsa iki Kâmil aynı anda konuşur ve günlük mesaj limiti
+     tek girişte tükenir. */
+  useEffect(() => maskotuDevral(), [])
+
   useEffect(() => {
     if (!ogrenciId) return
     let iptal = false
@@ -133,6 +152,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const biten = ozet?.bugunTamamlanan ?? 0
   const gecikmis = ozet?.gecikmisGorev ?? 0
   const is = siradakiIs(ozet)
+  const tiras = kalemtirasMetni(ozet?.kalemtiras)
 
   function kapat() {
     if (!vekaleten) kalemiKapat(olay)
@@ -142,8 +162,11 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
       <div className="ob-ust">
-        <div className="ob-kalem" aria-hidden="true">
-          <Kalem ruh={soz.ruh} boyut={76} yipranma={ozet?.yipranma ?? 0} />
+        <div className="ob-kalem">
+          <span aria-hidden="true">
+            <Kalem ruh={soz.ruh} boyut={76} yipranma={ozet?.yipranma ?? 0} />
+          </span>
+          {tiras && <p className="ob-tiras">{tiras}</p>}
         </div>
 
         <div className="ob-soz">
