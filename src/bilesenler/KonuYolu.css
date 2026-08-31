@@ -70,6 +70,8 @@
 }
 
 .yol-kamil { position: absolute; width: 56px; pointer-events: none; z-index: 1; transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.5s; }
+/* Durak sağdaysa Kâmil aynalanır; kolu ve bakışı durağa döner. */
+.yol-kamil--ayna { transform: scaleX(-1); }
 
 /* Anlatıcı: kartın altında sabit duran balon, Kâmil konuşur */
 .yol-balon {

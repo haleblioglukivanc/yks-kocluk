@@ -6,6 +6,7 @@ export const KALEM_ADI = 'Kâmil';
 export const RUHLAR = [
   'bekliyor', 'dusunuyor', 'sevinc', 'sasirdi',
   'uyku', 'endise', 'fikir', 'kutlama',
+  'isaret', 'anlatiyor',
 ];
 
 const RENK = {
@@ -126,6 +127,23 @@ const IFADE = {
 
 // Lottie tarzı belirgin hareketler: her ruhun kendi ritmi var.
 // Hepsi transform üzerinden, tek bir stil bloğunda toplanıyor.
+// İki ifade daha: haritada durağı gösteren (kol asimetrik, bakış o yöne)
+// ve anlatan (kaşlar kalkık, ağız konuşur gibi, bir el havada).
+IFADE.isaret = {
+  kas: ['M72 80 L92 82', 'M108 82 L128 80'],
+  goz: 'acik', bebek: [-5, 1],
+  agiz: 'M87 146 Q100 158 113 146', dolu: false, yanak: 0.55,
+  hareket: 'kalem-salinim 2.8s ease-in-out infinite',
+  kol: { sol: 'isaret', sag: 'asagi' }, ekstra: null,
+};
+IFADE.anlatiyor = {
+  kas: ['M70 74 Q82 68 94 74', 'M106 74 Q118 68 130 74'],
+  goz: 'acik', bebek: [0, 2],
+  agiz: 'M88 142 Q100 157 112 142 Q100 151 88 142 Z', dolu: true, yanak: 0.7,
+  hareket: 'kalem-canlan 2.4s ease-in-out infinite',
+  kol: { sol: 'asagi', sag: 'yana' }, ekstra: null,
+};
+
 const HAREKET_STILI = `
 @keyframes kalem-salinim {
   0%,100% { transform: translateY(0) scaleY(1) scaleX(1); }
@@ -177,11 +195,13 @@ const KOL_YOL = {
   asagi:  (y) => `M64 ${y} Q43 ${y + 10} 37 ${y + 28}`,
   yukari: (y) => `M64 ${y} Q43 ${y - 14} 37 ${y - 34}`,
   yana:   (y) => `M64 ${y} Q45 ${y - 3} 32 ${y - 6}`,
+  isaret: (y) => `M64 ${y} Q40 ${y - 4} 16 ${y - 10}`,
 };
 const KOL_EL = {
   asagi:  (y) => [34, y + 32],
   yukari: (y) => [34, y - 38],
   yana:   (y) => [29, y - 7],
+  isaret: (y) => [13, y - 11],
 };
 
 // Kalemin boyu çalışma saatiyle kısalır, ay başında açılıp uzar.
@@ -209,9 +229,11 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
   const olcek = h / 132;
   const yuzY = 45 + (h * 69) / 132;
   const yuzDonusum = `translate(100 ${yuzY.toFixed(2)}) scale(${olcek.toFixed(4)}) translate(-100 -114)`;
-  const kol = i.kol ?? 'asagi';
+  // kol: tek dize (iki kol aynı) ya da { sol, sag } (asimetrik, örn. işaret)
+  const kollar = typeof i.kol === 'object' && i.kol
+    ? [i.kol.sol ?? 'asagi', i.kol.sag ?? 'asagi']
+    : [i.kol ?? 'asagi', i.kol ?? 'asagi'];
   const kolY = 45 + h * 0.72;
-  const [elX, elY] = KOL_EL[kol](kolY);
   const acik = i.goz !== 'kapali';
   const rx = i.goz === 'buyuk' ? 22.5 : 19;
   const ry = kirpiyor ? 3 : (i.goz === 'buyuk' ? 24 : 21);
@@ -233,17 +255,21 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
       <ellipse cx='72' cy={ucY + 44} rx='18' ry='9' fill={RENK.govdeGolge} />
       <ellipse cx='128' cy={ucY + 44} rx='18' ry='9' fill={RENK.govdeGolge} />
 
-      {[false, true].map((sag) => (
-        <g key={String(sag)} transform={sag ? 'translate(200 0) scale(-1 1)' : undefined}>
-          <g className='kalem-kol'
-             style={{ transformBox: 'view-box', transformOrigin: `64px ${kolY}px` }}>
-            <path d={KOL_YOL[kol](kolY)} stroke={RENK.govdeGolge}
-                  strokeWidth='10' strokeLinecap='round' fill='none' />
-            <circle cx={elX} cy={elY} r='9.5' fill={RENK.govde}
-                    stroke={RENK.govdeGolge} strokeWidth='2' />
+      {[false, true].map((sag) => {
+        const k = kollar[sag ? 1 : 0];
+        const [elX, elY] = KOL_EL[k](kolY);
+        return (
+          <g key={String(sag)} transform={sag ? 'translate(200 0) scale(-1 1)' : undefined}>
+            <g className={k === 'isaret' ? undefined : 'kalem-kol'}
+               style={{ transformBox: 'view-box', transformOrigin: `64px ${kolY}px` }}>
+              <path d={KOL_YOL[k](kolY)} stroke={RENK.govdeGolge}
+                    strokeWidth='10' strokeLinecap='round' fill='none' />
+              <circle cx={elX} cy={elY} r='9.5' fill={RENK.govde}
+                      stroke={RENK.govdeGolge} strokeWidth='2' />
+            </g>
           </g>
-        </g>
-      ))}
+        );
+      })}
 
       <g transform={yuzDonusum}>
         <ellipse cx='70' cy='140' rx='8' ry='5' fill={RENK.yanak} opacity={i.yanak} />

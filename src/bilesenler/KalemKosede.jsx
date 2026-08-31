@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useMaskotDevrildiMi } from '../lib/maskotNobeti.js'
 import { supabase } from '../lib/supabase.js'
 import Kalem, { KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
@@ -16,6 +17,7 @@ const KOC_ROLLERI = ['koc', 'yonetici']
 const BOSTA = ['bekliyor', 'bekliyor', 'bekliyor', 'dusunuyor', 'bekliyor', 'sasirdi']
 
 export default function KalemKosede({ profil }) {
+  const ekrandaMaskotVar = useMaskotDevrildiMi()
   const [olay, setOlay] = useState(null)
   const [acik, setAcik] = useState(false)
   const [bostaRuh, setBostaRuh] = useState('bekliyor')
@@ -77,7 +79,9 @@ export default function KalemKosede({ profil }) {
     return () => clearInterval(t)
   }, [acik])
 
-  if (!profil) return null
+  /* Konu yolu gibi ekranlar Kâmil'i kendi içinde gösteriyor; köşedeki
+     kopya orada fazlalık olur. */
+  if (!profil || ekrandaMaskotVar) return null
 
   const ruh = acik && olay ? olay.ruh : bostaRuh
 

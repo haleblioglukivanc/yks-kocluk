@@ -2,6 +2,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
+import { maskotuDevral } from '../lib/maskotNobeti.js'
 import './KonuYolu.css'
 
 /* Konu yolu — bir dersin konuları bölge → durak olarak, kıvrımlı bir yol
@@ -86,10 +87,13 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const [hata, setHata] = useState('')
   const [secili, setSecili] = useState(null)
   const [balon, setBalon] = useState({ olay: null, durak: null, bolge: null })
-  const [ruh, setRuh] = useState('bekliyor')
+  const [ruh, setRuh] = useState('anlatiyor')
   const [patlayan, setPatlayan] = useState(null)
   const haritaRef = useRef(null)
   const [cizgi, setCizgi] = useState({ soluk: '', renkli: '', kamil: null, w: 0, h: 0 })
+
+  /* Haritada Kâmil zaten var: köşedeki kopyası bu ekranda görünmesin. */
+  useEffect(() => maskotuDevral(), [])
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc('konu_yolu', { p_ogrenci_id: ogrenciId, p_ders_id: dersId })
@@ -135,12 +139,15 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
         else soluk += seg
       }
       const k = simdiki ? pts.find((p) => p.d.id === simdiki.id) : null
+      /* Durak sağ yarıdaysa Kâmil soluna geçer ve sağı gösterir (aynalanır);
+         sol yarıdaysa sağında durur, kolu zaten sola uzanır. */
+      const solda = Boolean(k) && k.x > h.width / 2
       setCizgi({
         soluk,
         renkli,
         w: h.width,
         h: h.height,
-        kamil: k ? { x: k.x + (k.x > h.width / 2 ? -66 : 30), y: k.y - 50 } : null,
+        kamil: k ? { x: k.x + (solda ? -70 : 34), y: k.y - 52, aynala: solda } : null,
       })
     }
     olc()
@@ -168,13 +175,13 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
     setSecili(d)
     const hataVar = (d.hata_adet ?? 0) >= 2
     setBalon({ olay: hataVar ? 'hata' : null, durak: d, bolge: null })
-    setRuh(hataVar ? 'dusunuyor' : d.yol === 'onayli' ? 'sevinc' : d.yol === 'tekrar' ? 'endise' : 'bekliyor')
+    setRuh(hataVar ? 'dusunuyor' : d.yol === 'onayli' ? 'sevinc' : d.yol === 'tekrar' ? 'endise' : 'anlatiyor')
   }
 
   function kapat() {
     setSecili(null)
     setBalon({ olay: null, durak: simdiki, bolge: null })
-    setRuh('bekliyor')
+    setRuh('anlatiyor')
   }
 
   /* Bir durağın ilerleme durumunu yazar. Onay bayrağı tetikleyicide korunur:
@@ -250,8 +257,13 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
         </svg>
 
         {cizgi.kamil && (
-          <div className="yol-kamil" style={{ left: cizgi.kamil.x, top: cizgi.kamil.y }} aria-hidden="true">
-            <Kalem ruh={ruh} boyut={56} />
+          <div
+            className={`yol-kamil${cizgi.kamil.aynala ? ' yol-kamil--ayna' : ''}`}
+            style={{ left: cizgi.kamil.x, top: cizgi.kamil.y }}
+            aria-hidden="true"
+          >
+            {/* Haritadaki Kâmil durağı gösterir; konuşan Kâmil balondaki. */}
+            <Kalem ruh={ruh === 'kutlama' ? 'kutlama' : 'isaret'} boyut={56} />
           </div>
         )}
 
@@ -290,7 +302,9 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
       </div>
 
       <div className="yol-balon">
-        <div className="yol-balon-kamil"><Kalem ruh={ruh} boyut={40} /></div>
+        <div className="yol-balon-kamil">
+          <Kalem ruh={ruh === 'isaret' ? 'anlatiyor' : ruh} boyut={40} />
+        </div>
         <p><span className="yol-balon-ad">{KALEM_ADI}</span>{soz(rol, balon.durak, balon.bolge, balon.olay)}</p>
       </div>
 
