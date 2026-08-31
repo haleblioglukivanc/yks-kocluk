@@ -104,6 +104,17 @@ export default function KocBasligi({ profil, ozet, onGit }) {
           </p>
           {olay && (
             <div className="ob-dugmeler">
+              {olay.eylem?.yol && onGit && (
+                <button
+                  className="ob-basla"
+                  onClick={() => {
+                    kapat()
+                    onGit(olay.eylem.yol)
+                  }}
+                >
+                  {olay.eylem.etiket}
+                </button>
+              )}
               <button className="ob-tamam" onClick={kapat}>
                 Tamam
               </button>

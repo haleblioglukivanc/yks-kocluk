@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-import { kalemNeDesin, olayKaydiOlustur } from './kalem-kurallari.js'
+import { kalemNeDesin, olayKaydiOlustur, kuralEylemi } from './kalem-kurallari.js'
 
 /**
  * Kâmil'in ne diyeceğini belirler.
@@ -32,7 +32,14 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
 
   const gunlukLimit = ayar.data?.gunluk_limit ?? 2
 
-  // Bugün gösterilmiş ve henüz kapatılmamış mesajlar hâlâ geçerli
+  const bugunGosterilen = kayitlar.filter((k) => new Date(k.gosterildi) >= gunBasi).length
+  const baglam = { rol, ad, saat: simdi.getHours(), gunIlkGirisMi: bugunGosterilen === 0 }
+  if (rol === 'ogrenci') baglam.ogrenci = veri
+  else if (rol === 'veli') baglam.veli = veri
+  else baglam.koc = veri
+
+  // Bugün gösterilmiş ve henüz kapatılmamış mesajlar hâlâ geçerli.
+  // Eylem düğmesi kaydedilmiyor, kuraldan yeniden türetilir.
   const acikOlanlar = kayitlar.filter(
     (k) => new Date(k.gosterildi) >= gunBasi && !k.kapatildi_mi,
   )
@@ -42,6 +49,7 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
       kod: k.kural_kodu,
       ruh: k.ruh ?? 'bekliyor',
       mesaj: k.mesaj,
+      eylem: kuralEylemi(k.kural_kodu, baglam),
     }))
   }
 
@@ -49,13 +57,6 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
   for (const k of kayitlar) {
     if (!sonGosterim[k.kural_kodu]) sonGosterim[k.kural_kodu] = new Date(k.gosterildi)
   }
-  const bugunGosterilen = kayitlar.filter((k) => new Date(k.gosterildi) >= gunBasi).length
-
-  const baglam = { rol, ad, saat: simdi.getHours(), gunIlkGirisMi: bugunGosterilen === 0 }
-  if (rol === 'ogrenci') baglam.ogrenci = veri
-  else if (rol === 'veli') baglam.veli = veri
-  else baglam.koc = veri
-
   const olaylar = kalemNeDesin(
     baglam,
     { sonGosterim, buOturumdaGosterilen: bugunGosterilen, sessizBitis, gunlukLimit },

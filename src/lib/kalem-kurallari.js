@@ -36,6 +36,39 @@ const OGRENCI_KURALLARI = [
     mesaj: (b) => `${o(b).guncelSeri} gün oldu, hiç ara vermedin. Defterin dolmaya başladı.`,
   },
   {
+    kod: 'koc_onayladi',
+    rol: 'ogrenci', oncelik: 92, tekrar: 'gunde_bir', ruh: 'kutlama',
+    kosul: (b) => (o(b).yeniOnayKonular ?? []).length > 0,
+    mesaj: (b) => {
+      const k = o(b).yeniOnayKonular;
+      return k.length === 1
+        ? `Koçun ${k[0]} konusunu onayladı. Haritada bir durak daha yeşil.`
+        : `Koçun ${k.length} konunu onayladı. Harita bayağı yeşillendi.`;
+    },
+    eylem: () => ({ etiket: 'Haritaya bak', sekme: 'konular' }),
+  },
+  {
+    kod: 'seri_kirildi',
+    rol: 'ogrenci', oncelik: 78, tekrar: 'gunde_bir', ruh: 'bekliyor',
+    kosul: (b) => Boolean(o(b).seriKirildi),
+    mesaj: (b) => `${o(b).seriKirildi} günlük seri durdu. Sayaç sıfırlandı, öğrendiklerin sıfırlanmadı. Bugün tek bir görev yeni seriyi başlatır.`,
+    eylem: () => ({ etiket: 'Bugünü aç', sekme: 'bugun' }),
+  },
+  {
+    kod: 'hafta_plani_bos',
+    rol: 'ogrenci', oncelik: 70, tekrar: 'gunde_bir', ruh: 'dusunuyor',
+    kosul: (b) => b.gunIlkGirisMi && o(b).haftaPlanBos === true && (o(b).gecikmisGorev ?? 0) === 0,
+    mesaj: () => `Önümüzdeki hafta planında hiçbir şey yok. Boş sayfa iyi bir başlangıçtır, koçunla birlikte dolduralım.`,
+    eylem: () => ({ etiket: 'Programı aç', sekme: 'program' }),
+  },
+  {
+    kod: 'deneme_uzak',
+    rol: 'ogrenci', oncelik: 55, tekrar: 'haftada_bir', ruh: 'fikir',
+    kosul: (b) => (o(b).denemeSayisi ?? 0) > 0 && (o(b).sonDenemeGunOnce ?? 0) >= 21,
+    mesaj: (b) => `Son denemeden ${o(b).sonDenemeGunOnce} gün geçmiş. Bir deneme, nerede durduğumuzu gösterir; çıkan sonuç iyi de olsa kötü de olsa bilgi.`,
+    eylem: () => ({ etiket: 'Deneme gir', sekme: 'denemeler' }),
+  },
+  {
     kod: 'gun_tamamlandi',
     rol: 'ogrenci', oncelik: 90, tekrar: 'gunde_bir', ruh: 'sevinc',
     kosul: (b) => o(b).bugunToplamGorev > 0 && o(b).bugunTamamlanan === o(b).bugunToplamGorev,
@@ -120,6 +153,19 @@ const KOC_KURALLARI = [
     kosul: (b) => (k(b).sinifNetDegisimi ?? 0) <= -3,
     mesaj: (b) => `Sınıf ortalaması ${Math.abs(Math.round(k(b).sinifNetDegisimi))} net düşmüş. Ortak bir konu var mı, ısı haritasına bakalım.`,
     eylem: () => ({ etiket: 'Konu ısı haritası', hedef: '/panel#isi' }),
+  },
+  {
+    kod: 'konu_onayi_bekliyor',
+    rol: 'koc', oncelik: 72, tekrar: 'gunde_bir', ruh: 'bekliyor',
+    kosul: (b) => (k(b).bekleyenKonuOnayi ?? 0) > 0,
+    mesaj: (b) => {
+      const n = k(b).bekleyenKonuOnayi;
+      const og = k(b).bekleyenKonuOgrenci ?? 0;
+      return og <= 1
+        ? `${n} konu kontrolünü bekliyor. Onayladıkça öğrencinin haritası yeşile dönüyor.`
+        : `${og} öğrencide toplam ${n} konu kontrolünü bekliyor. Onay, onların haritasında yeşil durak demek.`;
+    },
+    eylem: () => ({ etiket: 'Öğrencilere git', yol: '/ogrenciler' }),
   },
   {
     kod: 'veli_ozeti_bekliyor',
@@ -214,6 +260,12 @@ export function kalemNeDesin(baglam, gecmis, simdi = new Date()) {
       mesaj: kr.mesaj(baglam),
       eylem: kr.eylem?.(baglam),
     }));
+}
+
+/** Veritabanından geri dönen mesajın eylemi kayıtlı değil; kural koduyla yeniden bulunur. */
+export function kuralEylemi(kod, baglam) {
+  const kr = TUM_KURALLAR.find((x) => x.kod === kod);
+  try { return kr?.eylem?.(baglam); } catch { return undefined; }
 }
 
 /** Gösterilen her mesaj kalem_olaylari'na yazılır — hangisi işe yarıyor ölçülsün. */

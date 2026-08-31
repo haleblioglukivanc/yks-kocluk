@@ -153,6 +153,17 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
                 Başla
               </button>
             )}
+            {olay?.eylem?.sekme && onSekme && (
+              <button
+                className="ob-basla"
+                onClick={() => {
+                  kapat()
+                  onSekme(olay.eylem.sekme)
+                }}
+              >
+                {olay.eylem.etiket}
+              </button>
+            )}
             {olay && (
               <button className="ob-tamam" onClick={kapat}>
                 Tamam
