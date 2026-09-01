@@ -326,6 +326,7 @@ export default function App() {
         <Ogrencilerim
           onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
+          onGit={git}
         />
       )
     if (kocMu && gozuyleId)

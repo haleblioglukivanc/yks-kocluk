@@ -1882,8 +1882,8 @@ body[data-tema='panel'] {
 .ogrenci-kutu {
   position: relative; overflow: hidden;
   flex: 1; min-width: 0;
-  display: flex; align-items: center; gap: 0.75rem;
-  padding: 0.7rem 0.8rem 0.7rem 0.95rem;
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.5rem 0.7rem 0.5rem 0.85rem;
   background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px;
   font: inherit; text-align: left; color: inherit; cursor: pointer;
 }
@@ -1895,15 +1895,96 @@ body[data-tema='panel'] {
 .ogrenci-kutu--pasif { opacity: 0.45; }
 
 .ok-orta { flex: 1; min-width: 0; }
-.ok-cubuk {
-  display: block; height: 5px; border-radius: 999px;
-  background: rgba(125, 135, 158, 0.22); margin-top: 0.45rem; overflow: hidden;
-}
-.ok-cubuk i { display: block; height: 100%; border-radius: 999px; background: var(--serit, var(--cizgi)); }
 
-.ok-sag { flex: 0 0 auto; text-align: right; }
+/* Tek yüzde "neden buradasın" sorusunu cevaplamıyordu: %34 ve "dün aktif"
+   görünen öğrencinin 19 gecikmiş görevi olabiliyor. Sebebi yazıyoruz. */
+.ok-sebep {
+  display: block; font-size: 0.75rem; color: var(--soluk); margin-top: 0.1rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ok-sebep--uyari { color: var(--marka-alev); font-weight: 500; }
+.ok-sebep--iyi { color: var(--marka-yesil-acik); font-weight: 500; }
+
+.ok-sag { flex: 0 0 auto; text-align: right; min-width: 2.1rem; }
 .ok-yuzde { display: block; font-family: var(--display); font-size: 0.9375rem; font-weight: 700; }
-.ok-durum { display: block; font-size: 0.7rem; color: var(--soluk); margin-top: 0.15rem; }
+.ok-durum { display: block; font-size: 0.68rem; color: var(--soluk); margin-top: 0.1rem; }
+
+/* ═══════════ Son 7 günün nabzı ═══════════
+   Yüzde çubuğu tek sayıyı iki kez söylüyordu. Aynı yeri kaplayan bu
+   şerit desen gösteriyor: hangi gün çalıştı, ne zaman bıraktı. */
+.nabiz { display: flex; align-items: flex-end; gap: 2px; height: 22px; flex: 0 0 auto; }
+.nabiz-gun {
+  position: relative; width: 4px; height: 100%;
+  background: rgba(125, 135, 158, 0.22); border-radius: 2px; overflow: hidden;
+}
+.nabiz-gun i {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  background: var(--serit, var(--murekkep)); border-radius: 2px;
+}
+.nabiz-gun--bugun { outline: 1.5px solid var(--serit, var(--cizgi)); outline-offset: 1.5px; }
+
+/* ═══════════ Satır sarmalı ve eylemler ═══════════ */
+.ogr-satir-sarmal { list-style: none; }
+.ogr-satir-ust { display: flex; align-items: center; gap: 0.15rem; }
+.satir-genislet {
+  flex: 0 0 auto; width: 34px; height: 40px;
+  display: grid; place-items: center;
+  background: none; border: 0; border-radius: 8px;
+  color: var(--soluk); cursor: pointer;
+}
+.satir-genislet:hover { color: var(--murekkep); background: var(--serin-zemin); }
+
+/* Göz ikonu tek eylem olmaktan çıktı: vekalet üçüncü seçenek, ilk
+   seçenek koçun en çok yaptığı iş olan mesaj. */
+.ogr-eylemler { display: flex; gap: 0.35rem; padding: 0.4rem 0.15rem 0 0.85rem; }
+.ogr-eylem {
+  flex: 1; padding: 0.45rem 0.3rem;
+  font: inherit; font-size: 0.75rem; font-weight: 600;
+  background: var(--yuzey); color: var(--murekkep);
+  border: 1px solid var(--cizgi); border-radius: 9px; cursor: pointer;
+}
+.ogr-eylem:hover { border-color: var(--cizgi-2, var(--cizgi)); }
+.ogr-eylem--ana { background: var(--serin); border-color: var(--serin); color: #fff; }
+
+/* ═══════════ Gün nabzı özeti ═══════════ */
+.gun-nabzi { display: flex; gap: 0.35rem; margin-bottom: 0.9rem; }
+.gn-hucre {
+  flex: 1; min-width: 0; padding: 0.5rem 0.4rem;
+  border: 1px solid var(--cizgi); border-radius: 12px; background: var(--yuzey);
+}
+.gn-hucre--uyari {
+  border-color: var(--sicak-kenar, var(--marka-alev));
+  background: var(--sicak-zemin, transparent);
+}
+.gn-sayi { display: block; font-family: var(--display); font-size: 1.15rem; font-weight: 700; line-height: 1; }
+.gn-hucre--uyari .gn-sayi { color: var(--marka-alev); }
+.gn-etiket { display: block; font-size: 0.65rem; color: var(--soluk); margin-top: 0.25rem; line-height: 1.2; }
+
+/* ═══════════ Kademe başlıkları ═══════════
+   Eski "Riskli 9/10" süzgeci hiçbir şey elemiyordu. Kademe, sol
+   renk şeridiyle birlikte artık gerçek bilgi taşıyor. */
+.ogr-grup { margin-bottom: 1.1rem; }
+.ogr-grup:last-child { margin-bottom: 0; }
+.ogr-grup-baslik {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin: 0 0.15rem 0.5rem;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--soluk);
+}
+.ogr-grup-baslik--dugme {
+  width: 100%; padding: 0.6rem 0.7rem; background: none;
+  border: 1px solid var(--cizgi); border-radius: 12px; cursor: pointer;
+  font-family: inherit;
+}
+.ogr-grup-serit { width: 3px; height: 13px; border-radius: 2px; flex: 0 0 auto; }
+.ogr-grup-serit--a { background: var(--marka-alev); }
+.ogr-grup-serit--i { background: var(--marka-amber); }
+.ogr-grup-serit--y { background: var(--marka-yesil-acik); }
+.ogr-grup-serit--p { background: var(--soluk); }
+.ogr-grup-sayi {
+  margin-left: auto; font-weight: 500; letter-spacing: 0; text-transform: none;
+  font-size: 0.75rem;
+}
 
 /* ═══════════ Erişimi kapatılmış öğrenci ═══════════ */
 .erisim-kapali { align-items: center; text-align: center; gap: 0.7rem; }

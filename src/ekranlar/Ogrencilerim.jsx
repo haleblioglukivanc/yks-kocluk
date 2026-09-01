@@ -1,46 +1,43 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import { Avatar } from '../bilesenler/Fotograf.jsx'
+import OgrenciSatiri from '../bilesenler/OgrenciSatiri.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 
 
-const RISK_RENK = { iyi: 'var(--marka-yesil-acik)', izle: 'var(--marka-amber)', acil: 'var(--marka-alev)' }
-
-/** Satırın sağındaki tek satırlık durum. Üç sebebi birden yazmak listeyi
- *  okunmaz yapıyordu; en keskin olanı seçiyoruz. */
-function sonDurum(r) {
-  if (!r) return 'Veri yok'
-  if (r.hic_baslamadi || r.gun_gecti == null) return 'Hiç başlamadı'
-  if (r.gun_gecti === 0) return 'Bugün aktif'
-  if (r.gun_gecti === 1) return 'Dün aktif'
-  return `${r.gun_gecti} gün sessiz`
-}
-
-const SUZGECLER = [
-  ['tumu', 'Tümü'],
-  ['riskli', 'Riskli'],
-  ['sessiz', 'Sessiz'],
-  ['pasif', 'Pasif'],
+/* Liste bir kayıt defteri değil, günün iş kuyruğu. Üç kademe:
+   önce dokunulacaklar, izlenecekler, kapalı hesaplar. Eski "Riskli"
+   süzgeci 10 öğrencinin 9'unu geçiriyordu, yani hiçbir şey elemiyordu. */
+const GRUPLAR = [
+  ['acil', 'Önce bunlar', 'a'],
+  ['izle', 'İzlemede', 'i'],
+  ['iyi', 'Yolunda', 'y'],
 ]
 
-export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
+function grubu(o) {
+  if (!o.aktif) return 'pasif'
+  return o.risk?.risk_seviyesi ?? 'izle'
+}
+
+export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
+  const [nabizlar, setNabizlar] = useState({})
   const [kataloglar, setKataloglar] = useState([])
-  const [suzgec, setSuzgec] = useState('tumu')
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
+  const [pasifAcik, setPasifAcik] = useState(false)
 
   const yukle = useCallback(async () => {
-    const [o, r, k] = await Promise.all([
+    const [o, r, n, k] = await Promise.all([
       supabase
         .from('ogrenciler')
         .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)')
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('ogrenci_risk')
-        .select('ogrenci_id, risk_seviyesi, risk_skoru, tamamlama_yuzdesi, gun_gecti, hic_baslamadi'),
+        .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev'),
+      supabase.rpc('ogrenci_nabiz'),
       supabase
         .from('kataloglar')
         .select('id, ad, tur, seviye, alan')
@@ -50,6 +47,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
     if (o.error) setHata(hataMetni(o.error))
     setOgrenciler(o.data ?? [])
     setRiskler(Object.fromEntries((r.data ?? []).map((x) => [x.ogrenci_id, x])))
+    setNabizlar(Object.fromEntries((n.data ?? []).map((x) => [x.ogrenci_id, x.nabiz])))
     setKataloglar(k.data ?? [])
   }, [])
 
@@ -57,28 +55,39 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
     yukle()
   }, [yukle])
 
-  /* Pasifler en alta, kalanlar risk skoruna göre: koçun önce bakması
-     gereken öğrenci listenin başında olsun. */
+  /* risk_ham kırpılmamış skor. Eski risk_skoru 100'de tavan yaptığı için
+     en kritik dört öğrenci aynı değerde toplanıp sıra rastgele kalıyordu. */
   const sirali = (ogrenciler ?? [])
     .map((o) => ({ ...o, risk: riskler[o.id] ?? null }))
     .sort((a, b) => {
       if (a.aktif !== b.aktif) return a.aktif ? -1 : 1
-      return (b.risk?.risk_skoru ?? -1) - (a.risk?.risk_skoru ?? -1)
+      const f = (b.risk?.risk_ham ?? -1) - (a.risk?.risk_ham ?? -1)
+      if (f !== 0) return f
+      return (b.risk?.gecikmis_gorev ?? 0) - (a.risk?.gecikmis_gorev ?? 0)
     })
 
-  const sayilar = {
-    tumu: sirali.length,
-    riskli: sirali.filter((o) => o.aktif && o.risk && o.risk.risk_seviyesi !== 'iyi').length,
-    sessiz: sirali.filter((o) => o.aktif && (o.risk?.hic_baslamadi || (o.risk?.gun_gecti ?? 0) >= 3)).length,
-    pasif: sirali.filter((o) => !o.aktif).length,
+  const kova = { acil: [], izle: [], iyi: [], pasif: [] }
+  sirali.forEach((o) => kova[grubu(o)].push(o))
+
+  const aktifler = sirali.filter((o) => o.aktif)
+  const ozet = {
+    acil: kova.acil.length,
+    gecikmis: aktifler.reduce((t, o) => t + (o.risk?.gecikmis_gorev ?? 0), 0),
+    sessiz: aktifler.filter((o) => (o.risk?.gun_gecti ?? 0) >= 2 && !o.risk?.hic_baslamadi).length,
+    yeni: aktifler.filter((o) => o.risk?.hic_baslamadi).length,
   }
 
-  const gorunen = sirali.filter((o) => {
-    if (suzgec === 'riskli') return o.aktif && o.risk && o.risk.risk_seviyesi !== 'iyi'
-    if (suzgec === 'sessiz') return o.aktif && (o.risk?.hic_baslamadi || (o.risk?.gun_gecti ?? 0) >= 3)
-    if (suzgec === 'pasif') return !o.aktif
-    return true
-  })
+  const satirCiz = (o) => (
+    <OgrenciSatiri
+      key={o.id}
+      ogrenci={o}
+      risk={o.risk}
+      nabiz={nabizlar[o.id]}
+      onAc={onOgrenciAc}
+      onGozuyle={onGozuyle}
+      onMesaj={() => onGit?.('/mesajlar')}
+    />
+  )
 
   return (
     <div className="panel">
@@ -86,7 +95,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
 
       <Kart
         baslik="Öğrencilerim"
-        altBaslik={ogrenciler ? `${ogrenciler.length} kayıtlı öğrenci` : undefined}
+        altBaslik={ogrenciler ? `${ogrenciler.length} öğrenci · risk sırasına göre` : undefined}
         eylem={
           <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
             {formAcik ? 'Kapat' : 'Öğrenci ekle'}
@@ -104,65 +113,56 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle }) {
           />
         ) : (
           <>
-            <div className="suzgecler" role="tablist" aria-label="Öğrenci süzgeci">
-              {SUZGECLER.map(([anahtar, ad]) => (
-                <button
-                  key={anahtar}
-                  role="tab"
-                  aria-selected={suzgec === anahtar}
-                  className={`suzgec${suzgec === anahtar ? ' suzgec--etkin' : ''}`}
-                  onClick={() => setSuzgec(anahtar)}
-                >
-                  {ad} <span className="suzgec-sayi">{sayilar[anahtar]}</span>
-                </button>
-              ))}
+            {/* Listeye girmeden günün özeti. Sayılar filtre değil, yön. */}
+            <div className="gun-nabzi">
+              <div className={`gn-hucre${ozet.acil ? ' gn-hucre--uyari' : ''}`}>
+                <span className="gn-sayi">{ozet.acil}</span>
+                <span className="gn-etiket">bugün dokun</span>
+              </div>
+              <div className="gn-hucre">
+                <span className="gn-sayi">{ozet.gecikmis}</span>
+                <span className="gn-etiket">gecikmiş görev</span>
+              </div>
+              <div className="gn-hucre">
+                <span className="gn-sayi">{ozet.sessiz}</span>
+                <span className="gn-etiket">2+ gün sessiz</span>
+              </div>
+              <div className="gn-hucre">
+                <span className="gn-sayi">{ozet.yeni}</span>
+                <span className="gn-etiket">hiç başlamadı</span>
+              </div>
             </div>
 
-            {gorunen.length === 0 ? (
-              <Bos baslik="Bu süzgeçte kimse yok" aciklama="İyi haber sayılır." />
-            ) : (
-              <ul className="liste liste--kartli">
-                {gorunen.map((o) => {
-                  const yuzde = o.aktif ? (o.risk?.tamamlama_yuzdesi ?? 0) : 0
-                  const renk = o.aktif ? (RISK_RENK[o.risk?.risk_seviyesi] ?? 'var(--cizgi-2)') : 'var(--soluk)'
-                  return (
-                    <li key={o.id} className="ogrenci-sarmal">
-                      <button
-                        className={`ogrenci-kutu${o.aktif ? '' : ' ogrenci-kutu--pasif'}`}
-                        style={{ '--serit': renk }}
-                        onClick={() => onOgrenciAc(o.id)}
-                      >
-                        <Avatar yol={o.profiller?.fotograf_yolu} ad={o.profiller?.ad_soyad} />
-                        <div className="ok-orta">
-                          <span className="liste-ad">{o.profiller?.ad_soyad ?? 'İsimsiz'}</span>
-                          <span className="ok-cubuk" aria-hidden="true">
-                            <i style={{ width: `${yuzde}%` }} />
-                          </span>
-                        </div>
-                        <div className="ok-sag">
-                          <span className="ok-yuzde">{o.aktif ? `%${yuzde}` : '—'}</span>
-                          <span className="ok-durum">
-                            {o.aktif ? sonDurum(o.risk) : 'Erişim kapalı'}
-                          </span>
-                        </div>
-                      </button>
-                      <button
-                        className="goz-dugme"
-                        onClick={() => onGozuyle(o.id)}
-                        aria-label={`${o.profiller?.ad_soyad ?? 'Öğrenci'} gözüyle gör`}
-                        title="Öğrenci gözüyle gör"
-                      >
-                        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"
-                             fill="none" stroke="currentColor" strokeWidth="1.8"
-                             strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M1.5 12S5 5.5 12 5.5 22.5 12 22.5 12 19 18.5 12 18.5 1.5 12 1.5 12Z" />
-                          <circle cx="12" cy="12" r="3.2" />
-                        </svg>
-                      </button>
-                    </li>
-                  )
-                })}
-              </ul>
+            {GRUPLAR.map(([anahtar, ad, ton]) =>
+              kova[anahtar].length === 0 ? null : (
+                <section key={anahtar} className="ogr-grup">
+                  <h3 className="ogr-grup-baslik">
+                    <span className={`ogr-grup-serit ogr-grup-serit--${ton}`} aria-hidden="true" />
+                    {ad}
+                    <span className="ogr-grup-sayi">{kova[anahtar].length}</span>
+                  </h3>
+                  <ul className="liste liste--kartli">{kova[anahtar].map(satirCiz)}</ul>
+                </section>
+              ),
+            )}
+
+            {kova.pasif.length > 0 && (
+              <section className="ogr-grup">
+                <button
+                  className="ogr-grup-baslik ogr-grup-baslik--dugme"
+                  onClick={() => setPasifAcik((v) => !v)}
+                  aria-expanded={pasifAcik}
+                >
+                  <span className="ogr-grup-serit ogr-grup-serit--p" aria-hidden="true" />
+                  Pasif
+                  <span className="ogr-grup-sayi">
+                    {kova.pasif.length} {pasifAcik ? '⌃' : '⌄'}
+                  </span>
+                </button>
+                {pasifAcik && (
+                  <ul className="liste liste--kartli">{kova.pasif.map(satirCiz)}</ul>
+                )}
+              </section>
             )}
           </>
         )}
