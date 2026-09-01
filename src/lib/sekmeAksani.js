@@ -1,25 +1,20 @@
 /**
- * Sekme aksanları.
+ * Sekme aksanı.
  *
- * Renk sekmenin kendisine bağlı, ekrana değil: koç panelindeki "Konular"
- * ile öğrenci panelindeki "Konular" aynı indigoyu alıyor. Böylece renk
- * "hangi sekmedesin" bilgisini taşıyor, sadece süs olmuyor.
+ * ESKİDEN: her sekmenin kendi rengi vardı (bugün amber, program mor,
+ * konular indigo, denemeler kiremit...). Yedi ayrı hue, sistemdeki dört
+ * anlamlı rengin yanında sekizinci-dokuzuncu renk oluyordu. Sonuç: aktif
+ * sekme mor, yanındaki "acil" rozeti kırmızı, başlık turuncu — hiçbiri
+ * diğerinden daha önemli görünmüyordu.
  *
- * Aksan sekmede ve kartın üst kenarında durur; kartın içine girmez.
- * İçerideki nokta ve çubuklar anlamlı renkler taşıyor (yeşil bitti,
- * mavi çalışılıyor, kırmızı tekrar) ve aksan onları bozmamalı.
+ * ŞİMDİ: sekmenin kimliğini ikon ve etiket taşıyor, renk değil. Renk
+ * yalnızca "buradasın" der ve o da sistemdeki eylem rengidir.
+ *
+ * Bunun asıl faydası: yeni bir sekme eklerken burada da, CSS'te de
+ * hiçbir şey yazılmaz. Haritaya kayıt gerekmiyor, çünkü harita yok.
  */
-const AKSANLAR = {
-  bugun: 'var(--aksan-bugun)',
-  program: 'var(--aksan-program)',
-  konular: 'var(--aksan-konular)',
-  denemeler: 'var(--aksan-denemeler)',
-  notlar: 'var(--aksan-notlar)',
-  rozetler: 'var(--aksan-bugun)',
-  veli: 'var(--aksan-notlar)',
-}
 
 /** Sekme gövdesine verilecek stil nesnesi. */
-export function aksanStili(sekme) {
-  return { '--ak': AKSANLAR[sekme] ?? 'var(--aksan-varsayilan)' }
+export function aksanStili() {
+  return { '--ak': 'var(--serin)' }
 }

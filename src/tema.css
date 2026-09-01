@@ -43,8 +43,16 @@
   --g-yesil-zemin: #dff3e8;
   --g-yesil-kenar: #a9dcc3;
 
-  /* amber — markanın imzası ve ekranın tek fosforlu sayısı */
+  /* amber — markanın imzası ve ekranın tek fosforlu sayısı.
+     Üç değer çünkü üç ayrı iş var:
+       --g-amber        fosforlu vurgu. Parlak olmak zorunda; altına
+                        koyu mürekkep gelir (11.4:1), tek başına
+                        yazı ya da çizgi olmaz.
+       --g-amber-cizim  nokta, çubuk, kenar. Grafik öğe için 3:1
+                        gerekiyor; parlak amber beyazda 2.2 kalıyordu.
+       --g-amber-metin  yazı. 4.5:1 gerekiyor. */
   --g-amber:       #e8a317;
+  --g-amber-cizim: #ad7608;
   --g-amber-metin: #7a4f05;
   --g-amber-zemin: #fdf0d2;
   --g-amber-kenar: #ecca86;
@@ -76,6 +84,7 @@
   --k-yesil-kenar: #1f5c40;
 
   --k-amber:       #ffc24a;
+  --k-amber-cizim: #ffc24a;   /* koyu zeminde parlak amber zaten 10:1 */
   --k-amber-metin: #ffc24a;
   --k-amber-zemin: #3a2408;
   --k-amber-kenar: #6b4712;

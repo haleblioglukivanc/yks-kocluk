@@ -1,7 +1,10 @@
 import { Component, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
+/* Sıra önemli: tema.css renkleri tanımlar, sistem.css o renklerin
+   ne zaman kullanılacağını, index.css yalnızca yerleşimi. */
 import './tema.css'
+import './sistem.css'
 import './index.css'
 
 /* Telefonda geliştirici konsolu yok. Bir bileşen patladığında React bütün

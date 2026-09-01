@@ -1,0 +1,222 @@
+/* ═══════════════════════════════════════════════════════════════
+   SİSTEM KATMANI
+   tema.css renkleri tanımlar. Burası o renklerin NE ZAMAN
+   kullanılacağını tanımlar. index.css yalnızca yerleşim yapar.
+
+   ── ÇALIŞMA MANTIĞI ────────────────────────────────────────────
+   Bir öğeye `data-durum` verirsin, o öğe ve içindeki her şey
+   rengini oradan alır. Yeni bir bileşen yazarken renk seçmezsin;
+   durumu söylersin, renk kendiliğinden gelir.
+
+     <div class="satir" data-durum="acil">          → kırmızı kenar
+       <span class="rozet">19 gecikmiş</span>       → kırmızı rozet
+       <span class="nokta"></span>                  → kırmızı nokta
+     </div>
+
+   Yeni bir menü, kart, çubuk ya da rozet eklendiğinde CSS'e tek
+   satır yazılmaz: `data-durum` ne derse o renk gelir. Durum
+   verilmezse nötr olur — yani yanlış renk almak imkânsız.
+
+   ── BEŞ DURUM, BEŞTEN FAZLASI YOK ──────────────────────────────
+     eylem  mavi     dokunulabilir, bağlantı, odak, aktif sekme
+     acil   kırmızı  bugün müdahale gerektiren
+     izle   amber    geride ama acil değil
+     iyi    yeşil    bitti, yolunda
+     notr   gri      bilgi taşımayan
+
+   Altıncı bir durum eklemek istiyorsan önce şunu sor: bu gerçekten
+   yeni bir anlam mı, yoksa var olan beşten birinin tonu mu? Renk
+   sayısı arttıkça her birinin taşıdığı bilgi azalır.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── 1. DURUM TANIMLARI ────────────────────────────────────────
+   Her durum dört değişken kurar. Aşağıdaki bileşenlerin hepsi
+   yalnızca bu dördünü okur, hiçbiri marka rengine dokunmaz. */
+
+[data-durum='eylem'] {
+  --d:       var(--serin);
+  --d-metin: var(--serin-metin);
+  --d-zemin: var(--serin-zemin);
+  --d-kenar: var(--serin-kenar);
+}
+[data-durum='acil'] {
+  --d:       var(--kizil);
+  --d-metin: var(--kizil-metin);
+  --d-zemin: var(--kizil-zemin);
+  --d-kenar: var(--kizil-kenar);
+}
+[data-durum='izle'] {
+  --d:       var(--sicak);
+  --d-metin: var(--sicak-metin);
+  --d-zemin: var(--sicak-zemin);
+  --d-kenar: var(--sicak-kenar);
+}
+[data-durum='iyi'] {
+  --d:       var(--isaret);
+  --d-metin: var(--isaret-metin);
+  --d-zemin: var(--isaret-zemin);
+  --d-kenar: var(--isaret-kenar, var(--cizgi));
+}
+[data-durum='notr'],
+:root {
+  --d:       var(--grafit);
+  --d-metin: var(--grafit);
+  --d-zemin: var(--yuzey-2);
+  --d-kenar: var(--cizgi);
+}
+/* Sönük: nötrden de sessiz. Sıraya girmiş, henüz iş olmayan şeyler. */
+[data-durum='sonuk'] {
+  --d:       var(--soluk);
+  --d-metin: var(--soluk);
+  --d-zemin: var(--yuzey-2);
+  --d-kenar: var(--cizgi);
+}
+
+/* ── 2. ESKİ SINIF ADLARI ──────────────────────────────────────
+   Panelde zaten yüzlerce yerde geçen adlar. Kendi renklerini
+   taşımak yerine durumu işaret ediyorlar: "acil"in neye benzediği
+   tek yerde, yukarıda yazıyor. Yeni kodda bunlar kullanılmaz. */
+
+.risk-bas--acil, .rozet--uyari, .uyari--hata,
+.konu-rozet--tekrar_gerekli, .kk-risk--acil,
+.ilerleme--tekrar_gerekli        { --durum-esle: acil; }
+.risk-bas--izle, .rozet--izle    { --durum-esle: izle; }
+.risk-bas--iyi, .uyari--bilgi,
+.konu-rozet--tamamlandi          { --durum-esle: iyi; }
+.konu-rozet--calisiliyor,
+.sekme--etkin, .alt-bag--etkin   { --durum-esle: eylem; }
+.rozet--notr                     { --durum-esle: notr; }
+.rozet--sonuk,
+.konu-rozet--baslanmadi          { --durum-esle: sonuk; }
+
+.risk-bas--acil, .rozet--uyari, .uyari--hata,
+.konu-rozet--tekrar_gerekli, .kk-risk--acil {
+  --d: var(--kizil); --d-metin: var(--kizil-metin);
+  --d-zemin: var(--kizil-zemin); --d-kenar: var(--kizil-kenar);
+}
+.risk-bas--izle, .rozet--izle {
+  --d: var(--sicak); --d-metin: var(--sicak-metin);
+  --d-zemin: var(--sicak-zemin); --d-kenar: var(--sicak-kenar);
+}
+.risk-bas--iyi, .uyari--bilgi, .konu-rozet--tamamlandi {
+  --d: var(--isaret); --d-metin: var(--isaret-metin);
+  --d-zemin: var(--isaret-zemin); --d-kenar: var(--cizgi);
+}
+.konu-rozet--calisiliyor {
+  --d: var(--serin); --d-metin: var(--serin-metin);
+  --d-zemin: var(--serin-zemin); --d-kenar: var(--serin-kenar);
+}
+.rozet--sonuk, .konu-rozet--baslanmadi {
+  --d: var(--soluk); --d-metin: var(--soluk);
+  --d-zemin: var(--yuzey-2); --d-kenar: var(--cizgi);
+}
+
+/* "plan yok" mor bir altıncı renkti; izleme durumuna katıldı.
+   Plan yazılmamış olması ayrı bir anlam değil, geride kalmanın
+   bir biçimi. */
+.risk-bas--plan {
+  --d: var(--sicak); --d-metin: var(--sicak-metin);
+  --d-zemin: var(--sicak-zemin); --d-kenar: var(--sicak-kenar);
+}
+
+/* ── 3. YÜZEY KATLARI ──────────────────────────────────────────
+   Kart içindeki kutu, kartla aynı renk olamaz. Kat numarası
+   verilir, renk kendiliğinden bir tık ayrışır. Elle hex yazılmaz. */
+
+[data-kat='1'] { background: var(--yuzey);   border-color: var(--cizgi); }
+[data-kat='2'] { background: var(--yuzey-2); border-color: var(--cizgi); }
+[data-kat='3'] { background: var(--kagit);   border-color: var(--cizgi-2); }
+
+/* ── 4. BİLEŞENLER ─────────────────────────────────────────────
+   Hepsi yalnızca --d-* okur. Hiçbirinde marka rengi geçmez,
+   dolayısıyla gündüz/gece ayrımı bunlara ayrıca yazılmaz. */
+
+/* Rozet: küçük durum etiketi */
+.rozet,
+.risk-bas,
+.uyari,
+.konu-rozet {
+  background: var(--d-zemin);
+  color: var(--d-metin);
+}
+
+/* Şerit: satırın solunda duran şiddet kenarı.
+   Rozetten önce göz kenarı yakalıyor, o yüzden yumuşak --d-kenar
+   değil dolgu tonu: 3px'lik bir çizgi soluk olursa iş görmüyor. */
+.durum-serit {
+  border-left: 3px solid var(--d);
+  padding-left: 0.75rem;
+}
+[data-durum='notr'].durum-serit { border-left-color: transparent; }
+.durum-serit[data-durum='acil'] { background: var(--d-zemin); }
+
+/* Nokta: satır içinde yer kaplamayan durum işareti */
+.nokta {
+  display: inline-block; width: 8px; height: 8px;
+  border-radius: 50%; background: var(--d);
+  vertical-align: middle; flex: 0 0 auto;
+}
+
+/* Çubuk: oran gösteren dolgu */
+.cubuk {
+  height: 6px; background: var(--yuzey-2);
+  border-radius: 999px; overflow: hidden;
+}
+.cubuk > i,
+.cubuk > span { display: block; height: 100%; background: var(--d); border-radius: 999px; }
+
+/* Kart durumluysa kenarından belli olsun, içi boyanmasın:
+   içerideki yeşil/kırmızı işaretler anlamını korusun diye. */
+.kart[data-durum]:not([data-durum='notr']) { border-color: var(--d-kenar); }
+
+/* Çip: seçilebilir küçük etiket */
+.cip {
+  border: 1px solid var(--d-kenar); background: transparent;
+  color: var(--murekkep); border-radius: 999px;
+  padding: 0.3rem 0.7rem; font: inherit; font-size: var(--punto-mini);
+  min-height: 36px; cursor: pointer;
+}
+.cip[aria-pressed='true'],
+.cip--secili { background: var(--d-zemin); color: var(--d-metin); border-color: var(--d-kenar); }
+
+/* ── 5. METİN ROLLERİ ──────────────────────────────────────────
+   Üç kademe var, dördüncüsü yok. Bir yazı "biraz daha soluk"
+   olamaz; ya ikincil bilgidir ya üçüncül. */
+
+.metin-2 { color: var(--grafit); }
+.metin-3 { color: var(--soluk); }
+.metin-durum { color: var(--d-metin); }
+
+/* ── 6. SAYILAR ────────────────────────────────────────────────
+   Her metrik mono ve tabular: listede %30 ile %0 alt alta gelsin. */
+
+.sayi {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+}
+.sayi--buyuk { font-size: 2rem; font-weight: 700; line-height: var(--satir-dar); }
+.sayi--dev   { font-size: 2.75rem; font-weight: 700; line-height: var(--satir-dar); }
+
+/* Fosfor: ekranın TEK önemli sayısı. İkinciyi eklersen ikisi de
+   sönük kalır — o yüzden bir ekranda bir tane. */
+.fosforlu {
+  background: linear-gradient(transparent 62%, var(--altin) 62%, var(--altin) 92%, transparent 92%);
+  padding: 0 0.1em;
+}
+
+/* ── 7. DOKUNMA HEDEFİ ─────────────────────────────────────────
+   Telefonda 44px altındaki her şey ıskalanıyor. */
+
+.dugme, .cip, .alt-bag, .sekme, .gorev, button, [role='button'] { min-height: 44px; }
+.dugme--ufak, .metin-dugme { min-height: 36px; }
+
+/* ── 8. ODAK ───────────────────────────────────────────────────
+   Klavye ve ekran okuyucu için tek görünür halka; her bileşene
+   ayrıca yazılmaz. */
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  outline: 2px solid var(--serin);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
