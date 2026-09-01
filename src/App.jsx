@@ -159,18 +159,40 @@ export default function App() {
      sayfa yatayda taştığı anda taşan şeridi body'nin kâğıt zemini
      boyuyor ve sağda beyaz bir bant kalıyordu. */
   const panelAcik = durum === 'hazir' && Boolean(profil)
+
+  /* Gündüz/gece. Kullanıcı bir kere seçerse seçimi kalır; seçmediyse
+     cihazın sistem tercihi geçerli. Tek yer body'ye yazıyor, CSS
+     tarafında da tek blok okuyor. */
+  const [mod, setMod] = useState(() => {
+    try {
+      const kayitli = localStorage.getItem('yks-mod')
+      if (kayitli === 'gunduz' || kayitli === 'gece') return kayitli
+    } catch { /* gizli sekmede localStorage kapalı olabilir */ }
+    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'gece' : 'gunduz'
+  })
   useEffect(() => {
-    if (panelAcik) document.body.dataset.tema = 'panel'
-    else delete document.body.dataset.tema
+    try { localStorage.setItem('yks-mod', mod) } catch { /* yok say */ }
+  }, [mod])
+
+  useEffect(() => {
+    if (panelAcik) {
+      document.body.dataset.tema = 'panel'
+      document.body.dataset.mod = mod
+    } else {
+      delete document.body.dataset.tema
+      delete document.body.dataset.mod
+    }
     /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
        Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
     const etiket = document.querySelector('meta[name="theme-color"]')
-    if (etiket) etiket.setAttribute('content', panelAcik ? '#0e1626' : '#ffffff')
+    const renk = !panelAcik ? '#ffffff' : mod === 'gece' ? '#0f1520' : '#ffffff'
+    if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
+      delete document.body.dataset.mod
       if (etiket) etiket.setAttribute('content', '#ffffff')
     }
-  }, [panelAcik])
+  }, [panelAcik, mod])
 
   /* Koçun "Özetler"e girmeden is olup olmadigini bilmesi lazim. Yolu
      bagimliliga koyuyoruz: ekrandan cikinca sayi tazeleniyor. */
@@ -369,6 +391,22 @@ export default function App() {
           <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
         </div>
         <div className="ust-eylemler">
+          <UstDugme
+            etiket={mod === 'gece' ? 'Gündüz moduna geç' : 'Gece moduna geç'}
+            onClick={() => setMod((m) => (m === 'gece' ? 'gunduz' : 'gece'))}
+          >
+            {mod === 'gece' ? (
+              <svg {...ikonOzellik}>
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+              </svg>
+            ) : (
+              <svg {...ikonOzellik}>
+                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+              </svg>
+            )}
+          </UstDugme>
+
           <UstDugme
             etiket={mesajlardaMi ? 'Mesajlardan çık' : 'Mesajlar'}
             etkin={mesajlardaMi}

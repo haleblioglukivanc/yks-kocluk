@@ -1,70 +1,147 @@
 /* ═══════════════════════════════════════════════════════════════
    MARKA — TEK KAYNAK
-   Renkleri ve yazı tiplerini yalnızca burada değiştirin.
-   Tanıtım sayfası da paneller de bu değerleri okur;
-   buradaki bir değişiklik her yere birden yansır.
+   Renkleri, puntoları ve yazı tiplerini yalnızca burada değiştirin.
+   Tanıtım sayfası da paneller de bu değerleri okur.
+
+   KURAL: renk süs değil, durum söyler.
+   Mavi = eylem.  Kırmızı = acil.  Yeşil = yolunda.  Amber = marka.
+   Bir renk her yerde kullanılırsa bilgi taşıyamaz; o yüzden
+   her rengin tek bir işi var ve o işin dışına çıkmıyor.
+
+   DOLGU ile METİN ayrıdır. Amber dolgu olarak parlak, yazı olarak
+   okunmuyor (beyaz üstünde 2.2:1). Her renk çiftinin bir --*-metin
+   karşılığı var; küçük yazıda daima o kullanılır.
    ═══════════════════════════════════════════════════════════════ */
 
 :root {
-  /* — sıcak aksanlar (düğmeler, vurgular) — */
-  --marka-amber:   #f0a020;
-  --marka-alev:    #ec5f2b;
+  /* ── GÜNDÜZ: kâğıt ──────────────────────────────────────── */
+  --g-kagit:    #faf9f6;   /* sayfa zemini — ılık kırık beyaz */
+  --g-yuzey:    #ffffff;   /* kart */
+  --g-yuzey-2:  #f1f2ef;   /* kart içi girinti */
+  --g-cizgi:    #e3e5e0;   /* ince kenar */
+  --g-cizgi-2:  #cfd3cc;   /* belirgin kenar */
 
-  /* — soğuk aksan (bağlantı, odak, bilgi) — */
-  --marka-mavi:    #2f5fe0;
+  --g-murekkep: #16202e;   /* ana metin      · beyazda 16.4 */
+  --g-grafit:   #48566b;   /* ikincil metin  · beyazda  7.5 */
+  --g-soluk:    #5e6b80;   /* üçüncül metin  · beyazda  5.4 */
 
-  /* — metin — */
-  --marka-metin:   #111a2e;
-  --marka-metin-2: #4b5670;
-  --marka-metin-3: #7d879e;
+  /* mavi — eylem, bağlantı, odak (tükenmez kalem) */
+  --g-mavi:        #1e4fd0;
+  --g-mavi-metin:  #1a47bc;
+  --g-mavi-zemin:  #e2eafd;
+  --g-mavi-kenar:  #b9cbf8;
 
-  /* — zeminler — */
-  --marka-zemin:   #f5f7fb;   /* uygulama arka planı */
-  --marka-yuzey:   #ffffff;   /* kartlar */
-  --marka-cizgi:   #e5e9f2;   /* ince kenarlar */
-  --marka-cizgi-2: #d3daea;   /* belirgin kenarlar */
-  --marka-koyu:    #0e1626;   /* koyu bantlar, footer */
+  /* kırmızı — YALNIZCA acil (öğretmen kalemi) */
+  --g-kirmizi:       #c81e2e;
+  --g-kirmizi-metin: #a5121f;
+  --g-kirmizi-zemin: #fde7e4;
+  --g-kirmizi-kenar: #f4bdb7;
+
+  /* yeşil — bitti, yolunda */
+  --g-yesil:       #0e7a4f;
+  --g-yesil-metin: #0b6742;
+  --g-yesil-zemin: #dff3e8;
+  --g-yesil-kenar: #a9dcc3;
+
+  /* amber — markanın imzası ve ekranın tek fosforlu sayısı */
+  --g-amber:       #e8a317;
+  --g-amber-metin: #7a4f05;
+  --g-amber-zemin: #fdf0d2;
+  --g-amber-kenar: #ecca86;
+
+  /* ── GECE: mürekkep ─────────────────────────────────────── */
+  --k-kagit:    #0f1520;
+  --k-yuzey:    #182131;
+  --k-yuzey-2:  #202b3d;
+  --k-cizgi:    #2a3548;
+  --k-cizgi-2:  #3a4761;
+
+  --k-murekkep: #e9eef7;   /* kartta 13.9 */
+  --k-grafit:   #a5b0c4;   /* kartta  7.4 */
+  --k-soluk:    #8b98ad;   /* kartta  5.5 */
+
+  --k-mavi:        #7ba0ff;
+  --k-mavi-metin:  #7ba0ff;
+  --k-mavi-zemin:  #132848;
+  --k-mavi-kenar:  #24406e;
+
+  --k-kirmizi:       #ff8578;
+  --k-kirmizi-metin: #ff8578;
+  --k-kirmizi-zemin: #3e1512;
+  --k-kirmizi-kenar: #6b2a22;
+
+  --k-yesil:       #4ecb8b;
+  --k-yesil-metin: #4ecb8b;
+  --k-yesil-zemin: #0e2e20;
+  --k-yesil-kenar: #1f5c40;
+
+  --k-amber:       #ffc24a;
+  --k-amber-metin: #ffc24a;
+  --k-amber-zemin: #3a2408;
+  --k-amber-kenar: #6b4712;
+
+  /* ── ESKİ İSİMLER (tanıtım sayfası ve eski kurallar için) ──
+     Yeni koda bunlar yazılmaz; kalıcı olan yukarıdaki --g-/--k- seti. */
+  --marka-amber:   var(--g-amber);
+  --marka-alev:    #d9591f;
+  --marka-mavi:    var(--g-mavi);
+  --marka-metin:   var(--g-murekkep);
+  --marka-metin-2: var(--g-grafit);
+  --marka-metin-3: var(--g-soluk);
+  --marka-zemin:   var(--g-kagit);
+  --marka-yuzey:   var(--g-yuzey);
+  --marka-cizgi:   var(--g-cizgi);
+  --marka-cizgi-2: var(--g-cizgi-2);
+  --marka-koyu:    var(--k-kagit);
+  --marka-basari:  var(--g-yesil);
+  --marka-hata:    var(--g-kirmizi);
+  --marka-fosfor:  var(--g-amber);
+  --marka-yesil-acik: var(--g-yesil);
 
   /* — sekme aksanları —
-     Renk sekmeye bağlı, role değil: koç da öğrenci de "Konular" deyince
-     aynı indigoyu görüyor. Böylece renk bilgi taşıyor, süs olmuyor.
-     Yeşil bilerek yok: o "bitti" demek ve konu haritasında iş yapıyor. */
-  --aksan-bugun:     #b87d0e;
-  --aksan-program:   #7a4fd0;
-  --aksan-konular:   #3050b8;
-  --aksan-denemeler: #a34a22;
-  --aksan-notlar:    #4b6480;
-  --aksan-varsayilan: #b8431a;
+     Renk sekmeye bağlı, role değil: koç da öğrenci de "Konular"
+     deyince aynı tonu görüyor. */
+  --aksan-bugun:      var(--g-amber-metin);
+  --aksan-program:    #5b3fb0;
+  --aksan-konular:    var(--g-mavi-metin);
+  --aksan-denemeler:  #9c4a1c;
+  --aksan-notlar:     var(--g-grafit);
+  --aksan-varsayilan: var(--g-mavi-metin);
 
-  /* — durum yeşili: "yolunda" anlamı taşır, zemin rengi değildir — */
-  --marka-yesil-acik:  #2fa36b;
-
-  /* — anlamı sabit renkler (markadan bağımsız) — */
-  --marka-basari:  #0f7a58;
-  --marka-hata:    #c8322b;
-  --marka-fosfor:  #ffc94a;
-
-  /* — yazı tipleri — */
+  /* ── YAZI TİPLERİ ───────────────────────────────────────── */
   --marka-baslik: 'Bricolage Grotesque', 'Archivo', system-ui, sans-serif;
   --marka-govde:  'Karla', system-ui, sans-serif;
+  /* Sayılar mono: listede %30 ile %0 alt alta hizalansın diye.
+     Her metrik bu yüzle yazılır. */
   --marka-mono:   'JetBrains Mono', ui-monospace, monospace;
 
-  /* — koyu yüzeyler (panel, koyu bantlar) — */
-  --marka-koyu-zemin:   #0e1626;
-  --marka-koyu-yuzey:   #141d31;
-  --marka-koyu-yuzey-2: #1b2540;
-  --marka-koyu-cizgi:   #27324d;
-  --marka-koyu-metin:   #edf1fa;
-  --marka-koyu-metin-2: #a7b1c7;
-  --marka-koyu-metin-3: #75809a;
-  --marka-koyu-amber:   #ffb454;
-  --marka-koyu-alev:    #ff7a45;
-  --marka-koyu-mavi:    #6d9aff;
+  /* ── PUNTO VE SATIR ─────────────────────────────────────────
+     Gövde 16px: telefonda rahat okunuyor ve iOS Safari 16px altındaki
+     input'a odaklanınca sayfayı otomatik yakınlaştırmıyor.
+     En küçük punto 13px; altı telefonda okunmuyor. */
+  --punto-govde: 1rem;        /* 16 */
+  --punto-orta:  0.9375rem;   /* 15 */
+  --punto-kucuk: 0.875rem;    /* 14 */
+  --punto-mini:  0.8125rem;   /* 13 — alt sınır */
 
-  /* — sıkça kullanılan türevler — */
-  --marka-gecis: linear-gradient(135deg, var(--marka-amber), var(--marka-alev));
-  /* Kimlik kartı zemini. Nötr mürekkep: üstündeki yeşil/amber/kırmızı
-     durum renkleri anlamını korusun diye bilerek renksiz. */
-  --marka-kart-gecis: linear-gradient(148deg, var(--marka-koyu-yuzey-2) 0%, var(--marka-koyu-zemin) 74%);
-  --marka-koyu-gecis: linear-gradient(135deg, var(--marka-koyu-amber), var(--marka-koyu-alev));
+  --satir:      1.55;   /* akan metin */
+  --satir-sik:  1.3;    /* başlık, tek satırlık etiket */
+  --satir-dar:  1;      /* büyük sayı */
+
+  /* — türevler — */
+  --marka-gecis: linear-gradient(135deg, var(--g-amber), var(--marka-alev));
+  --marka-kart-gecis: linear-gradient(148deg, var(--k-yuzey-2) 0%, var(--k-kagit) 74%);
+  --marka-koyu-gecis: linear-gradient(135deg, var(--k-amber), #ff8f4f);
+
+  /* eski koyu isimler */
+  --marka-koyu-zemin:   var(--k-kagit);
+  --marka-koyu-yuzey:   var(--k-yuzey);
+  --marka-koyu-yuzey-2: var(--k-yuzey-2);
+  --marka-koyu-cizgi:   var(--k-cizgi);
+  --marka-koyu-metin:   var(--k-murekkep);
+  --marka-koyu-metin-2: var(--k-grafit);
+  --marka-koyu-metin-3: var(--k-soluk);
+  --marka-koyu-amber:   var(--k-amber);
+  --marka-koyu-alev:    #ff8f4f;
+  --marka-koyu-mavi:    var(--k-mavi);
 }
