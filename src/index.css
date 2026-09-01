@@ -3026,3 +3026,19 @@ body[data-mod='gece'] .uygulama .kareli,
 /* Liste satırının içindeki uyarı: kart genelindeki .yk-uyari ızgara
    satırıydı, burada normal blok olmalı. */
 .yk-uyari--satir { display: block; grid-column: auto; margin-top: 0.4rem; }
+
+/* Para tutarları KPI sayısından uzun: aynı puntoda taşıyor. */
+.kpi-sayi--para { font-size: 1.5rem; letter-spacing: -0.02em; }
+.yk-tutar {
+  font-family: var(--mono); font-weight: 700; font-size: var(--punto-orta);
+  color: var(--kizil-metin); white-space: nowrap; font-variant-numeric: tabular-nums;
+}
+
+.yk-form { margin-top: 0.875rem; padding-top: 0.875rem; border-top: 1px solid var(--cizgi); }
+.yk-sonuc {
+  margin-top: 0.875rem; padding: 0.875rem;
+  background: var(--isaret-zemin); border: 1px solid var(--isaret-kenar);
+  border-radius: 10px;
+}
+.yk-sonuc .liste-ad { margin-bottom: 0.25rem; }
+.yk-sonuc .dugme { margin-top: 0.625rem; }

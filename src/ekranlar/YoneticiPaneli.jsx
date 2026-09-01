@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Bos, Kart, Rozet, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { kullaniciOlustur } from '../lib/hesap.js'
 import SapkaSecici from '../bilesenler/SapkaSecici.jsx'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
 
@@ -24,6 +25,13 @@ function saatMetni(s) {
   if (s < 48) return `${Math.round(s)}sa`
   return `${Math.round(s / 24)}g`
 }
+
+/* Para her yerde ayni okunmali: kurus yok, binlik ayraci var.
+   Tutarlar buyuk ve alt alta; ondalik hem yer kapliyor hem hizayi bozuyor. */
+const paraBicimi = new Intl.NumberFormat('tr-TR', {
+  style: 'currency', currency: 'TRY', maximumFractionDigits: 0,
+})
+const para = (t) => paraBicimi.format(Number(t ?? 0))
 
 function yuzde(pay, payda) {
   if (!payda) return null
@@ -283,6 +291,156 @@ function Vekalet({ liste }) {
   )
 }
 
+function Tahsilat({ t }) {
+  const fark = Number(t.bu_ay_tahsil) - Number(t.gecen_ay_tahsil)
+  return (
+    <>
+      <div className="kpi-satir">
+        <div className="kpi-kart kpi-kart--serin">
+          <p className="kpi-etiket">Bu ay tahsil edilen</p>
+          <p className="kpi-sayi kpi-sayi--para">{para(t.bu_ay_tahsil)}</p>
+          <p className={`kpi-alt ${fark < 0 ? 'kpi-alt--kotu' : fark > 0 ? 'kpi-alt--iyi' : ''}`}>
+            geçen ay {para(t.gecen_ay_tahsil)}
+          </p>
+        </div>
+        <div className={`kpi-kart ${t.geciken_adet > 0 ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}>
+          <p className="kpi-etiket">Geciken</p>
+          <p className="kpi-sayi kpi-sayi--para">{para(t.geciken_tutar)}</p>
+          <p className={`kpi-alt ${t.geciken_adet > 0 ? 'kpi-alt--kotu' : 'kpi-alt--iyi'}`}>
+            {t.geciken_adet > 0 ? `${t.geciken_adet} taksit` : 'geciken yok'}
+          </p>
+        </div>
+      </div>
+
+      <Kart
+        baslik="Tahsilat"
+        altBaslik={`${t.aktif_sozlesme} aktif sözleşme · açık bakiye ${para(t.acik_bakiye)}`}
+      >
+        {!t.gecikenler?.length ? (
+          <Bos
+            baslik="Geciken ödeme yok"
+            aciklama={`Bu ay vadesi gelen ${para(t.bu_ay_vade)} tahsil edilmeyi bekliyor.`}
+          />
+        ) : (
+          <ul className="liste">
+            {t.gecikenler.map((g, i) => (
+              <li key={i} className="liste-satir">
+                <div>
+                  <span className="liste-ad">{g.ogrenci}</span>
+                  <span className="liste-alt">
+                    {new Date(g.vade).toLocaleDateString('tr-TR')} vadeli · {g.gun} gün gecikti
+                  </span>
+                </div>
+                <span className="yk-tutar">{para(g.kalan)}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Kart>
+    </>
+  )
+}
+
+/* Koc hesabini yalnizca yonetici acabiliyor; kural sunucuda, bu form
+   onun ekrandaki karsiligi. Gecici sifre bir kez gosteriliyor ve
+   hicbir yere yazilmiyor: kaybolursa yenisi uretilir. */
+function KocEkle({ liste, onEklendi }) {
+  const [acik, setAcik] = useState(false)
+  const [adSoyad, setAdSoyad] = useState('')
+  const [eposta, setEposta] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState(null)
+  const [sonuc, setSonuc] = useState(null)
+
+  async function gonder() {
+    setHata(null)
+    setBekliyor(true)
+    try {
+      const d = await kullaniciOlustur({
+        rol: 'koc',
+        ad_soyad: adSoyad.trim(),
+        eposta: eposta.trim(),
+      })
+      setSonuc(d)
+      setAdSoyad('')
+      setEposta('')
+      await onEklendi()
+    } catch (e) {
+      setHata(e.message ?? 'Koç eklenemedi.')
+    } finally {
+      setBekliyor(false)
+    }
+  }
+
+  return (
+    <Kart
+      baslik="Koçlar ve yetkiler"
+      altBaslik={`${liste.length} kişi`}
+      eylem={
+        <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setAcik((a) => !a)}>
+          {acik ? 'Kapat' : 'Koç ekle'}
+        </button>
+      }
+    >
+      <ul className="liste">
+        {liste.map((k) => (
+          <li key={k.koc_id} className="liste-satir">
+            <div>
+              <span className="liste-ad">{k.ad_soyad}</span>
+              <span className="liste-alt">
+                {k.rol === 'yonetici' ? 'Yönetici · koçluk da yapıyor' : 'Koç'} ·{' '}
+                {k.ogrenci_sayisi} öğrenci
+              </span>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      {acik && (
+        <div className="yk-form">
+          <Alan etiket="Ad soyad">
+            <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} autoComplete="off" />
+          </Alan>
+          <Alan
+            etiket="E‑posta"
+            ipucu="Geçici şifre üretilir; koç ilk girişte kendi şifresini belirler."
+          >
+            <input
+              type="email"
+              value={eposta}
+              onChange={(e) => setEposta(e.target.value)}
+              autoComplete="off"
+            />
+          </Alan>
+          <Uyari>{hata}</Uyari>
+          <Dugme
+            onClick={gonder}
+            bekliyor={bekliyor}
+            disabled={adSoyad.trim().length < 2 || !eposta.includes('@')}
+          >
+            Koç hesabı aç
+          </Dugme>
+        </div>
+      )}
+
+      {sonuc && (
+        <div className="yk-sonuc">
+          <p className="liste-ad">{sonuc.ad_soyad} eklendi</p>
+          <p className="liste-alt">
+            {sonuc.eposta} · geçici şifre <code className="kod-rozet">{sonuc.gecici_sifre}</code>
+          </p>
+          <p className="liste-alt">
+            Şifre bir daha gösterilmiyor. Koça ilettikten sonra bu kutuyu kapatabilirsin.
+          </p>
+          <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setSonuc(null)}>
+            Anladım
+          </button>
+        </div>
+      )}
+    </Kart>
+  )
+}
+
 const AYARLAR = [
   ['/raporlar', 'Rapor ve e‑posta', 'Veli ve öğrenci raporlarının gönderim düzeni'],
   ['/konular', 'Konu öncelikleri', 'Sınıf geneli ağırlıklar ve toplu görev atama'],
@@ -313,33 +471,33 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState(null)
 
-  useEffect(() => {
-    let iptal = false
-    Promise.all([
+  const yukle = useCallback(async () => {
+    const [nabiz, koclar, risk, sistem, vekalet, tahsilat] = await Promise.all([
       supabase.rpc('yonetici_nabzi'),
       supabase.rpc('yonetici_koc_performansi'),
       supabase.rpc('yonetici_risk_listesi', { p_limit: 5 }),
       supabase.rpc('yonetici_sistem_durumu'),
       supabase.rpc('yonetici_vekalet_kayitlari', { p_limit: 8 }),
-    ]).then(([nabiz, koclar, risk, sistem, vekalet]) => {
-      if (iptal) return
-      const ilkHata = [nabiz, koclar, risk, sistem, vekalet].find((c) => c.error)
-      if (ilkHata) {
-        setHata(ilkHata.error.message)
-        return
-      }
-      setVeri({
-        nabiz: nabiz.data,
-        koclar: koclar.data,
-        risk: risk.data,
-        sistem: sistem.data,
-        vekalet: vekalet.data,
-      })
-    })
-    return () => {
-      iptal = true
+      supabase.rpc('yonetici_tahsilat_ozeti'),
+    ])
+    const ilkHata = [nabiz, koclar, risk, sistem, vekalet, tahsilat].find((c) => c.error)
+    if (ilkHata) {
+      setHata(ilkHata.error.message)
+      return
     }
+    setVeri({
+      nabiz: nabiz.data,
+      koclar: koclar.data,
+      risk: risk.data,
+      sistem: sistem.data,
+      vekalet: vekalet.data,
+      tahsilat: tahsilat.data,
+    })
   }, [])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
 
   return (
     <>
@@ -370,20 +528,15 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
           <Nabiz n={veri.nabiz} />
           <Koclar liste={veri.koclar} />
           <Risk liste={veri.risk} onOgrenciAc={onOgrenciAc} />
+          <Tahsilat t={veri.tahsilat} />
           <Sistem s={veri.sistem} />
           <Vekalet liste={veri.vekalet} />
-
-          <Kart baslik="Tahsilat" altBaslik="Aidat ve ödeme takibi">
-            <Bos
-              baslik="Henüz kurulmadı"
-              aciklama="Ödemeler şu an sistemin dışında tutuluyor."
-            />
-          </Kart>
 
           {/* Haftalik Ilham takvimi icerik kuratorlugu: koc gorunen hali
               okuyor, 12 haftalik plani yonetici kuruyor. */}
           <HaftalikTakvim />
 
+          <KocEkle liste={veri.koclar} onEklendi={yukle} />
           <Ayarlar onGit={onGit} />
         </>
       )}
