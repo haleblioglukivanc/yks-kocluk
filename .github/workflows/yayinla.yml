@@ -1,13 +1,49 @@
 name: Yayinla
 
-# main dalina her push'ta calisir. Elle de baslatilabilir.
+# main dalina her push'ta Cloudflare Workers'a yayinlar. Elle de baslatilabilir.
+#
+# GEREKEN SIRLAR (Settings > Secrets and variables > Actions > Secrets):
+#   CLOUDFLARE_API_TOKEN   Cloudflare'de "Edit Cloudflare Workers" sablonuyla uretilir
+#   CLOUDFLARE_ACCOUNT_ID  Cloudflare panelinde Workers & Pages > sag sutun
+#
+# Sirlar yoksa is akisi kirmizi ile patlamak yerine temiz atlar: her push'ta
+# duran kirmizi carpi gercek hatalari gormeyi zorlastiriyordu.
+
 on:
   push:
     branches: [main]
   workflow_dispatch:
 
 jobs:
+  denetim:
+    runs-on: ubuntu-latest
+    outputs:
+      hazir: ${{ steps.bak.outputs.hazir }}
+    steps:
+      - id: bak
+        env:
+          JETON: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          HESAP: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -n "$JETON" ] && [ -n "$HESAP" ]; then
+            echo "hazir=evet" >> "$GITHUB_OUTPUT"
+          else
+            echo "hazir=hayir" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Cloudflare yayini atlandi"
+              echo ""
+              echo "Depoda \`CLOUDFLARE_API_TOKEN\` ve/veya \`CLOUDFLARE_ACCOUNT_ID\` tanimli degil."
+              echo "Ikisi de eklenince bu is akisi kendiliginden calismaya baslar;"
+              echo "burada yapilacak baska bir sey yok."
+              echo ""
+              echo "Bu arada canli surum GitHub Pages'te:"
+              echo "https://haleblioglukivanc.github.io/yks-kocluk/"
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
   yayinla:
+    needs: denetim
+    if: needs.denetim.outputs.hazir == 'evet'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +56,7 @@ jobs:
       - name: Bagimliliklari kur
         run: npm ci
 
+      # Cloudflare kokte yayinlar: TABAN bos birakiliyor, vite kok kabul ediyor.
       - name: Uretim derlemesi
         env:
           VITE_SUPABASE_URL: ${{ vars.VITE_SUPABASE_URL }}
@@ -32,3 +69,14 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy
+
+      - name: Adresi ozete yaz
+        run: |
+          {
+            echo "### Cloudflare yayini tamam"
+            echo ""
+            echo "https://yks-kocluk.haleblioglukivanc.workers.dev"
+            echo ""
+            echo "Ust bardaki surum damgasi bu derlemenin saatini gosterir;"
+            echo "GitHub Pages surumuyle ayni olmali."
+          } >> "$GITHUB_STEP_SUMMARY"

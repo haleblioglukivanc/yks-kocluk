@@ -388,7 +388,9 @@ export default function App() {
           </span>
           {/* Hangi derlemeye baktığımızı görebilmek için. Önbellek sorunlarını
               tahmin etmek yerine ölçmeyi sağlıyor. */}
-          <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
+          <span className="derleme-damgasi">
+            sürüm {__DERLEME__} · {__HEDEF__}
+          </span>
         </div>
         <div className="ust-eylemler">
           <UstDugme
