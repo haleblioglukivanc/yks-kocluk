@@ -6,19 +6,38 @@ import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
-import HedefNet from '../bilesenler/HedefNet.jsx'
 import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
 import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
-import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
+import Ben from './Ben.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
-import Rozetlerim from './Rozetlerim.jsx'
 
 
-export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, onCik }) {
+/* Sekme iki türlü yönetilir: öğrenci kendi hesabında alt gezinmeden
+   gelir (App yolu sekmeye çevirir, `sekme`/`onSekme` verir); vekalette
+   koçun alt çubuğu kendi işine ait olduğu için sekmeler burada, panelin
+   içinde çizilir. İki yol da aynı gövdeyi kullanır. */
+const SEKMELER = [
+  ['bugun', 'Bugün'],
+  ['konular', 'Konular'],
+  ['denemeler', 'Denemeler'],
+  ['ben', 'Ben'],
+]
+
+/* Kural motoru eski sekme adlarıyla yönlendirebilir; hepsi bir yere gider. */
+const SEKME_ESLE = { program: 'bugun', rozetler: 'ben' }
+
+export default function OgrenciPaneli({
+  profil,
+  ogrenciId,
+  vekaleten = false,
+  onCik,
+  sekme: disSekme,
+  onSekme: disOnSekme,
+}) {
   /* Vekalet: koç öğrencinin panelini onun verisiyle açar. Kendi JWT'siyle
      kalır; yetkiyi RLS (private.ogrencim_mi) verir, yazılan satırlara
      islem_yapan damgası düşer. */
@@ -26,7 +45,14 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
   const [kayit, setKayit] = useState(null)
   const [denemeler, setDenemeler] = useState([])
   const [netDurumu, setNetDurumu] = useState(null)
-  const [sekme, setSekme] = useState('bugun')
+  const [icSekme, setIcSekme] = useState('bugun')
+  const kontrollu = typeof disOnSekme === 'function'
+  const sekme = kontrollu ? (disSekme ?? 'bugun') : icSekme
+  const setSekme = (k) => {
+    const hedef = SEKME_ESLE[k] ?? k
+    if (kontrollu) disOnSekme(hedef)
+    else setIcSekme(hedef)
+  }
   const [hata, setHata] = useState('')
   const [ozet, setOzet] = useState(null)
   const [tazele, setTazele] = useState(0)
@@ -91,11 +117,6 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
 
-  const sonNet = denemeler[0] ? Number(denemeler[0].toplam_net) : null
-  const oncekiNet = denemeler[1] ? Number(denemeler[1].toplam_net) : null
-  const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
-  const hedefAlt =
-    [kayit.hedef_universite, kayit.hedef_bolum].filter(Boolean).join(' · ') || undefined
 
   return (
     <>
@@ -112,6 +133,7 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
       )}
 
       <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
+      {sekme === 'bugun' && (
       <OgrenciBasligi
         profil={
           vekaleten
@@ -124,15 +146,12 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
         sekme={sekme}
         onSekme={setSekme}
       />
+      )}
 
       <div className="sekme-govde" style={aksanStili()}>
+      {!kontrollu && (
       <nav className="sekmeler sekmeler--genis">
-        {[
-          ['bugun', 'Bugün'],
-          ['program', 'Program'],
-          ['konular', 'Konular'],
-          ['denemeler', 'Denemeler'],
-        ].map(([k, e]) => (
+        {SEKMELER.map(([k, e]) => (
           <button
             key={k}
             className={sekme === k ? 'sekme sekme--etkin' : 'sekme'}
@@ -142,6 +161,7 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
           </button>
         ))}
       </nav>
+      )}
 
       {sekme === 'bugun' ? (
         <>
@@ -163,35 +183,18 @@ export default function OgrenciPaneli({ profil, ogrenciId, vekaleten = false, on
               onDegisti={yenile}
             />
           )}
-          {/* Günün sonunda okunacak kutu: kitap + söz. Kritik değil,
-              o yüzden bugünün işlerinin altında duruyor. */}
-          <HaftalikIlham />
-        </>
-      ) : sekme === 'program' ? (
-        <>
+          {/* Program sekmesi kalktı; ızgara geçici olarak günün altında.
+              Hafta şeridi gelince bu kartın yerini alacak. */}
           <Kart baslik="Haftalık programım" altBaslik="Bitirdiğin bloğa dokun">
             <ProgramIzgarasi ogrenci={kayit} duzenlenebilir={false} />
           </Kart>
         </>
       ) : sekme === 'konular' ? (
         <KonuHaritasi profilId={kayit.id} />
-      ) : sekme === 'rozetler' ? (
-        <Rozetlerim ogrenciId={kayit.id} />
+      ) : sekme === 'ben' ? (
+        <Ben kayit={kayit} ozet={ozet} netDurumu={netDurumu} denemeler={denemeler} />
       ) : (
-        <>
-          {/* Hedef çubukları buraya taşındı: ayda bir, deneme girildikçe
-              değişiyorlar. Her gün açılan ekranın tepesinde durmaları
-              yanlıştı; ait oldukları yer denemelerin yanı. */}
-          <Kart baslik="Hedefe göre durumum" altBaslik={hedefAlt}>
-            <HedefNet tyt={kayit.hedef_tyt_net} ayt={kayit.hedef_ayt_net} durum={netDurumu} />
-            {fark !== null && fark !== 0 && (
-              <p className={`net-fark net-fark--${fark > 0 ? 'artis' : 'dusus'}`}>
-                Son denemede {fark > 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)} net
-              </p>
-            )}
-          </Kart>
-          <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
-        </>
+        <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
       )}
       </div>
       </SayacSaglayici>

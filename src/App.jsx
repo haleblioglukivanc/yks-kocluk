@@ -19,6 +19,10 @@ import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
+/* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
+const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler', '/ben': 'ben' }
+const SEKME_YOLU = Object.fromEntries(Object.entries(OGRENCI_SEKME).map(([y, s]) => [s, y]))
+
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
 /* Site kökte yayınlanıyor ama yollar yine de tabana göre okunuyor.
@@ -138,6 +142,27 @@ const GEZINME_IKONU = {
     <>
       <rect x="3" y="5" width="18" height="14" rx="2" />
       <path d="m3.5 7 7.4 5.2a2 2 0 0 0 2.2 0L20.5 7" />
+    </>
+  ),
+  /* Öğrenci çubuğu. Yol = konu haritası, Ben = ilerleme. */
+  '/yol': (
+    <>
+      <path d="M4 18c3-6 6-6 8 0s5 6 8 0" />
+      <circle cx="4" cy="18" r="1.6" />
+      <circle cx="20" cy="18" r="1.6" />
+      <circle cx="12" cy="12" r="1.6" />
+    </>
+  ),
+  '/denemeler': (
+    <>
+      <rect x="5" y="3.5" width="14" height="17" rx="2" />
+      <path d="M9 8.5h6M9 12h6M9 15.5h3.5" />
+    </>
+  ),
+  '/ben': (
+    <>
+      <circle cx="12" cy="8.5" r="3.8" />
+      <path d="M4.5 20v-1.2A4.8 4.8 0 0 1 9.3 14h5.4a4.8 4.8 0 0 1 4.8 4.8V20" />
     </>
   ),
   '/raporlar': (
@@ -320,8 +345,12 @@ export default function App() {
      kopyası orada da gizlenmeli, yoksa iki maskot olur. */
   /* Yonetim ekraninda Kamil hic cikmiyor: orasi motivasyon degil isletme
      ekrani. Kosedeki kopya da Sistem kartinin ustune biniyordu. */
+  /* Öğrencide Bugün ve Ben başlıkta Kâmil taşır; Yol'da harita kendi
+     Kâmil'ini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
+  const ogrenciYolu = OGRENCI_SEKME[yol]
   const basliktaKalemVar =
-    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) ||
+    (yol === '/' && kocMu) ||
+    (profil.rol === 'ogrenci' && ['/', '/ben', '/yol'].includes(yol)) ||
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
@@ -336,10 +365,17 @@ export default function App() {
         ['/veli-ozetleri', 'Özetler'],
         ['/raporlar', 'Rapor'],
       ]
-    : [['/', profil.rol === 'veli' ? 'Bu hafta' : 'Panelim']]
+    : profil.rol === 'ogrenci'
+      ? [
+          ['/', 'Bugün'],
+          ['/yol', 'Yol'],
+          ['/denemeler', 'Denemeler'],
+          ['/ben', 'Ben'],
+        ]
+      : [['/', 'Bu hafta']]
 
-  /* Tek sekmelik bir çubuk gezinme değil, süs olur. Öğrenci ve velide
-     alt çubuk hiç çizilmiyor; ekranı da o kadar uzatıyor. */
+  /* Tek sekmelik bir çubuk gezinme değil, süs olur. Velide alt çubuk
+     hiç çizilmiyor; ekranı da o kadar uzatıyor. */
   const gezinmeVar = baglantilar.length > 1
   const mesajlardaMi = yol === '/mesajlar'
 
@@ -386,7 +422,13 @@ export default function App() {
         />
       )
     if (profil.rol === 'veli') return <VeliPaneli />
-    return <OgrenciPaneli profil={profil} />
+    return (
+      <OgrenciPaneli
+        profil={profil}
+        sekme={ogrenciYolu ?? 'bugun'}
+        onSekme={(k) => git(SEKME_YOLU[k] ?? '/')}
+      />
+    )
   }
 
   return (

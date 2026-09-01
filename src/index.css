@@ -2042,6 +2042,9 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   overflow-wrap: anywhere;
 }
 
+/* Ben sekmesindeki başlığın ikinci satırı: hedef / yapılan. */
+.ob-alt { margin: 0.3rem 0 0; font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.62); }
+
 .ob-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
 .ob-basla, .ob-tamam {
   font: inherit; font-size: var(--punto-mini); font-weight: 700; cursor: pointer;
