@@ -5,7 +5,7 @@ import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
-import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
+import SapkaSecici from '../bilesenler/SapkaSecici.jsx'
 
 /** Koçun günlük durum ekranı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün ne oluyor" sorusuna cevap verir. */
@@ -24,6 +24,9 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
 
   return (
     <div className="panel">
+      {/* Yonetici iki sifatla giriyor; hangisiyle bakildigi ekranda yazsin.
+          Koc rolunde tek sapka var, secici de cizilmiyor. */}
+      {profil.rol === 'yonetici' && <SapkaSecici aktif="koc" onGit={onGit} />}
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       {ozet && <Ozetler ozet={ozet} />}
       <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
@@ -31,7 +34,6 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
       {/* Ogrencilere ve velilere o hafta ne gittigini kocun da gormesi
           gerekiyor; ayni bilesen, ayni veri. */}
       <HaftalikIlham />
-      <HaftalikTakvim />
     </div>
   )
 }

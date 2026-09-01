@@ -6,6 +6,7 @@ import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
+import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
@@ -358,6 +359,14 @@ export default function App() {
           ogrenciId={gozuyleId}
           vekaleten
           onCik={() => git('/ogrenciler')}
+        />
+      )
+    if (profil.rol === 'yonetici' && yol === '/yonetim')
+      return (
+        <YoneticiPaneli
+          profil={profil}
+          onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
+          onGit={git}
         />
       )
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />

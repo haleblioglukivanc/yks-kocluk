@@ -2950,3 +2950,75 @@ body[data-mod='gece'] .uygulama .kareli,
 
 /* Sistem tercihi App.jsx'te okunuyor: ilk açılışta cihazın moduna
    düşüyor, kullanıcı bir kere seçince seçimi kalıcı oluyor. */
+
+/* ============================================================
+   YÖNETİCİ PANELİ
+   Kartların kendisi ortak (.kart, .kpi-*, .liste-*); buradaki
+   tek iş, koç paneli ile ortak olmayan üç desen: şapka seçici,
+   koç performans satırı ve satır bağlantısı.
+   ============================================================ */
+
+.yk-basi {
+  display: flex; flex-wrap: wrap; align-items: center;
+  justify-content: space-between; gap: 0.75rem 1rem;
+  margin-bottom: 0.25rem;
+}
+.yk-ad { margin: 0; font-family: var(--display); font-size: 1.25rem; font-weight: 700; line-height: var(--satir-sik); }
+.yk-gun { margin: 0.15rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
+
+/* Şapka seçici: hangi sıfatla bakıldığı her zaman ekranda. */
+.sapka-secici {
+  display: flex; gap: 3px; padding: 3px;
+  background: var(--yuzey-2); border: 1px solid var(--cizgi); border-radius: 10px;
+}
+.sapka-secici button {
+  border: 0; background: none; cursor: pointer;
+  font-family: inherit; font-size: var(--punto-kucuk); font-weight: 600;
+  color: var(--soluk); padding: 0.5rem 0.9rem; border-radius: 7px;
+  min-height: 38px;
+  transition: background 140ms ease, color 140ms ease;
+}
+.sapka-secici button[aria-pressed='true'] {
+  background: var(--yuzey); color: var(--murekkep);
+  box-shadow: 0 1px 2px rgb(16 38 62 / 0.12);
+}
+@media (prefers-reduced-motion: reduce) { .sapka-secici button { transition: none; } }
+
+/* Koç satırı: ad ve yük üstte, ölçümler altta. Ölçümler yan yana
+   sığmadığında alta sarıyor; telefonda üç sütun zorlamıyoruz. */
+.yk-koc {
+  display: grid; grid-template-columns: 1fr auto; gap: 0.25rem 0.75rem;
+  padding: 0.8rem 0; border-top: 1px solid var(--cizgi);
+}
+.yk-koc:first-child { border-top: 0; padding-top: 0; }
+.yk-koc:last-child { padding-bottom: 0; }
+.yk-yuk { font-family: var(--mono); font-size: var(--punto-mini); color: var(--soluk); text-align: right; }
+.yk-olcum { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 0.25rem 1rem; margin-top: 0.2rem; }
+.yk-olcum span { font-size: var(--punto-mini); color: var(--grafit); }
+.yk-olcum b { font-family: var(--mono); font-weight: 700; margin-left: 0.25rem; font-variant-numeric: tabular-nums; }
+.yk-uyari {
+  grid-column: 1 / -1; margin: 0.5rem 0 0; padding: 0.45rem 0.65rem;
+  font-size: var(--punto-mini); line-height: var(--satir-sik);
+  background: var(--kizil-zemin); border: 1px solid var(--kizil-kenar);
+  color: var(--kizil-metin); border-radius: 8px;
+}
+
+/* Satırın tamamı tıklanabilir olmalı; çıplak button hizayı bozuyor. */
+.yk-baglanti {
+  display: block; flex: 1 1 auto; min-width: 0;
+  background: none; border: 0; padding: 0; margin: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.yk-ok { color: var(--soluk); font-size: 1.1rem; flex-shrink: 0; }
+
+/* ------------------------------------------------------------
+   Rozet tonları
+   Ortak.jsx uzun süredir `rozet--{ton}` yazıyordu ama karşılığı
+   hiç tanımlanmamıştı: üç ton da aynı görünüyordu. Tek yerde
+   tanımlanınca risk radarı, haftalık takvim ve raporlar da
+   aynı anda düzeliyor.
+   ------------------------------------------------------------ */
+.rozet--notr  { background: var(--yuzey-2); color: var(--grafit); border: 1px solid var(--cizgi); }
+.rozet--iyi   { background: var(--isaret-zemin); color: var(--isaret-metin); border: 1px solid var(--isaret-kenar); }
+.rozet--uyari { background: var(--kizil-zemin); color: var(--kizil-metin); border: 1px solid var(--kizil-kenar); }
+.rozet--izle  { background: var(--sicak-zemin); color: var(--sicak-metin); border: 1px solid var(--sicak-kenar); }
