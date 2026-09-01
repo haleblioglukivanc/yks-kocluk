@@ -318,8 +318,12 @@ export default function App() {
   const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null
   /* Vekalette de öğrenci başlığı (dolayısıyla Kâmil) ekranda: köşedeki
      kopyası orada da gizlenmeli, yoksa iki maskot olur. */
+  /* Yonetim ekraninda Kamil hic cikmiyor: orasi motivasyon degil isletme
+     ekrani. Kosedeki kopya da Sistem kartinin ustune biniyordu. */
   const basliktaKalemVar =
-    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) || Boolean(gozuyleId)
+    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) ||
+    Boolean(gozuyleId) ||
+    yol === '/yonetim'
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın

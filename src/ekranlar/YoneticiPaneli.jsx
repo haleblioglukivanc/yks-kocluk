@@ -291,7 +291,7 @@ function Vekalet({ liste }) {
   )
 }
 
-function Tahsilat({ t }) {
+function Tahsilat({ t, onOgrenciAc }) {
   const fark = Number(t.bu_ay_tahsil) - Number(t.gecen_ay_tahsil)
   return (
     <>
@@ -307,7 +307,9 @@ function Tahsilat({ t }) {
           <p className="kpi-etiket">Geciken</p>
           <p className="kpi-sayi kpi-sayi--para">{para(t.geciken_tutar)}</p>
           <p className={`kpi-alt ${t.geciken_adet > 0 ? 'kpi-alt--kotu' : 'kpi-alt--iyi'}`}>
-            {t.geciken_adet > 0 ? `${t.geciken_adet} taksit` : 'geciken yok'}
+            {t.geciken_adet > 0
+              ? `${t.geciken_kisi} öğrenci · ${t.geciken_adet} taksit`
+              : 'geciken yok'}
           </p>
         </div>
       </div>
@@ -323,14 +325,15 @@ function Tahsilat({ t }) {
           />
         ) : (
           <ul className="liste">
-            {t.gecikenler.map((g, i) => (
-              <li key={i} className="liste-satir">
-                <div>
+            {t.gecikenler.map((g) => (
+              <li key={g.ogrenci_id} className="liste-satir">
+                <button className="yk-baglanti" onClick={() => onOgrenciAc(g.ogrenci_id)}>
                   <span className="liste-ad">{g.ogrenci}</span>
                   <span className="liste-alt">
-                    {new Date(g.vade).toLocaleDateString('tr-TR')} vadeli · {g.gun} gün gecikti
+                    {g.taksit > 1 ? `${g.taksit} taksit · en eskisi ` : ''}
+                    {g.gun} gün gecikti
                   </span>
-                </div>
+                </button>
                 <span className="yk-tutar">{para(g.kalan)}</span>
               </li>
             ))}
@@ -528,7 +531,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
           <Nabiz n={veri.nabiz} />
           <Koclar liste={veri.koclar} />
           <Risk liste={veri.risk} onOgrenciAc={onOgrenciAc} />
-          <Tahsilat t={veri.tahsilat} />
+          <Tahsilat t={veri.tahsilat} onOgrenciAc={onOgrenciAc} />
           <Sistem s={veri.sistem} />
           <Vekalet liste={veri.vekalet} />
 
