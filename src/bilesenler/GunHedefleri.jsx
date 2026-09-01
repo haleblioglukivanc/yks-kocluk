@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari } from './Ortak.jsx'
+import GorevKaynagi from './GorevKaynagi.jsx'
 
 /* Günün hedefleri. Öğrenci panelinde dokunulabilir, koçun "öğrenci gözüyle"
    ekranında salt okunur — iki ekranın aynı dosyadan çizilmesi, birinde
@@ -114,6 +115,7 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
                     {(etiket || g.tur) && (
                       <span className="gorev-etiket">{etiket || TUR_ETIKET[g.tur] || g.tur}</span>
                     )}
+                    <GorevKaynagi gorev={g} />
                     {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
                   </div>
                 </li>

@@ -2,6 +2,7 @@ import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import { dersGorunumu } from '../lib/dersGorunum.js'
+import GorevKaynagi from './GorevKaynagi.jsx'
 
 export const PERIYOTLAR = ['09—11', '11—13', '14—16', '16—18', '19—21', '21—23']
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
@@ -61,7 +62,9 @@ export default function ProgramIzgarasi({
   const yukle = useCallback(async () => {
     const { data, error } = await supabase
       .from('gorevler')
-      .select('id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, dersler(ad), konular(ad)')
+      .select(
+        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, kaynak_aralik, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
+      )
       .eq('ogrenci_id', ogrenci.id)
       .gte('tarih', ilk)
       .lte('tarih', son)
@@ -363,6 +366,15 @@ function BlokAyrinti({ blok, saltOkunur, onKapat, onBitir }) {
         </p>
       )}
 
+      <GorevKaynagi
+        gorev={{
+          kaynak_ad: blok.kaynaklar?.ad,
+          kaynak_bicim: blok.kaynaklar?.bicim,
+          kaynak_url: blok.kaynaklar?.url,
+          kaynak_dosya: blok.kaynaklar?.dosya_yolu,
+          kaynak_aralik: blok.kaynak_aralik,
+        }}
+      />
       {blok.aciklama && <p className="gorev-not">{blok.aciklama}</p>}
 
       {!saltOkunur && (

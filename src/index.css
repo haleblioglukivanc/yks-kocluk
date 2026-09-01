@@ -2828,3 +2828,18 @@ body[data-tema='panel'] {
 @media (prefers-reduced-motion: reduce) {
   .kaynak-secim .kaynak { transition: none; }
 }
+
+/* Görevin altındaki kaynak satırı. Öğrenci "neyden çalışacağım"
+   sorusunun cevabını görevden ayrılmadan görüyor. */
+.gorev-kaynak {
+  display: flex; align-items: baseline; gap: 0.375rem; flex-wrap: wrap;
+  margin-top: 0.25rem; font-size: 0.75rem; color: var(--grafit);
+}
+.gorev-kaynak--bag { color: var(--dolgu); text-decoration: none; }
+.gorev-kaynak--bag:hover .gorev-kaynak-ad,
+.gorev-kaynak--bag:focus-visible .gorev-kaynak-ad { text-decoration: underline; }
+.gorev-kaynak-ad { font-weight: 500; overflow-wrap: anywhere; }
+/* Aralık ayrı bir bilgi: kitabın adıyla karışmasın diye nokta ile
+   ayrılıp soluklaştırılıyor. */
+.gorev-kaynak-aralik { color: var(--soluk); }
+.gorev-kaynak-aralik::before { content: '· '; }
