@@ -1899,8 +1899,9 @@ body[data-tema='panel'] {
 /* Tek yüzde "neden buradasın" sorusunu cevaplamıyordu: %34 ve "dün aktif"
    görünen öğrencinin 19 gecikmiş görevi olabiliyor. Sebebi yazıyoruz. */
 .ok-sebep {
-  display: block; font-size: 0.75rem; color: var(--soluk); margin-top: 0.1rem;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2;
+  font-size: 0.75rem; line-height: 1.25; color: var(--soluk);
+  margin-top: 0.1rem; overflow: hidden;
 }
 .ok-sebep--uyari { color: var(--marka-alev); font-weight: 500; }
 .ok-sebep--iyi { color: var(--marka-yesil-acik); font-weight: 500; }
@@ -1921,7 +1922,7 @@ body[data-tema='panel'] {
   position: absolute; left: 0; right: 0; bottom: 0;
   background: var(--serit, var(--murekkep)); border-radius: 2px;
 }
-.nabiz-gun--bugun { outline: 1.5px solid var(--serit, var(--cizgi)); outline-offset: 1.5px; }
+.nabiz-gun--bugun { outline: 1px solid var(--soluk); outline-offset: 0; opacity: 0.95; }
 
 /* ═══════════ Satır sarmalı ve eylemler ═══════════ */
 .ogr-satir-sarmal { list-style: none; }
@@ -1951,6 +1952,11 @@ body[data-tema='panel'] {
 .gn-hucre {
   flex: 1; min-width: 0; padding: 0.5rem 0.4rem;
   border: 1px solid var(--cizgi); border-radius: 12px; background: var(--yuzey);
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.gn-hucre:disabled { cursor: default; opacity: 0.5; }
+.gn-hucre--etkin {
+  border-color: var(--murekkep); box-shadow: inset 0 0 0 1px var(--murekkep);
 }
 .gn-hucre--uyari {
   border-color: var(--sicak-kenar, var(--marka-alev));
@@ -2924,3 +2930,56 @@ body[data-tema='panel'] {
    ayrılıp soluklaştırılıyor. */
 .gorev-kaynak-aralik { color: var(--soluk); }
 .gorev-kaynak-aralik::before { content: '· '; }
+
+
+/* ═══════════ Süzgeç ve toplu dürtme ═══════════
+   Özet kartları önce yalnızca sayı gösteriyordu; "peki bu altı kişi kim"
+   sorusunun cevabı yoktu. Artık her kart aynı zamanda süzgeç. */
+.suzgec-kaldir {
+  margin-left: auto; padding: 0.25rem 0.55rem;
+  font: inherit; font-size: 0.7rem; font-weight: 600; letter-spacing: 0;
+  text-transform: none; color: var(--serin);
+  background: none; border: 1px solid var(--cizgi); border-radius: 999px;
+  cursor: pointer;
+}
+.suzgec-kaldir:hover { border-color: var(--serin); }
+
+.durtme-serit {
+  display: flex; align-items: center; gap: 0.5rem; width: 100%;
+  padding: 0.6rem 0.8rem; margin-bottom: 0.9rem;
+  font: inherit; font-size: 0.8rem; color: var(--soluk); text-align: left;
+  background: none; border: 1px dashed var(--cizgi); border-radius: 12px;
+  cursor: pointer;
+}
+.durtme-serit:hover { border-color: var(--serin); color: var(--murekkep); }
+
+.durtme-kutu {
+  padding: 0.9rem; margin-bottom: 0.9rem;
+  border: 1px solid var(--cizgi); border-radius: 14px; background: var(--yuzey);
+}
+.durtme-baslik {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 0.6rem; font-size: 0.9rem;
+}
+.durtme-sablonlar { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 0.6rem; }
+.durtme-sablon {
+  padding: 0.35rem 0.65rem; font: inherit; font-size: 0.72rem; font-weight: 600;
+  color: var(--murekkep); background: var(--serin-zemin, transparent);
+  border: 1px solid var(--cizgi); border-radius: 999px; cursor: pointer;
+}
+.durtme-sablon:hover { border-color: var(--serin); }
+.durtme-metin {
+  width: 100%; padding: 0.6rem 0.7rem; font: inherit; font-size: 0.85rem;
+  color: var(--murekkep); background: var(--zemin, transparent);
+  border: 1px solid var(--cizgi); border-radius: 10px; resize: vertical;
+}
+.durtme-ipucu { margin: 0.4rem 0 0; font-size: 0.7rem; color: var(--soluk); }
+.durtme-alicilar { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0.7rem 0; }
+.durtme-alici {
+  padding: 0.25rem 0.55rem; font: inherit; font-size: 0.72rem;
+  color: var(--murekkep); background: none;
+  border: 1px solid var(--cizgi); border-radius: 999px; cursor: pointer;
+}
+.durtme-alici:hover { border-color: var(--marka-alev); color: var(--marka-alev); }
+.durtme-alici span { color: var(--soluk); margin-left: 0.15rem; }
+.durtme-sonuc { margin: 0 0 0.7rem; font-size: 0.85rem; }

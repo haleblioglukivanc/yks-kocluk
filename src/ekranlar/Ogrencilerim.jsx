@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import OgrenciSatiri from '../bilesenler/OgrenciSatiri.jsx'
+import TopluDurtme from '../bilesenler/TopluDurtme.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 
 
@@ -19,6 +20,33 @@ function grubu(o) {
   return o.risk?.risk_seviyesi ?? 'izle'
 }
 
+/* Üstteki özet kartları sadece sayı göstermek yerine süzgeç. Sayıyı görüp
+   "peki bu altı kişi kim" diye sorduğunda cevabı tek dokunuşta veriyor. */
+const OZETLER = [
+  {
+    anahtar: 'acil',
+    etiket: 'bugün dokun',
+    uyari: true,
+    sec: (o) => o.aktif && o.risk?.risk_seviyesi === 'acil',
+  },
+  {
+    anahtar: 'gecikmis',
+    etiket: 'gecikmiş görev',
+    topla: (o) => o.risk?.gecikmis_gorev ?? 0,
+    sec: (o) => o.aktif && (o.risk?.gecikmis_gorev ?? 0) > 0,
+  },
+  {
+    anahtar: 'sessiz',
+    etiket: '2+ gün sessiz',
+    sec: (o) => o.aktif && !o.risk?.hic_baslamadi && (o.risk?.gun_gecti ?? 0) >= 2,
+  },
+  {
+    anahtar: 'yeni',
+    etiket: 'hiç başlamadı',
+    sec: (o) => o.aktif && !!o.risk?.hic_baslamadi,
+  },
+]
+
 export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
@@ -27,6 +55,8 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
   const [pasifAcik, setPasifAcik] = useState(false)
+  const [suzgec, setSuzgec] = useState(null)
+  const [durtmeAcik, setDurtmeAcik] = useState(false)
 
   const yukle = useCallback(async () => {
     const [o, r, n, k] = await Promise.all([
@@ -69,13 +99,11 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const kova = { acil: [], izle: [], iyi: [], pasif: [] }
   sirali.forEach((o) => kova[grubu(o)].push(o))
 
-  const aktifler = sirali.filter((o) => o.aktif)
-  const ozet = {
-    acil: kova.acil.length,
-    gecikmis: aktifler.reduce((t, o) => t + (o.risk?.gecikmis_gorev ?? 0), 0),
-    sessiz: aktifler.filter((o) => (o.risk?.gun_gecti ?? 0) >= 2 && !o.risk?.hic_baslamadi).length,
-    yeni: aktifler.filter((o) => o.risk?.hic_baslamadi).length,
-  }
+  const seciliOzet = OZETLER.find((z) => z.anahtar === suzgec) ?? null
+  const suzulmus = seciliOzet ? sirali.filter(seciliOzet.sec) : []
+  /* Toplu mesajın hedefi her zaman ekranda görünen küme. Süzgeç yoksa
+     "önce bunlar" kademesi; koçun sabah dokunduğu grup zaten o. */
+  const durtmeHedefi = seciliOzet ? suzulmus : kova.acil
 
   const satirCiz = (o) => (
     <OgrenciSatiri
@@ -113,56 +141,105 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
           />
         ) : (
           <>
-            {/* Listeye girmeden günün özeti. Sayılar filtre değil, yön. */}
-            <div className="gun-nabzi">
-              <div className={`gn-hucre${ozet.acil ? ' gn-hucre--uyari' : ''}`}>
-                <span className="gn-sayi">{ozet.acil}</span>
-                <span className="gn-etiket">bugün dokun</span>
-              </div>
-              <div className="gn-hucre">
-                <span className="gn-sayi">{ozet.gecikmis}</span>
-                <span className="gn-etiket">gecikmiş görev</span>
-              </div>
-              <div className="gn-hucre">
-                <span className="gn-sayi">{ozet.sessiz}</span>
-                <span className="gn-etiket">2+ gün sessiz</span>
-              </div>
-              <div className="gn-hucre">
-                <span className="gn-sayi">{ozet.yeni}</span>
-                <span className="gn-etiket">hiç başlamadı</span>
-              </div>
+            {/* Listeye girmeden günün özeti. Her kart aynı zamanda süzgeç. */}
+            <div className="gun-nabzi" role="group" aria-label="Günün özeti ve süzgeçler">
+              {OZETLER.map((z) => {
+                const kume = sirali.filter(z.sec)
+                const sayi = z.topla
+                  ? kume.reduce((t, o) => t + z.topla(o), 0)
+                  : kume.length
+                const etkin = suzgec === z.anahtar
+                return (
+                  <button
+                    key={z.anahtar}
+                    className={
+                      'gn-hucre' +
+                      (z.uyari && sayi > 0 ? ' gn-hucre--uyari' : '') +
+                      (etkin ? ' gn-hucre--etkin' : '')
+                    }
+                    aria-pressed={etkin}
+                    disabled={kume.length === 0}
+                    onClick={() => {
+                      setSuzgec(etkin ? null : z.anahtar)
+                      setDurtmeAcik(false)
+                    }}
+                  >
+                    <span className="gn-sayi">{sayi}</span>
+                    <span className="gn-etiket">{z.etiket}</span>
+                  </button>
+                )
+              })}
             </div>
 
-            {GRUPLAR.map(([anahtar, ad, ton]) =>
-              kova[anahtar].length === 0 ? null : (
-                <section key={anahtar} className="ogr-grup">
-                  <h3 className="ogr-grup-baslik">
-                    <span className={`ogr-grup-serit ogr-grup-serit--${ton}`} aria-hidden="true" />
-                    {ad}
-                    <span className="ogr-grup-sayi">{kova[anahtar].length}</span>
-                  </h3>
-                  <ul className="liste liste--kartli">{kova[anahtar].map(satirCiz)}</ul>
-                </section>
-              ),
+            {/* Toplu mesaj kendi başına bir ekran değil: her zaman ekranda
+                görünen kümeye gidiyor, hedefi belirsiz kalmasın. */}
+            {durtmeHedefi.length > 1 && !durtmeAcik && (
+              <button className="durtme-serit" onClick={() => setDurtmeAcik(true)}>
+                <span aria-hidden="true">✎</span>
+                <span>
+                  {seciliOzet
+                    ? `Bu ${durtmeHedefi.length} öğrenciye`
+                    : `Önce bunlar listesindeki ${durtmeHedefi.length} öğrenciye`}{' '}
+                  toplu mesaj
+                </span>
+              </button>
+            )}
+            {durtmeAcik && durtmeHedefi.length > 0 && (
+              <TopluDurtme
+                ogrenciler={durtmeHedefi}
+                onKapat={() => setDurtmeAcik(false)}
+              />
             )}
 
-            {kova.pasif.length > 0 && (
+            {seciliOzet ? (
               <section className="ogr-grup">
-                <button
-                  className="ogr-grup-baslik ogr-grup-baslik--dugme"
-                  onClick={() => setPasifAcik((v) => !v)}
-                  aria-expanded={pasifAcik}
-                >
-                  <span className="ogr-grup-serit ogr-grup-serit--p" aria-hidden="true" />
-                  Pasif
-                  <span className="ogr-grup-sayi">
-                    {kova.pasif.length} {pasifAcik ? '⌃' : '⌄'}
-                  </span>
-                </button>
-                {pasifAcik && (
-                  <ul className="liste liste--kartli">{kova.pasif.map(satirCiz)}</ul>
+                <div className="ogr-grup-baslik">
+                  <span className="ogr-grup-serit ogr-grup-serit--a" aria-hidden="true" />
+                  {seciliOzet.etiket}
+                  <button className="suzgec-kaldir" onClick={() => setSuzgec(null)}>
+                    Süzgeci kaldır
+                  </button>
+                </div>
+                {suzulmus.length === 0 ? (
+                  <Bos baslik="Bu süzgeçte kimse yok" aciklama="İyi haber sayılır." />
+                ) : (
+                  <ul className="liste liste--kartli">{suzulmus.map(satirCiz)}</ul>
                 )}
               </section>
+            ) : (
+              <>
+                {GRUPLAR.map(([anahtar, ad, ton]) =>
+                  kova[anahtar].length === 0 ? null : (
+                    <section key={anahtar} className="ogr-grup">
+                      <h3 className="ogr-grup-baslik">
+                        <span className={`ogr-grup-serit ogr-grup-serit--${ton}`} aria-hidden="true" />
+                        {ad}
+                        <span className="ogr-grup-sayi">{kova[anahtar].length}</span>
+                      </h3>
+                      <ul className="liste liste--kartli">{kova[anahtar].map(satirCiz)}</ul>
+                    </section>
+                  ),
+                )}
+
+                {kova.pasif.length > 0 && (
+                  <section className="ogr-grup">
+                    <button
+                      className="ogr-grup-baslik ogr-grup-baslik--dugme"
+                      onClick={() => setPasifAcik((v) => !v)}
+                      aria-expanded={pasifAcik}
+                    >
+                      <span className="ogr-grup-serit ogr-grup-serit--p" aria-hidden="true" />
+                      Pasif
+                      <span className="ogr-grup-sayi">
+                        {kova.pasif.length} {pasifAcik ? '⌃' : '⌄'}
+                      </span>
+                    </button>
+                    {pasifAcik && (
+                      <ul className="liste liste--kartli">{kova.pasif.map(satirCiz)}</ul>
+                    )}
+                  </section>
+                )}
+              </>
             )}
           </>
         )}
