@@ -91,11 +91,15 @@ table, .liste-sayi, .dny-d, .dny-y, .dny-b, .net-fark {
 .alan-etiket { font-size: var(--punto-mini); font-weight: 500; }
 .alan-ipucu { font-size: var(--punto-mini); color: var(--soluk); }
 
-input[type='email'], input[type='password'], input[type='text'], input:not([type]), select {
+/* Girdi alanları 16px olmak ZORUNDA: iOS Safari bunun altındaki bir
+   alana odaklanınca sayfayı otomatik yakınlaştırıyor ve kullanıcı elle
+   geri çekmek zorunda kalıyor. Görsel olarak küçültmek isteyen olursa
+   punto değil padding azaltılır. */
+input[type='email'], input[type='password'], input[type='text'], input:not([type]), select, textarea {
   width: 100%; padding: 0.625rem 0.75rem;
   border: 1px solid var(--cizgi); border-radius: 8px;
   background: var(--yuzey); color: var(--murekkep);
-  font: inherit; font-size: var(--punto-orta);
+  font: inherit; font-size: var(--punto-govde);
 }
 input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1px; border-color: transparent; }
 
@@ -367,7 +371,7 @@ main {
 .sonuc-basi span:not(:first-child), .sonuc-satir input, .sonuc-net { text-align: center; }
 .sonuc-satir { border-top: 1px solid var(--cizgi); }
 .sonuc-ders { font-size: var(--punto-kucuk); }
-.sonuc-satir input { padding: 0.35rem; font-size: var(--punto-kucuk); }
+.sonuc-satir input { padding: 0.35rem; font-size: var(--punto-govde); }
 .sonuc-net { font-family: var(--mono); font-size: var(--punto-mini); color: var(--grafit); }
 .sonuc-toplam { display: flex; justify-content: space-between; padding: 0.625rem 0.75rem; border-top: 1.5px solid var(--murekkep); background: var(--kagit); font-size: var(--punto-kucuk); }
 .sonuc-toplam strong { font-family: var(--mono); }
@@ -2857,7 +2861,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 }
 .durtme-sablon:hover { border-color: var(--serin); }
 .durtme-metin {
-  width: 100%; padding: 0.6rem 0.7rem; font: inherit; font-size: 0.85rem;
+  width: 100%; padding: 0.6rem 0.7rem; font: inherit; font-size: var(--punto-govde);
   color: var(--murekkep); background: var(--yuzey-2);
   border: 1px solid var(--cizgi); border-radius: 10px; resize: vertical;
 }

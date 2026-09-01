@@ -91,7 +91,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         </Kart>
       )}
 
-      <div className="sekme-govde" style={aksanStili(sekme)}>
+      <div className="sekme-govde" style={aksanStili()}>
       <nav className="sekmeler sekmeler--genis">
         {[
           ['program', 'Program'],
