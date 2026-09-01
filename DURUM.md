@@ -14,6 +14,7 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 | Depo | `github.com/haleblioglukivanc/yks-kocluk` (özel) |
 | Veritabanı | Supabase `yks-kocluk` · `sjcovxnhardtvmvooqpn` · Frankfurt |
 | Yayın | Cloudflare Workers · `yks-kocluk.haleblioglukivanc.workers.dev` |
+| Dağıtım | Cloudflare **Workers Builds**, repoya doğrudan bağlı. `main`'e her push'ta Cloudflare kendisi derleyip yayınlar. GitHub Actions'ta dağıtım iş akışı **yoktur**; commit'teki `Workers Builds: yks-kocluk` kontrolü bakılacak yerdir. |
 | Yayın hattı | `main` dalına her push otomatik derlenip yayınlanır |
 | Edge Function | `kullanici-olustur` · sürüm 3 · aktif |
 

@@ -20,13 +20,13 @@ import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
-/* GitHub Pages projeyi alt dizinde yayınlıyor (/yks-kocluk/), Cloudflare
-   kökte. Yollar şimdiye kadar mutlak yazılıyordu: alt dizinde çalışırken
-   `git('/mesajlar')` adres çubuğunu sitenin dışına, /mesajlar'a taşıyordu.
-   Sayfa açık kaldığı sürece görünmüyor ama yenilendiği anda 404. Aynı
-   nedenle açılışta yol '/yks-kocluk/' okunuyordu; '/' ile karşılaştıran
+/* Site kökte yayınlanıyor ama yollar yine de tabana göre okunuyor.
+   Mutlak yazıldığı dönemde alt dizinde çalışırken `git('/mesajlar')`
+   adres çubuğunu sitenin dışına taşıyordu: sayfa açık kaldığı sürece
+   görünmüyor, yenilendiği anda 404. Aynı nedenle '/' ile karşılaştıran
    her yer sessizce yanlış cevap veriyordu (Panel sekmesi hiç etkin
-   görünmüyordu, panelde iki Kâmil birden çıkıyordu).
+   görünmüyordu, panelde iki Kâmil birden çıkıyordu). Alan adı alınıp
+   site bir gün alt dizine taşınırsa bu kod hazır.
 
    Çözüm: dışarıda tam adres, içeride her zaman '/' ile başlayan yol. */
 const TABAN = import.meta.env.BASE_URL.replace(/\/+$/, '')
@@ -388,9 +388,7 @@ export default function App() {
           </span>
           {/* Hangi derlemeye baktığımızı görebilmek için. Önbellek sorunlarını
               tahmin etmek yerine ölçmeyi sağlıyor. */}
-          <span className="derleme-damgasi">
-            sürüm {__DERLEME__} · {__HEDEF__}
-          </span>
+          <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
         </div>
         <div className="ust-eylemler">
           <UstDugme

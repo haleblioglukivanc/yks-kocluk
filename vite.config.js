@@ -2,16 +2,14 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// GitHub Pages proje sitesi alt dizinde yayinlanir, Cloudflare kokte.
-// TABAN ortam degiskeni bos birakilirsa kok kabul edilir.
+// Cloudflare kokte yayinlar, TABAN bos kalir. Degisken yine de duruyor:
+// ileride alan adi alinip site bir alt dizine tasinirsa tek yerden ayarlanir.
 const taban = process.env.TABAN || '/'
 
 const DERLEME = new Date().toISOString().slice(0, 16).replace('T', ' ')
-// Iki adresten birine bakarken hangisinde oldugunu ust bardan gorebilmek icin.
-const HEDEF = taban === '/' ? 'cf' : 'gh'
 
 export default defineConfig({
-  define: { __DERLEME__: JSON.stringify(DERLEME), __HEDEF__: JSON.stringify(HEDEF) },
+  define: { __DERLEME__: JSON.stringify(DERLEME) },
   base: taban,
   plugins: [
     react(),

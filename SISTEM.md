@@ -94,3 +94,16 @@ Amber üç değerlidir çünkü üç ayrı iş yapar: `--g-amber` fosforlu vurgu
 (parlak olmak zorunda, üstüne koyu mürekkep gelir), `--g-amber-cizim`
 nokta ve çubuk için, `--g-amber-metin` yazı için. Yazıya parlak amber
 verirsen beyazda 2.2:1 çıkar ve okunmaz.
+
+## Dağıtım
+
+Tek canlı adres: `https://yks-kocluk.haleblioglukivanc.workers.dev`
+
+Cloudflare Workers Builds repoya doğrudan bağlı. `main`'e push atınca
+Cloudflare kendisi derleyip yayınlar — GitHub Actions'ta dağıtım iş akışı
+yoktur, aramaya gerek yok. Bir push'un yayına çıkıp çıkmadığını commit
+üzerindeki **`Workers Builds: yks-kocluk`** kontrolünden görürsün.
+
+Değişikliği göremiyorsan önce service worker önbelleğini temizle:
+adresin sonuna `?sifirla=1` ekle. Üst bardaki sürüm damgası derleme
+saatini verir; beklediğin saatse yeni sürüm sendedir.
