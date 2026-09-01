@@ -180,9 +180,33 @@ const MAIL_ADI = {
   iptal: 'İptal',
 }
 
+/* Kuyrugun sagligi cron'un raporundan okunamaz: gonderici anahtari
+   bulamayinca sessizce vazgeciyor ve cron yine "basarili" diyor. Tek
+   guvenilir olcu, en eski bekleyen kaydin yasi. */
+const KUYRUK_ESIGI_SAAT = 1
+
+function mailDurumu(s) {
+  const bekleme = s.mail_bekleme_saat
+  if (bekleme == null) return { ton: 'iyi', etiket: 'normal', not: null }
+  if (s.servis_anahtari_var === false) {
+    return {
+      ton: 'uyari',
+      etiket: 'durdu',
+      not: 'Vault içinde servis_anahtari yok; gönderici hiç çağrılmıyor.',
+    }
+  }
+  if (bekleme >= KUYRUK_ESIGI_SAAT) {
+    return {
+      ton: 'uyari',
+      etiket: 'takıldı',
+      not: `En eski kayıt ${saatMetni(bekleme)} bekliyor.`,
+    }
+  }
+  return { ton: 'iyi', etiket: 'normal', not: null }
+}
+
 function Sistem({ s }) {
-  const bekleyenMail = s.mail?.bekliyor ?? 0
-  const hataliMail = s.mail?.hata ?? 0
+  const mail = mailDurumu(s)
 
   return (
     <Kart baslik="Sistem" altBaslik="Arka planda çalışanlar">
@@ -210,10 +234,9 @@ function Sistem({ s }) {
                 .map(([d, a]) => `${MAIL_ADI[d] ?? d}: ${a}`)
                 .join(' · ') || 'kuyruk boş'}
             </span>
+            {mail.not && <span className="yk-uyari yk-uyari--satir">{mail.not}</span>}
           </div>
-          <Rozet ton={hataliMail > 0 || bekleyenMail > 10 ? 'uyari' : 'iyi'}>
-            {hataliMail > 0 ? 'hata' : bekleyenMail > 10 ? 'birikti' : 'normal'}
-          </Rozet>
+          <Rozet ton={mail.ton}>{mail.etiket}</Rozet>
         </li>
 
         <li className="liste-satir">

@@ -3022,3 +3022,7 @@ body[data-mod='gece'] .uygulama .kareli,
 .rozet--iyi   { background: var(--isaret-zemin); color: var(--isaret-metin); border: 1px solid var(--isaret-kenar); }
 .rozet--uyari { background: var(--kizil-zemin); color: var(--kizil-metin); border: 1px solid var(--kizil-kenar); }
 .rozet--izle  { background: var(--sicak-zemin); color: var(--sicak-metin); border: 1px solid var(--sicak-kenar); }
+
+/* Liste satırının içindeki uyarı: kart genelindeki .yk-uyari ızgara
+   satırıydı, burada normal blok olmalı. */
+.yk-uyari--satir { display: block; grid-column: auto; margin-top: 0.4rem; }
