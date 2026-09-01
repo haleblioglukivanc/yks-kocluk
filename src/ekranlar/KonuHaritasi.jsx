@@ -26,16 +26,23 @@ export default function KonuHaritasi({ profilId }) {
   const [acik, setAcik] = useState(null)
   const [hata, setHata] = useState('')
 
+  /* profilId hedef öğrenciyi söyler. Vekaletteyken oturum koçun olduğu için
+     RPC'nin auth.uid()'e bakması yetmiyordu: kimin haritası açılacağını
+     açıkça geçiyoruz. Yetkiyi RLS tutuyor. */
   const ozetiYukle = useCallback(async () => {
-    const { data, error } = await supabase.rpc('konu_ozetim')
+    const { data, error } = await supabase.rpc('konu_ozetim', {
+      p_ogrenci_id: profilId ?? null,
+    })
     if (error) {
       setHata(hataMetni(error))
       return
     }
     setDersler(data ?? [])
-  }, [])
+  }, [profilId])
 
   useEffect(() => {
+    setDersler(null)
+    setAcik(null)
     ozetiYukle()
   }, [ozetiYukle])
 
