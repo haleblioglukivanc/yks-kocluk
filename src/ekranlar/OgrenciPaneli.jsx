@@ -9,8 +9,7 @@ import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
-import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
-import BugunCozulen from '../bilesenler/BugunCozulen.jsx'
+import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import Ben from './Ben.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
@@ -57,6 +56,7 @@ export default function OgrenciPaneli({
   const [ozet, setOzet] = useState(null)
   const [tazele, setTazele] = useState(0)
   const [kutlamalar, setKutlamalar] = useState([])
+  const [kapatAcik, setKapatAcik] = useState(false)
 
   /* Kutlama, ilk açılışta değil yalnızca bir eylemden sonra bakılır.
      Bayrak yenile() ile kalkar, özet tazelendikten sonra tüketilir —
@@ -167,21 +167,24 @@ export default function OgrenciPaneli({
         <>
           <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
           <GunHedefleri gorevler={ozet?.gorevler} onDegisti={yenile} />
-          <GunlukRutinler
-            ogrenciId={kayit.id}
-            rutinler={ozet?.rutinler}
-            haftaBasi={ozet?.haftaBasi}
-            bugun={ozet?.bugun}
-            onDegisti={yenile}
-          />
+          {/* Rutin ve çözülen soru Günü kapat akışında; burada yalnız kapı. */}
           {ozet?.bugun && (
-            <BugunCozulen
-              ogrenciId={kayit.id}
-              katalogId={kayit.katalog_id}
-              kayitlar={ozet?.bugunSoru}
-              tarih={ozet.bugun}
-              onDegisti={yenile}
-            />
+            <button
+              className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
+              onClick={() => setKapatAcik(true)}
+            >
+              {ozet.gunKapandi ? (
+                <>
+                  <strong>Gün kapandı ✓</strong>
+                  <span>Rutin ya da soru düzeltmek için dokun</span>
+                </>
+              ) : (
+                <>
+                  <strong>Günü kapat</strong>
+                  <span>Rutinler · çözülen soru · Kâmil'in özeti</span>
+                </>
+              )}
+            </button>
           )}
           {/* Program sekmesi kalktı; ızgara geçici olarak günün altında.
               Hafta şeridi gelince bu kartın yerini alacak. */}
@@ -198,6 +201,16 @@ export default function OgrenciPaneli({
       )}
       </div>
       </SayacSaglayici>
+
+      <GunuKapat
+        acik={kapatAcik}
+        onKapat={() => setKapatAcik(false)}
+        ogrenciId={kayit.id}
+        katalogId={kayit.katalog_id}
+        ozet={ozet}
+        onDegisti={yenile}
+        saltOkunur={vekaleten}
+      />
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>

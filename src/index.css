@@ -2047,6 +2047,55 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 
 .ob-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
 
+/* ═══ Günü kapat ═══
+   Bugün'ün altındaki kapı ve üç adımlık alt sayfa. */
+.gunu-kapat-dugme {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 0.15rem;
+  width: 100%; padding: 0.85rem 1rem; margin-top: 0.25rem;
+  border-radius: var(--r); border: 1px dashed var(--cizgi-2);
+  background: var(--yuzey); color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.gunu-kapat-dugme strong { font-family: var(--display); font-size: var(--punto-orta); }
+.gunu-kapat-dugme span { font-size: var(--punto-mini); color: var(--soluk); }
+.gunu-kapat-dugme--kapali { border-style: solid; border-color: var(--isaret); }
+.gunu-kapat-dugme--kapali strong { color: var(--isaret); }
+
+.alt-sayfa-perde {
+  position: fixed; inset: 0; z-index: 9990;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: color-mix(in srgb, var(--murekkep) 45%, transparent);
+  animation: kutlama-gir 180ms ease-out;
+}
+.alt-sayfa {
+  width: min(32rem, 100%); max-height: 92dvh;
+  display: flex; flex-direction: column;
+  background: var(--kagit); color: var(--murekkep);
+  border-radius: 20px 20px 0 0; border: 1px solid var(--cizgi); border-bottom: 0;
+  padding-bottom: env(safe-area-inset-bottom);
+  animation: alt-sayfa-gir 240ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes alt-sayfa-gir { from { transform: translateY(24px); opacity: 0.6; } to { transform: none; opacity: 1; } }
+.alt-sayfa-tutamac { width: 36px; height: 4px; border-radius: 2px; background: var(--cizgi-2); margin: 0.6rem auto 0; }
+.alt-sayfa-bas { padding: 0.5rem 1rem 0.25rem; text-align: center; }
+.alt-sayfa-bas h2 { margin: 0; font-family: var(--display); font-size: 1.1rem; }
+.alt-sayfa-alt { margin: 0.2rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
+.adim-noktalar { list-style: none; display: flex; justify-content: center; gap: 6px; margin: 0.5rem 0 0; padding: 0; }
+.adim-nokta { width: 6px; height: 6px; border-radius: 3px; background: var(--cizgi-2); transition: width 160ms; }
+.adim-nokta--etkin { width: 18px; background: var(--serin); }
+.alt-sayfa-govde { flex: 1; min-height: 0; overflow: auto; padding: 0.5rem 0.9rem; }
+.alt-sayfa-govde > .kart { margin: 0; }
+.alt-sayfa-dugmeler { display: flex; gap: 0.5rem; padding: 0.6rem 0.9rem 0.9rem; border-top: 1px solid var(--cizgi); background: var(--kagit); }
+.alt-sayfa-dugmeler .dugme { flex: 1 1 auto; }
+
+.kapanis-ozet { text-align: center; padding: 0.5rem 0 0.25rem; }
+.kapanis-kalem { animation: kutlama-zipla 620ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+.kapanis-ad { margin: 0.25rem 0 0; font-family: var(--marka-mono); font-size: var(--punto-mini); letter-spacing: 0.08em; text-transform: uppercase; color: var(--soluk); }
+.kapanis-mesaj { margin: 0.25rem 0 0; font-family: var(--display); font-weight: 700; font-size: 1.05rem; line-height: 1.35; }
+.kapanis-sayilar { display: flex; justify-content: center; gap: 1.25rem; margin: 1rem 0 0; }
+.kapanis-sayilar div { display: flex; flex-direction: column-reverse; gap: 0.1rem; }
+.kapanis-sayilar dt { font-size: var(--punto-mini); color: var(--soluk); }
+.kapanis-sayilar dd { margin: 0; font-family: var(--display); font-weight: 700; font-size: 1.2rem; }
+
 /* ═══ Sıradaki kartı ═══
    Bugün'ün tek büyük kararı. Sıcak zemin: bu kart "dikkat" değil "elini
    koyacağın yer"; başka hiçbir kart bu zemini kullanmaz. */
