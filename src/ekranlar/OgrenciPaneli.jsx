@@ -6,7 +6,7 @@ import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
-import CalismaSayaci from '../bilesenler/CalismaSayaci.jsx'
+import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunlukRutinler from '../bilesenler/GunlukRutinler.jsx'
@@ -165,7 +165,7 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
-          <CalismaSayaci />
+          <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
           <GunHedefleri gorevler={ozet?.gorevler} onDegisti={yenile} />
           <GunlukRutinler
             ogrenciId={kayit.id}

@@ -2046,6 +2046,26 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .ob-alt { margin: 0.3rem 0 0; font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.62); }
 
 .ob-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
+
+/* ═══ Sıradaki kartı ═══
+   Bugün'ün tek büyük kararı. Sıcak zemin: bu kart "dikkat" değil "elini
+   koyacağın yer"; başka hiçbir kart bu zemini kullanmaz. */
+.siradaki { background: var(--sicak-zemin); border-color: var(--sicak-kenar); }
+.siradaki-etiket {
+  margin: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--sicak-metin);
+}
+.siradaki-baslik {
+  margin: 0.2rem 0 0; font-family: var(--display); font-weight: 700;
+  font-size: 1.25rem; line-height: 1.25; letter-spacing: -0.01em; overflow-wrap: anywhere;
+}
+.siradaki-alt { margin: 0.25rem 0 0; font-size: var(--punto-kucuk); color: var(--grafit); }
+.siradaki-not { margin: 0.4rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
+.siradaki .gorev-kaynak { margin-top: 0.4rem; }
+.siradaki-eylem { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
+.siradaki-basla { flex: 1 1 auto; }
+.siradaki-ikincil { display: flex; gap: 1rem; margin-top: 0.5rem; }
+.siradaki-ikincil .metin-dugme { color: var(--sicak-metin); }
 .ob-basla, .ob-tamam {
   font: inherit; font-size: var(--punto-mini); font-weight: 700; cursor: pointer;
   padding: 0.45rem 0.95rem; border-radius: 999px; border: 0;

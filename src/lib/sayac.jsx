@@ -70,9 +70,11 @@ export function SayacSaglayici({ ogrenciId, onKaydedildi, children }) {
   }, [])
 
   const basla = useCallback(
-    (hedefDk) => {
+    (hedefDk, gorevId = null) => {
       setUyari('')
-      guncelle({ hedefDk, baslangic: Date.now(), biriken: 0, calisiyor: true })
+      /* gorevId: sayaç hangi görev için açıldı. Sıradaki kartı çalışan
+         sayacın başlığını bununla yazıyor; yoksa serbest çalışma. */
+      guncelle({ hedefDk, gorevId, baslangic: Date.now(), biriken: 0, calisiyor: true })
     },
     [guncelle],
   )
