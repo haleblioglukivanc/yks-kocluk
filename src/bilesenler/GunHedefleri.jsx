@@ -16,7 +16,7 @@ const TUR_ETIKET = {
   diger: 'Diğer',
 }
 
-export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDegisti }) {
+export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDegisti, baslik = 'Günün hedefleri' }) {
   const [gorevler, setGorevler] = useState(gelen ?? [])
   const [hata, setHata] = useState('')
 
@@ -49,7 +49,7 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
 
   return (
     <Kart
-      baslik="Günün hedefleri"
+      baslik={baslik}
       eylem={
         gorevler.length ? (
           <span className="hedef-sayac">
@@ -62,7 +62,7 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
 
       {gorevler.length === 0 ? (
         <Bos
-          baslik="Bugün planında bir şey yok"
+          baslik={baslik === 'Günün hedefleri' ? 'Bugün planında bir şey yok' : 'Bu gün için plan yok'}
           aciklama={
             saltOkunur
               ? 'Öğrenci bugün boş bir ekran görüyor.'

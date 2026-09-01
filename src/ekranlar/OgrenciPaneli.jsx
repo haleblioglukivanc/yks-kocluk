@@ -2,13 +2,12 @@ import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
 import KutlamaKatmani from '../bilesenler/KutlamaKatmani.jsx'
-import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
+import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
-import GunHedefleri from '../bilesenler/GunHedefleri.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import Ben from './Ben.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -166,7 +165,14 @@ export default function OgrenciPaneli({
       {sekme === 'bugun' ? (
         <>
           <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
-          <GunHedefleri gorevler={ozet?.gorevler} onDegisti={yenile} />
+          <HaftaSeridi
+            ogrenciId={kayit.id}
+            haftaBasi={ozet?.haftaBasi}
+            bugun={ozet?.bugun}
+            bugunGorevler={ozet?.gorevler}
+            onDegisti={yenile}
+            saltOkunur={vekaleten}
+          />
           {/* Rutin ve çözülen soru Günü kapat akışında; burada yalnız kapı. */}
           {ozet?.bugun && (
             <button
@@ -186,11 +192,6 @@ export default function OgrenciPaneli({
               )}
             </button>
           )}
-          {/* Program sekmesi kalktı; ızgara geçici olarak günün altında.
-              Hafta şeridi gelince bu kartın yerini alacak. */}
-          <Kart baslik="Haftalık programım" altBaslik="Bitirdiğin bloğa dokun">
-            <ProgramIzgarasi ogrenci={kayit} duzenlenebilir={false} />
-          </Kart>
         </>
       ) : sekme === 'konular' ? (
         <KonuHaritasi profilId={kayit.id} />

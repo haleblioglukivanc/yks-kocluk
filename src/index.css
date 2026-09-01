@@ -2047,6 +2047,28 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 
 .ob-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
 
+/* ═══ Hafta şeridi ═══
+   Yedi gün, her günde blok noktaları. Bugün serin çerçeveli, seçili gün
+   dolu; geçmiş günler soluk. */
+.hafta-serit { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.hafta-gun {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 0.45rem 0 0.4rem; border-radius: 10px; border: 1px solid transparent;
+  background: transparent; color: inherit; font: inherit; cursor: pointer;
+}
+.hafta-gun-ad { font-size: 0.62rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--soluk); }
+.hafta-gun-no { font-family: var(--display); font-weight: 700; font-size: var(--punto-orta); line-height: 1.1; }
+.hafta-gun-nokta { display: flex; gap: 2px; align-items: center; min-height: 8px; margin-top: 2px; }
+.hafta-nokta { width: 6px; height: 6px; border-radius: 50%; border: 1.3px solid var(--cizgi-2); }
+.hafta-nokta--dolu { background: var(--isaret); border-color: var(--isaret); }
+.hafta-nokta--yok { border-style: dashed; opacity: 0.5; }
+.hafta-nokta-sayi { font-family: var(--mono); font-size: 0.62rem; color: var(--grafit); }
+.hafta-gun--gecmis { opacity: 0.6; }
+.hafta-gun--bugun { border-color: var(--serin); }
+.hafta-gun--bugun .hafta-gun-no { color: var(--serin-metin); }
+.hafta-gun--secili { background: var(--yuzey-2); border-color: var(--cizgi-2); opacity: 1; }
+.hafta-gun--secili.hafta-gun--bugun { border-color: var(--serin); background: color-mix(in srgb, var(--serin) 10%, transparent); }
+
 /* ═══ Günü kapat ═══
    Bugün'ün altındaki kapı ve üç adımlık alt sayfa. */
 .gunu-kapat-dugme {
