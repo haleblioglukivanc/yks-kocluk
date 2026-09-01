@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
 /* Koçun "bu dönem ne oldu" sorusunun tek cevabı.
    Aynı veri hem ekranda görünür hem mail olarak gider; iki ayrı
@@ -203,6 +205,9 @@ export default function Raporlar({ onOgrenciAc }) {
 
   return (
     <>
+      {/* Sınıfın haftalık bakışı panelden buraya indi: KPI + net trendi. */}
+      <SinifOzeti />
+
       <Kart
         baslik='Raporlar'
         altBaslik='Seçtiğin dönemin toplu görüntüsü'
@@ -384,6 +389,10 @@ export default function Raporlar({ onOgrenciAc }) {
           </ul>
         )}
       </Kart>
+
+      {/* Öğrencilere ve velilere o hafta ne gittiğini koçun da görmesi
+          gerekiyor; aynı bileşen, aynı veri. */}
+      <HaftalikIlham />
     </>
   )
 }
