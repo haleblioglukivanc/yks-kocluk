@@ -206,10 +206,25 @@
 }
 
 /* ── 7. DOKUNMA HEDEFİ ─────────────────────────────────────────
-   Telefonda 44px altındaki her şey ıskalanıyor. */
+   Telefonda 44px altındaki her şey ıskalanıyor.
 
-.dugme, .cip, .alt-bag, .sekme, .gorev, button, [role='button'] { min-height: 44px; }
+   DİKKAT: burada çıplak `button` seçicisi KULLANILMAZ. Kullanıldığında
+   optik form baloncukları (14px) ve görev tikleri (22px) 44px'e uzayıp
+   daireden yumurtaya dönüyor. Küçük ve yuvarlak olması gereken kontroller
+   var; onlar dokunma alanını boyutlarını büyüterek değil, görünmez bir
+   ::after halkasıyla taşır — aşağıdaki .dokun-halka bunu yapar. */
+
+.dugme, .cip, .alt-bag, .sekme, .gorev { min-height: 44px; }
 .dugme--ufak, .metin-dugme { min-height: 36px; }
+
+/* Küçük yuvarlak kontrol: görünen boyutu korur, hedefi büyütür.
+   Ölçüsü ne olursa olsun ortalanmış 44px'lik alan bırakır. */
+.dokun-halka { position: relative; }
+.dokun-halka::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 44px; height: 44px; transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
 
 /* ── 8. ODAK ───────────────────────────────────────────────────
    Klavye ve ekran okuyucu için tek görünür halka; her bileşene

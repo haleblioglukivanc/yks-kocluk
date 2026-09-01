@@ -95,6 +95,20 @@ Amber üç değerlidir çünkü üç ayrı iş yapar: `--g-amber` fosforlu vurgu
 nokta ve çubuk için, `--g-amber-metin` yazı için. Yazıya parlak amber
 verirsen beyazda 2.2:1 çıkar ve okunmaz.
 
+## İki tuzak
+
+**Çıplak eleman seçicisiyle boyut verme.** `button { min-height: 44px }`
+gibi bir kural yazma. Panelde küçük ve yuvarlak olması gereken kontroller
+var — optik form baloncukları 14px, görev tikleri 22px — ve böyle bir kural
+onları 44px'e uzatıp daireden yumurtaya çeviriyor. Küçük yuvarlak
+kontroller dokunma alanını **boyutlarını büyüterek değil**, görünmez bir
+`::after` halkasıyla taşır. Hazır yardımcı var: `.dokun-halka`.
+
+**Eylem rengini süs olarak kullanma.** Mavi "dokunulabilir" demek. Her
+kartın üst kenarına ya da her başlığa çekersen o anlamı kaybeder ve
+gerçekten dokunulabilir olan şey öne çıkmaz. Aynı şey kırmızı için de
+geçerli: kırmızı yalnızca ACİL demek, dekoratif çizgi olamaz.
+
 ## Dağıtım
 
 Tek canlı adres: `https://yks-kocluk.haleblioglukivanc.workers.dev`

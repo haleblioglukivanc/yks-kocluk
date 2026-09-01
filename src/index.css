@@ -682,7 +682,10 @@ main {
 .sekme--etkin { box-shadow: none; border: 1px solid var(--kare); }
 
 /* Üst barın altında öğretmen kalemi çizgisi — imza öğe */
-.ust-bar { border-bottom: 2px solid var(--uyari); background: var(--yuzey); }
+/* Üst barın altındaki çizgi nötr. Eskiden kırmızıydı ("öğretmen kalemi"
+   imzası) ama kırmızı artık yalnızca ACİL demek; her ekranın tepesinde
+   duran kırmızı çizgi o anlamı tüketiyordu. */
+.ust-bar { border-bottom: 1px solid var(--cizgi); background: var(--yuzey); }
 
 /* İKİNCİ İMZA ÖĞE: fosforlu kalem vurgusu.
    Yalnızca ekranın tek önemli sayısında kullanılır. Yayarsak süs olur. */
@@ -1177,7 +1180,8 @@ body[data-tema='panel'] {
 
 .uygulama .ust-bar {
   background: var(--yuzey);
-  box-shadow: inset 0 -1px 0 0 var(--cizgi);
+  border-bottom: 1px solid var(--cizgi);
+  box-shadow: none;
 }
 .uygulama .ust-alt, .uygulama .derleme-damgasi { color: var(--grafit); }
 
@@ -1410,15 +1414,21 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 
 .baloncuk {
   display: inline-block; width: 14px; height: 14px; flex: 0 0 14px;
-  border-radius: 50%; border: 1.5px solid var(--marka-cizgi-2);
+  border-radius: 50%; border: 1.5px solid var(--cizgi-2);
   background: transparent; padding: 0;
   transition: background 0.15s, border-color 0.15s;
 }
 .baloncuk--dolu { background: var(--isaret); border-color: var(--isaret); }
-/* Dokunulabilir baloncuk 14px görünür ama 44px'lik hedef alanı taşır */
-.baloncuk--dokun { position: relative; cursor: pointer; }
+/* Dokunulabilir baloncuk 14px görünür ama 44px'lik hedef alanı taşır.
+   Halkayı sistem.css'teki .dokun-halka veriyor; ölçüyü burada
+   tekrarlamıyoruz ki baloncuk büyürse hedef de kendiliğinden ortalansın. */
+.baloncuk--dokun {
+  position: relative; cursor: pointer;
+}
 .baloncuk--dokun::after {
-  content: ''; position: absolute; inset: -15px; border-radius: 50%;
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 44px; height: 44px; transform: translate(-50%, -50%);
+  border-radius: 50%;
 }
 .baloncuk-serit { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 12px; }
 
@@ -1432,9 +1442,16 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .gorev-satir:last-child { border-bottom: 0; padding-bottom: 0; }
 .gorev-tik {
   flex: 0 0 auto; width: 22px; height: 22px; margin-top: 1px;
-  border-radius: 50%; border: 1.5px solid var(--marka-cizgi-2);
+  border-radius: 50%; border: 1.5px solid var(--cizgi-2);
   background: transparent; padding: 0; cursor: pointer;
   display: grid; place-items: center; color: transparent;
+  /* 22px görünür, 44px dokunulur */
+  position: relative;
+}
+.gorev-tik::after {
+  content: ''; position: absolute; left: 50%; top: 50%;
+  width: 44px; height: 44px; transform: translate(-50%, -50%);
+  border-radius: 50%;
 }
 .gorev-tik svg { width: 12px; height: 12px; }
 .gorev-tik[aria-checked="true"] {
@@ -2087,11 +2104,10 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   box-shadow: inset 0 -2px 0 var(--ak);
 }
 
-/* Yalnızca doğrudan çocuklar: iç içe kartlar boyanmasın. */
-.sekme-govde > .kart,
-.sekme-govde > * > .kart {
-  border-top: 2px solid var(--ak);
-}
+/* Kartın üst kenarındaki aksan kaldırıldı. Aksan artık eylem rengi ve
+   eylem rengi "dokunulabilir" demek; her kartın tepesine çekilince o
+   anlamı kaybediyordu. Kart durumluysa kenarını sistem boyuyor
+   (.kart[data-durum]), değilse nötr kalır. */
 
 /* Koç başlığındaki kısayollar, kimlik kartındakiyle aynı şerit. */
 .ob .kk-kisayol { margin-top: 0.95rem; }
