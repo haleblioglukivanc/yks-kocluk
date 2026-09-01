@@ -33,6 +33,19 @@ kopyası olurdu.
 
 Yanıt geçici şifreyi bir kez döndürür; saklanmaz.
 
+## Sürüm sabitleme — dikkat
+
+`supabase-js` sürümü **sabit** (`jsr:@supabase/supabase-js@2.49.4`). Önce `@2`
+yazıyordu; fonksiyon yeniden yayınlandığında JSR daha yeni bir sürüm çekti ve
+admin istemcisi üzerinden `auth.getUser(jeton)` çağrısı `Auth session missing`
+vermeye başladı. Kod değişmediği hâlde davranış değişti.
+
+Çağıranın kimliği artık belgelenen yöntemle doğrulanıyor: jeton `Authorization`
+başlığıyla ayrı bir istemciye veriliyor, `getUser()` argümansız çağrılıyor. Eski
+biçim yedek olarak duruyor.
+
+Sürümü yükseltirken bu iki noktayı yeniden test edin.
+
 ## Yayınlama
 
 Fonksiyon Supabase üzerinde yayınlanır, Cloudflare derlemesine dahil değildir.
