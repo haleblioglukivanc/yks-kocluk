@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -358,6 +359,8 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [dersId, setDersId] = useState('')
   const [konuId, setKonuId] = useState('')
   const [tur, setTur] = useState('konu_anlatimi')
+  const [kaynakId, setKaynakId] = useState(null)
+  const [kaynakAralik, setKaynakAralik] = useState('')
   const [hedef, setHedef] = useState('')
   const [aciklama, setAciklama] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
@@ -409,6 +412,8 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       baslik,
       hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
       aciklama: aciklama.trim() || null,
+      kaynak_id: kaynakId,
+      kaynak_aralik: kaynakId && kaynakAralik.trim() ? kaynakAralik.trim() : null,
       durum: 'bekliyor',
     })
 
@@ -462,6 +467,22 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           ))}
         </select>
       </Alan>
+
+      {/* Kaynak, tür ve konu seçildikten sonra soruluyor: motorun
+          sıralama yapabilmesi için ikisine de ihtiyacı var. */}
+      <KaynakSecici
+        ogrenciId={ogrenci.id}
+        ogrenciAdi={ogrenci.profiller?.ad_soyad}
+        dersId={dersId}
+        konuId={konuId}
+        secili={kaynakId}
+        onSec={(id) => {
+          setKaynakId(id)
+          if (!id) setKaynakAralik('')
+        }}
+        aralik={kaynakAralik}
+        onAralik={setKaynakAralik}
+      />
 
       {ADETLI.has(tur) && (
         <Alan etiket="Hedef adet">

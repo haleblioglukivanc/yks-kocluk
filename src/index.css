@@ -2687,3 +2687,144 @@ body[data-tema='panel'] {
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   KAYNAKLAR
+   Kart yapısı üç yerde birden kullanılıyor: kütüphane listesi,
+   göreve kaynak seçme ve ileride öğrencinin göreceği kaynak satırı.
+   Burada değişen bir şey üçüne birden yansır — ayrı ayrı yazmayın.
+   ═══════════════════════════════════════════════════════════════ */
+
+.kaynak-liste { display: flex; flex-direction: column; gap: 0.5rem; }
+
+.kaynak {
+  display: flex; gap: 0.75rem; align-items: flex-start;
+  padding: 0.8125rem 0.875rem;
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  border-radius: var(--r);
+}
+/* Geri plandaki kaynak gizlenmiyor, yalnızca geriye çekiliyor:
+   koç yine de seçebilmeli. */
+.kaynak--soluk { opacity: 0.55; }
+
+.kaynak-ikon {
+  flex: 0 0 34px; height: 34px; border-radius: 9px;
+  display: grid; place-items: center; font-size: 1rem;
+  background: var(--yuzey-2); border: 1px solid var(--cizgi);
+}
+.kaynak-govde { flex: 1; min-width: 0; }
+.kaynak-ad {
+  margin: 0; font-weight: 600; font-size: 0.9375rem; line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+.kaynak-ad a { color: inherit; text-decoration: none; }
+.kaynak-ad a:hover, .kaynak-ad a:focus-visible { text-decoration: underline; }
+.kaynak-alt { margin: 0.1875rem 0 0; font-size: 0.75rem; color: var(--soluk); }
+.kaynak-eylem { flex: 0 0 auto; }
+
+.kaynak-etiketler {
+  display: flex; gap: 0.3125rem; flex-wrap: wrap; margin-top: 0.5rem;
+}
+.kaynak-et {
+  font-size: 0.6875rem; font-weight: 600;
+  padding: 0.1875rem 0.4375rem; border-radius: 5px;
+  background: var(--yuzey-2); color: var(--grafit);
+  border: 1px solid var(--cizgi);
+}
+.kaynak-et--faz { background: var(--serin-zemin); border-color: var(--serin-kenar); color: #bcd4ff; }
+/* Seviye renkleri: yeşilden kırmızıya değil, açıktan yoğuna.
+   "Kırmızı = kötü" okunmasın diye üçüncü seviye alev tonu. */
+.kaynak-et--sv1 { background: #12331f; border-color: #1e5233; color: #93e0b4; }
+.kaynak-et--sv2 { background: #33290f; border-color: #5c481a; color: #f0c877; }
+.kaynak-et--sv3 { background: #3a1b16; border-color: #5f2b22; color: #ff9f8b; }
+.kaynak-et--resmi { background: #141d31; border-color: #33507f; color: #a8c6ff; }
+.kaynak-et--uyari { background: #33231b; border-color: #5c3a28; color: #ffb08e; }
+
+/* ── seçilebilir kart ── */
+.kaynak-secim { display: block; position: relative; cursor: pointer; }
+.kaynak-secim input { position: absolute; opacity: 0; width: 0; height: 0; }
+.kaynak-secim .kaynak { transition: border-color 120ms ease, background 120ms ease; }
+.kaynak-secim input:checked ~ .kaynak {
+  border-color: var(--fosfor); background: var(--yuzey-2);
+}
+.kaynak-secim input:focus-visible ~ .kaynak {
+  outline: 2px solid var(--dolgu); outline-offset: 2px;
+}
+.kaynak-isaret {
+  position: absolute; left: 0.875rem; top: 1.05rem; z-index: 1;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 2px solid var(--cizgi); background: var(--yuzey);
+}
+.kaynak-secim input:checked ~ .kaynak-isaret {
+  border-color: var(--fosfor); background: var(--fosfor);
+  box-shadow: inset 0 0 0 3px var(--yuzey-2);
+}
+/* İşaret ikonun üstüne bindiği için gövde sağa kayıyor. */
+.kaynak-secim .kaynak-ikon { visibility: hidden; }
+
+.kaynak-aralik {
+  margin: 0.375rem 0 0.125rem;
+  padding: 0.8125rem 0.875rem;
+  background: var(--yuzey-2);
+  border: 1px solid var(--fosfor); border-radius: var(--r);
+}
+
+.kaynak-ayrac {
+  margin: 0.625rem 0 0.375rem;
+  font-size: 0.75rem; color: var(--soluk);
+}
+
+/* ── motorun gerekçesi ── */
+.kaynak-secici { display: flex; flex-direction: column; gap: 0.625rem; }
+.kaynak-oneri {
+  display: flex; gap: 0.625rem; align-items: flex-start; margin: 0;
+  padding: 0.75rem 0.875rem; border-radius: var(--r);
+  font-size: 0.8125rem; line-height: 1.5;
+  background: var(--serin-zemin); border: 1px solid var(--serin-kenar);
+  color: #cfe0ff;
+}
+.kaynak-oneri-simge { flex: 0 0 auto; font-size: 1.0625rem; line-height: 1.2; }
+/* Motor susarken sesi de kısılıyor: mavi kutu öneri demek, gri kutu
+   "veri yetmedi" demek. İkisi aynı görünürse güven kaybolur. */
+.kaynak-oneri--sessiz {
+  background: var(--yuzey); border-color: var(--cizgi); color: var(--grafit);
+}
+
+/* ── süzgeç ── */
+.kaynak-suzgec {
+  display: flex; flex-direction: column; gap: 0.625rem; margin-bottom: 0.875rem;
+}
+.kaynak-cipler {
+  display: flex; gap: 0.375rem; overflow-x: auto;
+  padding-bottom: 0.125rem; scrollbar-width: none;
+}
+.kaynak-cipler::-webkit-scrollbar { display: none; }
+.kaynak-cip {
+  flex: 0 0 auto; font: inherit; font-size: 0.8125rem;
+  padding: 0.375rem 0.6875rem; border-radius: 999px;
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  color: var(--grafit); cursor: pointer; white-space: nowrap;
+}
+.kaynak-cip[aria-pressed='true'] {
+  background: var(--serin-zemin); border-color: var(--serin-kenar);
+  color: #cfe0ff; font-weight: 600;
+}
+.kaynak-cip:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
+
+/* ── Konular sekmesinden kütüphaneye giriş ── */
+.konu-kaynak-yol {
+  display: grid; grid-template-columns: 1fr auto; align-items: center;
+  width: 100%; text-align: left; gap: 0 0.75rem;
+  padding: 0.875rem 1rem; margin-bottom: 0.875rem;
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  border-radius: var(--r); font: inherit; color: var(--murekkep);
+  cursor: pointer;
+}
+.konu-kaynak-yol:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
+.konu-kaynak-ad { font-weight: 600; font-size: 0.9375rem; }
+.konu-kaynak-alt { grid-column: 1; font-size: 0.75rem; color: var(--soluk); }
+.konu-kaynak-ok { grid-row: 1 / span 2; font-size: 1.25rem; color: var(--soluk); }
+
+@media (prefers-reduced-motion: reduce) {
+  .kaynak-secim .kaynak { transition: none; }
+}

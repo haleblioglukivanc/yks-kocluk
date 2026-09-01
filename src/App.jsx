@@ -14,6 +14,7 @@ import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuOncelik from './ekranlar/KonuOncelik.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
+import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
@@ -317,7 +318,9 @@ export default function App() {
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
-    if (kocMu && yol === '/konular') return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
+    if (kocMu && yol === '/konular')
+      return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
+    if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
     if (kocMu && yol === '/ogrenciler')
       return (
         <Ogrencilerim

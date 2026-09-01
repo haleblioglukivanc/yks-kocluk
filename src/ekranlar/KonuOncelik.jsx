@@ -21,7 +21,7 @@ function tarihKisa(t) {
   return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
-export default function KonuOncelik({ onOgrenciAc }) {
+export default function KonuOncelik({ onOgrenciAc, onGit }) {
   const [veri, setVeri] = useState(null)
   const [dersId, setDersId] = useState('')
   const [acik, setAcik] = useState(null)
@@ -134,6 +134,17 @@ export default function KonuOncelik({ onOgrenciAc }) {
     <>
       <Uyari tur="bilgi">{bildirim}</Uyari>
       <Uyari>{hata}</Uyari>
+
+      {/* Kütüphane günlük değil ara sıra açılan bir ekran; alt çubukta
+          altıncı sekme olarak yer kaplamasın diye buradan giriliyor.
+          Kaynak da konu gibi içerik yönetimi, sekmesi burası. */}
+      {onGit && (
+        <button type="button" className="konu-kaynak-yol" onClick={() => onGit('/kaynaklar')}>
+          <span className="konu-kaynak-ad">Kaynaklar</span>
+          <span className="konu-kaynak-alt">Kitaplar, bağlantılar, kendi notların</span>
+          <span className="konu-kaynak-ok" aria-hidden="true">›</span>
+        </button>
+      )}
 
       <Kart
         baslik="Sınıfça zorlanılan"
