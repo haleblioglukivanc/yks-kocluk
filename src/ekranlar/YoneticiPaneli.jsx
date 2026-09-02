@@ -2,7 +2,6 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
-import SapkaSecici from '../bilesenler/SapkaSecici.jsx'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
 
 /* Koç paneli "bugün ne oluyor" sorusuna cevap veriyor. Burası başka bir
@@ -515,7 +514,6 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
             })}
           </p>
         </div>
-        <SapkaSecici aktif="yonetim" onGit={onGit} />
       </div>
 
       {hata && (

@@ -77,8 +77,9 @@ function useYol() {
 }
 
 /** Üst bardaki uygulama düğmeleri: ikon + isteğe bağlı bildirim rozeti. */
-function UstDugme({ etiket, etkin, rozet, vurgulu, onClick, children }) {
+function UstDugme({ etiket, etkin, rozet, vurgulu, yonetim, onClick, children }) {
   const sinif = ['ust-dugme']
+  if (yonetim) sinif.push('ust-dugme--yonetim')
   if (etkin) sinif.push('ust-dugme--etkin')
   if (vurgulu) sinif.push('ust-dugme--vurgulu')
   return (
@@ -348,6 +349,7 @@ export default function App() {
   /* Öğrencide Bugün ve Ben başlıkta Kâmil taşır; Yol'da harita kendi
      Kâmil'ini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
   const ogrenciYolu = OGRENCI_SEKME[yol]
+  const yonetimdeMi = profil.rol === 'yonetici' && yol === '/yonetim'
   const basliktaKalemVar =
     (yol === '/' && kocMu) ||
     (profil.rol === 'ogrenci' && ['/', '/ben', '/yol'].includes(yol)) ||
@@ -441,19 +443,46 @@ export default function App() {
 
   return (
     <div className={gezinmeVar ? 'uygulama' : 'uygulama uygulama--gezinmesiz'}>
-      <header className="ust-bar">
+      <header className={yonetimdeMi ? 'ust-bar ust-bar--yonetim' : 'ust-bar'}>
         <div>
           <span className="marka">
             YKS <span className="ince">Koçluk</span>
           </span>
           <span className="ust-alt">
-            {profil.ad_soyad} · {ROL_ADI[profil.rol] ?? profil.rol}
+            {profil.ad_soyad} ·{' '}
+            {profil.rol === 'yonetici' ? (
+              yonetimdeMi ? (
+                <span className="ust-alt--yonetim">Yönetici modu</span>
+              ) : (
+                'Koç modu'
+              )
+            ) : (
+              ROL_ADI[profil.rol] ?? profil.rol
+            )}
           </span>
           {/* Hangi derlemeye baktığımızı görebilmek için. Önbellek sorunlarını
               tahmin etmek yerine ölçmeyi sağlıyor. */}
           <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
         </div>
         <div className="ust-eylemler">
+          {/* Şapka geçişi: Kıvanç hem yönetici hem koç. Eski segmented seçici
+              panelin üstünde 60px yiyordu; şimdi başlıktaki tek düğme. Düğmenin
+              varlığı "yöneticisin" der, dolgusu hangi şapkanın takılı olduğunu.
+              Koç rolünde çizilmez — tek seçenekli seçici bilgi taşımaz. */}
+          {profil.rol === 'yonetici' && (
+            <UstDugme
+              etiket={yonetimdeMi ? 'Koç moduna dön' : 'Yönetici moduna geç'}
+              etkin={yonetimdeMi}
+              yonetim
+              onClick={() => git(yonetimdeMi ? '/' : '/yonetim')}
+            >
+              <svg {...ikonOzellik}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                <path d="m9 12 2 2 4-4" />
+              </svg>
+            </UstDugme>
+          )}
+
           <UstDugme
             etiket={mod === 'gece' ? 'Gündüz moduna geç' : 'Gece moduna geç'}
             onClick={() => setMod((m) => (m === 'gece' ? 'gunduz' : 'gece'))}

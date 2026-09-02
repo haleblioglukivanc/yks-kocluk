@@ -4,7 +4,6 @@ import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
 import AnalizKuyrugu from '../bilesenler/AnalizKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
-import SapkaSecici from '../bilesenler/SapkaSecici.jsx'
 
 /** Koçun günlük durum ekranı — yap katmanı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün kime dokunmalıyım" sorusuna cevap verir: risk radarı ve
@@ -25,9 +24,6 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
 
   return (
     <div className="panel">
-      {/* Yonetici iki sifatla giriyor; hangisiyle bakildigi ekranda yazsin.
-          Koc rolunde tek sapka var, secici de cizilmiyor. */}
-      {profil.rol === 'yonetici' && <SapkaSecici aktif="koc" onGit={onGit} />}
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
       <AnalizKuyrugu onOgrenciAc={onOgrenciAc} />

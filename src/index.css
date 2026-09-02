@@ -3097,23 +3097,18 @@ body[data-mod='gece'] .uygulama .kareli,
 .yk-ad { margin: 0; font-family: var(--display); font-size: 1.25rem; font-weight: 700; line-height: var(--satir-sik); }
 .yk-gun { margin: 0.15rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
 
-/* Şapka seçici: hangi sıfatla bakıldığı her zaman ekranda. */
-.sapka-secici {
-  display: flex; gap: 3px; padding: 3px;
-  background: var(--yuzey-2); border: 1px solid var(--cizgi); border-radius: 10px;
+/* Şapka geçişi başlıkta: düğmenin varlığı yetkiyi, dolgusu takılı şapkayı
+   söyler. Yönetici modunda üç sinyal birden: amber dolgulu düğme, alt
+   satırdaki "Yönetici modu", başlığın altındaki ince amber çizgi.
+   --altin gece/gündüz kendini çevirir; --marka-amber eski isim, kullanılmadı. */
+.ust-dugme--yonetim.ust-dugme--etkin {
+  background: var(--altin); border-color: var(--altin); color: var(--kagit);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--altin) 22%, transparent),
+              0 0 18px color-mix(in srgb, var(--altin) 55%, transparent);
 }
-.sapka-secici button {
-  border: 0; background: none; cursor: pointer;
-  font-family: inherit; font-size: var(--punto-kucuk); font-weight: 600;
-  color: var(--soluk); padding: 0.5rem 0.9rem; border-radius: 7px;
-  min-height: 38px;
-  transition: background 140ms ease, color 140ms ease;
-}
-.sapka-secici button[aria-pressed='true'] {
-  background: var(--yuzey); color: var(--murekkep);
-  box-shadow: 0 1px 2px rgb(16 38 62 / 0.12);
-}
-@media (prefers-reduced-motion: reduce) { .sapka-secici button { transition: none; } }
+.ust-dugme--yonetim.ust-dugme--etkin svg { fill: color-mix(in srgb, var(--kagit) 18%, transparent); }
+.ust-alt--yonetim { color: var(--altin-metin); font-weight: 600; }
+.uygulama .ust-bar--yonetim { box-shadow: inset 0 -3px 0 var(--altin); }
 
 /* Koç satırı: ad ve yük üstte, ölçümler altta. Ölçümler yan yana
    sığmadığında alta sarıyor; telefonda üç sütun zorlamıyoruz. */
