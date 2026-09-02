@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom'
 export function Kart({ baslik, altBaslik, children, eylem }) {
   return (
     <section className="kart">
@@ -68,4 +69,32 @@ export function Yukleniyor({ metin = 'Geliyor', satir = 3, sade = false }) {
 
 export function Rozet({ children, ton = 'notr' }) {
   return <span className={`rozet rozet--${ton}`}>{children}</span>
+}
+
+/** Alt sayfa (bottom sheet). body'ye portal ile takılır: hangi kartın
+ *  içinden açılırsa açılsın overflow/filter/z-index katmanlarına takılmaz.
+ *  Safari'de kart içinden position:fixed güvenilir değil. */
+export function AltSayfa({ etiket, baslik, altBaslik, sinif = '', rol = 'dialog', onKapat, children, dugmeler }) {
+  return createPortal(
+    <div className="alt-sayfa-perde" onClick={onKapat} role="presentation">
+      <div
+        className={`alt-sayfa${sinif ? ` ${sinif}` : ''}`}
+        role={rol}
+        aria-modal={rol === 'dialog' ? 'true' : undefined}
+        aria-label={etiket ?? baslik}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="alt-sayfa-tutamac" aria-hidden="true" />
+        {baslik && (
+          <header className="alt-sayfa-bas">
+            <h2>{baslik}</h2>
+            {altBaslik && <p className="alt-sayfa-alt">{altBaslik}</p>}
+          </header>
+        )}
+        <div className="alt-sayfa-govde">{children}</div>
+        {dugmeler && <div className="alt-sayfa-dugmeler">{dugmeler}</div>}
+      </div>
+    </div>,
+    document.body,
+  )
 }

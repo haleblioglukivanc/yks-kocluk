@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import OgrenciSatiri from '../bilesenler/OgrenciSatiri.jsx'
 import TopluDurtme from '../bilesenler/TopluDurtme.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
@@ -110,18 +110,13 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
         }
       >
         {formAcik && (
-          <div className="alt-sayfa-perde" onClick={() => setFormAcik(false)} role="presentation">
-            <div className="alt-sayfa" role="dialog" aria-modal="true" aria-label="Öğrenci ekle" onClick={(e) => e.stopPropagation()}>
-              <div className="alt-sayfa-tutamac" aria-hidden="true" />
-              <header className="alt-sayfa-bas"><h2>Öğrenci ekle</h2></header>
-              <div className="alt-sayfa-govde">
-                <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />
-              </div>
-              <div className="alt-sayfa-dugmeler">
-                <Dugme tur="ikincil" onClick={() => setFormAcik(false)}>Kapat</Dugme>
-              </div>
-            </div>
-          </div>
+          <AltSayfa
+            baslik="Öğrenci ekle"
+            onKapat={() => setFormAcik(false)}
+            dugmeler={<Dugme tur="ikincil" onClick={() => setFormAcik(false)}>Kapat</Dugme>}
+          >
+            <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />
+          </AltSayfa>
         )}
 
         {ogrenciler === null ? (

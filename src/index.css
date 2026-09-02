@@ -3223,7 +3223,7 @@ body[data-mod='gece'] .uygulama .kareli,
 .kk-ana-eylem:hover { filter: brightness(1.06); }
 .kk-sade .kk-ikon { width: 40px; height: 40px; border-radius: 12px; }
 .kk-menu-sayfa { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)); }
-.kk-menu { margin: 0.4rem 0 0; padding: 0.35rem 0.6rem; list-style: none; }
+.kk-menu { margin: 0; padding: 0; list-style: none; }
 .kk-menu li { list-style: none; }
 .kk-menu button, .kk-menu a {
   display: block; width: 100%; text-align: left;

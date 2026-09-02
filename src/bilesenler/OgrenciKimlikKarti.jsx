@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
+import { AltSayfa } from './Ortak.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
@@ -220,11 +221,7 @@ export default function OgrenciKimlikKarti({
                 </svg>
               </button>
               {menuAcik && (
-                /* Kart overflow:hidden; açılır menü kartın altına taşamaz.
-                   Mobilde zaten doğal olan alt sayfa kullanılıyor. */
-                <div className="alt-sayfa-perde" onClick={() => setMenuAcik(false)} role="presentation">
-                  <div className="alt-sayfa kk-menu-sayfa" role="menu" aria-label={ad} onClick={(e) => e.stopPropagation()}>
-                    <div className="alt-sayfa-tutamac" aria-hidden="true" />
+                <AltSayfa etiket={ad} rol="menu" sinif="kk-menu-sayfa" onKapat={() => setMenuAcik(false)}>
                     <ul className="kk-menu">
                     <li><button role="menuitem" onClick={menuSec(onDuzenle)}>{duzenleAcik ? 'Düzenlemeyi kapat' : 'Bilgileri düzenle'}</button></li>
                     {telefon && (
@@ -249,8 +246,7 @@ export default function OgrenciKimlikKarti({
                       </button>
                     </li>
                     </ul>
-                  </div>
-                </div>
+                </AltSayfa>
               )}
             </div>
           </div>
