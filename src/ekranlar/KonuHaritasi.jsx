@@ -6,18 +6,41 @@ import KonuYolu from '../bilesenler/KonuYolu.jsx'
 /* 300'den fazla konu var. Hepsini birden çekmek hem yavaş hem okunmaz olurdu:
    dersler özet gelir, konular ders açıldığında yüklenir. */
 
-function Cubuk({ toplam, tamamlandi, calisiliyor, tekrar }) {
+function Cubuk({ toplam, tamamlandi, onayli = 0, calisiliyor, tekrar }) {
+  const bekliyor = Math.max(0, tamamlandi - onayli)
+  const bos = Math.max(0, toplam - tamamlandi - calisiliyor - tekrar)
   const y = (n) => (toplam ? (n / toplam) * 100 : 0)
+  const dokunuldu = tamamlandi + calisiliyor + tekrar > 0
+  const parcalar = [
+    ['onayli', onayli, 'onaylı'],
+    ['bekliyor', bekliyor, 'onay bekliyor'],
+    ['calisiliyor', calisiliyor, 'çalışılıyor'],
+    ['tekrar', tekrar, 'tekrar'],
+  ]
   return (
-    <div
-      className='konu-cubuk'
-      role='img'
-      aria-label={`${toplam} konudan ${tamamlandi} bitti, ${calisiliyor} çalışılıyor, ${tekrar} tekrar gerekiyor`}
-    >
-      <div className='konu-cubuk--bitti' style={{ width: `${y(tamamlandi)}%` }} />
-      <div className='konu-cubuk--calisiliyor' style={{ width: `${y(calisiliyor)}%` }} />
-      <div className='konu-cubuk--tekrar' style={{ width: `${y(tekrar)}%` }} />
-    </div>
+    <>
+      <div
+        className='konu-cubuk'
+        role='img'
+        aria-label={`${toplam} konudan ${onayli} koç onaylı, ${bekliyor} onay bekliyor, ${calisiliyor} çalışılıyor, ${tekrar} tekrar gerekiyor, ${bos} başlanmadı`}
+      >
+        {parcalar.map(([k, n]) => n > 0 && (
+          <div key={k} className={`konu-cubuk--${k}`} style={{ width: `${y(n)}%` }} />
+        ))}
+      </div>
+      <div className='konu-lejant' aria-hidden='true'>
+        {dokunuldu ? (
+          <>
+            {parcalar.map(([k, n, ad]) => n > 0 && (
+              <span key={k} className={`konu-lejant--${k}`}>{n} {ad}</span>
+            ))}
+            {bos > 0 && <span className='konu-lejant--bos'>{bos} başlanmadı</span>}
+          </>
+        ) : (
+          <span className='konu-lejant--yok'>Henüz başlanmadı</span>
+        )}
+      </div>
+    </>
   )
 }
 
@@ -69,14 +92,16 @@ export default function KonuHaritasi({ profilId }) {
                 <div>
                   <span className='liste-ad'>{d.ders}</span>
                   <span className='liste-alt'>
-                    {String(d.kapsam).toUpperCase().replace('_', '/')} · {d.tamamlandi}/{d.toplam} bitti
-                    {d.tamamlandi > 0 && ` · ${d.onayli ?? 0} koç onaylı`}
+                    {String(d.kapsam).toUpperCase().replace('_', '/')} · {d.toplam} konu
                   </span>
                 </div>
-                <span className='ok' aria-hidden='true'>{acik === d.dersId ? '−' : '+'}</span>
+                <span className='ders-sayi' aria-hidden='true'>
+                  {d.tamamlandi}/{d.toplam}
+                  <svg viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' /></svg>
+                </span>
               </button>
 
-              <Cubuk toplam={d.toplam} tamamlandi={d.tamamlandi} calisiliyor={d.calisiliyor} tekrar={d.tekrar} />
+              <Cubuk toplam={d.toplam} tamamlandi={d.tamamlandi} onayli={d.onayli} calisiliyor={d.calisiliyor} tekrar={d.tekrar} />
 
               {acik === d.dersId && (
                 <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
