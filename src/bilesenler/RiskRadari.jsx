@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Bos, Kart, Rozet, Yukleniyor } from './Ortak.jsx'
+import { Avatar } from './Fotograf.jsx'
 
 /* Deneme düzeni YKS koçluğunun belkemiği. Üç hafta deneme girmeyen
    öğrenci sessiz sayılmasa bile geride kalıyordur. */
@@ -27,9 +28,6 @@ function neden(o) {
   return { metin: `Tamamlama %${o.tamamlama_yuzdesi ?? 0}`, tur: 'risk' }
 }
 
-const bas = (ad = '') =>
-  ad.trim().split(/\s+/).slice(0, 2).map((p) => p[0]?.toUpperCase() ?? '').join('')
-
 export default function RiskRadari({ onOgrenciAc, onGit }) {
   const [satirlar, setSatirlar] = useState(null)
 
@@ -50,6 +48,14 @@ export default function RiskRadari({ onOgrenciAc, onGit }) {
 
     const planliOlanlar = new Set((plan.data ?? []).map((g) => g.ogrenci_id))
 
+    /* ogrenci_risk görünümünde fotoğraf yok; profillerden tek sorguyla
+       alınır. Radar da listeyle aynı Avatar bileşenini çizsin. */
+    const idler = (risk.data ?? []).map((r) => r.ogrenci_id)
+    const { data: prof } = idler.length
+      ? await supabase.from('profiller').select('id, fotograf_yolu').in('id', idler)
+      : { data: [] }
+    const foto = Object.fromEntries((prof ?? []).map((p) => [p.id, p.fotograf_yolu]))
+
     // Her öğrencinin en son denemesi; liste zaten tarihe göre azalan.
     const sonDeneme = {}
     for (const d of deneme.data ?? []) {
@@ -60,6 +66,7 @@ export default function RiskRadari({ onOgrenciAc, onGit }) {
     setSatirlar(
       (risk.data ?? []).map((o) => ({
         ...o,
+        fotograf_yolu: foto[o.ogrenci_id] ?? null,
         planYok: !planliOlanlar.has(o.ogrenci_id),
         denemeGun: sonDeneme[o.ogrenci_id]
           ? Math.round((simdi - new Date(sonDeneme[o.ogrenci_id])) / 864e5)
@@ -109,9 +116,7 @@ export default function RiskRadari({ onOgrenciAc, onGit }) {
             return (
               <li key={o.ogrenci_id} className="ogrenci-sarmal">
                 <button className="ogrenci-satir" onClick={() => onOgrenciAc(o.ogrenci_id)}>
-                  <span className={`risk-bas risk-bas--${o.planYok ? 'plan' : o.risk_seviyesi}`}>
-                    {bas(o.ad_soyad)}
-                  </span>
+                  <Avatar yol={o.fotograf_yolu} ad={o.ad_soyad} boyut="kucuk" />
                   <div>
                     <span className="liste-ad">{o.ad_soyad}</span>
                     <span className="liste-alt">{s.metin}</span>
