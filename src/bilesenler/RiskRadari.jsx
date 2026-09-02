@@ -40,7 +40,7 @@ export default function RiskRadari({ onOgrenciAc, onGit }) {
       supabase
         .from('ogrenci_risk')
         .select(
-          'ogrenci_id, ad_soyad, risk_skoru, risk_seviyesi, gun_gecti, hic_baslamadi, tamamlama_yuzdesi, gecikmis_gorev, net_farki',
+          'ogrenci_id, ad_soyad, risk_skoru, risk_seviyesi, gun_gecti, hic_baslamadi, tamamlama_yuzdesi, gecikmis_gorev, net_farki, dun_tam, eksik_ust_uste',
         )
         .order('risk_skoru', { ascending: false }),
       // İleri tarihli görevi olan öğrenciler

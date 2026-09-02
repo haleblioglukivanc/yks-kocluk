@@ -173,7 +173,8 @@ export default function OgrenciPaneli({
             onDegisti={yenile}
             saltOkunur={vekaleten}
           />
-          {/* Rutin ve çözülen soru Günü kapat akışında; burada yalnız kapı. */}
+          {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
+              Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
           {ozet?.bugun && (
             <button
               className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
@@ -181,12 +182,12 @@ export default function OgrenciPaneli({
             >
               {ozet.gunKapandi ? (
                 <>
-                  <strong>Gün kapandı ✓</strong>
+                  <strong>Gün tamamlandı ✓</strong>
                   <span>Rutin ya da soru düzeltmek için dokun</span>
                 </>
               ) : (
                 <>
-                  <strong>Günü kapat</strong>
+                  <strong>Günü tamamla</strong>
                   <span>Rutinler · çözülen soru · Kâmil'in özeti</span>
                 </>
               )}

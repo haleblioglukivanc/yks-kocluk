@@ -15,9 +15,11 @@ import BugunCozulen from './BugunCozulen.jsx'
  * Kartlar aynı bileşenler (GunlukRutinler, BugunCozulen); yalnız kap değişti.
  * Koçun öğrenci gözüyle ekranı da bunu çizer, salt okunur.
  *
- * Kapatmak gun_kapanis'a bir satır yazar: koç görür, 23:00 hatırlatması
- * buna bakar. Kapanan gün "Düzenle" ile geri açılır; upsert olduğu için
- * ikinci kapatış aynı satırı günceller.
+ * Günü kapatan öğrenci değil, saat: gece 00:05'te sistem her öğrencinin
+ * gününü kapatır (private.gunleri_kapat). Öğrenci bu akışı bitirdiyse
+ * gun_kapanis'a tam=true yazılır, bitirmediyse gece işi tam=false yazar.
+ * Koç listede otomatik görür; Kâmil 22:00'den sonra hatırlatır.
+ * "Tamamlanan" gün yeniden açılıp düzeltilebilir; upsert aynı satırı günceller.
  */
 
 const ADIMLAR = ['Rutinler', 'Çözülen soru', 'Özet']
@@ -77,7 +79,7 @@ export default function GunuKapat({ acik, onKapat, ogrenciId, katalogId, ozet, o
     setBekliyor(true)
     const { error } = await supabase
       .from('gun_kapanis')
-      .upsert({ ogrenci_id: ogrenciId, tarih: ozet.bugun, kapandi: new Date().toISOString() }, { onConflict: 'ogrenci_id,tarih' })
+      .upsert({ ogrenci_id: ogrenciId, tarih: ozet.bugun, kapandi: new Date().toISOString(), tam: true }, { onConflict: 'ogrenci_id,tarih' })
     setBekliyor(false)
     if (error) {
       setHata(hataMetni(error))
@@ -94,12 +96,12 @@ export default function GunuKapat({ acik, onKapat, ogrenciId, katalogId, ozet, o
         className="alt-sayfa"
         role="dialog"
         aria-modal="true"
-        aria-label="Günü kapat"
+        aria-label="Günü tamamla"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="alt-sayfa-tutamac" aria-hidden="true" />
         <header className="alt-sayfa-bas">
-          <h2>Günü kapat</h2>
+          <h2>Günü tamamla</h2>
           <ol className="adim-noktalar" aria-label={`Adım ${adim + 1} / ${ADIMLAR.length}`}>
             {ADIMLAR.map((a, i) => (
               <li key={a} className={i === adim ? 'adim-nokta adim-nokta--etkin' : 'adim-nokta'} aria-current={i === adim ? 'step' : undefined}>
@@ -159,7 +161,7 @@ export default function GunuKapat({ acik, onKapat, ogrenciId, katalogId, ozet, o
           )}
           {son ? (
             <button className="dugme dugme--birincil" disabled={saltOkunur || bekliyor} onClick={kapat}>
-              {ozet?.gunKapandi ? 'Yeniden kapat' : 'Günü kapat'}
+              {ozet?.gunKapandi ? 'Kaydet' : 'Günü tamamla'}
             </button>
           ) : (
             <button className="dugme dugme--birincil" onClick={() => setAdim((a) => a + 1)}>

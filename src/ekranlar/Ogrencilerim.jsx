@@ -66,7 +66,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('ogrenci_risk')
-        .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev'),
+        .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev, dun_tam, eksik_ust_uste'),
       supabase.rpc('ogrenci_nabiz'),
       supabase
         .from('kataloglar')

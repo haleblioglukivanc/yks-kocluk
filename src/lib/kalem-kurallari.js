@@ -138,6 +138,13 @@ const OGRENCI_KURALLARI = [
     mesaj: () => `Bugün planında bir şey yok. Dinlenmek de plana dahil.`,
   },
   {
+    kod: 'gun_tamamlanmadi',
+    rol: 'ogrenci', oncelik: 48, tekrar: 'gunde_bir', ruh: 'fikir',
+    kosul: (b) => b.saat >= 22 && !o(b).gunKapandi,
+    mesaj: () => `Gün gece yarısı kendiliğinden kapanıyor. Rutinini ve çözdüğün soruları girmek bir dakika sürer.`,
+    eylem: () => ({ etiket: 'Günü tamamla', sekme: 'bugun' }),
+  },
+  {
     kod: 'gec_saat',
     rol: 'ogrenci', oncelik: 40, tekrar: 'gunde_bir', ruh: 'uyku',
     kosul: (b) => b.saat >= 23 || b.saat < 4,

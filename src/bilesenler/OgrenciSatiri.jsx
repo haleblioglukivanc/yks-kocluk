@@ -22,11 +22,17 @@ export function sebepCumlesi(r) {
 
   if (r.gecikmis_gorev > 0) p.push(`${r.gecikmis_gorev} gecikmiş görev`)
 
+  /* Gün gece kendiliğinden kapanır; öğrenci akşam kaydını girmediyse
+     eksik kapanır. Koç bunu buradan görür, kimseden bir şey istemez. */
+  if (r.eksik_ust_uste >= 2) p.push(`${r.eksik_ust_uste} gündür günü tamamlamıyor`)
+  else if (r.dun_tam === false && p.length < 2) p.push('dün günü tamamlamadı')
+
   const net = Number(r.net_farki ?? 0)
   if (net <= -5) p.push(`son denemede ${Math.round(net)} net`)
   else if (net >= 5 && p.length < 2) p.push(`son denemede +${Math.round(net)} net`)
 
   if (p.length === 0) {
+    if (r.dun_tam === true) return 'Dün günü tamamladı'
     if (r.guncel_seri >= 3) return `${r.guncel_seri} günlük seri sürüyor`
     if (r.haftalik_gorev === 0) return 'Bu hafta görev atanmamış'
     return 'Yolunda görünüyor'
@@ -38,7 +44,7 @@ export function sebepCumlesi(r) {
  *  eyleme çağırıyor, net artışı çağırmıyor. */
 function tonu(r) {
   if (!r) return 'notr'
-  if (r.hic_baslamadi || r.gun_gecti >= 2 || r.gecikmis_gorev >= 5) return 'uyari'
+  if (r.hic_baslamadi || r.gun_gecti >= 2 || r.gecikmis_gorev >= 5 || r.eksik_ust_uste >= 2) return 'uyari'
   if (Number(r.net_farki ?? 0) >= 5) return 'iyi'
   return 'notr'
 }
