@@ -23,7 +23,6 @@ function grubu(o) {
 export default function Ogrencilerim({ onOgrenciAc, onGit }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
-  const [nabizlar, setNabizlar] = useState({})
   const [kataloglar, setKataloglar] = useState([])
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
@@ -32,7 +31,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
   const [durtmeAcik, setDurtmeAcik] = useState(false)
 
   const yukle = useCallback(async () => {
-    const [o, r, n, k] = await Promise.all([
+    const [o, r, k] = await Promise.all([
       supabase
         .from('ogrenciler')
         .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)')
@@ -40,7 +39,6 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
       supabase
         .from('ogrenci_risk')
         .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev, dun_tam, eksik_ust_uste'),
-      supabase.rpc('ogrenci_nabiz'),
       supabase
         .from('kataloglar')
         .select('id, ad, tur, seviye, alan')
@@ -50,7 +48,6 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
     if (o.error) setHata(hataMetni(o.error))
     setOgrenciler(o.data ?? [])
     setRiskler(Object.fromEntries((r.data ?? []).map((x) => [x.ogrenci_id, x])))
-    setNabizlar(Object.fromEntries((n.data ?? []).map((x) => [x.ogrenci_id, x.nabiz])))
     setKataloglar(k.data ?? [])
   }, [])
 
@@ -88,7 +85,6 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
       key={o.id}
       ogrenci={o}
       risk={o.risk}
-      nabiz={nabizlar[o.id]}
       onAc={onOgrenciAc}
     />
   )
@@ -142,14 +138,8 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
               />
             </label>
 
-            {/* Toplu mesaj kendi başına bir ekran değil: her zaman ekranda
-                görünen kümeye gidiyor, hedefi belirsiz kalmasın. */}
-            {!bulunan && durtmeHedefi.length > 1 && !durtmeAcik && (
-              <button className="durtme-serit" onClick={() => setDurtmeAcik(true)}>
-                <span aria-hidden="true">✎</span>
-                <span>Önce bunlar listesindeki {durtmeHedefi.length} öğrenciye toplu mesaj</span>
-              </button>
-            )}
+            {/* Toplu mesaj "Önce bunlar" başlığının sağındaki bağlantıdan
+                açılır; hedef kümesi her zaman o grup. */}
             {durtmeAcik && durtmeHedefi.length > 0 && (
               <TopluDurtme
                 ogrenciler={durtmeHedefi}
@@ -161,19 +151,28 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
               bulunan.length === 0 ? (
                 <Bos baslik="Eşleşen öğrenci yok" />
               ) : (
-                <ul className="liste liste--kartli">{bulunan.map(satirCiz)}</ul>
+                <ul className="liste liste--rehber">{bulunan.map(satirCiz)}</ul>
               )
             ) : (
               <>
                 {GRUPLAR.map(([anahtar, ad, ton]) =>
                   kova[anahtar].length === 0 ? null : (
                     <section key={anahtar} className="ogr-grup">
-                      <h3 className="ogr-grup-baslik">
+                      <h3 className="rehber-baslik">
                         <span className={`ogr-grup-serit ogr-grup-serit--${ton}`} aria-hidden="true" />
                         {ad}
                         <span className="ogr-grup-sayi">{kova[anahtar].length}</span>
+                        {anahtar === 'acil' && kova.acil.length > 1 && !durtmeAcik && (
+                          <button className="rehber-toplu" onClick={() => setDurtmeAcik(true)}>
+                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
+                                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                              <path d="m22 2-7 20-4-9-9-4Z" /><path d="M22 2 11 13" />
+                            </svg>
+                            Toplu mesaj
+                          </button>
+                        )}
                       </h3>
-                      <ul className="liste liste--kartli">{kova[anahtar].map(satirCiz)}</ul>
+                      <ul className="liste liste--rehber">{kova[anahtar].map(satirCiz)}</ul>
                     </section>
                   ),
                 )}
@@ -181,7 +180,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
                 {kova.pasif.length > 0 && (
                   <section className="ogr-grup">
                     <button
-                      className="ogr-grup-baslik ogr-grup-baslik--dugme"
+                      className="rehber-baslik rehber-baslik--dugme"
                       onClick={() => setPasifAcik((v) => !v)}
                       aria-expanded={pasifAcik}
                     >
@@ -192,7 +191,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
                       </span>
                     </button>
                     {pasifAcik && (
-                      <ul className="liste liste--kartli">{kova.pasif.map(satirCiz)}</ul>
+                      <ul className="liste liste--rehber">{kova.pasif.map(satirCiz)}</ul>
                     )}
                   </section>
                 )}

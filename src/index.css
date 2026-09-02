@@ -3265,3 +3265,42 @@ body[data-mod='gece'] .uygulama .kareli,
   display: grid; place-items: center; border-radius: 999px;
   background: var(--marka-alev); color: #fff; font-size: 0.72rem; font-weight: 700;
 }
+
+/* ═══════════ Öğrenciler = rehber ═══════════
+   Kutu yok, sayı yok, çubuk yok. İnce çizgili satır: nokta + küçük
+   fotoğraf + isim + tek satır tek sebep. Karar ekranı Bugün, iş ekranı detay. */
+.liste--rehber { margin: 0; padding: 0; }
+.rehber-satir-sarmal { list-style: none; }
+.rehber-satir {
+  display: flex; align-items: center; gap: 0.7rem; width: 100%;
+  padding: 0.6rem 0.15rem; border: 0; border-bottom: 1px solid var(--cizgi);
+  background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+}
+.rehber-satir-sarmal:last-child .rehber-satir { border-bottom: 0; }
+.rehber-satir:hover { background: var(--kagit); }
+.rehber-satir--pasif { opacity: 0.5; }
+.rehber-nokta { width: 8px; height: 8px; border-radius: 50%; background: var(--nokta, var(--cizgi-2)); flex: 0 0 auto; }
+.avatar--kucuk { width: 2rem; height: 2rem; font-size: 0.7rem; border-radius: 7px; }
+.rehber-sebep {
+  display: block; font-size: var(--punto-mini); color: var(--soluk); margin-top: 0.1rem;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rehber-sebep--uyari { color: var(--marka-alev); }
+.rehber-baslik {
+  display: flex; align-items: center; gap: 0.45rem;
+  margin: 0.2rem 0.15rem 0.2rem;
+  font-size: var(--punto-mini); font-weight: 600; color: var(--soluk);
+}
+.rehber-baslik .ogr-grup-sayi { margin-right: auto; }
+.rehber-baslik--dugme {
+  width: 100%; padding: 0.55rem 0.15rem; background: none; border: 0;
+  border-top: 1px solid var(--cizgi); cursor: pointer; font-family: inherit;
+}
+.rehber-toplu {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.25rem 0.5rem; border: 1px solid var(--cizgi); border-radius: 999px;
+  background: var(--yuzey); color: var(--serin); font: inherit; font-size: 0.72rem; font-weight: 600;
+  cursor: pointer;
+}
+.rehber-toplu:hover { border-color: var(--serin); }
+.ogr-grup { margin-bottom: 0.9rem; }

@@ -77,29 +77,33 @@ export function Nabiz({ dizi, ad }) {
   )
 }
 
-/** Satır = isim + tek sebep cümlesi + nabız. Yüzde, durum kelimesi ve
- *  satır içi eylemler kaldırıldı: satıra dokunmak tek işi yapar, detayı
- *  açar. Eylemler detay kartındaki menüde. */
-export default function OgrenciSatiri({ ogrenci, risk, nabiz, onAc }) {
+/** Liste bir rehber: renk noktası + küçük fotoğraf + isim + tek satırda
+ *  tek sebep. Sayı yok, çubuk yok; onlar detay kartında. Cümlenin ikinci
+ *  parçası da detayda; burada yalnız en keskini. */
+export function tekSebep(r) {
+  return sebepCumlesi(r).split(' · ')[0]
+}
+
+export default function OgrenciSatiri({ ogrenci, risk, onAc }) {
   const aktif = ogrenci.aktif !== false
   const ad = ogrenci.profiller?.ad_soyad ?? ogrenci.ad_soyad ?? 'İsimsiz'
   const renk = aktif ? (RISK_RENK[risk?.risk_seviyesi] ?? 'var(--cizgi-2)') : 'var(--soluk)'
 
   return (
-    <li className="ogr-satir-sarmal">
+    <li className="rehber-satir-sarmal">
       <button
-        className={`ogrenci-kutu${aktif ? '' : ' ogrenci-kutu--pasif'}`}
-        style={{ '--serit': renk }}
+        className={`rehber-satir${aktif ? '' : ' rehber-satir--pasif'}`}
+        style={{ '--nokta': renk }}
         onClick={() => onAc?.(ogrenci.id)}
       >
-        <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} />
+        <i className="rehber-nokta" aria-hidden="true" />
+        <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="kucuk" />
         <div className="ok-orta">
           <span className="liste-ad">{ad}</span>
-          <span className={`ok-sebep ok-sebep--${tonu(risk)}`}>
-            {aktif ? sebepCumlesi(risk) : 'Erişim kapalı'}
+          <span className={`rehber-sebep${tonu(risk) === 'uyari' && aktif ? ' rehber-sebep--uyari' : ''}`}>
+            {aktif ? tekSebep(risk) : 'Erişim kapalı'}
           </span>
         </div>
-        {aktif && <Nabiz dizi={nabiz} ad={ad} />}
         <svg className="ok-ileri" viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
           <path d="m9 6 6 6-6 6" />
