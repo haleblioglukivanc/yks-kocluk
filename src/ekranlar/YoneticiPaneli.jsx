@@ -212,8 +212,29 @@ function mailDurumu(s) {
   return { ton: 'iyi', etiket: 'normal', not: null }
 }
 
+/* Cron "succeeded" demesi isin yurudugu anlamina gelmiyor: gonderici
+   anahtari bulamayinca sessizce vazgeciyordu ve kuyruk uc gun bekledi.
+   Arka plan isleri artik kendi hatalarini private.sistem_gunlugu'ne
+   yaziyor. Kart cron'un raporuna degil bu listeye bakiyor. */
+function ayrintiMetni(a) {
+  if (!a || typeof a !== 'object') return null
+  const parcalar = Object.entries(a)
+    .filter(([, d]) => d !== null && d !== undefined && typeof d !== 'object')
+    .map(([k, d]) => `${k.replace(/_/g, ' ')}: ${d}`)
+  return parcalar.length ? parcalar.join(' · ') : null
+}
+
+function kisaZaman(z) {
+  if (!z) return ''
+  return new Date(z).toLocaleString('tr-TR', {
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit',
+  })
+}
+
 function Sistem({ s }) {
   const mail = mailDurumu(s)
+  const gunluk = s.gunluk ?? []
+  const hata24s = Number(s.gunluk_hata_24s ?? 0)
 
   return (
     <Kart baslik="Sistem" altBaslik="Arka planda çalışanlar">
@@ -254,6 +275,33 @@ function Sistem({ s }) {
             </span>
           </div>
           <Rozet ton="iyi">normal</Rozet>
+        </li>
+
+        <li className="liste-satir">
+          <div>
+            <span className="liste-ad">Arka plan hataları</span>
+            <span className="liste-alt">
+              {gunluk.length
+                ? `son 24 saatte ${hata24s} hata · son 7 günün kayıtları aşağıda`
+                : 'son 7 günde kayıt yok'}
+            </span>
+            {gunluk.length > 0 && (
+              <div className="yk-uyari yk-uyari--satir">
+                {gunluk.map((g) => {
+                  const ayrinti = ayrintiMetni(g.ayrinti)
+                  return (
+                    <div key={g.id}>
+                      <b>{g.kaynak}</b> · {kisaZaman(g.zaman)} — {g.mesaj}
+                      {ayrinti ? ` (${ayrinti})` : ''}
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+          <Rozet ton={hata24s > 0 ? 'uyari' : gunluk.length ? 'izle' : 'iyi'}>
+            {hata24s > 0 ? `${hata24s} hata` : gunluk.length ? 'geçmiş kayıt' : 'temiz'}
+          </Rozet>
         </li>
       </ul>
     </Kart>
