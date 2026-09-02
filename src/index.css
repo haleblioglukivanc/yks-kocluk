@@ -1679,6 +1679,13 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #fff; border-radius: 16px; flex: 0 0 auto;
 }
+/* Fotoğraf koçun hatırlama aracı; kartta mümkün olduğunca büyük.
+   Kartı taşırmadan: küçük ekranda 5.5rem, genişte 6.5rem. */
+.kk-sade .avatar--buyuk {
+  width: clamp(5.5rem, 26vw, 6.5rem); height: clamp(5.5rem, 26vw, 6.5rem);
+  font-size: 1.6rem; border-radius: 20px;
+}
+.kk-sade .kk-ust { align-items: center; gap: 1rem; }
 
 .kk-kimlik { flex: 1; min-width: 0; padding-top: 0.1rem; }
 .kk-ad {
