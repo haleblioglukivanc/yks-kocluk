@@ -3291,7 +3291,7 @@ body[data-mod='gece'] .uygulama .kareli,
   margin: 0.2rem 0.15rem 0.2rem;
   font-size: var(--punto-mini); font-weight: 600; color: var(--soluk);
 }
-.rehber-baslik .ogr-grup-sayi { margin-right: auto; }
+.rehber-baslik .ogr-grup-sayi { margin-left: 0; margin-right: auto; }
 .rehber-baslik--dugme {
   width: 100%; padding: 0.55rem 0.15rem; background: none; border: 0;
   border-top: 1px solid var(--cizgi); cursor: pointer; font-family: inherit;
