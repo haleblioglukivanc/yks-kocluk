@@ -72,28 +72,10 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       <OgrenciKimlikKarti
         ogrenci={ogrenci}
         netDurumu={netDurumu}
-        duzenleAcik={duzenle}
-        onDuzenle={() => setDuzenle((v) => !v)}
-        onDegisti={yukle}
-        sekme={sekme}
-        onSekme={setSekme}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
         onEk={setEk}
       />
-
-      {duzenle && (
-        <Kart>
-          <BilgiFormu
-            ogrenci={ogrenci}
-            kataloglar={kataloglar}
-            onKaydedildi={async () => {
-              setDuzenle(false)
-              await yukle()
-            }}
-          />
-        </Kart>
-      )}
 
       <div className="sekme-govde" style={aksanStili()}>
       <nav className="sekmeler sekmeler--genis">
@@ -101,7 +83,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           ['program', 'Program'],
           ['denemeler', 'Denemeler'],
           ['konular', 'Konular'],
-          ['notlar', 'Notlar'],
+          ['kayit', 'Kayıt'],
         ].map(([k, e]) => (
           <button
             key={k}
@@ -120,17 +102,82 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
             netDurumu={netDurumu}
             seri={ek?.seri}
             tamamlama={ek?.risk?.tamamlama_yuzdesi}
+            rozet={ek?.rozet}
+            onRozetler={() => setSekme('rozetler')}
           />
           <Program ogrenci={ogrenci} />
         </>
       )}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
-      {sekme === 'rozetler' && <Rozetlerim ogrenciId={ogrenci.id} />}
-      {sekme === 'notlar' && <Notlar ogrenci={ogrenci} />}
-      {sekme === 'veli' && <Veliler ogrenci={ogrenci} />}
+      {sekme === 'rozetler' && (
+        <>
+          <button className="metin-dugme geri" onClick={() => setSekme('program')}>← Program</button>
+          <Rozetlerim ogrenciId={ogrenci.id} />
+        </>
+      )}
+      {/* Kayıt: idari her şey tek yerde. Kimlik bilgileri (telefon dâhil,
+          müşteri kartı gibi), düzenleme formu, veli bağları, koç notları. */}
+      {sekme === 'kayit' && (
+        <>
+          <Kart
+            baslik="Bilgiler"
+            eylem={
+              <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
+                {duzenle ? 'Vazgeç' : 'Düzenle'}
+              </Dugme>
+            }
+          >
+            {duzenle ? (
+              <BilgiFormu
+                ogrenci={ogrenci}
+                kataloglar={kataloglar}
+                onKaydedildi={async () => {
+                  setDuzenle(false)
+                  await yukle()
+                }}
+              />
+            ) : (
+              <Kunye ogrenci={ogrenci} />
+            )}
+          </Kart>
+          <Veliler ogrenci={ogrenci} />
+          <Notlar ogrenci={ogrenci} />
+        </>
+      )}
       </div>
     </div>
+  )
+}
+
+/* ─────────────────────────── Künye ─────────────────────────── */
+
+function Kunye({ ogrenci }) {
+  const telefon = ogrenci.profiller?.telefon
+  const satirlar = [
+    ['Telefon', telefon ? <a href={`tel:${telefon.replace(/\s/g, '')}`}>{telefon}</a> : '—'],
+    ['Sınıf', ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : '—'],
+    ['Alan', ogrenci.alan ? ALAN_ADI[ogrenci.alan] : '—'],
+    ['Katalog', ogrenci.kataloglar?.ad ?? '—'],
+    ['Hedef', [ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ') || '—'],
+    [
+      'Hedef net',
+      [ogrenci.hedef_tyt_net != null && `TYT ${Number(ogrenci.hedef_tyt_net)}`, ogrenci.hedef_ayt_net != null && `AYT ${Number(ogrenci.hedef_ayt_net)}`]
+        .filter(Boolean)
+        .join(' · ') || '—',
+    ],
+    ['Kayıt', ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR') : '—'],
+    ['Uygulama erişimi', ogrenci.aktif ? 'Açık' : 'Kapalı'],
+  ]
+  return (
+    <dl className="kunye">
+      {satirlar.map(([k, v]) => (
+        <div key={k}>
+          <dt>{k}</dt>
+          <dd>{v}</dd>
+        </div>
+      ))}
+    </dl>
   )
 }
 

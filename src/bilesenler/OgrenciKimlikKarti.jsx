@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react'
-import { supabase, hataMetni } from '../lib/supabase.js'
+import { useEffect, useState } from 'react'
+import { supabase } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
-import { AltSayfa } from './Ortak.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
@@ -36,11 +35,6 @@ export default function OgrenciKimlikKarti({
   rol = 'koc',
   ozet,
   netFarki,
-  duzenleAcik,
-  onDuzenle,
-  onDegisti,
-  sekme,
-  onSekme,
   onMesaj,
   onGozuyle,
   onEk,
@@ -52,12 +46,7 @@ export default function OgrenciKimlikKarti({
      yardımcı olmaz. */
   const kocGorunumu = rol === 'koc'
   const [ek, setEk] = useState(null)
-  const [aktif, setAktif] = useState(ogrenci.aktif)
-  const [kaydediyor, setKaydediyor] = useState(false)
-  const [hata, setHata] = useState('')
-  const [menuAcik, setMenuAcik] = useState(false)
-
-  useEffect(() => setAktif(ogrenci.aktif), [ogrenci.aktif])
+  const aktif = ogrenci.aktif
 
   useEffect(() => {
     let iptal = false
@@ -104,28 +93,7 @@ export default function OgrenciKimlikKarti({
     }
   }, [ogrenci.id, kocGorunumu]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const erisimDegistir = useCallback(
-    async (yeni) => {
-      if (!yeni && !window.confirm('Öğrencinin uygulama erişimi durdurulsun mu? Verileri silinmez.')) {
-        return
-      }
-      setAktif(yeni) // iyimser: anahtar anında tepki versin
-      setKaydediyor(true)
-      setHata('')
-      const { error } = await supabase.from('ogrenciler').update({ aktif: yeni }).eq('id', ogrenci.id)
-      setKaydediyor(false)
-      if (error) {
-        setAktif(!yeni)
-        setHata(hataMetni(error))
-        return
-      }
-      await onDegisti?.()
-    },
-    [ogrenci.id, onDegisti],
-  )
-
   const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
-  const telefon = ogrenci.profiller?.telefon
 
   const cipler = [
     ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null,
@@ -146,13 +114,7 @@ export default function OgrenciKimlikKarti({
     (ek.risk.hic_baslamadi || ek.risk.gun_gecti >= 2 || ek.risk.gecikmis_gorev > 0 ||
       ek.risk.eksik_ust_uste >= 2 || Number(ek.risk.net_farki ?? 0) <= -5)
 
-  const menuSec = (fn) => () => {
-    setMenuAcik(false)
-    fn?.()
-  }
-
   return (
-    <>
       <div className={`hero-yuzey kimlik-kart kk-sade${kocGorunumu && !aktif ? ' kimlik-kart--kapali' : ''}`}>
         <div className="kk-ust">
           <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
@@ -208,53 +170,21 @@ export default function OgrenciKimlikKarti({
               Mesaj gönder
             </button>
 
-            <div className="kk-menu-sarmal">
-              <button
-                className={`kk-ikon${menuAcik ? ' kk-ikon--etkin' : ''}`}
-                onClick={() => setMenuAcik((v) => !v)}
-                aria-haspopup="menu"
-                aria-expanded={menuAcik}
-                aria-label="Daha fazla"
-              >
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true">
-                  <circle cx="5" cy="12" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="19" cy="12" r="1.8" />
-                </svg>
-              </button>
-              {menuAcik && (
-                <AltSayfa etiket={ad} rol="menu" sinif="kk-menu-sayfa" onKapat={() => setMenuAcik(false)}>
-                    <ul className="kk-menu">
-                    <li><button role="menuitem" onClick={menuSec(onDuzenle)}>{duzenleAcik ? 'Düzenlemeyi kapat' : 'Bilgileri düzenle'}</button></li>
-                    {telefon && (
-                      <li><a role="menuitem" href={`tel:${telefon.replace(/\s/g, '')}`} onClick={() => setMenuAcik(false)}>Ara</a></li>
-                    )}
-                    <li><button role="menuitem" onClick={menuSec(() => onGozuyle?.(ogrenci.id))}>Panelini aç</button></li>
-                    {onSekme && (
-                      <>
-                        <li><button role="menuitem" onClick={menuSec(() => onSekme('rozetler'))}>Rozetler{ek ? ` (${ek.rozet})` : ''}</button></li>
-                        <li><button role="menuitem" onClick={menuSec(() => onSekme('veli'))}>Veliler{ek ? ` (${ek.veli})` : ''}</button></li>
-                      </>
-                    )}
-                    <li className="kk-menu-ayrac" role="separator" />
-                    <li>
-                      <button
-                        role="menuitem"
-                        className={aktif ? 'kk-menu-tehlike' : ''}
-                        disabled={kaydediyor}
-                        onClick={menuSec(() => erisimDegistir(!aktif))}
-                      >
-                        {aktif ? 'Erişimi kapat' : 'Erişimi aç'}
-                      </button>
-                    </li>
-                    </ul>
-                </AltSayfa>
-              )}
-            </div>
+            <button
+              className="kk-ikon kk-goz"
+              onClick={() => onGozuyle?.(ogrenci.id)}
+              aria-label="Panelini aç (vekaleten)"
+              title="Panelini aç"
+            >
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
           </div>
         )}
       </div>
-
-      {hata && <p className="uyari uyari--hata">{hata}</p>}
-    </>
   )
 }
 
@@ -263,7 +193,7 @@ export default function OgrenciKimlikKarti({
  * ve üç kutu. Kimlik kartından ayrıldı; Program sekmesinin tepesinde
  * durur. Kartın üstünde "ne yapmalıyım", burada "nasıl gidiyor".
  */
-export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama }) {
+export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama, rozet, onRozetler }) {
   const hedefler = [
     { ad: 'TYT', hedef: ogrenci.hedef_tyt_net, d: netDurumu?.tyt },
     { ad: 'AYT', hedef: ogrenci.hedef_ayt_net, d: netDurumu?.ayt },
@@ -317,6 +247,16 @@ export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama 
           cizim={<path d="m3 17 5-6 4 4 5-7 4 5" />}
         />
       </div>
+
+      {onRozetler && (
+        <button className="olcum-rozet" onClick={onRozetler}>
+          <span>{rozet != null ? `${rozet} rozet` : 'Rozetler'}</span>
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m9 6 6 6-6 6" />
+          </svg>
+        </button>
+      )}
 
       {hedefler.map((h) => (
         <div className="olcum-hedef" key={h.ad}>

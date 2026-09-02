@@ -3222,21 +3222,17 @@ body[data-mod='gece'] .uygulama .kareli,
 }
 .kk-ana-eylem:hover { filter: brightness(1.06); }
 .kk-sade .kk-ikon { width: 40px; height: 40px; border-radius: 12px; }
-.kk-menu-sayfa { padding-bottom: calc(0.5rem + env(safe-area-inset-bottom)); }
-.kk-menu { margin: 0; padding: 0; list-style: none; }
-.kk-menu li { list-style: none; }
-.kk-menu button, .kk-menu a {
-  display: block; width: 100%; text-align: left;
-  padding: 0.6rem 0.75rem; border: 0; border-radius: 9px;
-  background: transparent; color: inherit; font: inherit; font-size: 0.92rem;
-  text-decoration: none; cursor: pointer;
-}
-.kk-menu button:hover, .kk-menu a:hover { background: var(--kagit); }
-.kk-menu button:disabled { opacity: 0.5; cursor: default; }
-.kk-menu-ayrac { height: 1px; margin: 0.3rem 0.4rem; background: var(--cizgi); }
-.kk-menu-tehlike { color: var(--marka-alev); }
+.kk-goz { flex: 0 0 auto; }
 
 /* Ölçümler (Program sekmesinin tepesi) */
+.olcum-rozet {
+  display: flex; align-items: center; justify-content: space-between; width: 100%;
+  margin-top: 0.8rem; padding: 0.55rem 0.75rem;
+  background: var(--kagit); border: 1px solid var(--cizgi); border-radius: 10px;
+  color: inherit; font: inherit; font-size: var(--punto-mini); font-weight: 600; cursor: pointer;
+}
+.olcum-rozet svg { color: var(--soluk); }
+.kunye dd a { color: var(--serin); text-decoration: none; font-weight: 500; }
 .olcumler { padding-top: 0.9rem; }
 .olcum-varis { margin: 0 0 0.7rem; font-size: var(--punto-mini); color: var(--soluk); }
 .olcumler .kk-kutular { margin-top: 0; }
