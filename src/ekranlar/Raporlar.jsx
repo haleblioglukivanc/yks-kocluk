@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
+import TelegramBaglanti from '../bilesenler/TelegramBaglanti.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
 /* Koçun "bu dönem ne oldu" sorusunun tek cevabı.
@@ -234,6 +235,10 @@ export default function Raporlar({ onOgrenciAc, onGit, bekleyenOzet = 0 }) {
           ))}
         </ul>
       </Kart>
+
+      {/* Telefon değişir, hesap kaybolur. Bunlar geliştiriciye sorulacak
+          şeyler değil: koç kendi bağlantısını buradan kurar ve koparır. */}
+      <TelegramBaglanti />
 
       <Kart
         baslik='Raporlar'

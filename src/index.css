@@ -3336,3 +3336,46 @@ body[data-mod='gece'] .uygulama .kareli,
 .uygulama--gece .analiz-dilim--dikkat { background: var(--k-amber-zemin);   border-color: var(--k-amber-kenar);   color: var(--k-amber-metin); }
 .uygulama--gece .analiz-dilim--sure   { background: var(--k-mavi-zemin);    border-color: var(--k-mavi-kenar);    color: var(--k-mavi-metin); }
 .uygulama--gece .analiz-sonuc { background: var(--k-yesil-zemin); border-color: var(--k-yesil-kenar); color: var(--k-yesil-metin); }
+
+/* ---------- Telegram bağlantısı (koç, Rapor sekmesi) ---------- */
+/* Nadiren açılan bir ayar kartı: kendi bileşenlerini icat etmiyor,
+   kartın içindeki dikey ritmi ve mevcut token'ları kullanıyor. */
+.tg-govde { display: flex; flex-direction: column; gap: 0.75rem; align-items: flex-start; }
+.tg-aciklama { margin: 0; font-size: var(--punto-kucuk); line-height: 1.55; }
+.tg-not { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
+.tg-link { color: var(--marka-mavi); font-weight: 600; }
+
+.tg-adimlar { margin: 0; padding-left: 1.15rem; font-size: var(--punto-kucuk); line-height: 1.7; }
+.tg-adimlar li { margin: 0; }
+
+/* Kod satırı bir düğme: dokununca panoya kopyalanıyor. Telefonda uzun
+   basıp seçmek zor, kopyalama tek dokunuş olmalı. */
+.tg-kod {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.85rem;
+  background: var(--yuzey-2);
+  border: 1px solid var(--cizgi);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+}
+.tg-kod code {
+  font-family: var(--mono);
+  font-size: var(--punto-kucuk);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  word-break: break-all;
+  color: var(--murekkep);
+}
+.tg-kopyala {
+  flex-shrink: 0;
+  font-size: var(--punto-mini);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--marka-mavi);
+  font-weight: 600;
+}
