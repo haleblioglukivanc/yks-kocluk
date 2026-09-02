@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import RiskRadari from '../bilesenler/RiskRadari.jsx'
 import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
+import AnalizKuyrugu from '../bilesenler/AnalizKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
 import SapkaSecici from '../bilesenler/SapkaSecici.jsx'
 
@@ -29,6 +30,7 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
       {profil.rol === 'yonetici' && <SapkaSecici aktif="koc" onGit={onGit} />}
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
+      <AnalizKuyrugu onOgrenciAc={onOgrenciAc} />
       <OnayKuyrugu onOgrenciAc={onOgrenciAc} />
     </div>
   )

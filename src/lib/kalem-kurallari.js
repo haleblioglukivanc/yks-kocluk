@@ -23,6 +23,15 @@ const k = (b) => b.koc;
 
 const OGRENCI_KURALLARI = [
   {
+    // Sunucu yazar (deneme_analizi_karar). Koşul hep yanlış: istemci bu
+    // kuralı kendisi tetiklemez, yalnız açık kaydın eylem düğmesini türetir.
+    kod: 'deneme_analizi',
+    rol: 'ogrenci', oncelik: 99, tekrar: 'her_zaman', ruh: 'fikir',
+    kosul: () => false,
+    mesaj: () => '',
+    eylem: () => ({ etiket: 'Görevlere bak', sekme: 'bugun' }),
+  },
+  {
     kod: 'yeni_rozet',
     rol: 'ogrenci', oncelik: 100, tekrar: 'her_zaman', ruh: 'kutlama',
     kosul: (b) => Boolean(o(b).yeniRozetAdi),
