@@ -5,7 +5,7 @@ import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
-import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
+import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import { kullaniciOlustur } from '../lib/hesap.js'
@@ -21,12 +21,13 @@ const TUR_ADI = {
   diger: 'Diğer',
 }
 const DURUM_ADI = { bekliyor: 'Bekliyor', devam: 'Devam ediyor', tamamlandi: 'Tamamlandı', atlandi: 'Atlandı' }
-export default function OgrenciDetay({ ogrenciId, onGeri }) {
+export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) {
   const [ogrenci, setOgrenci] = useState(null)
   const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
   const [duzenle, setDuzenle] = useState(false)
+  const [ek, setEk] = useState(null)
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
@@ -76,6 +77,9 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         onDegisti={yukle}
         sekme={sekme}
         onSekme={setSekme}
+        onMesaj={onMesaj}
+        onGozuyle={onGozuyle}
+        onEk={setEk}
       />
 
       {duzenle && (
@@ -109,7 +113,17 @@ export default function OgrenciDetay({ ogrenciId, onGeri }) {
         ))}
       </nav>
 
-      {sekme === 'program' && <Program ogrenci={ogrenci} />}
+      {sekme === 'program' && (
+        <>
+          <KimlikOlcumleri
+            ogrenci={ogrenci}
+            netDurumu={netDurumu}
+            seri={ek?.seri}
+            tamamlama={ek?.risk?.tamamlama_yuzdesi}
+          />
+          <Program ogrenci={ogrenci} />
+        </>
+      )}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
       {sekme === 'rozetler' && <Rozetlerim ogrenciId={ogrenci.id} />}

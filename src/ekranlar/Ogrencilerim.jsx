@@ -11,7 +11,7 @@ import { kullaniciOlustur } from '../lib/hesap.js'
    süzgeci 10 öğrencinin 9'unu geçiriyordu, yani hiçbir şey elemiyordu. */
 const GRUPLAR = [
   ['acil', 'Önce bunlar', 'a'],
-  ['izle', 'İzlemede', 'i'],
+  ['izle', 'İzle', 'i'],
   ['iyi', 'Yolunda', 'y'],
 ]
 
@@ -20,34 +20,7 @@ function grubu(o) {
   return o.risk?.risk_seviyesi ?? 'izle'
 }
 
-/* Üstteki özet kartları sadece sayı göstermek yerine süzgeç. Sayıyı görüp
-   "peki bu altı kişi kim" diye sorduğunda cevabı tek dokunuşta veriyor. */
-const OZETLER = [
-  {
-    anahtar: 'acil',
-    etiket: 'bugün dokun',
-    uyari: true,
-    sec: (o) => o.aktif && o.risk?.risk_seviyesi === 'acil',
-  },
-  {
-    anahtar: 'gecikmis',
-    etiket: 'gecikmiş görev',
-    topla: (o) => o.risk?.gecikmis_gorev ?? 0,
-    sec: (o) => o.aktif && (o.risk?.gecikmis_gorev ?? 0) > 0,
-  },
-  {
-    anahtar: 'sessiz',
-    etiket: '2+ gün sessiz',
-    sec: (o) => o.aktif && !o.risk?.hic_baslamadi && (o.risk?.gun_gecti ?? 0) >= 2,
-  },
-  {
-    anahtar: 'yeni',
-    etiket: 'hiç başlamadı',
-    sec: (o) => o.aktif && !!o.risk?.hic_baslamadi,
-  },
-]
-
-export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
+export default function Ogrencilerim({ onOgrenciAc, onGit }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
   const [nabizlar, setNabizlar] = useState({})
@@ -55,7 +28,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
   const [pasifAcik, setPasifAcik] = useState(false)
-  const [suzgec, setSuzgec] = useState(null)
+  const [arama, setArama] = useState('')
   const [durtmeAcik, setDurtmeAcik] = useState(false)
 
   const yukle = useCallback(async () => {
@@ -99,11 +72,16 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
   const kova = { acil: [], izle: [], iyi: [], pasif: [] }
   sirali.forEach((o) => kova[grubu(o)].push(o))
 
-  const seciliOzet = OZETLER.find((z) => z.anahtar === suzgec) ?? null
-  const suzulmus = seciliOzet ? sirali.filter(seciliOzet.sec) : []
-  /* Toplu mesajın hedefi her zaman ekranda görünen küme. Süzgeç yoksa
-     "önce bunlar" kademesi; koçun sabah dokunduğu grup zaten o. */
-  const durtmeHedefi = seciliOzet ? suzulmus : kova.acil
+  /* Arama isim üzerinde; harf yazıldığı anda gruplar kalkar, düz liste
+     kalır. Boş bırakılınca gruplu görünüm geri gelir. */
+  const aranan = arama.trim().toLocaleLowerCase('tr')
+  const bulunan = aranan
+    ? sirali.filter((o) =>
+        (o.profiller?.ad_soyad ?? '').toLocaleLowerCase('tr').includes(aranan),
+      )
+    : null
+  /* Toplu mesajın hedefi "önce bunlar" kademesi; koçun sabah dokunduğu grup. */
+  const durtmeHedefi = kova.acil
 
   const satirCiz = (o) => (
     <OgrenciSatiri
@@ -112,8 +90,6 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
       risk={o.risk}
       nabiz={nabizlar[o.id]}
       onAc={onOgrenciAc}
-      onGozuyle={onGozuyle}
-      onMesaj={() => onGit?.('/mesajlar')}
     />
   )
 
@@ -122,15 +98,31 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
       <Uyari>{hata}</Uyari>
 
       <Kart
-        baslik="Öğrencilerim"
-        altBaslik={ogrenciler ? `${ogrenciler.length} öğrenci · risk sırasına göre` : undefined}
+        baslik="Öğrenciler"
+        altBaslik={ogrenciler ? `${ogrenciler.length} öğrenci` : undefined}
         eylem={
-          <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-            {formAcik ? 'Kapat' : 'Öğrenci ekle'}
-          </Dugme>
+          <button className="ikon-dugme" onClick={() => setFormAcik(true)} aria-label="Öğrenci ekle" title="Öğrenci ekle">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+                 strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" />
+            </svg>
+          </button>
         }
       >
-        {formAcik && <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />}
+        {formAcik && (
+          <div className="alt-sayfa-perde" onClick={() => setFormAcik(false)} role="presentation">
+            <div className="alt-sayfa" role="dialog" aria-modal="true" aria-label="Öğrenci ekle" onClick={(e) => e.stopPropagation()}>
+              <div className="alt-sayfa-tutamac" aria-hidden="true" />
+              <header className="alt-sayfa-bas"><h2>Öğrenci ekle</h2></header>
+              <div className="alt-sayfa-govde">
+                <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />
+              </div>
+              <div className="alt-sayfa-dugmeler">
+                <Dugme tur="ikincil" onClick={() => setFormAcik(false)}>Kapat</Dugme>
+              </div>
+            </div>
+          </div>
+        )}
 
         {ogrenciler === null ? (
           <Yukleniyor />
@@ -141,47 +133,26 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
           />
         ) : (
           <>
-            {/* Listeye girmeden günün özeti. Her kart aynı zamanda süzgeç. */}
-            <div className="gun-nabzi" role="group" aria-label="Günün özeti ve süzgeçler">
-              {OZETLER.map((z) => {
-                const kume = sirali.filter(z.sec)
-                const sayi = z.topla
-                  ? kume.reduce((t, o) => t + z.topla(o), 0)
-                  : kume.length
-                const etkin = suzgec === z.anahtar
-                return (
-                  <button
-                    key={z.anahtar}
-                    className={
-                      'gn-hucre' +
-                      (z.uyari && sayi > 0 ? ' gn-hucre--uyari' : '') +
-                      (etkin ? ' gn-hucre--etkin' : '')
-                    }
-                    aria-pressed={etkin}
-                    disabled={kume.length === 0}
-                    onClick={() => {
-                      setSuzgec(etkin ? null : z.anahtar)
-                      setDurtmeAcik(false)
-                    }}
-                  >
-                    <span className="gn-sayi">{sayi}</span>
-                    <span className="gn-etiket">{z.etiket}</span>
-                  </button>
-                )
-              })}
-            </div>
+            <label className="arama-kutu">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                   strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" /><path d="m20 20-3.5-3.5" />
+              </svg>
+              <input
+                type="search"
+                value={arama}
+                onChange={(e) => setArama(e.target.value)}
+                placeholder="İsim ara"
+                aria-label="Öğrenci ara"
+              />
+            </label>
 
             {/* Toplu mesaj kendi başına bir ekran değil: her zaman ekranda
                 görünen kümeye gidiyor, hedefi belirsiz kalmasın. */}
-            {durtmeHedefi.length > 1 && !durtmeAcik && (
+            {!bulunan && durtmeHedefi.length > 1 && !durtmeAcik && (
               <button className="durtme-serit" onClick={() => setDurtmeAcik(true)}>
                 <span aria-hidden="true">✎</span>
-                <span>
-                  {seciliOzet
-                    ? `Bu ${durtmeHedefi.length} öğrenciye`
-                    : `Önce bunlar listesindeki ${durtmeHedefi.length} öğrenciye`}{' '}
-                  toplu mesaj
-                </span>
+                <span>Önce bunlar listesindeki {durtmeHedefi.length} öğrenciye toplu mesaj</span>
               </button>
             )}
             {durtmeAcik && durtmeHedefi.length > 0 && (
@@ -191,21 +162,12 @@ export default function Ogrencilerim({ onOgrenciAc, onGozuyle, onGit }) {
               />
             )}
 
-            {seciliOzet ? (
-              <section className="ogr-grup">
-                <div className="ogr-grup-baslik">
-                  <span className="ogr-grup-serit ogr-grup-serit--a" aria-hidden="true" />
-                  {seciliOzet.etiket}
-                  <button className="suzgec-kaldir" onClick={() => setSuzgec(null)}>
-                    Süzgeci kaldır
-                  </button>
-                </div>
-                {suzulmus.length === 0 ? (
-                  <Bos baslik="Bu süzgeçte kimse yok" aciklama="İyi haber sayılır." />
-                ) : (
-                  <ul className="liste liste--kartli">{suzulmus.map(satirCiz)}</ul>
-                )}
-              </section>
+            {bulunan ? (
+              bulunan.length === 0 ? (
+                <Bos baslik="Eşleşen öğrenci yok" />
+              ) : (
+                <ul className="liste liste--kartli">{bulunan.map(satirCiz)}</ul>
+              )
             ) : (
               <>
                 {GRUPLAR.map(([anahtar, ad, ton]) =>

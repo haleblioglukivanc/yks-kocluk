@@ -359,10 +359,10 @@ export default function App() {
      sağ köşesi. Alt çubuk yalnızca ana bölümleri gezmek için. */
   const baglantilar = kocMu
     ? [
-        ['/', 'Panel'],
+        /* Üç sekme: her gün girilen üç yer. Konular, Kaynaklar ve veli
+           özetleri ikinci seviyede: Bugün'deki kısayollar ve Rapor > Araçlar. */
+        ['/', 'Bugün'],
         ['/ogrenciler', 'Öğrenciler'],
-        ['/konular', 'Konular'],
-        ['/veli-ozetleri', 'Özetler'],
         ['/raporlar', 'Rapor'],
       ]
     : profil.rol === 'ogrenci'
@@ -411,8 +411,16 @@ export default function App() {
       )
     if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
     if (kocMu && yol === '/raporlar')
-      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
-    if (kocMu && ogrenciId) return <OgrenciDetay ogrenciId={ogrenciId} onGeri={() => git('/ogrenciler')} />
+      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} bekleyenOzet={bekleyenOzet} />
+    if (kocMu && ogrenciId)
+      return (
+        <OgrenciDetay
+          ogrenciId={ogrenciId}
+          onGeri={() => git('/ogrenciler')}
+          onMesaj={() => git('/mesajlar')}
+          onGozuyle={(id) => git(`/gozuyle/${id}`)}
+        />
+      )
     if (kocMu)
       return (
         <KocPaneli
@@ -507,7 +515,9 @@ export default function App() {
               ? yol === '/ogrenciler' ||
                 yol.startsWith('/ogrenci/') ||
                 yol.startsWith('/gozuyle/')
-              : yol === hedef
+              : hedef === '/raporlar'
+                ? ['/raporlar', '/konular', '/kaynaklar', '/veli-ozetleri'].includes(yol)
+                : yol === hedef
           return (
             <button
               key={hedef}

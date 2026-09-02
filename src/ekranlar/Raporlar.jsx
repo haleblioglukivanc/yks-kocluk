@@ -106,7 +106,7 @@ function GunlukGrafik({ gunler }) {
   )
 }
 
-export default function Raporlar({ onOgrenciAc }) {
+export default function Raporlar({ onOgrenciAc, onGit, bekleyenOzet = 0 }) {
   const [aralik, setAralik] = useState('hafta')
   const [[bas, bit], setTarih] = useState(() => aralikHesapla('hafta'))
   const [veri, setVeri] = useState(null)
@@ -207,6 +207,33 @@ export default function Raporlar({ onOgrenciAc }) {
     <>
       {/* Sınıfın haftalık bakışı panelden buraya indi: KPI + net trendi. */}
       <SinifOzeti />
+
+      {/* Alt çubuktan inen ekranlar. Günlük değil, arada bir kullanılan işler. */}
+      <Kart baslik='Araçlar'>
+        <ul className='liste arac-listesi'>
+          {[
+            ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
+            ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
+            ['/veli-ozetleri', 'Veli özetleri', bekleyenOzet > 0 ? `${bekleyenOzet} özet onay bekliyor` : 'Haftalık veli özetleri'],
+          ].map(([yol, ad, not]) => (
+            <li key={yol} className='liste-satir'>
+              <button className='arac-satir' onClick={() => onGit?.(yol)}>
+                <span>
+                  <span className='liste-ad'>{ad}</span>
+                  <span className='liste-alt'>{not}</span>
+                </span>
+                {yol === '/veli-ozetleri' && bekleyenOzet > 0 && (
+                  <span className='arac-rozet' aria-hidden='true'>{bekleyenOzet}</span>
+                )}
+                <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
+                     strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+                  <path d='m9 6 6 6-6 6' />
+                </svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Kart>
 
       <Kart
         baslik='Raporlar'

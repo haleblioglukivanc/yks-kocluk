@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Avatar } from './Fotograf.jsx'
 
 /* Bu satır koç tarafındaki her öğrenci listesinin ortak yapı taşı.
@@ -78,69 +77,34 @@ export function Nabiz({ dizi, ad }) {
   )
 }
 
-export default function OgrenciSatiri({
-  ogrenci,
-  risk,
-  nabiz,
-  onAc,
-  onGozuyle,
-  onMesaj,
-}) {
-  const [acik, setAcik] = useState(false)
+/** Satır = isim + tek sebep cümlesi + nabız. Yüzde, durum kelimesi ve
+ *  satır içi eylemler kaldırıldı: satıra dokunmak tek işi yapar, detayı
+ *  açar. Eylemler detay kartındaki menüde. */
+export default function OgrenciSatiri({ ogrenci, risk, nabiz, onAc }) {
   const aktif = ogrenci.aktif !== false
   const ad = ogrenci.profiller?.ad_soyad ?? ogrenci.ad_soyad ?? 'İsimsiz'
-  const yuzde = aktif ? (risk?.tamamlama_yuzdesi ?? 0) : 0
   const renk = aktif ? (RISK_RENK[risk?.risk_seviyesi] ?? 'var(--cizgi-2)') : 'var(--soluk)'
 
   return (
-    <li className={`ogr-satir-sarmal${acik ? ' ogr-satir-sarmal--acik' : ''}`}>
-      <div className="ogr-satir-ust">
-        <button
-          className={`ogrenci-kutu${aktif ? '' : ' ogrenci-kutu--pasif'}`}
-          style={{ '--serit': renk }}
-          onClick={() => onAc?.(ogrenci.id)}
-        >
-          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} />
-          <div className="ok-orta">
-            <span className="liste-ad">{ad}</span>
-            <span className={`ok-sebep ok-sebep--${tonu(risk)}`}>
-              {aktif ? sebepCumlesi(risk) : 'Erişim kapalı'}
-            </span>
-          </div>
-          {aktif && <Nabiz dizi={nabiz} ad={ad} />}
-          <div className="ok-sag">
-            <span className="ok-yuzde">{aktif ? `%${yuzde}` : '—'}</span>
-            <span className="ok-durum">{aktif ? sonDurum(risk) : 'pasif'}</span>
-          </div>
-        </button>
-
-        <button
-          className="satir-genislet"
-          onClick={() => setAcik((v) => !v)}
-          aria-expanded={acik}
-          aria-label={`${ad} için işlemler`}
-          title="İşlemler"
-        >
-          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"
-               fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-            <circle cx="5" cy="12" r="1" /><circle cx="12" cy="12" r="1" /><circle cx="19" cy="12" r="1" />
-          </svg>
-        </button>
-      </div>
-
-      {acik && (
-        <div className="ogr-eylemler">
-          <button className="ogr-eylem ogr-eylem--ana" onClick={() => onMesaj?.(ogrenci.id)}>
-            Mesaj
-          </button>
-          <button className="ogr-eylem" onClick={() => onAc?.(ogrenci.id)}>
-            Görev ata
-          </button>
-          <button className="ogr-eylem" onClick={() => onGozuyle?.(ogrenci.id)}>
-            Panelini aç
-          </button>
+    <li className="ogr-satir-sarmal">
+      <button
+        className={`ogrenci-kutu${aktif ? '' : ' ogrenci-kutu--pasif'}`}
+        style={{ '--serit': renk }}
+        onClick={() => onAc?.(ogrenci.id)}
+      >
+        <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} />
+        <div className="ok-orta">
+          <span className="liste-ad">{ad}</span>
+          <span className={`ok-sebep ok-sebep--${tonu(risk)}`}>
+            {aktif ? sebepCumlesi(risk) : 'Erişim kapalı'}
+          </span>
         </div>
-      )}
+        {aktif && <Nabiz dizi={nabiz} ad={ad} />}
+        <svg className="ok-ileri" viewBox="0 0 24 24" width="16" height="16" fill="none"
+             stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m9 6 6 6-6 6" />
+        </svg>
+      </button>
     </li>
   )
 }
