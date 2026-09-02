@@ -32,9 +32,18 @@ Modele giden veri: ders adı, konu adı, doğru/yanlış/boş sayıları, konunu
 öğrencideki durumu. Öğrenci adı, kimliği, koç bilgisi **gönderilmez**.
 
 ## Akış
-1. `DenemeFormu` adım 2 (yanlış konuları) kaydedilince `deneme_analizi_hazirla(deneme_id)` çağrılır → taslak.
-2. Ardından bu fonksiyon `{ analiz_id }` ile çağrılır → bulgu üstüne yazılır, `kaynak='ai'`.
+1. `DenemeFormu` adım 2 (yanlış konuları) kaydedilince `deneme_analizi_hazirla(deneme_id)`
+   çağrılır → taslak yazılır (dağılım + öneriler, `kaynak='kural'`).
+2. `analiz-bulgusu` cron'u (2 dakikada bir, `private.analiz_bulgusunu_durt()`) bekleyen
+   taslakları bu fonksiyona yollar → bulgu üstüne yazılır, `kaynak='ai'`.
 3. Koç Bugün ekranında `AnalizKuyrugu` kartını görür; onaylar / siler.
 4. Onayda seçili öneriler `gorevler`e, tek şablon cümle `kalem_olaylari`ne (`deneme_analizi`) yazılır.
 
-Yetki: çağıran ya denemenin öğrencisi ya da koç/yönetici; rol veritabanından okunur.
+**Neden tarayıcıdan çağırmıyoruz:** form kapanınca `fetch` iptal oluyor, fonksiyon
+`EarlyDrop` ile düşüyordu. Tetikleme sunucuda.
+
+## Çağrılma biçimleri
+- **Sistem (cron):** `Authorization: Bearer <servis anahtarı>`, gövde `{}`. Bekleyen
+  taslakları toplu işler (turda en fazla 5). Vault'ta `servis_anahtari` gerekir.
+- **Kullanıcı:** kendi jetonu + `{ analiz_id }`. Çağıran ya denemenin öğrencisi ya da
+  koç/yönetici; rol veritabanından okunur.

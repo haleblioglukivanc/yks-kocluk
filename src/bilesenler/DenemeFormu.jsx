@@ -144,16 +144,12 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
     onEklendi()
   }
 
-  /* Konu işaretlenince kural katmanı taslağı yazar; Edge Function varsa
-     bulgu metnini üstüne yazar. İkisi de arka planda, formu bekletmez;
-     başarısız olursa deneme kaydı etkilenmez. */
+  /* Konu işaretlenince kural katmanı taslağı yazar: dağılım + öneriler.
+     Bulgu metnini modele yazdırma işi sunucudaki 'analiz-bulgusu' cron'una
+     ait; buradan çağırırsak form kapanınca istek iptal oluyor (EarlyDrop).
+     Başarısız olursa deneme kaydı etkilenmez. */
   function analiziBaslat(denemeId) {
-    supabase
-      .rpc('deneme_analizi_hazirla', { p_deneme_id: denemeId })
-      .then(({ data }) => {
-        if (data) supabase.functions.invoke('deneme-analizi', { body: { analiz_id: data } }).catch(() => {})
-      })
-      .catch(() => {})
+    supabase.rpc('deneme_analizi_hazirla', { p_deneme_id: denemeId }).catch(() => {})
   }
 
   if (kayitli) {
