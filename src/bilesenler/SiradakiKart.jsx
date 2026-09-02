@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
-import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
+import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
 
 /**
  * Bugün'ün merkezi: tek görev, tek düğme.
@@ -27,15 +27,6 @@ const TUR_ADI = {
   okuma: 'Okuma',
   diger: 'Çalışma',
 }
-const VARSAYILAN_DK = {
-  konu_anlatimi: 45,
-  soru_cozumu: 45,
-  tekrar: 25,
-  deneme: 50,
-  okuma: 25,
-  diger: 25,
-}
-
 function Halka({ durum }) {
   const kalan = kalanMs(durum)
   const oran = 1 - kalan / (durum.hedefDk * 60000)
@@ -130,7 +121,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
   }
 
   /* ── Sıradaki iş ── */
-  const varsayilan = VARSAYILAN_DK[sira.tur] ?? 25
+  const varsayilan = varsayilanDk(sira.tur)
   const digerler = SAYAC_SURELERI.filter((dk) => dk !== varsayilan)
   const etiket = [sira.ders, sira.konu].filter(Boolean).join(' · ')
   const tur = TUR_ADI[sira.tur]

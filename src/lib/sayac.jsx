@@ -22,6 +22,18 @@ import { supabase } from './supabase.js'
 const DEPO = 'kalem_sayac'
 export const SAYAC_SURELERI = [25, 45, 50]
 
+/** Görev türüne göre varsayılan sayaç süresi. Sıradaki kartı ve Kâmil'in
+    Başla düğmesi aynı tabloyu kullanır; iki yerde iki farklı süre olmasın. */
+export const VARSAYILAN_DK = {
+  konu_anlatimi: 45,
+  soru_cozumu: 45,
+  tekrar: 25,
+  deneme: 50,
+  okuma: 25,
+  diger: 25,
+}
+export const varsayilanDk = (tur) => VARSAYILAN_DK[tur] ?? 25
+
 const Baglam = createContext(null)
 
 /* setInterval'ın kaç kez çalıştığını saymaz, zaman damgasından hesaplar.

@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
-import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
+import { bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
 
 /**
  * Öğrenci panelinin başlığı.
@@ -145,9 +145,20 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
             {soz.mesaj}
           </p>
 
+          {/* Kâmil'in kendi eylemi varsa genel Başla gizlenir: mesaj "Sözcükte
+              Anlam'a bakalım" derken düğmenin Tarih görevini açması çelişkiydi.
+              Eylem yoksa Başla sıradaki görevin sayacını açar; sekme değiştirmek
+              Bugün'deyken hiçbir şey yapmıyordu. */}
           <div className="ob-dugmeler">
-            {is && (
-              <button className="ob-basla" onClick={() => onSekme('bugun')}>
+            {is && !olay?.eylem?.sekme && !sayacDurumu && (
+              <button
+                className="ob-basla"
+                disabled={vekaleten}
+                onClick={() => {
+                  sayac?.basla(varsayilanDk(is.tur), is.id)
+                  onSekme?.('bugun')
+                }}
+              >
                 Başla
               </button>
             )}

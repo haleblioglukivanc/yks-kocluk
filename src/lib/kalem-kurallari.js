@@ -27,7 +27,7 @@ const OGRENCI_KURALLARI = [
     rol: 'ogrenci', oncelik: 100, tekrar: 'her_zaman', ruh: 'kutlama',
     kosul: (b) => Boolean(o(b).yeniRozetAdi),
     mesaj: (b) => `${o(b).yeniRozetAdi} rozetini aldın. Bunu hak ettin.`,
-    eylem: () => ({ etiket: 'Rozetlerim', hedef: '/rozetler' }),
+    eylem: () => ({ etiket: 'Rozetlerim', sekme: 'rozetler' }),
   },
   {
     kod: 'haftalik_hedef_tutuldu',
@@ -92,7 +92,7 @@ const OGRENCI_KURALLARI = [
     rol: 'ogrenci', oncelik: 85, tekrar: 'her_zaman', ruh: 'sevinc',
     kosul: (b) => (o(b).sonDenemeNetFarki ?? 0) >= 3 && (o(b).sonDenemeGunOnce ?? 99) <= 2,
     mesaj: (b) => `Son denemede netin ${Math.round(o(b).sonDenemeNetFarki)} arttı. Yaptığın şey işe yarıyor.`,
-    eylem: () => ({ etiket: 'Denemeyi gör', hedef: '/denemeler' }),
+    eylem: () => ({ etiket: 'Denemeyi gör', sekme: 'denemeler' }),
   },
   {
     kod: 'net_dustu',
@@ -102,21 +102,21 @@ const OGRENCI_KURALLARI = [
       o(b).enZayifKonu
         ? `Netler dalgalanır, tek bir deneme bir şey söylemez. İstersen ${o(b).enZayifKonu} tarafına bir bakalım.`
         : `Netler dalgalanır, tek bir deneme bir şey söylemez. Hangi bölüm zorladı, birlikte bakalım mı?`,
-    eylem: () => ({ etiket: 'Analize bak', hedef: '/denemeler/son' }),
+    eylem: () => ({ etiket: 'Analize bak', sekme: 'denemeler' }),
   },
   {
     kod: 'geri_donus',
     rol: 'ogrenci', oncelik: 75, tekrar: 'gunde_bir', ruh: 'fikir',
     kosul: (b) => o(b).sonAktiflikGun >= 3,
     mesaj: () => `Bugün 15 dakikalık tek bir görevle başlasak? Başlamak en zor kısmı.`,
-    eylem: () => ({ etiket: 'En kısa görevi aç', hedef: '/bugun?sirala=kisa' }),
+    eylem: () => ({ etiket: 'En kısa görevi aç', sekme: 'bugun' }),
   },
   {
     kod: 'gecikmis_birikti',
     rol: 'ogrenci', oncelik: 65, tekrar: 'gunde_bir', ruh: 'dusunuyor',
     kosul: (b) => o(b).gecikmisGorev >= 3,
     mesaj: (b) => `${o(b).gecikmisGorev} görev bekliyor. Hepsini bugün bitirmek şart değil, birini seç yeter.`,
-    eylem: () => ({ etiket: 'Bekleyenler', hedef: '/bugun?filtre=gecikmis' }),
+    eylem: () => ({ etiket: 'Bekleyenler', sekme: 'bugun' }),
   },
   {
     kod: 'ilk_gorev',
@@ -129,7 +129,7 @@ const OGRENCI_KURALLARI = [
     rol: 'ogrenci', oncelik: 50, tekrar: 'gunde_bir', ruh: 'bekliyor',
     kosul: (b) => b.gunIlkGirisMi && b.saat >= 5 && b.saat < 20 && o(b).bugunToplamGorev > 0,
     mesaj: (b) => `Bugün ${o(b).bugunToplamGorev} işin var. İlkiyle başlayalım mı?`,
-    eylem: () => ({ etiket: 'Bugünü aç', hedef: '/bugun' }),
+    eylem: () => ({ etiket: 'Bugünü aç', sekme: 'bugun' }),
   },
   {
     kod: 'bos_gun',
