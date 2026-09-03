@@ -3455,3 +3455,23 @@ body[data-mod='gece'] .uygulama .kareli,
 .kuyruk-bitis { text-align: center; padding: 1.6rem 0.5rem; }
 .kuyruk-bitis-baslik { margin: 0 0 0.35rem; font-weight: 500; }
 .kuyruk-bitis-alt { margin: 0; font-size: var(--punto-kucuk); color: var(--soluk); }
+
+/* Koçtan gelen mesaj — öğrencinin gününün en üstünde */
+.koc-mesaji {
+  padding: 0.95rem 1.05rem;
+  margin-bottom: 0.85rem;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-left: 3px solid var(--marka-amber);
+  border-radius: 10px;
+}
+.koc-mesaji-etiket {
+  margin: 0 0 0.4rem;
+  font-size: var(--punto-mini);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--soluk);
+}
+.koc-mesaji-metin { margin: 0; line-height: 1.55; }
+.koc-mesaji-dugmeler { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
+.koc-mesaji-dugmeler .dugme { flex: 1; }

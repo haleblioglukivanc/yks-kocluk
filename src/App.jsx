@@ -410,6 +410,7 @@ export default function App() {
         profil={profil}
         sekme={ogrenciYolu ?? 'bugun'}
         onSekme={(k) => git(SEKME_YOLU[k] ?? '/')}
+        onGit={git}
       />
     )
   }

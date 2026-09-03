@@ -7,6 +7,7 @@ import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
+import KocMesaji from '../bilesenler/KocMesaji.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import Ben from './Ben.jsx'
@@ -35,6 +36,7 @@ export default function OgrenciPaneli({
   onCik,
   sekme: disSekme,
   onSekme: disOnSekme,
+  onGit,
 }) {
   /* Vekalet: koç öğrencinin panelini onun verisiyle açar. Kendi JWT'siyle
      kalır; yetkiyi RLS (private.ogrencim_mi) verir, yazılan satırlara
@@ -164,6 +166,7 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
+          {!vekaleten && <KocMesaji ogrenciId={kayit.id} onGit={onGit} />}
           <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
           <HaftaSeridi
             ogrenciId={kayit.id}
