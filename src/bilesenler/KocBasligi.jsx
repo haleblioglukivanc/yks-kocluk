@@ -62,6 +62,7 @@ function varsayilanSoz(ozet) {
 }
 
 export default function KocBasligi({ profil, ozet, onGit }) {
+  /* Bekleyen özet / okunmamış kısayolları zile taşındı (Bildirimler). */
   const [olay, setOlay] = useState(null)
 
   const yukle = useCallback(async () => {
@@ -127,29 +128,6 @@ export default function KocBasligi({ profil, ozet, onGit }) {
         </div>
       </div>
 
-      {/* Koçun yapılacakları. Şu ana kadar bunları görmek için alt
-          sekmelere gitmek gerekiyordu. */}
-      <div className="kk-kisayol">
-        <button className="kk-yol" onClick={() => onGit('/veli-ozetleri')}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-               strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="M4 5h16v11H8l-4 3.5V5Z" />
-            <path d="M8.5 9.5h7M8.5 12.5h4" />
-          </svg>
-          <span className="kk-yol-sayi">{ozet?.bekleyenVeliOzeti ?? 0}</span>
-          <span className="kk-yol-ad">Bekleyen özet</span>
-        </button>
-
-        <button className="kk-yol" onClick={() => onGit('/mesajlar')}>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-               strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <rect x="3" y="5" width="18" height="14" rx="2" />
-            <path d="m3.5 6.5 8.5 6 8.5-6" />
-          </svg>
-          <span className="kk-yol-sayi">{ozet?.okunmamisMesaj ?? 0}</span>
-          <span className="kk-yol-ad">Okunmamış</span>
-        </button>
-      </div>
     </section>
   )
 }

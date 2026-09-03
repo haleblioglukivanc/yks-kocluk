@@ -16,13 +16,14 @@ import KonuOncelik from './ekranlar/KonuOncelik.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
 import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
+import UstCubuk from './bilesenler/UstCubuk.jsx'
+import HesapYapragi from './bilesenler/HesapYapragi.jsx'
+import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler', '/ben': 'ben' }
 const SEKME_YOLU = Object.fromEntries(Object.entries(OGRENCI_SEKME).map(([y, s]) => [s, y]))
-
-const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
 
 /* Site kökte yayınlanıyor ama yollar yine de tabana göre okunuyor.
    Mutlak yazıldığı dönemde alt dizinde çalışırken `git('/mesajlar')`
@@ -73,31 +74,6 @@ function useYol() {
   }
 
   return [yol, git]
-}
-
-/** Üst bardaki uygulama düğmeleri: ikon + isteğe bağlı bildirim rozeti. */
-function UstDugme({ etiket, etkin, rozet, vurgulu, yonetim, onClick, children }) {
-  const sinif = ['ust-dugme']
-  if (yonetim) sinif.push('ust-dugme--yonetim')
-  if (etkin) sinif.push('ust-dugme--etkin')
-  if (vurgulu) sinif.push('ust-dugme--vurgulu')
-  return (
-    <button
-      type="button"
-      className={sinif.join(' ')}
-      onClick={onClick}
-      title={etiket}
-      aria-label={rozet > 0 ? `${etiket}, ${rozet} okunmamış` : etiket}
-      aria-current={etkin ? 'page' : undefined}
-    >
-      {children}
-      {rozet > 0 && (
-        <span className="ust-rozet" aria-hidden="true">
-          {rozet > 9 ? '9+' : rozet}
-        </span>
-      )}
-    </button>
-  )
 }
 
 const ikonOzellik = {
@@ -170,7 +146,9 @@ const GEZINME_IKONU = {
 }
 
 export default function App() {
-  const { durum, profil, cikisYap } = useOturum()
+  const { durum, profil, kullanici, cikisYap } = useOturum()
+  const [hesapAcik, setHesapAcik] = useState(false)
+  const [bekleyenKarar, setBekleyenKarar] = useState(0)
   const [yol, git] = useYol()
   const [okunmamisMesaj, setOkunmamisMesaj] = useState(0)
 
@@ -204,7 +182,9 @@ export default function App() {
     /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
        Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
     const etiket = document.querySelector('meta[name="theme-color"]')
-    const renk = !panelAcik ? '#ffffff' : mod === 'gece' ? '#0f1520' : '#ffffff'
+    /* Üst şerit her iki modda da koyu: durum çubuğu onunla aynı renkte
+       olsun ki tepe tek parça görünsün. */
+    const renk = !panelAcik ? '#ffffff' : '#202b3d'
     if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
@@ -252,6 +232,21 @@ export default function App() {
       supabase.removeChannel(kanal)
     }
   }, [kullaniciId, yol])
+
+  /* Zildeki sayı: okunmamış mesaj + koçta karar kuyruğu. Bildirimler
+     ekranındaki listeyle aynı kaynaklar; sayı ile liste birbirini tutar. */
+  const kocRol = profil?.rol === 'koc' || profil?.rol === 'yonetici'
+  useEffect(() => {
+    if (!kullaniciId || !kocRol) {
+      setBekleyenKarar(0)
+      return
+    }
+    let iptal = false
+    supabase.rpc('koc_karar_kuyrugu', { p_limit: 20 }).then(({ data }) => {
+      if (!iptal) setBekleyenKarar((data ?? []).length)
+    })
+    return () => { iptal = true }
+  }, [kullaniciId, kocRol, yol])
 
   if (durum === 'yukleniyor') {
     return (
@@ -330,6 +325,10 @@ export default function App() {
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
+  /* Bugün ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
+  const koyuTepe =
+    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) || Boolean(gozuyleId)
+
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
      sağ köşesi. Alt çubuk yalnızca ana bölümleri gezmek için. */
@@ -353,10 +352,11 @@ export default function App() {
   /* Tek sekmelik bir çubuk gezinme değil, süs olur. Velide alt çubuk
      hiç çizilmiyor; ekranı da o kadar uzatıyor. */
   const gezinmeVar = baglantilar.length > 1
-  const mesajlardaMi = yol === '/mesajlar'
+  const bildirimlerdeMi = yol === '/bildirimler'
 
   function icerik() {
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
+    if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} />
     if (kocMu && yol === '/konular')
       return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
@@ -416,94 +416,25 @@ export default function App() {
   }
 
   return (
-    <div className={gezinmeVar ? 'uygulama' : 'uygulama uygulama--gezinmesiz'}>
-      <header className={yonetimdeMi ? 'ust-bar ust-bar--yonetim' : 'ust-bar'}>
-        <div>
-          <span className="marka">
-            YKS <span className="ince">Koçluk</span>
-          </span>
-          <span className="ust-alt">
-            {profil.ad_soyad} ·{' '}
-            {profil.rol === 'yonetici' ? (
-              yonetimdeMi ? (
-                <span className="ust-alt--yonetim">Yönetici modu</span>
-              ) : (
-                'Koç modu'
-              )
-            ) : (
-              ROL_ADI[profil.rol] ?? profil.rol
-            )}
-          </span>
-          {/* Hangi derlemeye baktığımızı görebilmek için. Önbellek sorunlarını
-              tahmin etmek yerine ölçmeyi sağlıyor. */}
-          <span className="derleme-damgasi">sürüm {__DERLEME__}</span>
-        </div>
-        <div className="ust-eylemler">
-          {/* Şapka geçişi: Kıvanç hem yönetici hem koç. Eski segmented seçici
-              panelin üstünde 60px yiyordu; şimdi başlıktaki tek düğme. Düğmenin
-              varlığı "yöneticisin" der, dolgusu hangi şapkanın takılı olduğunu.
-              Koç rolünde çizilmez — tek seçenekli seçici bilgi taşımaz. */}
-          {profil.rol === 'yonetici' && (
-            <UstDugme
-              etiket={yonetimdeMi ? 'Koç moduna dön' : 'Yönetici moduna geç'}
-              etkin={yonetimdeMi}
-              yonetim
-              onClick={() => git(yonetimdeMi ? '/' : '/yonetim')}
-            >
-              <svg {...ikonOzellik}>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                <path d="m9 12 2 2 4-4" />
-              </svg>
-            </UstDugme>
-          )}
-
-          <UstDugme
-            etiket={mod === 'gece' ? 'Gündüz moduna geç' : 'Gece moduna geç'}
-            onClick={() => setMod((m) => (m === 'gece' ? 'gunduz' : 'gece'))}
-          >
-            {mod === 'gece' ? (
-              <svg {...ikonOzellik}>
-                <circle cx="12" cy="12" r="4" />
-                <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
-              </svg>
-            ) : (
-              <svg {...ikonOzellik}>
-                <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
-              </svg>
-            )}
-          </UstDugme>
-
-          <UstDugme
-            etiket={mesajlardaMi ? 'Mesajlardan çık' : 'Mesajlar'}
-            etkin={mesajlardaMi}
-            rozet={mesajlardaMi ? 0 : okunmamisMesaj}
-            onClick={() => git(mesajlardaMi ? '/' : '/mesajlar')}
-          >
-            {mesajlardaMi ? (
-              <svg {...ikonOzellik}>
-                <path d="M18 6 6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg {...ikonOzellik}>
-                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
-            )}
-          </UstDugme>
-
-          <UstDugme
-            etiket="Çıkış yap"
-            onClick={async () => {
-              await cikisYap()
-              git('/')
-            }}
-          >
-            <svg {...ikonOzellik}>
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
-              <path d="m16 17 5-5-5-5" />
-              <path d="M21 12H9" />
-            </svg>
-          </UstDugme>
-        </div>
+    <div
+      className={[
+        'uygulama',
+        gezinmeVar ? '' : 'uygulama--gezinmesiz',
+        koyuTepe ? 'uygulama--koyu-tepe' : '',
+      ].filter(Boolean).join(' ')}
+    >
+      {/* Tepe: koyu şerit. Bugün ekranlarında altındaki koyu başlıkla
+          birleşir; diğer ekranlarda tek başına kalır. */}
+      <header className="ust-serit">
+        <UstCubuk
+          profil={profil}
+          rozet={bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
+          zilEtkin={bildirimlerdeMi}
+          hesapEtkin={hesapAcik}
+          onLogo={() => git('/')}
+          onZil={() => git(bildirimlerdeMi ? '/' : '/bildirimler')}
+          onHesap={() => setHesapAcik(true)}
+        />
       </header>
 
       <main>
@@ -544,6 +475,23 @@ export default function App() {
           kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
           Kâmil köşede kalmalı. */}
       {!basliktaKalemVar && <KalemKosede profil={profil} />}
+
+      <HesapYapragi
+        acik={hesapAcik}
+        onKapat={() => setHesapAcik(false)}
+        profil={profil}
+        eposta={kullanici?.email}
+        mod={mod}
+        onMod={() => setMod((m) => (m === 'gece' ? 'gunduz' : 'gece'))}
+        yonetimdeMi={yonetimdeMi}
+        onSapka={(s) => git(s === 'yonetici' ? '/yonetim' : '/')}
+        onCikis={async () => {
+          setHesapAcik(false)
+          await cikisYap()
+          git('/')
+        }}
+        onGit={git}
+      />
 
       <KurulumDaveti />
     </div>
