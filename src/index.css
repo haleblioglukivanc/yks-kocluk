@@ -2173,11 +2173,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 }
 .ob-olcum strong { font-family: var(--display); font-size: var(--punto-orta); color: #fff; }
 
-.ob-gecikme {
-  margin: 0.6rem 0 0; padding: 0.55rem 0.75rem; border-radius: 10px;
-  background: var(--sicak-zemin); color: var(--sicak-metin);
-  font-size: var(--punto-mini); line-height: 1.45;
-}
+
 
 .net-fark { margin: 0.7rem 0 0; font-size: var(--punto-mini); font-weight: 700; }
 .net-fark--artis { color: var(--marka-basari); }
@@ -3429,24 +3425,11 @@ body[data-mod='gece'] .uygulama .kareli,
 .kuyruk-bitis-alt { margin: 0; font-size: var(--punto-kucuk); color: var(--soluk); }
 
 /* Koçtan gelen mesaj — öğrencinin gününün en üstünde */
-.koc-mesaji {
-  padding: 0.95rem 1.05rem;
-  margin-bottom: 0.85rem;
-  background: var(--yuzey);
-  border: 1px solid var(--cizgi);
-  border-left: 3px solid var(--marka-amber);
-  border-radius: 10px;
-}
-.koc-mesaji-etiket {
-  margin: 0 0 0.4rem;
-  font-size: var(--punto-mini);
-  font-weight: 600;
-  letter-spacing: 0.04em;
-  color: var(--soluk);
-}
-.koc-mesaji-metin { margin: 0; line-height: 1.55; }
-.koc-mesaji-dugmeler { display: flex; gap: 0.5rem; margin-top: 0.9rem; }
-.koc-mesaji-dugmeler .dugme { flex: 1; }
+
+
+
+
+
 
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3661,3 +3644,6 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .uygulama .kart--kaldirilmis .veli-yorum { border: 0; background: var(--altin-zemin); margin: 0; padding: 0.9rem 1rem; border-radius: 12px; font-size: var(--punto-govde); line-height: 1.5; }
 .uygulama .kart--kaldirilmis .veli-yorum cite { color: var(--altin-metin); opacity: 1; }
 .veli-deneme { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: 0.9rem 0 0; font-size: var(--punto-orta); }
+
+/* Koç konuşurken başlıkta küçük bir "Koçundan" etiketi */
+.ob-kim { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--k-amber); }

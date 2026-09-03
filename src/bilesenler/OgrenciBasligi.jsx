@@ -68,7 +68,7 @@ function varsayilanSoz(ozet, saat) {
   return { ruh: 'fikir', mesaj: `Sırada ${baslik}${adet}.` }
 }
 
-export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false }) {
+export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit }) {
   const [olay, setOlay] = useState(null)
 
   const yukle = useCallback(async () => {
@@ -109,9 +109,15 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
 
   const saat = new Date().getHours()
   const varsayilan = varsayilanSoz(ozet, saat)
-  const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilan
+  /* Kim konuşuyor: koçun okunmamış mesajı varsa koç; yoksa kural motoru;
+     o da yoksa günün varsayılan cümlesi. Geçmişten kalan görevler ayrı bir
+     kutu değil, cümlenin devamı. */
+  const kocKonusuyor = Boolean(kocMesaji)
+  let soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilan
+  if (kocKonusuyor) soz = { ruh: 'anlatiyor', mesaj: kocMesaji.mesaj.icerik }
+  else if (!olay && (ozet?.gecikmisGorev ?? 0) > 0)
+    soz = { ...soz, mesaj: `${soz.mesaj} Geçmiş günlerden ${ozet.gecikmisGorev} görev kaldı; bir tanesiyle başlamak yeter.` }
 
-  const gecikmis = ozet?.gecikmisGorev ?? 0
 
   function kapat() {
     if (!vekaleten) kalemiKapat(olay)
@@ -128,6 +134,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         </div>
 
         <div className="ob-soz">
+          {kocKonusuyor && <p className="ob-kim">Koçundan</p>}
           <p className="ob-mesaj" role="status" aria-live="polite">
             {soz.mesaj}
           </p>
@@ -136,7 +143,17 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
               düğmesi orada. Ekranda tek birincil düğme olur. Kâmil'in
               kural motorundan gelen kendi eylemi varsa o burada kalır. */}
           <div className="ob-dugmeler">
-            {olay?.eylem?.sekme && onSekme && (
+            {kocKonusuyor && (
+              <>
+                <button className="ob-basla" disabled={kocMesaji.kapaniyor} onClick={kocMesaji.okudum}>
+                  Okudum
+                </button>
+                <button className="ob-tamam" onClick={() => onGit?.('/mesajlar')}>
+                  Cevap yaz
+                </button>
+              </>
+            )}
+            {!kocKonusuyor && olay?.eylem?.sekme && onSekme && (
               <button
                 className="ob-basla"
                 onClick={() => {
@@ -147,7 +164,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
                 {olay.eylem.etiket}
               </button>
             )}
-            {olay && (
+            {!kocKonusuyor && olay && (
               <button className="ob-tamam" onClick={kapat}>
                 Tamam
               </button>
@@ -173,11 +190,6 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         </div>
       )}
 
-      {gecikmis > 0 && (
-        <p className="ob-gecikme">
-          {gecikmis} görev geçmiş günlerden kaldı. Bir tanesiyle başlamak yeter.
-        </p>
-      )}
     </section>
   )
 }

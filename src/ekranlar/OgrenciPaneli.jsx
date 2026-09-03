@@ -7,7 +7,7 @@ import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
-import KocMesaji from '../bilesenler/KocMesaji.jsx'
+import { useKocMesaji } from '../bilesenler/KocMesaji.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import Ben from './Ben.jsx'
@@ -58,6 +58,8 @@ export default function OgrenciPaneli({
   const [tazele, setTazele] = useState(0)
   const [kutlamalar, setKutlamalar] = useState([])
   const [kapatAcik, setKapatAcik] = useState(false)
+  /* Koçun okunmamış mesajı başlıkta çıkar; vekalette koç kendi mesajını görmesin. */
+  const kocMesaji = useKocMesaji(hedefId, !vekaleten)
 
   /* Kutlama, ilk açılışta değil yalnızca bir eylemden sonra bakılır.
      Bayrak yenile() ile kalkar, özet tazelendikten sonra tüketilir —
@@ -146,6 +148,8 @@ export default function OgrenciPaneli({
         ozet={ozet}
         sekme={sekme}
         onSekme={setSekme}
+        kocMesaji={kocMesaji}
+        onGit={onGit}
       />
       )}
 
@@ -166,7 +170,6 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
-          {!vekaleten && <KocMesaji ogrenciId={kayit.id} onGit={onGit} />}
           <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
           <HaftaSeridi
             ogrenciId={kayit.id}
