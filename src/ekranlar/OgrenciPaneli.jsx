@@ -170,14 +170,13 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
-          <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} saltOkunur={vekaleten} />
+          <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} />
           <HaftaSeridi
             ogrenciId={kayit.id}
             haftaBasi={ozet?.haftaBasi}
             bugun={ozet?.bugun}
             bugunGorevler={ozet?.gorevler}
             onDegisti={yenile}
-            saltOkunur={vekaleten}
           />
           {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
               Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
@@ -217,7 +216,6 @@ export default function OgrenciPaneli({
         katalogId={kayit.katalog_id}
         ozet={ozet}
         onDegisti={yenile}
-        saltOkunur={vekaleten}
       />
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
