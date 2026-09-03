@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
 import { Avatar } from './Fotograf.jsx'
+import BugunCalisanlar from './BugunCalisanlar.jsx'
 
 /* Koçun günlük karar kuyruğu. Risk, konu onayı, deneme analizi, veli özeti ve
    hedef ayarı tek sırada akar; koç bir kart görür, karar verir, sıradaki gelir.
@@ -46,14 +47,19 @@ export default function KararKuyrugu({ onOgrenciAc }) {
 
   if (!kart) {
     return (
-      <Kart>
-        <div className="kuyruk-bitis">
-          <p className="kuyruk-bitis-baslik">Bugünlük bitti</p>
-          <p className="kuyruk-bitis-alt">
-            {verilen > 0 ? `${verilen} karar verdin.` : 'Bekleyen karar yok.'}
-          </p>
-        </div>
-      </Kart>
+      <>
+        <Kart>
+          <div className="kuyruk-bitis">
+            <p className="kuyruk-bitis-baslik">Bugünlük bitti</p>
+            <p className="kuyruk-bitis-alt">
+              {verilen > 0 ? `${verilen} karar verdin.` : 'Bekleyen karar yok.'}
+              {' '}Yeni bir şey olursa Kâmil söyler.
+            </p>
+          </div>
+        </Kart>
+        {/* Boş ekran boş kalmasın: kim bugün girdi, kim çalışıyor. */}
+        <BugunCalisanlar onOgrenciAc={onOgrenciAc} />
+      </>
     )
   }
 
@@ -72,7 +78,37 @@ export default function KararKuyrugu({ onOgrenciAc }) {
         }}
         onHata={setHata}
       />
+      <Sirada kartlar={kartlar.slice(sira + 1)} />
     </>
+  )
+}
+
+/* Bekleyen kararlar: açılışta yalnız sayı, dokununca liste. Kart tek
+   tek geldiği için koç sırada ne olduğunu göremiyordu. */
+function Sirada({ kartlar }) {
+  const [acik, setAcik] = useState(false)
+  if (kartlar.length === 0) return null
+  return (
+    <Kart
+      duz
+      baslik="Sırada"
+      eylem={
+        <button className="metin-dugme" onClick={() => setAcik((a) => !a)} aria-expanded={acik}>
+          {acik ? 'Kapat' : `${kartlar.length} karar daha`}
+        </button>
+      }
+    >
+      {acik && (
+        <ul className="sirada-liste">
+          {kartlar.map((k) => (
+            <li key={`${k.tip}-${k.kaynak_id}`} className="sirada-satir">
+              <span className="kuyruk-tip" data-tip={k.tip}>{TIP_ETIKET[k.tip] ?? k.tip}</span>
+              <span className="sirada-ad">{k.ad}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Kart>
   )
 }
 
@@ -108,7 +144,7 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
   }
 
   return (
-    <Kart>
+    <Kart kaldirilmis>
       <div className="kuyruk-ust">
         <span className="kuyruk-tip" data-tip={kart.tip}>
           {TIP_ETIKET[kart.tip] ?? kart.tip}

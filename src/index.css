@@ -3630,3 +3630,27 @@ body[data-mod='gece'] .uygulama .siradaki { box-shadow: 0 14px 30px -10px rgba(0
 /* Günü tamamla: kesikli kenar yerine sessiz, düz bir şerit */
 .uygulama .gunu-kapat-dugme { border: 0; background: var(--yuzey-2); }
 .uygulama .gunu-kapat-dugme--kapali { background: var(--isaret-zemin); }
+
+/* ═══ Koç Bugün: kaldırılmış karar kartı, düz "Sırada" ve "Bugün girenler" ═══ */
+.uygulama .kart--kaldirilmis {
+  background: var(--yuzey);
+  box-shadow: 0 14px 30px -14px rgba(22, 32, 46, 0.35), 0 2px 6px rgba(22, 32, 46, 0.06);
+  padding: 1.25rem;
+}
+body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.uygulama .kuyruk-tip { letter-spacing: 0; }
+.uygulama .kuyruk-tip[data-tip='risk'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
+.uygulama .kuyruk-tip[data-tip='veli_ozet'],
+.uygulama .kuyruk-tip[data-tip='konu'],
+.uygulama .kuyruk-tip[data-tip='analiz'] { background: var(--sicak-zemin); color: var(--sicak-metin); }
+.uygulama .kuyruk-cubuk-dolu { background: var(--sicak); }
+
+.sirada-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
+.sirada-satir {
+  display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  padding: 0.5rem 0.25rem; background: none; border: 0; font: inherit; color: inherit; text-align: left;
+}
+.sirada-satir--dokun { cursor: pointer; border-radius: 10px; }
+.sirada-satir--dokun:active { background: var(--yuzey-2); }
+.sirada-ad { flex: 1; min-width: 0; font-size: var(--punto-orta); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sirada-zaman { font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--soluk); }

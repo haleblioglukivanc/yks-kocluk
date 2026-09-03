@@ -1,9 +1,12 @@
 import { createPortal } from 'react-dom'
 /* `duz`: kenarı ve zemini olmayan, kâğıda doğrudan yazılmış kart.
    Bilgi gösteren yardımcı bloklar için; karar isteyen kartlar kaldırılmış kalır. */
-export function Kart({ baslik, altBaslik, children, eylem, duz = false }) {
+/* `kaldirilmis`: ekranın tek yükselmiş kâğıdı; karar isteyen ana kart.
+   Bir ekranda birden fazla olmaz. */
+export function Kart({ baslik, altBaslik, children, eylem, duz = false, kaldirilmis = false }) {
+  const sinif = duz ? 'kart kart--duz' : kaldirilmis ? 'kart kart--kaldirilmis' : 'kart'
   return (
-    <section className={duz ? "kart kart--duz" : "kart"}>
+    <section className={sinif}>
       {(baslik || eylem) && (
         <header className="kart-basi">
           <div>
