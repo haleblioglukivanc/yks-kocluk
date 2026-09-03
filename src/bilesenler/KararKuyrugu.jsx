@@ -18,6 +18,7 @@ const TIP_ETIKET = {
   analiz: 'Deneme analizi',
   veli_ozet: 'Veli özeti',
   hedef: 'Hedef ayarı',
+  tebrik: 'Tebrik',
 }
 
 export default function KararKuyrugu({ onOgrenciAc }) {

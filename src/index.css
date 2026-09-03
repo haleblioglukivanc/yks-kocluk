@@ -3685,6 +3685,8 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
 .uygulama .kuyruk-tip[data-tip='konu'],
 .uygulama .kuyruk-tip[data-tip='analiz'] { background: var(--sicak-zemin); color: var(--sicak-metin); }
+/* Tebrik yolunda demek: yeşil. Kuyrukta tek olumlu kart bu. */
+.uygulama .kuyruk-tip[data-tip='tebrik'] { background: var(--isaret-zemin); color: var(--isaret-metin); }
 .uygulama .kuyruk-cubuk-dolu { background: var(--sicak); }
 
 .sirada-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }

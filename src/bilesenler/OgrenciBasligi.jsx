@@ -42,9 +42,6 @@ function varsayilanSoz(ozet, saat) {
   const biten = ozet.bugunTamamlanan ?? 0
   const is = siradakiIs(ozet)
 
-  if (ozet.yeniRozetAdi) {
-    return { ruh: 'kutlama', mesaj: `${ozet.yeniRozetAdi} rozetini aldın. Bunu hak ettin.` }
-  }
   if (toplam > 0 && biten === toplam) {
     return { ruh: 'sevinc', mesaj: 'Bugünün hepsi bitti. Gerisi senin zamanın.' }
   }

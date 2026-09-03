@@ -35,10 +35,12 @@ const OGRENCI_KURALLARI = [
     eylem: () => ({ etiket: 'Görevlere bak', sekme: 'bugun' }),
   },
   {
+    /* Rozet artık öğrenciye Kâmil'den değil koçtan gelir (karar kuyruğu,
+       tebrik kartı). Kural kapalı; kayıt tutarlılığı için duruyor. */
     kod: 'yeni_rozet',
     ekran: 'konular',
     rol: 'ogrenci', oncelik: 100, tekrar: 'her_zaman', ruh: 'kutlama',
-    kosul: (b) => Boolean(o(b).yeniRozetAdi),
+    kosul: () => false,
     mesaj: (b) => `${o(b).yeniRozetAdi} rozetini aldın. Bunu hak ettin.`,
     eylem: () => ({ etiket: 'Rozetlerim', sekme: 'rozetler' }),
   },

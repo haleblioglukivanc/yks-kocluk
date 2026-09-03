@@ -11,7 +11,10 @@ const IKON = {
   clock: '⏱', book: '📚', sunrise: '🌅', 'calendar-check': '🗓',
 }
 
-export default function Rozetlerim({ ogrenciId }) {
+/* sadeceSeri: öğrenci kendi Yol'unda yalnız seriyi görür. Rozet ızgarası
+   koçun öğrenci detayında kalır; kazanım öğrenciye simge olarak değil,
+   koçun karar kuyruğundan tebrik mesajı olarak gider. */
+export default function Rozetlerim({ ogrenciId, sadeceSeri = false }) {
   const [veri, setVeri] = useState(null)
 
   useEffect(() => {
@@ -75,6 +78,7 @@ export default function Rozetlerim({ ogrenciId }) {
         )}
       </Kart>
 
+      {!sadeceSeri && (
       <Kart baslik="Rozetler" altBaslik={`${veri.kazanilan.size}/${veri.tumu.length} kazanıldı`}>
         <ul className="rozet-izgara">
           {veri.tumu.map((r) => {
@@ -94,6 +98,7 @@ export default function Rozetlerim({ ogrenciId }) {
           })}
         </ul>
       </Kart>
+      )}
     </>
   )
 }

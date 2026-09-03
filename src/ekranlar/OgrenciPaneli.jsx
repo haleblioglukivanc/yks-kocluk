@@ -29,7 +29,7 @@ const SEKMELER = [
 ]
 
 /* Kural motoru eski sekme adlarıyla yönlendirebilir; hepsi bir yere gider. */
-/* Ben sekmesi kalktı: rozet ve seri Yol'da, hedefe göre net Denemeler'de,
+/* Ben sekmesi kalktı: seri Yol'da, hedefe göre net Denemeler'de,
    haftanın sözü Bugün'ün sonunda. Eski adlar yine bir yere gider. */
 const SEKME_ESLE = { program: 'bugun', rozetler: 'konular', ben: 'konular' }
 
@@ -208,8 +208,8 @@ export default function OgrenciPaneli({
       ) : sekme === 'konular' ? (
         <>
           <KonuHaritasi profilId={kayit.id} />
-          {/* Yol uzun vadeli bakış: yolda biriktirdiklerin ve haftanın kitabı. */}
-          <Rozetlerim ogrenciId={kayit.id} />
+          {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
+          <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
           <HaftalikIlham goster="kitap" />
         </>
       ) : (
