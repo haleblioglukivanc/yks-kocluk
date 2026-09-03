@@ -1195,6 +1195,9 @@ body[data-tema='panel'] {
 .uygulama h1,
 .uygulama h2,
 .uygulama .kart-basi h2 { color: var(--murekkep); }
+/* Koyu yüzeylerde (rapor tepesi, öğrenci başlığı, kimlik kartı) başlık
+   zemine batmasın: rengi yüzeyden alır. */
+.uygulama .hero-yuzey :is(h1, h2) { color: inherit; }
 .uygulama .marka { color: var(--murekkep); }
 /* Başlıkların önündeki nokta kaldırıldı: hiçbir bilgi taşımıyordu. */
 .uygulama .kart-basi h2::before { display: none; }
@@ -2181,25 +2184,10 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .siradaki-ikincil { display: flex; gap: 1rem; margin-top: 0.5rem; }
 .siradaki-ikincil .metin-dugme { color: var(--serin-metin); }
 
-/* ── Öğrenci başlığının sıcak sürümü ──
-   Koç ve veli koyu başlıkta kalır; öğrencininki amber tonlu kâğıt, mürekkep
-   yazı. Kâmil'in dünyası sıcak, koçun ekranı iş. Aynı .ob yapısı, yalnız
-   renk değişkenleri ve beyaz yazı kuralları burada geri alınıyor. */
-.uygulama .ob--sicak {
-  background: var(--sicak-zemin);
-  color: var(--murekkep);
-  box-shadow: none;
-}
-.uygulama .ob--sicak::after { background: rgba(255, 255, 255, 0.35); }
-.ob--sicak .ob-kim { color: var(--sicak-metin); }
-.ob--sicak .ob-tiras, .ob--sicak .ob-selam, .ob--sicak .ob-alt { color: var(--grafit); }
-.ob--sicak .ob-tamam { background: rgba(0, 0, 0, 0.06); color: var(--murekkep); }
-.ob--sicak .ob-basla { background: var(--dolgu); color: #fff; }
+/* Selam satırı: koyu tepede ad beyaz, tarih amber. */
 .ob-selam-satir { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.85rem; }
 .ob-selam-ad { margin: 0; font-family: var(--display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
-.ob-tarih { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--sicak-metin); white-space: nowrap; }
-.uygulama--koyu-tepe .ob--sicak .ob-mesaj { font-size: 1.125rem; }
-.ob--sicak .kk-yol--durakli { background: rgba(0, 0, 0, 0.07); color: var(--murekkep); }
+.ob-tarih { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--k-amber); white-space: nowrap; }
 
 /* ── Rapor tepesi: koyu, "bak" ekranı ──
    Koçun Rapor'u ve öğrencinin Denemeler'i aynı bileşen. */
@@ -3578,11 +3566,6 @@ body[data-mod='gece'] .uygulama .kareli,
 /* Başlıkla açılmayan ekranlarda (vekalet şeridi gibi) üst boşluk geri gelir.
    İç içe .panel (koç paneli kendi kabını çiziyor) boşluk almaz. */
 .uygulama--koyu-tepe :is(.panel, .panel > .panel) > :first-child:not(.hero-yuzey):not(.panel):not(.sekme-govde) { margin-top: clamp(1rem, 4vw, 1.75rem); }
-/* Öğrencinin sıcak başlığı da tepeye yapışır ama koyu geçiş yerine amber
-   kâğıt; üstteki koyu şeritle iki tonlu bir tepe olur. */
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob--sicak:first-child {
-  background: var(--sicak-zemin);
-}
 
 /* Ekran başlığı (Bildirimler gibi ikinci seviye ekranlar) */
 .ekran-basi h1 { margin: 0; font-family: var(--display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }

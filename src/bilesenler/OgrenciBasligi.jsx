@@ -122,13 +122,15 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   }
 
   /* Selam satırı: ad ve tarih. Öğrenci kim olduğunu biliyor ama ekranın
-     tepesi "bugün" demeli; tarih o işi görüyor. Sınava kalan gün burada
+     tepesi "bugün" demeli; tarih o işi görüyor. Zemin koyu: sıcak amber
+     denendi, üstteki koyu şeritle iki parça görünüyordu ve yazılar
+     okunmuyordu. Sıcaklık tarih rengine ve Kâmil'e kaldı. Sınava kalan gün burada
      değil — sınav tarihi henüz kayıtta yok, uydurmuyoruz. */
   const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
-    <section className="hero-yuzey ob ob--sicak" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
+    <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
       <div className="ob-selam-satir">
         <h1 className="ob-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
         <p className="ob-tarih">{tarih}</p>
