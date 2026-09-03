@@ -3379,3 +3379,79 @@ body[data-mod='gece'] .uygulama .kareli,
   color: var(--marka-mavi);
   font-weight: 600;
 }
+
+/* Karar kuyruğu — koçun günlük tek sıralı karar akışı */
+.kuyruk-ust {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+}
+.kuyruk-tip {
+  font-size: var(--punto-mini);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background: var(--yuzey-2);
+  color: var(--soluk);
+}
+.kuyruk-tip[data-tip='risk'] { color: var(--marka-alev); }
+.kuyruk-tip[data-tip='veli_ozet'] { color: var(--marka-amber); }
+.kuyruk-sayac { font-size: var(--punto-mini); color: var(--soluk); }
+.kuyruk-cubuk {
+  height: 3px;
+  border-radius: 3px;
+  background: var(--yuzey-2);
+  overflow: hidden;
+  margin-bottom: 1rem;
+}
+.kuyruk-cubuk-dolu {
+  height: 100%;
+  background: var(--marka-mavi);
+  transition: width 0.2s ease;
+}
+.kuyruk-kimlik {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+}
+.kuyruk-oneri {
+  margin: 0.9rem 0 0;
+  line-height: 1.55;
+}
+.kuyruk-mesaj {
+  margin: 0.75rem 0 0;
+  padding: 0.7rem 0.85rem;
+  background: var(--yuzey-2);
+  border-radius: 8px;
+  line-height: 1.55;
+  font-size: var(--punto-kucuk);
+}
+.kuyruk-alan {
+  width: 100%;
+  margin-top: 0.75rem;
+  line-height: 1.55;
+  resize: vertical;
+}
+.kuyruk-dugmeler {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 1.1rem;
+}
+.kuyruk-alt-dugmeler {
+  display: flex;
+  gap: 0.5rem;
+}
+.kuyruk-alt-dugmeler .dugme { flex: 1; }
+.kuyruk-bitis { text-align: center; padding: 1.6rem 0.5rem; }
+.kuyruk-bitis-baslik { margin: 0 0 0.35rem; font-weight: 500; }
+.kuyruk-bitis-alt { margin: 0; font-size: var(--punto-kucuk); color: var(--soluk); }

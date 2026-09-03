@@ -10,7 +10,6 @@ import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
-import VeliOzetKuyrugu from './ekranlar/VeliOzetKuyrugu.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuOncelik from './ekranlar/KonuOncelik.jsx'
@@ -139,12 +138,6 @@ const GEZINME_IKONU = {
       <path d="m10 13.7 1.6 1.6 3-3.2" />
     </>
   ),
-  '/veli-ozetleri': (
-    <>
-      <rect x="3" y="5" width="18" height="14" rx="2" />
-      <path d="m3.5 7 7.4 5.2a2 2 0 0 0 2.2 0L20.5 7" />
-    </>
-  ),
   /* Öğrenci çubuğu. Yol = konu haritası, Ben = ilerleme. */
   '/yol': (
     <>
@@ -179,7 +172,6 @@ const GEZINME_IKONU = {
 export default function App() {
   const { durum, profil, cikisYap } = useOturum()
   const [yol, git] = useYol()
-  const [bekleyenOzet, setBekleyenOzet] = useState(0)
   const [okunmamisMesaj, setOkunmamisMesaj] = useState(0)
 
   /* Koyu tema gövdeye de yazılır. Sadece .uygulama üzerinde olduğunda,
@@ -220,24 +212,6 @@ export default function App() {
       if (etiket) etiket.setAttribute('content', '#ffffff')
     }
   }, [panelAcik, mod])
-
-  /* Koçun "Özetler"e girmeden is olup olmadigini bilmesi lazim. Yolu
-     bagimliliga koyuyoruz: ekrandan cikinca sayi tazeleniyor. */
-  const kocRolu = profil?.rol === 'koc' || profil?.rol === 'yonetici'
-  useEffect(() => {
-    if (!kocRolu) return
-    let iptal = false
-    supabase
-      .from('veli_haftalik_ozet')
-      .select('id', { count: 'exact', head: true })
-      .eq('yayinlandi', false)
-      .then(({ count }) => {
-        if (!iptal) setBekleyenOzet(count ?? 0)
-      })
-    return () => {
-      iptal = true
-    }
-  }, [kocRolu, yol])
 
   /* Okunmamış mesaj sayısı. Rozet başlıkta durduğu için her ekranda
      görünür; bu yüzden hem gerçek zamanlı olay hem de yol değişimi ve
@@ -411,9 +385,8 @@ export default function App() {
           onGit={git}
         />
       )
-    if (kocMu && yol === '/veli-ozetleri') return <VeliOzetKuyrugu />
     if (kocMu && yol === '/raporlar')
-      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} bekleyenOzet={bekleyenOzet} />
+      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && ogrenciId)
       return (
         <OgrenciDetay
@@ -545,7 +518,7 @@ export default function App() {
                 yol.startsWith('/ogrenci/') ||
                 yol.startsWith('/gozuyle/')
               : hedef === '/raporlar'
-                ? ['/raporlar', '/konular', '/kaynaklar', '/veli-ozetleri'].includes(yol)
+                ? ['/raporlar', '/konular', '/kaynaklar'].includes(yol)
                 : yol === hedef
           return (
             <button
@@ -558,16 +531,8 @@ export default function App() {
                 <svg {...ikonOzellik} width={22} height={22}>
                   {GEZINME_IKONU[hedef]}
                 </svg>
-                {hedef === '/veli-ozetleri' && bekleyenOzet > 0 && (
-                  <span className="alt-rozet" aria-hidden="true">
-                    {bekleyenOzet > 9 ? '9+' : bekleyenOzet}
-                  </span>
-                )}
               </span>
               <span className="alt-bag-ad">{ad}</span>
-              {hedef === '/veli-ozetleri' && bekleyenOzet > 0 && (
-                <span className="gorsel-gizli">{bekleyenOzet} özet bekliyor</span>
-              )}
             </button>
           )
         })}

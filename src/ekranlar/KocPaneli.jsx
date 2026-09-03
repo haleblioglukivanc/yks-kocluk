@@ -1,8 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import RiskRadari from '../bilesenler/RiskRadari.jsx'
-import OnayKuyrugu from '../bilesenler/OnayKuyrugu.jsx'
-import AnalizKuyrugu from '../bilesenler/AnalizKuyrugu.jsx'
+import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
 
 /** Koçun günlük durum ekranı — yap katmanı. Öğrenci listesi ayrı sekmede;
@@ -25,9 +23,7 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
   return (
     <div className="panel">
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
-      <RiskRadari onOgrenciAc={onOgrenciAc} onGit={onGit} />
-      <AnalizKuyrugu onOgrenciAc={onOgrenciAc} />
-      <OnayKuyrugu onOgrenciAc={onOgrenciAc} />
+      <KararKuyrugu onOgrenciAc={onOgrenciAc} />
     </div>
   )
 }
