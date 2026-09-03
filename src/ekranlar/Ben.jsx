@@ -21,26 +21,29 @@ function sureMetni(dk) {
   return `${kalan} dk`
 }
 
-function bilenme(t) {
+/* Haftanın cümlesi. Kâmil'in bilenme hikâyesi görselde (yıpranma) sürüyor;
+   yazı düz konuşur: hedef ne, ne kadarı yapıldı, ne kaldı. */
+function haftaCumlesi(t) {
   if (!t || !t.hedefDk) {
-    return { ruh: 'bekliyor', baslik: `${KALEM_ADI} haftayı izliyor`, alt: 'Haftalık çalışma hedefi tanımlı değil.' }
+    return { ruh: 'bekliyor', mesaj: 'Haftalık çalışma hedefin henüz belirlenmemiş. Koçunla birlikte koyabilirsiniz.' }
   }
   if (t.hedefTutuldu) {
     return {
       ruh: 'sevinc',
-      baslik: `${KALEM_ADI} bu hafta bilendi`,
-      alt: `Hedef ${sureMetni(t.hedefDk)} · ${sureMetni(t.buHaftaDk ?? 0)} çalıştın`,
+      mesaj: `Bu haftanın ${sureMetni(t.hedefDk)} hedefini tamamladın; ${sureMetni(t.buHaftaDk ?? 0)} çalıştın. ${KALEM_ADI} bilendi.`,
     }
   }
+  const yapilan = t.buHaftaDk ?? 0
   return {
     ruh: 'fikir',
-    baslik: `${KALEM_ADI} ${sureMetni(t.kalanDk ?? 0)} sonra bilenir`,
-    alt: `Haftalık hedef ${sureMetni(t.hedefDk)} · ${sureMetni(t.buHaftaDk ?? 0)} yapıldı`,
+    mesaj: yapilan > 0
+      ? `Bu hafta ${sureMetni(t.hedefDk)} hedefinin ${sureMetni(yapilan)} kadarı yapıldı; ${sureMetni(t.kalanDk ?? 0)} kaldı.`
+      : `Bu haftanın hedefi ${sureMetni(t.hedefDk)}; henüz başlanmadı.`,
   }
 }
 
 export default function Ben({ kayit, ozet, netDurumu, denemeler }) {
-  const b = bilenme(ozet?.kalemtiras)
+  const b = haftaCumlesi(ozet?.kalemtiras)
   const tamamlama = ozet?.haftaTamamlamaYuzdesi ?? 0
   const bugunDk = ozet?.calismaDkBugun ?? 0
 
@@ -60,9 +63,7 @@ export default function Ben({ kayit, ozet, netDurumu, denemeler }) {
             </span>
           </div>
           <div className="ob-soz">
-            <p className="ob-selam">Bu hafta</p>
-            <p className="ob-mesaj">{b.baslik}</p>
-            <p className="ob-alt">{b.alt}</p>
+            <p className="ob-mesaj">{b.mesaj}</p>
           </div>
         </div>
       </section>

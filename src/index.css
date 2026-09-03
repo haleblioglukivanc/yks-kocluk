@@ -1216,12 +1216,18 @@ body[data-tema='panel'] {
 .uygulama .alt-bag { color: var(--grafit); }
 .uygulama .alt-bag--etkin { color: var(--serin-metin); box-shadow: inset 0 3px 0 var(--serin); }
 
-/* KPI kartları: sıcak "dikkat", soğuk "yolunda" */
+/* KPI kartları: sıcak "geride, izle" (amber), soğuk "yolunda".
+   Kırmızı yalnız acil durumlar için ayrıldı; düşük yüzde acil değil. */
 .uygulama .kpi-kart--sicak {
+  background: var(--sicak-zemin);
+  border-color: var(--sicak-kenar);
+}
+.uygulama .kpi-kart--sicak .kpi-sayi { color: var(--sicak-metin); }
+.uygulama .kpi-kart--acil {
   background: var(--kizil-zemin);
   border-color: var(--kizil-kenar);
 }
-.uygulama .kpi-kart--sicak .kpi-sayi { color: var(--kizil-metin); }
+.uygulama .kpi-kart--acil .kpi-sayi { color: var(--kizil-metin); }
 .uygulama .kpi-kart--serin {
   background: var(--yuzey-2);
   border-color: var(--cizgi);
