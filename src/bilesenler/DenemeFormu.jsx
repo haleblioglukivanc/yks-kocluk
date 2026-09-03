@@ -134,23 +134,21 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
     }
     setBekliyor(true)
     setHata('')
-    const { error } = await supabase.from('deneme_hatalari').insert(satirlar)
+    /* İkinci dokunuşta aynı satırlar tekrar gelirse hata yerine üstüne yazılır. */
+    const { error } = await supabase
+      .from('deneme_hatalari')
+      .upsert(satirlar, { onConflict: 'deneme_id,konu_id' })
     setBekliyor(false)
     if (error) {
       setHata(hataMetni(error))
       return
     }
-    analiziBaslat(kayitli.id)
     onEklendi()
   }
 
-  /* Konu işaretlenince kural katmanı taslağı yazar: dağılım + öneriler.
-     Bulgu metnini modele yazdırma işi sunucudaki 'analiz-bulgusu' cron'una
-     ait; buradan çağırırsak form kapanınca istek iptal oluyor (EarlyDrop).
-     Başarısız olursa deneme kaydı etkilenmez. */
-  function analiziBaslat(denemeId) {
-    supabase.rpc('deneme_analizi_hazirla', { p_deneme_id: denemeId }).catch(() => {})
-  }
+  /* Analiz taslağı (dağılım + öneriler) artık veritabanı tetikleyicisiyle
+     sonuçlar ve hata konuları yazıldığı anda üretilir; tarayıcıdan çağrı yok.
+     Bulgu metnini modele yazdırma işi 'analiz-bulgusu' cron'unda. */
 
   if (kayitli) {
     const toplamIsaret = Object.values(isaret).reduce((t, n) => t + n, 0)
