@@ -32,7 +32,9 @@ function uzunlukEtiketi(etiketler) {
   return null
 }
 
-export default function HaftalikIlham() {
+/* goster: 'hepsi' | 'kitap' | 'soz'. Öğrencide söz Bugün'ün sonunda,
+   kitap Yol'un sonunda; veli, rapor ve tanıtım ikisini birlikte gösterir. */
+export default function HaftalikIlham({ goster = 'hepsi' }) {
   const [veri, setVeri] = useState(null)
 
   useEffect(() => {
@@ -56,7 +58,7 @@ export default function HaftalikIlham() {
 
   return (
     <section className="haftalik-ilham" aria-label="Haftanın kitabı ve sözü">
-      {veri.kitap_ad && (
+      {goster !== 'soz' && veri.kitap_ad && (
         <article className="hi-kutu hi-kutu--kitap">
           <span className="hi-em" aria-hidden="true">
             {veri.kitap_emoji}
@@ -91,7 +93,7 @@ export default function HaftalikIlham() {
         </article>
       )}
 
-      {veri.soz_metin && (
+      {goster !== 'kitap' && veri.soz_metin && (
         <article className="hi-kutu hi-kutu--soz">
           <span className="hi-em" aria-hidden="true">
             {veri.soz_emoji}

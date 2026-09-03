@@ -36,7 +36,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'yeni_rozet',
-    ekran: 'ben',
+    ekran: 'konular',
     rol: 'ogrenci', oncelik: 100, tekrar: 'her_zaman', ruh: 'kutlama',
     kosul: (b) => Boolean(o(b).yeniRozetAdi),
     mesaj: (b) => `${o(b).yeniRozetAdi} rozetini aldın. Bunu hak ettin.`,

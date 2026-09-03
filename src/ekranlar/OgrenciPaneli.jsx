@@ -10,7 +10,10 @@ import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { useKocMesaji } from '../bilesenler/KocMesaji.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
-import Ben from './Ben.jsx'
+import { Kart } from '../bilesenler/Ortak.jsx'
+import HedefNet from '../bilesenler/HedefNet.jsx'
+import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
+import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 
@@ -23,11 +26,12 @@ const SEKMELER = [
   ['bugun', 'Bugün'],
   ['konular', 'Konular'],
   ['denemeler', 'Denemeler'],
-  ['ben', 'Ben'],
 ]
 
 /* Kural motoru eski sekme adlarıyla yönlendirebilir; hepsi bir yere gider. */
-const SEKME_ESLE = { program: 'bugun', rozetler: 'ben' }
+/* Ben sekmesi kalktı: rozet ve seri Yol'da, hedefe göre net Denemeler'de,
+   haftanın sözü Bugün'ün sonunda. Eski adlar yine bir yere gider. */
+const SEKME_ESLE = { program: 'bugun', rozetler: 'konular', ben: 'konular' }
 
 export default function OgrenciPaneli({
   profil,
@@ -198,13 +202,21 @@ export default function OgrenciPaneli({
               )}
             </button>
           )}
+          {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
+          <HaftalikIlham goster="soz" />
         </>
       ) : sekme === 'konular' ? (
-        <KonuHaritasi profilId={kayit.id} />
-      ) : sekme === 'ben' ? (
-        <Ben kayit={kayit} ozet={ozet} netDurumu={netDurumu} denemeler={denemeler} />
+        <>
+          <KonuHaritasi profilId={kayit.id} />
+          {/* Yol uzun vadeli bakış: yolda biriktirdiklerin ve haftanın kitabı. */}
+          <Rozetlerim ogrenciId={kayit.id} />
+          <HaftalikIlham goster="kitap" />
+        </>
       ) : (
-        <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+        <>
+          <HedefeGoreDurum kayit={kayit} netDurumu={netDurumu} denemeler={denemeler} />
+          <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+        </>
       )}
       </div>
       </SayacSaglayici>
@@ -220,5 +232,25 @@ export default function OgrenciPaneli({
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>
+  )
+}
+
+/* Hedefe göre net durumu denemelerden doğar; yeri Denemeler'in başı.
+   Eskiden Ben'deydi. Veri yeni değil: panel zaten çekiyor. */
+function HedefeGoreDurum({ kayit, netDurumu, denemeler }) {
+  const sonNet = denemeler?.[0] ? Number(denemeler[0].toplam_net) : null
+  const oncekiNet = denemeler?.[1] ? Number(denemeler[1].toplam_net) : null
+  const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
+  const hedefAlt =
+    [kayit?.hedef_universite, kayit?.hedef_bolum].filter(Boolean).join(' · ') || undefined
+  return (
+    <Kart baslik="Hedefe göre durumum" altBaslik={hedefAlt}>
+      <HedefNet tyt={kayit.hedef_tyt_net} ayt={kayit.hedef_ayt_net} durum={netDurumu} />
+      {fark !== null && fark !== 0 && (
+        <p className={`net-fark net-fark--${fark > 0 ? 'artis' : 'dusus'}`}>
+          Son denemede {fark > 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)} net
+        </p>
+      )}
+    </Kart>
   )
 }

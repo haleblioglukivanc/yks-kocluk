@@ -22,7 +22,7 @@ import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
-const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler', '/ben': 'ben' }
+const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
 const SEKME_YOLU = Object.fromEntries(Object.entries(OGRENCI_SEKME).map(([y, s]) => [s, y]))
 
 /* Site kökte yayınlanıyor ama yollar yine de tabana göre okunuyor.
@@ -114,7 +114,7 @@ const GEZINME_IKONU = {
       <path d="m10 13.7 1.6 1.6 3-3.2" />
     </>
   ),
-  /* Öğrenci çubuğu. Yol = konu haritası, Ben = ilerleme. */
+  /* Öğrenci çubuğu. Yol = konu haritası + yolda biriktirdiklerin. */
   '/yol': (
     <>
       <path d="M4 18c3-6 6-6 8 0s5 6 8 0" />
@@ -127,12 +127,6 @@ const GEZINME_IKONU = {
     <>
       <rect x="5" y="3.5" width="14" height="17" rx="2" />
       <path d="M9 8.5h6M9 12h6M9 15.5h3.5" />
-    </>
-  ),
-  '/ben': (
-    <>
-      <circle cx="12" cy="8.5" r="3.8" />
-      <path d="M4.5 20v-1.2A4.8 4.8 0 0 1 9.3 14h5.4a4.8 4.8 0 0 1 4.8 4.8V20" />
     </>
   ),
   '/raporlar': (
@@ -315,18 +309,18 @@ export default function App() {
      kopyası orada da gizlenmeli, yoksa iki maskot olur. */
   /* Yonetim ekraninda Kamil hic cikmiyor: orasi motivasyon degil isletme
      ekrani. Kosedeki kopya da Sistem kartinin ustune biniyordu. */
-  /* Öğrencide Bugün ve Ben başlıkta Kâmil taşır; Yol'da harita kendi
+  /* Öğrencide Bugün başlıkta Kâmil taşır; Yol'da harita kendi
      Kâmil'ini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler', '/ben']
+  const TANINAN = ['/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = profil.rol === 'yonetici' && yol === '/yonetim'
   const basliktaKalemVar =
     (anaEkranda && kocMu) ||
-    (profil.rol === 'ogrenci' && (anaEkranda || ['/ben', '/yol'].includes(yol))) ||
+    (profil.rol === 'ogrenci' && (anaEkranda || yol === '/yol')) ||
     (profil.rol === 'veli' && anaEkranda) ||
     Boolean(gozuyleId) ||
     yol === '/yonetim'
@@ -334,10 +328,9 @@ export default function App() {
   /* Kâmil'in köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
   const ekranAdi = anaEkranda ? 'bugun' : yol === '/yol' ? 'konular' : yol.split('/')[1] || 'bugun'
 
-  /* Bugün ve Ben ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
+  /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
-    (profil.rol === 'ogrenci' && yol === '/ben') ||
     Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
@@ -356,7 +349,6 @@ export default function App() {
           ['/', 'Bugün'],
           ['/yol', 'Yol'],
           ['/denemeler', 'Denemeler'],
-          ['/ben', 'Ben'],
         ]
       : [['/', 'Bu hafta']]
 
