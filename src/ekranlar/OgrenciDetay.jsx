@@ -34,7 +34,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
     const { data, error } = await supabase
       .from('ogrenciler')
       .select(
-        'id, koc_id, alan, sinif, katalog_id, aktif, hedef_universite, hedef_bolum, hedef_tyt_net, hedef_ayt_net, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon, fotograf_yolu), kataloglar(id, ad)',
+        'id, koc_id, alan, sinif, katalog_id, aktif, sinav_tarihi, hedef_universite, hedef_bolum, hedef_tyt_net, hedef_ayt_net, kayit_tarihi, profiller!ogrenciler_id_fkey(ad_soyad, telefon, fotograf_yolu), kataloglar(id, ad)',
       )
       .eq('id', ogrenciId)
       .maybeSingle()
@@ -189,6 +189,7 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
   const [katalogId, setKatalogId] = useState(ogrenci.katalog_id ? String(ogrenci.katalog_id) : '')
   const [sinif, setSinif] = useState(ogrenci.sinif ? String(ogrenci.sinif) : '')
   const [alan, setAlan] = useState(ogrenci.alan ?? '')
+  const [sinavTarihi, setSinavTarihi] = useState(ogrenci.sinav_tarihi ?? '')
   const [uni, setUni] = useState(ogrenci.hedef_universite ?? '')
   const [bolum, setBolum] = useState(ogrenci.hedef_bolum ?? '')
   const [tytNet, setTytNet] = useState(ogrenci.hedef_tyt_net ?? '')
@@ -225,6 +226,7 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
           katalog_id: katalogId ? Number(katalogId) : null,
           sinif: sinif ? Number(sinif) : null,
           alan: alan || null,
+          sinav_tarihi: sinavTarihi || null,
           hedef_universite: uni.trim() || null,
           hedef_bolum: bolum.trim() || null,
           hedef_tyt_net: tytNet === '' ? null : Number(tytNet),
@@ -277,6 +279,9 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
           ))}
           <option value="13">Mezun</option>
         </select>
+      </Alan>
+      <Alan etiket="Sınav tarihi" ipucu="Boş bırakılırsa sınıfa göre varsayılan kullanılır">
+        <input type="date" value={sinavTarihi} onChange={(e) => setSinavTarihi(e.target.value)} />
       </Alan>
       <Alan etiket="Alan">
         <select value={alan} onChange={(e) => setAlan(e.target.value)}>
