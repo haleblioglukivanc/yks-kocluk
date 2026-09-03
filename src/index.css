@@ -3485,7 +3485,7 @@ body[data-mod='gece'] .uygulama .kareli,
 
 /* Bugün ekranı: koyu başlık şeritle birleşir, kenarlara taşar */
 .uygulama--koyu-tepe > main { padding-top: 0; }
-.uygulama--koyu-tepe :is(.panel, .panel > .panel) > .hero-yuzey:first-child {
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child {
   margin-inline: calc(-1 * clamp(1rem, 4vw, 1.75rem));
   margin-top: 0;
   border-radius: 0 0 24px 24px;
@@ -3495,7 +3495,7 @@ body[data-mod='gece'] .uygulama .kareli,
 }
 /* Başlıkla açılmayan ekranlarda (vekalet şeridi gibi) üst boşluk geri gelir.
    İç içe .panel (koç paneli kendi kabını çiziyor) boşluk almaz. */
-.uygulama--koyu-tepe :is(.panel, .panel > .panel) > :first-child:not(.hero-yuzey):not(.panel) { margin-top: clamp(1rem, 4vw, 1.75rem); }
+.uygulama--koyu-tepe :is(.panel, .panel > .panel) > :first-child:not(.hero-yuzey):not(.panel):not(.sekme-govde) { margin-top: clamp(1rem, 4vw, 1.75rem); }
 
 /* Ekran başlığı (Bildirimler gibi ikinci seviye ekranlar) */
 .ekran-basi h1 { margin: 0; font-family: var(--display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -3647,3 +3647,6 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 
 /* Koç konuşurken başlıkta küçük bir "Koçundan" etiketi */
 .ob-kim { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--k-amber); }
+
+/* Köşedeki Kâmil artık düğme değil, sözüyle gelen ziyaretçi */
+.kalem-tetik { cursor: default; }

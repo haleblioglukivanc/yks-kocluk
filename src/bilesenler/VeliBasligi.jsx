@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
+import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 /**
  * Veli panelinin başlığı: koç ve öğrenciyle aynı koyu yüzey.
@@ -32,9 +33,19 @@ function cumle(ozet, cocukAdi) {
   return `${parcalar.join(', ')}. ${GIDISAT[ozet.trend] ?? GIDISAT.sabit}`
 }
 
-export default function VeliBasligi({ ozet, cocukAdi }) {
+export default function VeliBasligi({ ozet, cocukAdi, profil }) {
   useEffect(() => maskotuDevral(), [])
-  const ruh = ozet ? RUH[ozet.trend] ?? 'bekliyor' : 'bekliyor'
+  const [olay, setOlay] = useState(null)
+  useEffect(() => {
+    if (!profil?.id) return
+    kalemiCalistir({
+      profilId: profil.id,
+      rol: 'veli',
+      ad: profil.ad_soyad,
+      veri: { yeniOzetVarMi: Boolean(ozet), ogrenciAdi: ozet?.ogrenciAdi ?? '' },
+    }).then((o) => setOlay(o[0] ?? null))
+  }, [profil?.id, profil?.ad_soyad, ozet])
+  const ruh = olay ? olay.ruh : ozet ? RUH[ozet.trend] ?? 'bekliyor' : 'bekliyor'
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve haftanın özeti`}>
       <div className="ob-ust">
@@ -42,7 +53,12 @@ export default function VeliBasligi({ ozet, cocukAdi }) {
           <Kalem ruh={ruh} boyut={76} />
         </div>
         <div className="ob-soz">
-          <p className="ob-mesaj" role="status">{cumle(ozet, cocukAdi)}</p>
+          <p className="ob-mesaj" role="status">{olay ? olay.mesaj : cumle(ozet, cocukAdi)}</p>
+          {olay && (
+            <div className="ob-dugmeler">
+              <button className="ob-tamam" onClick={() => { kalemiKapat(olay); setOlay(null) }}>Tamam</button>
+            </div>
+          )}
         </div>
       </div>
     </section>

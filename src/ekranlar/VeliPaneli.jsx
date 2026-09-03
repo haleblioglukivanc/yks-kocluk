@@ -35,7 +35,7 @@ function KocNotu({ o, birden }) {
   )
 }
 
-export default function VeliPaneli() {
+export default function VeliPaneli({ profil }) {
   const [cocuklar, setCocuklar] = useState(null)
   const [ozetler, setOzetler] = useState([])
   const [hata, setHata] = useState('')
@@ -57,7 +57,7 @@ export default function VeliPaneli() {
 
   return (
     <div className="panel">
-      <VeliBasligi ozet={ozetler[0]} cocukAdi={ilkCocuk} />
+      <VeliBasligi ozet={ozetler[0]} cocukAdi={ilkCocuk} profil={profil} />
       <Uyari>{hata}</Uyari>
 
       {ozetler.map((o) => (

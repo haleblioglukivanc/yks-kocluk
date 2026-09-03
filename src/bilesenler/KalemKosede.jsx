@@ -5,22 +5,17 @@ import Kalem, { KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 /**
- * Kâmil ekranın sağ alt köşesinde durur.
- * Söyleyecek sözü varsa balonu açık gelir; kapatınca karakter kalır,
- * ona dokununca son sözünü tekrar gösterir.
+ * Kâmil ziyaretçi: Bugün dışındaki ekranlarda yalnız o ekrana ait bir
+ * sözü varsa köşeden gelir, baloncukla söyler, "Tamam" deyince gider.
+ * Sözü yoksa ekranda hiç yok; boşta bekleyen düğme kalktı.
  */
 
 const KOC_ROLLERI = ['koc', 'yonetici']
 
-// Boşta beklerken ruh hâli çok yavaş dönsün: canlı dursun ama
-// göz ucuyla bakan birini rahatsız etmesin.
-const BOSTA = ['bekliyor', 'bekliyor', 'bekliyor', 'dusunuyor', 'bekliyor', 'sasirdi']
-
-export default function KalemKosede({ profil }) {
+export default function KalemKosede({ profil, ekran = 'bugun' }) {
   const ekrandaMaskotVar = useMaskotDevrildiMi()
   const [olay, setOlay] = useState(null)
   const [acik, setAcik] = useState(false)
-  const [bostaRuh, setBostaRuh] = useState('bekliyor')
 
   const yukle = useCallback(async () => {
     if (!profil?.id) return
@@ -59,39 +54,29 @@ export default function KalemKosede({ profil }) {
       rol: kocMu ? 'koc' : profil.rol,
       ad: profil.ad_soyad,
       veri,
+      ekran,
     })
 
     if (olaylar.length) {
       setOlay(olaylar[0])
       setAcik(true)
     }
-  }, [profil?.id, profil?.rol, profil?.ad_soyad, ekrandaMaskotVar])
+  }, [profil?.id, profil?.rol, profil?.ad_soyad, ekrandaMaskotVar, ekran])
 
   useEffect(() => {
     yukle()
   }, [yukle])
 
-  // Boşta hafif ruh hâli değişimi
-  useEffect(() => {
-    if (acik) return
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    let n = 0
-    const t = setInterval(() => {
-      n = (n + 1) % BOSTA.length
-      setBostaRuh(BOSTA[n])
-    }, 9000)
-    return () => clearInterval(t)
-  }, [acik])
-
   /* Konu yolu gibi ekranlar Kâmil'i kendi içinde gösteriyor; köşedeki
      kopya orada fazlalık olur. */
-  if (!profil || ekrandaMaskotVar) return null
+  if (!profil || ekrandaMaskotVar || !olay || !acik) return null
 
-  const ruh = acik && olay ? olay.ruh : bostaRuh
+  const ruh = olay.ruh
 
   function kapat() {
     kalemiKapat(olay)
     setAcik(false)
+    setOlay(null)
   }
 
   return (
@@ -106,14 +91,9 @@ export default function KalemKosede({ profil }) {
         </div>
       )}
 
-      <button
-        className="kalem-tetik"
-        aria-label={acik ? `${KALEM_ADI} konuşuyor` : `${KALEM_ADI} ile konuş`}
-        aria-expanded={acik}
-        onClick={() => setAcik((a) => !a)}
-      >
+      <div className="kalem-tetik" aria-hidden="true">
         <Kalem ruh={ruh} boyut={58} />
-      </button>
+      </div>
     </div>
   )
 }

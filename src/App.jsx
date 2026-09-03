@@ -331,9 +331,14 @@ export default function App() {
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
-  /* Bugün ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
+  /* Kâmil'in köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
+  const ekranAdi = anaEkranda ? 'bugun' : yol === '/yol' ? 'konular' : yol.split('/')[1] || 'bugun'
+
+  /* Bugün ve Ben ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
-    (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) || Boolean(gozuyleId)
+    (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
+    (profil.rol === 'ogrenci' && yol === '/ben') ||
+    Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
@@ -410,7 +415,7 @@ export default function App() {
           onGit={git}
         />
       )
-    if (profil.rol === 'veli') return <VeliPaneli />
+    if (profil.rol === 'veli') return <VeliPaneli profil={profil} />
     return (
       <OgrenciPaneli
         profil={profil}
@@ -480,7 +485,7 @@ export default function App() {
       {/* Kâmil panel ekranlarında başlığın kendisi olduğu için köşedeki
           kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
           Kâmil köşede kalmalı. */}
-      {!basliktaKalemVar && <KalemKosede profil={profil} />}
+      {!basliktaKalemVar && <KalemKosede profil={profil} ekran={ekranAdi} />}
 
       <HesapYapragi
         acik={hesapAcik}

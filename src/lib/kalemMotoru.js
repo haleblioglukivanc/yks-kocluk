@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-import { kalemNeDesin, olayKaydiOlustur, kuralEylemi } from './kalem-kurallari.js'
+import { kalemNeDesin, olayKaydiOlustur, kuralEylemi, kuralEkrani } from './kalem-kurallari.js'
 
 /**
  * Kâmil'in ne diyeceğini belirler.
@@ -8,7 +8,7 @@ import { kalemNeDesin, olayKaydiOlustur, kuralEylemi } from './kalem-kurallari.j
  * üretilmez, duran mesaj geri döner. Aksi halde mesaj bir kez görünüp
  * ilk sayfa yenilemesinde kayboluyordu.
  */
-export async function kalemiCalistir({ profilId, rol, ad, veri }) {
+export async function kalemiCalistir({ profilId, rol, ad, veri, ekran = 'bugun' }) {
   const simdi = new Date()
   const gunBasi = new Date(simdi.getFullYear(), simdi.getMonth(), simdi.getDate())
 
@@ -33,7 +33,7 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
   const gunlukLimit = ayar.data?.gunluk_limit ?? 2
 
   const bugunGosterilen = kayitlar.filter((k) => new Date(k.gosterildi) >= gunBasi).length
-  const baglam = { rol, ad, saat: simdi.getHours(), gunIlkGirisMi: bugunGosterilen === 0 }
+  const baglam = { rol, ad, ekran, saat: simdi.getHours(), gunIlkGirisMi: bugunGosterilen === 0 }
   if (rol === 'ogrenci') baglam.ogrenci = veri
   else if (rol === 'veli') baglam.veli = veri
   else baglam.koc = veri
@@ -41,7 +41,7 @@ export async function kalemiCalistir({ profilId, rol, ad, veri }) {
   // Bugün gösterilmiş ve henüz kapatılmamış mesajlar hâlâ geçerli.
   // Eylem düğmesi kaydedilmiyor, kuraldan yeniden türetilir.
   const acikOlanlar = kayitlar.filter(
-    (k) => new Date(k.gosterildi) >= gunBasi && !k.kapatildi_mi,
+    (k) => new Date(k.gosterildi) >= gunBasi && !k.kapatildi_mi && kuralEkrani(k.kural_kodu) === ekran,
   )
   if (acikOlanlar.length > 0) {
     return acikOlanlar.slice(0, gunlukLimit).map((k) => ({

@@ -3,6 +3,8 @@
 // Ses tonu kuralları (bunlar kod kadar bağlayıcı):
 //  1. Asla suçlama. '3 gündür girmedin' yok; 'bugün 15 dakika bile sayılır' var.
 //  2. Her mesajın bir işi var: ya eylem önerir, ya kutlar, ya risk söyler.
+//  2b. Her mesajın bir yeri var: `ekran` yoksa Bugün'de (Kâmil'in evi)
+//      söylenir; varsa yalnız o ekranda, köşeden gelen baloncukla.
 //  3. Öğrenciye asla başka öğrenciyle kıyas yapılmaz.
 //  4. Ünlem işareti yok, emoji yok. Sıcaklık kelimelerden gelir.
 //  5. Kötü haber verirken önce normalleştir, sonra tek bir adım öner.
@@ -26,6 +28,7 @@ const OGRENCI_KURALLARI = [
     // Sunucu yazar (deneme_analizi_karar). Koşul hep yanlış: istemci bu
     // kuralı kendisi tetiklemez, yalnız açık kaydın eylem düğmesini türetir.
     kod: 'deneme_analizi',
+    ekran: 'denemeler',
     rol: 'ogrenci', oncelik: 99, tekrar: 'her_zaman', ruh: 'fikir',
     kosul: () => false,
     mesaj: () => '',
@@ -33,6 +36,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'yeni_rozet',
+    ekran: 'ben',
     rol: 'ogrenci', oncelik: 100, tekrar: 'her_zaman', ruh: 'kutlama',
     kosul: (b) => Boolean(o(b).yeniRozetAdi),
     mesaj: (b) => `${o(b).yeniRozetAdi} rozetini aldın. Bunu hak ettin.`,
@@ -52,6 +56,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'koc_onayladi',
+    ekran: 'konular',
     rol: 'ogrenci', oncelik: 92, tekrar: 'gunde_bir', ruh: 'kutlama',
     kosul: (b) => (o(b).yeniOnayKonular ?? []).length > 0,
     mesaj: (b) => {
@@ -85,6 +90,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'deneme_uzak',
+    ekran: 'denemeler',
     rol: 'ogrenci', oncelik: 55, tekrar: 'haftada_bir', ruh: 'fikir',
     kosul: (b) => (o(b).denemeSayisi ?? 0) > 0 && (o(b).sonDenemeGunOnce ?? 0) >= 21,
     mesaj: (b) => `Son denemeden ${o(b).sonDenemeGunOnce} gün geçmiş. Bir deneme, nerede durduğumuzu gösterir; çıkan sonuç iyi de olsa kötü de olsa bilgi.`,
@@ -98,6 +104,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'net_yukseldi',
+    ekran: 'denemeler',
     rol: 'ogrenci', oncelik: 85, tekrar: 'her_zaman', ruh: 'sevinc',
     kosul: (b) => (o(b).sonDenemeNetFarki ?? 0) >= 3 && (o(b).sonDenemeGunOnce ?? 99) <= 2,
     mesaj: (b) => `Son denemede netin ${Math.round(o(b).sonDenemeNetFarki)} arttı. Yaptığın şey işe yarıyor.`,
@@ -105,6 +112,7 @@ const OGRENCI_KURALLARI = [
   },
   {
     kod: 'net_dustu',
+    ekran: 'denemeler',
     rol: 'ogrenci', oncelik: 80, tekrar: 'her_zaman', ruh: 'dusunuyor',
     kosul: (b) => (o(b).sonDenemeNetFarki ?? 0) <= -4 && (o(b).sonDenemeGunOnce ?? 99) <= 2,
     mesaj: (b) =>
@@ -178,6 +186,7 @@ const KOC_KURALLARI = [
   },
   {
     kod: 'sinif_dusuyor',
+    ekran: 'raporlar',
     rol: 'koc', oncelik: 80, tekrar: 'haftada_bir', ruh: 'dusunuyor',
     kosul: (b) => (k(b).sinifNetDegisimi ?? 0) <= -3,
     mesaj: (b) => `Sınıf ortalaması ${Math.abs(Math.round(k(b).sinifNetDegisimi))} net düşmüş. Ortak bir konu var mı, ısı haritasına bakalım.`,
@@ -275,8 +284,10 @@ export function kalemNeDesin(baglam, gecmis, simdi = new Date()) {
   const kalan = gecmis.gunlukLimit - gecmis.buOturumdaGosterilen;
   if (kalan <= 0) return [];
 
+  const ekran = baglam.ekran ?? 'bugun'
   return TUM_KURALLAR
     .filter((kr) => kr.rol === baglam.rol)
+    .filter((kr) => (kr.ekran ?? 'bugun') === ekran)
     .filter((kr) => {
       try { return kr.kosul(baglam); } catch { return false; }
     })
@@ -289,6 +300,11 @@ export function kalemNeDesin(baglam, gecmis, simdi = new Date()) {
       mesaj: kr.mesaj(baglam),
       eylem: kr.eylem?.(baglam),
     }));
+}
+
+/** Kuralın söylendiği ekran; tanımsızsa Bugün. */
+export function kuralEkrani(kod) {
+  return TUM_KURALLAR.find((x) => x.kod === kod)?.ekran ?? 'bugun';
 }
 
 /** Veritabanından geri dönen mesajın eylemi kayıtlı değil; kural koduyla yeniden bulunur. */
