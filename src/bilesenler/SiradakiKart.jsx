@@ -27,6 +27,27 @@ const TUR_ADI = {
   okuma: 'Okuma',
   diger: 'Çalışma',
 }
+/* Günün halkası: biten/toplam görev. Sayaç çalışmıyorken kartın sol yanı;
+   sayaç halkasıyla karışmasın diye eylem rengi (mavi), sayaçta amber. */
+function GunHalkasi({ biten, toplam }) {
+  const oran = toplam > 0 ? biten / toplam : 0
+  const C = 2 * Math.PI * 34
+  return (
+    <div className="gun-halka" role="img" aria-label={`${biten} / ${toplam} görev`}>
+      <svg viewBox="0 0 80 80" width="88" height="88">
+        <circle cx="40" cy="40" r="34" fill="none" stroke="var(--cizgi)" strokeWidth="8" />
+        <circle cx="40" cy="40" r="34" fill="none" stroke="var(--dolgu)" strokeWidth="8"
+                strokeLinecap="round" strokeDasharray={C}
+                strokeDashoffset={C * (1 - oran)} transform="rotate(-90 40 40)" />
+      </svg>
+      <div className="gun-halka-sayi">
+        <strong>{biten}/{toplam}</strong>
+        <span>görev</span>
+      </div>
+    </div>
+  )
+}
+
 function Halka({ durum }) {
   const kalan = kalanMs(durum)
   const oran = 1 - kalan / (durum.hedefDk * 60000)
@@ -132,11 +153,26 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
   const baslik =
     sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
 
+  /* Kalan süre tahmini: her bekleyen görevin türüne göre varsayılan dakika.
+     Görevde süre alanı yok; tahmin olduğu için "yaklaşık" diyoruz. */
+  const kalanDk = bekleyen.reduce((t, g) => t + varsayilanDk(g.tur), 0)
+  const biten = liste.length - bekleyen.length
+
   return (
-    <section className="kart siradaki" aria-label="Sıradaki iş">
+    <section className="kart siradaki" aria-label="Bugünün hedefi">
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
-      <p className="siradaki-etiket">Sıradaki</p>
+      <div className="siradaki-ust">
+        <GunHalkasi biten={biten} toplam={liste.length} />
+        <div className="siradaki-ozet">
+          <p className="siradaki-etiket">Bugünün hedefi</p>
+          <p className="siradaki-kalan">
+            {bekleyen.length} görev kaldı, yaklaşık {kalanDk} dk.
+          </p>
+        </div>
+      </div>
+
+      <p className="siradaki-sira">Sırada</p>
       <h2 className="siradaki-baslik">{baslik}</h2>
       {(etiket || tur) && (
         <p className="siradaki-alt">{[etiket, tur].filter(Boolean).join(' · ')}</p>
@@ -150,7 +186,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
           disabled={saltOkunur}
           onClick={() => sayac?.basla(varsayilan, sira.id)}
         >
-          ▶ {varsayilan} dk başla
+          ▶ Çalışmaya başla · {varsayilan} dk
         </button>
         {digerler.map((dk) => (
           <button

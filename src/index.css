@@ -2147,7 +2147,24 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 /* ═══ Sıradaki kartı ═══
    Bugün'ün tek büyük kararı. Sıcak zemin: bu kart "dikkat" değil "elini
    koyacağın yer"; başka hiçbir kart bu zemini kullanmaz. */
-.siradaki { background: var(--sicak-zemin); border-color: var(--sicak-kenar); }
+/* Bugünün hedefi kartı. Sıcak zemin başlığa taşındı; kart beyaz kalır,
+   üst üste iki amber alan olmasın. Halka eylem rengi: "yap" der. */
+.siradaki { background: var(--yuzey); border-color: var(--cizgi); }
+.siradaki-ust { display: flex; align-items: center; gap: 0.9rem; }
+.gun-halka { position: relative; flex: 0 0 auto; width: 88px; height: 88px; }
+.gun-halka svg { display: block; }
+.gun-halka-sayi {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; line-height: 1;
+}
+.gun-halka-sayi strong { font-family: var(--display); font-size: 1.15rem; font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.gun-halka-sayi span { margin-top: 0.15rem; font-size: 0.66rem; color: var(--soluk); }
+.siradaki-ozet { flex: 1; min-width: 0; }
+.siradaki-kalan { margin: 0.2rem 0 0; font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.35; }
+.siradaki-sira {
+  margin: 0.9rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--cizgi);
+  font-size: var(--punto-mini); font-weight: 600; color: var(--soluk);
+}
 .siradaki-etiket {
   margin: 0; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.08em;
   text-transform: uppercase; color: var(--sicak-metin);
@@ -2162,7 +2179,27 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .siradaki-eylem { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.9rem; flex-wrap: wrap; }
 .siradaki-basla { flex: 1 1 auto; }
 .siradaki-ikincil { display: flex; gap: 1rem; margin-top: 0.5rem; }
-.siradaki-ikincil .metin-dugme { color: var(--sicak-metin); }
+.siradaki-ikincil .metin-dugme { color: var(--serin-metin); }
+
+/* ── Öğrenci başlığının sıcak sürümü ──
+   Koç ve veli koyu başlıkta kalır; öğrencininki amber tonlu kâğıt, mürekkep
+   yazı. Kâmil'in dünyası sıcak, koçun ekranı iş. Aynı .ob yapısı, yalnız
+   renk değişkenleri ve beyaz yazı kuralları burada geri alınıyor. */
+.uygulama .ob--sicak {
+  background: var(--sicak-zemin);
+  color: var(--murekkep);
+  box-shadow: none;
+}
+.uygulama .ob--sicak::after { background: rgba(255, 255, 255, 0.35); }
+.ob--sicak .ob-kim { color: var(--sicak-metin); }
+.ob--sicak .ob-tiras, .ob--sicak .ob-selam, .ob--sicak .ob-alt { color: var(--grafit); }
+.ob--sicak .ob-tamam { background: rgba(0, 0, 0, 0.06); color: var(--murekkep); }
+.ob--sicak .ob-basla { background: var(--dolgu); color: #fff; }
+.ob-selam-satir { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.85rem; }
+.ob-selam-ad { margin: 0; font-family: var(--display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em; }
+.ob-tarih { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--sicak-metin); white-space: nowrap; }
+.uygulama--koyu-tepe .ob--sicak .ob-mesaj { font-size: 1.125rem; }
+.ob--sicak .kk-yol--durakli { background: rgba(0, 0, 0, 0.07); color: var(--murekkep); }
 .ob-basla, .ob-tamam {
   font: inherit; font-size: var(--punto-mini); font-weight: 700; cursor: pointer;
   padding: 0.45rem 0.95rem; border-radius: 999px; border: 0;
@@ -3511,6 +3548,11 @@ body[data-mod='gece'] .uygulama .kareli,
 /* Başlıkla açılmayan ekranlarda (vekalet şeridi gibi) üst boşluk geri gelir.
    İç içe .panel (koç paneli kendi kabını çiziyor) boşluk almaz. */
 .uygulama--koyu-tepe :is(.panel, .panel > .panel) > :first-child:not(.hero-yuzey):not(.panel):not(.sekme-govde) { margin-top: clamp(1rem, 4vw, 1.75rem); }
+/* Öğrencinin sıcak başlığı da tepeye yapışır ama koyu geçiş yerine amber
+   kâğıt; üstteki koyu şeritle iki tonlu bir tepe olur. */
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob--sicak:first-child {
+  background: var(--sicak-zemin);
+}
 
 /* Ekran başlığı (Bildirimler gibi ikinci seviye ekranlar) */
 .ekran-basi h1 { margin: 0; font-family: var(--display); font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
