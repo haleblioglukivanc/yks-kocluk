@@ -209,33 +209,6 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
       {/* Sınıfın haftalık bakışı panelden buraya indi: KPI + net trendi. */}
       <SinifOzeti />
 
-      {/* Alt çubuktan inen ekranlar. Günlük değil, arada bir kullanılan işler. */}
-      <Kart baslik='Araçlar'>
-        <ul className='liste arac-listesi'>
-          {[
-            ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
-            ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
-          ].map(([yol, ad, not]) => (
-            <li key={yol} className='liste-satir'>
-              <button className='arac-satir' onClick={() => onGit?.(yol)}>
-                <span>
-                  <span className='liste-ad'>{ad}</span>
-                  <span className='liste-alt'>{not}</span>
-                </span>
-                <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
-                     strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
-                  <path d='m9 6 6 6-6 6' />
-                </svg>
-              </button>
-            </li>
-          ))}
-        </ul>
-      </Kart>
-
-      {/* Telefon değişir, hesap kaybolur. Bunlar geliştiriciye sorulacak
-          şeyler değil: koç kendi bağlantısını buradan kurar ve koparır. */}
-      <TelegramBaglanti />
-
       <Kart
         baslik='Raporlar'
         altBaslik='Seçtiğin dönemin toplu görüntüsü'
@@ -421,6 +394,34 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
       {/* Öğrencilere ve velilere o hafta ne gittiğini koçun da görmesi
           gerekiyor; aynı bileşen, aynı veri. */}
       <HaftalikIlham />
+
+      {/* Alt çubuktan inen ekranlar. Günlük değil, arada bir kullanılan işler. */}
+      <Kart baslik='Araçlar'>
+        <ul className='liste arac-listesi'>
+          {[
+            ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
+            ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
+          ].map(([yol, ad, not]) => (
+            <li key={yol} className='liste-satir'>
+              <button className='arac-satir' onClick={() => onGit?.(yol)}>
+                <span>
+                  <span className='liste-ad'>{ad}</span>
+                  <span className='liste-alt'>{not}</span>
+                </span>
+                <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
+                     strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+                  <path d='m9 6 6 6-6 6' />
+                </svg>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </Kart>
+
+      {/* Telefon değişir, hesap kaybolur. Bunlar geliştiriciye sorulacak
+          şeyler değil: koç kendi bağlantısını buradan kurar ve koparır. */}
+      <TelegramBaglanti />
+
     </>
   )
 }

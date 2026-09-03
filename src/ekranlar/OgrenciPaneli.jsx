@@ -12,6 +12,7 @@ import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import { Kart } from '../bilesenler/Ortak.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
+import RaporTepesi from '../bilesenler/RaporTepesi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -243,14 +244,39 @@ function HedefeGoreDurum({ kayit, netDurumu, denemeler }) {
   const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
   const hedefAlt =
     [kayit?.hedef_universite, kayit?.hedef_bolum].filter(Boolean).join(' · ') || undefined
+  /* Göstergede tek sayı: hedefi olan ilk sınav (TYT, yoksa AYT). Hedef
+     yoksa gösterge boş kalır ve tepe bunu söyler; iki sınavın çubukları
+     altta zaten ayrı ayrı duruyor. */
+  const secim =
+    kayit.hedef_tyt_net != null
+      ? { ad: 'TYT', hedef: Number(kayit.hedef_tyt_net), son: netDurumu?.tyt?.son_net }
+      : kayit.hedef_ayt_net != null
+        ? { ad: 'AYT', hedef: Number(kayit.hedef_ayt_net), son: netDurumu?.ayt?.son_net }
+        : null
+  const son = secim?.son != null ? Number(secim.son) : null
+  const yuzde = secim && son != null && secim.hedef > 0 ? Math.round((son / secim.hedef) * 100) : null
+  const kalan = secim && son != null ? secim.hedef - son : null
+
   return (
-    <Kart baslik="Hedefe göre durumum" altBaslik={hedefAlt}>
+    <RaporTepesi
+      baslik="Denemelerim"
+      altBaslik={hedefAlt}
+      yuzde={yuzde}
+      deger={yuzde == null ? '—' : `%${Math.min(100, yuzde)}`}
+      etiket={secim ? `${secim.ad} hedefine göre` : 'Hedefe göre'}
+      detay={
+        !secim
+          ? 'Net hedefin henüz belirlenmemiş; koçunla koyabilirsiniz.'
+          : son == null
+            ? `Hedef ${secim.hedef} net · ilk denemeyle başlar`
+            : kalan > 0
+              ? `Hedefe ${kalan.toFixed(1)} net kaldı`
+              : 'Hedefin üstündesin'
+      }
+      durum={fark == null ? null : fark >= 0 ? 'iyi' : 'dikkat'}
+      durumMetni={fark == null ? null : `Son denemede ${fark >= 0 ? '+' : '−'}${Math.abs(fark).toFixed(1)} net`}
+    >
       <HedefNet tyt={kayit.hedef_tyt_net} ayt={kayit.hedef_ayt_net} durum={netDurumu} />
-      {fark !== null && fark !== 0 && (
-        <p className={`net-fark net-fark--${fark > 0 ? 'artis' : 'dusus'}`}>
-          Son denemede {fark > 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)} net
-        </p>
-      )}
-    </Kart>
+    </RaporTepesi>
   )
 }

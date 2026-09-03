@@ -2200,6 +2200,36 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .ob-tarih { margin: 0; font-size: var(--punto-mini); font-weight: 600; color: var(--sicak-metin); white-space: nowrap; }
 .uygulama--koyu-tepe .ob--sicak .ob-mesaj { font-size: 1.125rem; }
 .ob--sicak .kk-yol--durakli { background: rgba(0, 0, 0, 0.07); color: var(--murekkep); }
+
+/* ── Rapor tepesi: koyu, "bak" ekranı ──
+   Koçun Rapor'u ve öğrencinin Denemeler'i aynı bileşen. */
+.rt-baslik { margin: 0; font-family: var(--display); font-size: 1.45rem; font-weight: 700; letter-spacing: -0.02em; }
+.rt-alt { margin: 0.15rem 0 0; font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.62); }
+.rt-kutu {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  margin-top: 0.9rem; padding: 0.75rem 0.9rem;
+  border-radius: 16px; background: rgba(255, 255, 255, 0.07);
+}
+.rt-metin { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
+.rt-etiket { font-size: var(--punto-kucuk); font-weight: 600; }
+.rt-detay { font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.66); line-height: 1.35; }
+.rt-durum {
+  align-self: flex-start; margin-top: 0.2rem; padding: 0.2rem 0.6rem; border-radius: 999px;
+  font-size: 0.7rem; font-weight: 600; line-height: 1.2;
+}
+.rt-durum--iyi { background: var(--k-yesil); color: #0f2a1c; }
+.rt-durum--dikkat { background: var(--k-amber-zemin); color: var(--k-amber); }
+.rt-gosterge { position: relative; flex: 0 0 auto; width: 120px; height: 66px; }
+.rt-gosterge svg { display: block; }
+.rt-deger {
+  position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
+  font-family: var(--display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums; line-height: 1;
+}
+/* Tepenin içindeki hedef çubukları beyaz yazıyla okunsun */
+.rt .hedef-net { margin-top: 0.9rem; }
+.rt .hedef-cubuk { background: rgba(255, 255, 255, 0.14); }
+.rt .hedef-ad, .rt .hedef-deger, .rt .hedef-eniyi { color: rgba(255, 255, 255, 0.85); }
 .ob-basla, .ob-tamam {
   font: inherit; font-size: var(--punto-mini); font-weight: 700; cursor: pointer;
   padding: 0.45rem 0.95rem; border-radius: 999px; border: 0;

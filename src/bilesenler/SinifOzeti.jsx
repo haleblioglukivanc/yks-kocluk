@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Kart } from './Ortak.jsx'
+import RaporTepesi from './RaporTepesi.jsx'
 
 /**
  * Sınıfın "bak" katmanı: plan tamamlama, aktif öğrenci, net trendi.
@@ -74,25 +75,25 @@ function Ozetler({ ozet }) {
   const tamamlama = ozet.planTamamlama ?? 0
   const net = ozet.sinifNetDegisimi
 
+  /* İki KPI kartı tepeye girdi: gösterge plan tamamlama, altındaki satır
+     aktif öğrenci. Durum rengi eskisi gibi: 60 altı dikkat. */
+  const bugun = new Date()
+  const haftaOnce = new Date(bugun)
+  haftaOnce.setDate(bugun.getDate() - 6)
+  const kisa = (d) => d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+
   return (
     <>
-      {/* Renk bilgi taşıyor: sıcak ton dikkat ister, soğuk ton iyi gidiyor. */}
-      <div className="kpi-satir">
-        <div className={`kpi-kart ${tamamlama >= 60 ? 'kpi-kart--serin' : 'kpi-kart--sicak'}`}>
-          <p className="kpi-etiket">Plan tamamlama</p>
-          <p className="kpi-sayi">%{tamamlama}</p>
-          <p className="kpi-alt">son 7 gün</p>
-        </div>
-        <div className={`kpi-kart ${sessiz ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}>
-          <p className="kpi-etiket">Aktif öğrenci</p>
-          <p className="kpi-sayi">
-            {ozet.aktifOgrenci ?? 0}/{ozet.toplamOgrenci ?? 0}
-          </p>
-          <p className={`kpi-alt ${sessiz ? 'kpi-alt--kotu' : 'kpi-alt--iyi'}`}>
-            {sessiz ? `${sessiz} kişi 3 gündür yok` : 'herkes bu hafta aktif'}
-          </p>
-        </div>
-      </div>
+      <RaporTepesi
+        baslik="Bu hafta"
+        altBaslik={`${kisa(haftaOnce)} – ${kisa(bugun)}`}
+        yuzde={tamamlama}
+        deger={`%${tamamlama}`}
+        etiket="Plan tamamlama"
+        detay={`${ozet.aktifOgrenci ?? 0} / ${ozet.toplamOgrenci ?? 0} öğrenci aktif${sessiz ? ` · ${sessiz} kişi 3 gündür yok` : ''}`}
+        durum={tamamlama >= 60 && !sessiz ? 'iyi' : 'dikkat'}
+        durumMetni={tamamlama >= 60 && !sessiz ? 'Yolunda' : 'Dikkat'}
+      />
 
       <Kart
         baslik="Sınıf ortalaması net"
