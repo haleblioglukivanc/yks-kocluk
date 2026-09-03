@@ -3654,3 +3654,8 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .sirada-satir--dokun:active { background: var(--yuzey-2); }
 .sirada-ad { flex: 1; min-width: 0; font-size: var(--punto-orta); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .sirada-zaman { font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--soluk); }
+
+/* ═══ Veli: koçun notu kaldırılmış kart, sayılar başlıkta ═══ */
+.uygulama .kart--kaldirilmis .veli-yorum { border: 0; background: var(--altin-zemin); margin: 0; padding: 0.9rem 1rem; border-radius: 12px; font-size: var(--punto-govde); line-height: 1.5; }
+.uygulama .kart--kaldirilmis .veli-yorum cite { color: var(--altin-metin); opacity: 1; }
+.veli-deneme { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: 0.9rem 0 0; font-size: var(--punto-orta); }

@@ -322,12 +322,13 @@ export default function App() {
   const basliktaKalemVar =
     (yol === '/' && kocMu) ||
     (profil.rol === 'ogrenci' && ['/', '/ben', '/yol'].includes(yol)) ||
+    (profil.rol === 'veli' && yol === '/') ||
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
   /* Bugün ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
-    (yol === '/' && (kocMu || profil.rol === 'ogrenci')) || Boolean(gozuyleId)
+    (yol === '/' && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) || Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
