@@ -318,17 +318,22 @@ export default function App() {
   /* Öğrencide Bugün ve Ben başlıkta Kâmil taşır; Yol'da harita kendi
      Kâmil'ini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
   const ogrenciYolu = OGRENCI_SEKME[yol]
+  /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
+     Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
+  const TANINAN = ['/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler', '/ben']
+  const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
+
   const yonetimdeMi = profil.rol === 'yonetici' && yol === '/yonetim'
   const basliktaKalemVar =
-    (yol === '/' && kocMu) ||
-    (profil.rol === 'ogrenci' && ['/', '/ben', '/yol'].includes(yol)) ||
-    (profil.rol === 'veli' && yol === '/') ||
+    (anaEkranda && kocMu) ||
+    (profil.rol === 'ogrenci' && (anaEkranda || ['/ben', '/yol'].includes(yol))) ||
+    (profil.rol === 'veli' && anaEkranda) ||
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
   /* Bugün ekranlarında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
-    (yol === '/' && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) || Boolean(gozuyleId)
+    (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) || Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
@@ -452,7 +457,7 @@ export default function App() {
                 yol.startsWith('/gozuyle/')
               : hedef === '/raporlar'
                 ? ['/raporlar', '/konular', '/kaynaklar'].includes(yol)
-                : yol === hedef
+                : hedef === '/' ? anaEkranda : yol === hedef
           return (
             <button
               key={hedef}
