@@ -3589,3 +3589,44 @@ body[data-mod='gece'] .uygulama .kareli,
 .anahtar--acik { background: var(--serin); }
 .anahtar--acik::after { transform: translateX(1.1rem); }
 .hesap-surum { margin: 0.9rem 0 0; text-align: center; font-family: var(--marka-mono); font-size: 0.7rem; color: var(--soluk); }
+
+/* ═══════════════════════════════════════════════════════════════
+   KATMANLA DERİNLİK (toplantı 3)
+   Kenar çizgisi yerine katman: ekranda tek kaldırılmış kâğıt var,
+   o da karar isteyen ana kart. Bilgi gösteren kartlar zemine yakın,
+   düz kartlar doğrudan kâğıda yazılı. Kenar çizgisi yalnız yazı
+   alanlarında kalır.
+   ═══════════════════════════════════════════════════════════════ */
+
+.uygulama .kart {
+  border: 0;
+  box-shadow: 0 0 0 1px rgba(22, 32, 46, 0.05), 0 1px 2px rgba(22, 32, 46, 0.06);
+}
+body[data-mod='gece'] .uygulama .kart { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05); }
+
+.uygulama .kart--duz { background: none; box-shadow: none; padding-inline: 0; }
+.uygulama .kart--duz .kart-basi h2 { font-size: var(--punto-kucuk); color: var(--soluk); }
+.uygulama .kart--duz .kart-alt { display: none; }
+
+/* Ana kart: kaldırılmış kâğıt. Amber zemin gitti; kartı öne çıkaran
+   renk değil, gölge. Düğme zaten mavi. */
+.uygulama .siradaki {
+  background: var(--yuzey);
+  box-shadow: 0 14px 30px -14px rgba(22, 32, 46, 0.35), 0 2px 6px rgba(22, 32, 46, 0.06);
+  padding: 1.25rem;
+}
+body[data-mod='gece'] .uygulama .siradaki { box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06); }
+.uygulama .siradaki-etiket { color: var(--soluk); letter-spacing: 0; text-transform: none; font-size: var(--punto-mini); font-weight: 600; }
+
+/* Kâmil'in cümlesi selam olmadan tek başına: biraz daha büyük */
+.uygulama--koyu-tepe .ob-mesaj { font-size: 1.3rem; line-height: 1.25; margin-top: 0.15rem; }
+
+/* Hafta şeridi: düz zeminde, seçili gün beyaz bir fişle yükselir */
+.uygulama .hafta-gun { border-color: transparent; }
+.uygulama .hafta-gun--bugun { background: var(--yuzey); box-shadow: 0 1px 3px rgba(22, 32, 46, 0.12); }
+.uygulama .hafta-gun--secili { background: var(--yuzey); box-shadow: 0 2px 6px rgba(22, 32, 46, 0.16); border-color: var(--serin); }
+.hafta-ipucu { margin: 0.6rem 0 0; text-align: center; font-size: var(--punto-mini); color: var(--soluk); }
+
+/* Günü tamamla: kesikli kenar yerine sessiz, düz bir şerit */
+.uygulama .gunu-kapat-dugme { border: 0; background: var(--yuzey-2); }
+.uygulama .gunu-kapat-dugme--kapali { background: var(--isaret-zemin); }

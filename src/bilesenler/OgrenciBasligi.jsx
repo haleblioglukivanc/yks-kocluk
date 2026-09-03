@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
-import { bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
+import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
 
 /**
  * Öğrenci panelinin başlığı.
@@ -26,13 +26,6 @@ const TUR_ADI = {
   deneme: 'Deneme',
   okuma: 'Okuma',
   diger: 'Çalışma',
-}
-
-function selamlama(saat) {
-  if (saat < 6) return 'İyi geceler'
-  if (saat < 12) return 'Günaydın'
-  if (saat < 18) return 'İyi günler'
-  return 'İyi akşamlar'
 }
 
 /** Bugünün ilk bitmemiş görevi. Sıra zaten durum + id'ye göre geliyor. */
@@ -118,9 +111,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const varsayilan = varsayilanSoz(ozet, saat)
   const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilan
 
-  const ad = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const gecikmis = ozet?.gecikmisGorev ?? 0
-  const is = siradakiIs(ozet)
 
   function kapat() {
     if (!vekaleten) kalemiKapat(olay)
@@ -137,31 +128,14 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         </div>
 
         <div className="ob-soz">
-          <p className="ob-selam">
-            {selamlama(saat)}
-            {ad ? `, ${ad}` : ''}
-          </p>
           <p className="ob-mesaj" role="status" aria-live="polite">
             {soz.mesaj}
           </p>
 
-          {/* Kâmil'in kendi eylemi varsa genel Başla gizlenir: mesaj "Sözcükte
-              Anlam'a bakalım" derken düğmenin Tarih görevini açması çelişkiydi.
-              Eylem yoksa Başla sıradaki görevin sayacını açar; sekme değiştirmek
-              Bugün'deyken hiçbir şey yapmıyordu. */}
+          {/* Genel Başla düğmesi kalktı: sıradaki iş hemen alttaki kartta ve
+              düğmesi orada. Ekranda tek birincil düğme olur. Kâmil'in
+              kural motorundan gelen kendi eylemi varsa o burada kalır. */}
           <div className="ob-dugmeler">
-            {is && !olay?.eylem?.sekme && !sayacDurumu && (
-              <button
-                className="ob-basla"
-                disabled={vekaleten}
-                onClick={() => {
-                  sayac?.basla(varsayilanDk(is.tur), is.id)
-                  onSekme?.('bugun')
-                }}
-              >
-                Başla
-              </button>
-            )}
             {olay?.eylem?.sekme && onSekme && (
               <button
                 className="ob-basla"

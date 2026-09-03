@@ -38,7 +38,10 @@ function duzlestir(g) {
 
 export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler, onDegisti, saltOkunur = false }) {
   const [kaydirma, setKaydirma] = useState(0) // 0 bu hafta, 1 sonraki
-  const [secili, setSecili] = useState(bugun)
+  /* Açılışta kapalı: şerit yalnız yedi gün ve noktalar. Bir güne dokununca
+     o günün listesi altından açılır; aynı güne tekrar dokununca kapanır.
+     Ekran ilk açıldığında bir cümle, bir kart, bir düğme görünsün diye. */
+  const [secili, setSecili] = useState(null)
   const [hafta, setHafta] = useState([])
   const [hata, setHata] = useState('')
 
@@ -100,6 +103,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
   return (
     <>
       <Kart
+        duz
         baslik={kaydirma ? 'Sonraki hafta' : 'Bu hafta'}
         altBaslik={haftaToplam ? `${haftaToplam} blok · ${haftaBiten} bitti` : 'Plan yok'}
         eylem={
@@ -120,7 +124,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
                 role="tab"
                 aria-selected={t === secili}
                 className={`hafta-gun${t === secili ? ' hafta-gun--secili' : ''}${bugunMu ? ' hafta-gun--bugun' : ''}${gecmis ? ' hafta-gun--gecmis' : ''}`}
-                onClick={() => setSecili(t)}
+                onClick={() => setSecili((s) => (s === t ? null : t))}
               >
                 <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
                 <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
@@ -139,6 +143,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
             )
           })}
         </div>
+        {!secili && <p className="hafta-ipucu">Bir güne dokun, planı açılsın</p>}
       </Kart>
 
       {secili && (

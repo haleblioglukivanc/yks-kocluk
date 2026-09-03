@@ -14,13 +14,6 @@ import { maskotuDevral } from '../lib/maskotNobeti.js'
  * alsaydık hangisinin dikkat istediği anlaşılmazdı.
  */
 
-function selamlama(saat) {
-  if (saat < 6) return 'İyi geceler'
-  if (saat < 12) return 'Günaydın'
-  if (saat < 18) return 'İyi günler'
-  return 'İyi akşamlar'
-}
-
 /* Kâmil'in kural motorundan gelen sözü yoksa günün manşetini kendimiz
    kuruyoruz. Sıra önemli: önce dikkat isteyen şey, sonra iyi haber. */
 function varsayilanSoz(ozet) {
@@ -83,9 +76,7 @@ export default function KocBasligi({ profil, ozet, onGit }) {
   // Kâmil başlıkta: köşedeki kopya kenara çekilsin.
   useEffect(() => maskotuDevral(), [])
 
-  const saat = new Date().getHours()
   const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilanSoz(ozet)
-  const ad = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
 
   function kapat() {
     kalemiKapat(olay)
@@ -100,10 +91,6 @@ export default function KocBasligi({ profil, ozet, onGit }) {
         </div>
 
         <div className="ob-soz">
-          <p className="ob-selam">
-            {selamlama(saat)}
-            {ad ? `, ${ad}` : ''}
-          </p>
           <p className="ob-mesaj" role="status" aria-live="polite">
             {soz.mesaj}
           </p>

@@ -1,7 +1,9 @@
 import { createPortal } from 'react-dom'
-export function Kart({ baslik, altBaslik, children, eylem }) {
+/* `duz`: kenarı ve zemini olmayan, kâğıda doğrudan yazılmış kart.
+   Bilgi gösteren yardımcı bloklar için; karar isteyen kartlar kaldırılmış kalır. */
+export function Kart({ baslik, altBaslik, children, eylem, duz = false }) {
   return (
-    <section className="kart">
+    <section className={duz ? "kart kart--duz" : "kart"}>
       {(baslik || eylem) && (
         <header className="kart-basi">
           <div>
