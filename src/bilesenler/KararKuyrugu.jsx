@@ -10,6 +10,8 @@ import BugunCalisanlar from './BugunCalisanlar.jsx'
    VeliOzetKuyrugu) bunun yerini alır. Kural: öneri hazır gelir, koç onaylar;
    öğrenciye giden metin karttan görünmeden hiçbir şey gönderilmez. */
 
+const SEBEP = { bilgi: 'bilgi eksiği', dikkat: 'dikkat', sure: 'süre' }
+
 const TIP_ETIKET = {
   risk: 'Kaybolan öğrenci',
   konu: 'Konu onayı',
@@ -118,6 +120,14 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
   const [bekliyor, setBekliyor] = useState(false)
   const a = kart.aksiyonlar ?? {}
 
+  /* Deneme analizi kartında hata dağılımı ve önerilen görevler de var:
+     koç kutucuklardan seçer, onay bu görevleri atar. */
+  const oneriler = kart.ek?.oneriler ?? []
+  const dagilim = kart.ek?.dagilim ?? null
+  const [secili, setSecili] = useState(() =>
+    oneriler.map((o, i) => (o.secili ? i : -1)).filter((i) => i >= 0),
+  )
+
   async function karar(k) {
     setBekliyor(true)
     onHata('')
@@ -126,6 +136,7 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
       p_kaynak_id: kart.kaynak_id,
       p_karar: k,
       p_metin: kart.deger ?? (kart.mesaj != null ? metin : null),
+      p_secili: k === 'onay' ? secili : [],
     })
     setBekliyor(false)
     if (error) {
@@ -168,6 +179,46 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
 
       {kart.mesaj != null && !duzenle ? <p className="kuyruk-mesaj">{metin}</p> : null}
 
+      {dagilim ? (
+        <div className="analiz-dagilim" aria-label="Hata dağılımı">
+          {['bilgi', 'dikkat', 'sure'].map((k) => (
+            <span key={k} className={`analiz-dilim analiz-dilim--${k}`}>
+              <strong>{dagilim[k] ?? 0}</strong>
+              {SEBEP[k]}
+            </span>
+          ))}
+        </div>
+      ) : null}
+
+      {oneriler.length > 0 ? (
+        <>
+          <p className="analiz-oneri-baslik">Önerilen görevler — seç ve ata</p>
+          <ul className="analiz-oneriler">
+            {oneriler.map((o, i) => (
+              <li key={i}>
+                <label className="analiz-oneri">
+                  <input
+                    type="checkbox"
+                    checked={secili.includes(i)}
+                    onChange={() =>
+                      setSecili((v) => (v.includes(i) ? v.filter((x) => x !== i) : [...v, i]))
+                    }
+                  />
+                  <span className="analiz-oneri-metin">
+                    {o.baslik}
+                    <small>
+                      {o.ders} · {o.adet} yanlış · {SEBEP[o.sebep]}
+                      {o.kaynak_ad ? ` · ${o.kaynak_ad}` : ''}
+                    </small>
+                  </span>
+                  <span className="analiz-dk">{o.dk} dk</span>
+                </label>
+              </li>
+            ))}
+          </ul>
+        </>
+      ) : null}
+
       {kart.mesaj != null && duzenle ? (
         <textarea
           className="kuyruk-alan"
@@ -180,7 +231,9 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
 
       <div className="kuyruk-dugmeler">
         <Dugme bekliyor={bekliyor} onClick={() => karar('onay')}>
-          {a.onay ?? 'Onayla'}
+          {oneriler.length > 0
+            ? `Onayla · ${secili.length} görev ata`
+            : (a.onay ?? 'Onayla')}
         </Dugme>
         <div className="kuyruk-alt-dugmeler">
           {a.orta && !duzenle ? (
@@ -191,6 +244,11 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
           <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => karar('ertele')}>
             {a.ertele ?? 'Ertele'}
           </button>
+          {a.sil ? (
+            <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => karar('sil')}>
+              {a.sil}
+            </button>
+          ) : null}
         </div>
       </div>
     </Kart>
