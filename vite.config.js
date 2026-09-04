@@ -53,6 +53,8 @@ export default defineConfig({
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,
+        // Anlık bildirim dinleyicileri (public/push-sw.js)
+        importScripts: ['push-sw.js'],
       },
     }),
   ],

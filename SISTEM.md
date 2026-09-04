@@ -121,3 +121,9 @@ yoktur, aramaya gerek yok. Bir push'un yayına çıkıp çıkmadığını commit
 Değişikliği göremiyorsan önce service worker önbelleğini temizle:
 adresin sonuna `?sifirla=1` ekle. Üst bardaki sürüm damgası derleme
 saatini verir; beklediğin saatse yeni sürüm sendedir.
+
+## Anlık bildirim
+Web push; mağaza gerekmez. Ayrıntı: `supabase/functions/bildirim-gonder/README.md`.
+Kuyruk deseni mail ile aynı: tablo → cron dürtmesi → edge function → `sistem_gunlugu`.
+Kural: cron "başarılı" demesi işin yapıldığını göstermez; kuyruğun boşalıp boşalmadığına
+bakılır (`bildirim_gondericiyi_durt` 1 saatten eski bekleyen görürse günlüğe yazar).

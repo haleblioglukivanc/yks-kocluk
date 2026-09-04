@@ -1,4 +1,5 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
+import { aboneMi, aboneOl, abonelikIptal, kurulumGerekli } from '../lib/bildirim.js'
 import { Avatar } from './Fotograf.jsx'
 
 /**
@@ -44,6 +45,31 @@ export default function HesapYapragi({
   if (!acik) return null
   const yonetici = profil?.rol === 'yonetici'
 
+  const [bildirim, setBildirim] = useState(null)   // null: bilinmiyor
+  const [bildirimNotu, setBildirimNotu] = useState(null)
+  useEffect(() => {
+    if (!acik) return
+    let iptal = false
+    aboneMi().then((v) => { if (!iptal) setBildirim(v) })
+    return () => { iptal = true }
+  }, [acik])
+
+  async function bildirimDegistir() {
+    setBildirimNotu(null)
+    if (bildirim) {
+      await abonelikIptal()
+      setBildirim(false)
+      return
+    }
+    if (kurulumGerekli()) {
+      setBildirimNotu('iPhone\'da önce paylaş düğmesinden "Ana Ekrana Ekle" de, sonra buradan aç.')
+      return
+    }
+    const h = await aboneOl(profil.id)
+    if (h) { setBildirimNotu(h); return }
+    setBildirim(true)
+  }
+
   return (
     <div className="yaprak-arka" onClick={onKapat}>
       <div
@@ -86,6 +112,11 @@ export default function HesapYapragi({
             <svg {...ikon}><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
             <span>Gece görünümü</span>
             <i className={mod === 'gece' ? 'anahtar anahtar--acik' : 'anahtar'} aria-hidden="true" />
+          </button>
+          <button type="button" className="hesap-satir" onClick={bildirimDegistir} role="switch" aria-checked={Boolean(bildirim)}>
+            <svg {...ikon}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10 21h4" /></svg>
+            <span>Bildirimler{bildirimNotu ? <small className="hesap-not">{bildirimNotu}</small> : null}</span>
+            <i className={bildirim ? 'anahtar anahtar--acik' : 'anahtar'} aria-hidden="true" />
           </button>
           <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/mesajlar') }}>
             <svg {...ikon}><path d="M4 5h16v11H9l-5 4z" /></svg>

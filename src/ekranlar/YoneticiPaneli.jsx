@@ -235,6 +235,20 @@ function Sistem({ s }) {
   const mail = mailDurumu(s)
   const gunluk = s.gunluk ?? []
   const hata24s = Number(s.gunluk_hata_24s ?? 0)
+  /* Kimde bildirim açık: rol bazlı sayım. Kıvanç öğrenciyi kaydederken
+     izni verdirdi mi, buradan görür. */
+  const [bildirim, setBildirim] = useState(null)
+  useEffect(() => {
+    let iptal = false
+    supabase.rpc('bildirim_durumu').then(({ data }) => { if (!iptal) setBildirim(data ?? []) })
+    return () => { iptal = true }
+  }, [])
+  const ROL = { ogrenci: 'öğrenci', veli: 'veli', koc: 'koç', yonetici: 'yönetici' }
+  const bildirimOzet = (bildirim ?? [])
+    .filter((b) => b.rol !== 'yonetici')
+    .map((b) => `${b.acik}/${b.toplam} ${ROL[b.rol] ?? b.rol}`)
+    .join(' · ')
+  const bildirimAcik = (bildirim ?? []).reduce((t, b) => t + Number(b.acik), 0)
 
   return (
     <Kart baslik="Sistem" altBaslik="Arka planda çalışanlar">
@@ -277,6 +291,13 @@ function Sistem({ s }) {
           <Rozet ton="iyi">normal</Rozet>
         </li>
 
+        <li className="liste-satir">
+          <div>
+            <span className="liste-ad">Anlık bildirim</span>
+            <span className="liste-alt">{bildirim === null ? 'sayılıyor…' : bildirimOzet || 'kayıt yok'}</span>
+          </div>
+          <Rozet ton={bildirimAcik > 0 ? 'iyi' : 'notr'}>{bildirimAcik > 0 ? `${bildirimAcik} cihaz` : 'kimse açmadı'}</Rozet>
+        </li>
         <li className="liste-satir">
           <div>
             <span className="liste-ad">Arka plan hataları</span>
