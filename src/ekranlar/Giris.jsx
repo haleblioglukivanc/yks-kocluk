@@ -30,6 +30,12 @@ export default function Giris({ onGeri }) {
 
   return (
     <div className="giris-sayfa giris-kagit">
+      <div className="giris-zemin" aria-hidden="true" />
+      <div className="giris-ust">
+        <span className="giris-marka">Kıvanç Haleblioğlu</span>
+        <span className="giris-marka-alt">YKS · LGS koçu</span>
+      </div>
+      <p className="giris-etiket"><i />Öğrenci · veli · koç girişi</p>
       <div className="giris-kutu">
         <header className="giris-basi">
           <h1>Giriş</h1>
@@ -68,12 +74,13 @@ export default function Giris({ onGeri }) {
           danışın.
         </p>
 
-        {onGeri && (
-          <button className="metin-dugme" onClick={onGeri}>
-            Ana sayfaya dön
-          </button>
-        )}
       </div>
+
+      {onGeri && (
+        <button className="metin-dugme giris-geri" onClick={onGeri}>
+          ← Ana sayfaya dön
+        </button>
+      )}
     </div>
   )
 }
