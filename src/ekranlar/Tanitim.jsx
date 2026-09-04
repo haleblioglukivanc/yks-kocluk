@@ -207,8 +207,21 @@ export default function Tanitim({ onGiris }) {
             <p className="t-kahraman-alt">{koc.altVaat}</p>
             <div className="t-kahraman-eylem">
               <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--buyuk">Tanışma görüşmesi ayarla</a>
-              <a href="#hafta" className="t-bag-altcizgi">Örnek haftayı oku ↓</a>
             </div>
+            <a href="#hafta" className="t-hafta-onizleme" aria-label="Örnek haftayı oku">
+              <span className="t-mini-hafta" aria-hidden="true">
+                {gunler.map((g) => (
+                  <span key={g.ad}>
+                    <b>{g.kisa}</b>
+                    {g.gorevler.filter((t) => t.durum !== 'bos').map((t, i) => <u key={i} className={'t-mini-' + t.durum} />)}
+                  </span>
+                ))}
+              </span>
+              <span className="t-hafta-onizleme-metin">
+                <small>Bir öğrencimin haftası</small>
+                <strong>Örnek haftayı oku</strong>
+              </span>
+            </a>
           </div>
           <div className="t-sayilar">
             {sayilar.map((s) => (

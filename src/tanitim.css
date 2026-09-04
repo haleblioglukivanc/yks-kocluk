@@ -69,8 +69,19 @@
 .t-kahraman-vaat { margin: 26px 0 0; font-size: clamp(18px, 1.6cqw, 22px); font-weight: 700; line-height: 1.35; }
 .t-kahraman-alt { margin: 12px 0 0; max-width: 44ch; font-size: clamp(16px, 1.3cqw, 18px); line-height: 1.6; color: var(--t-acik-mavi); text-wrap: pretty; }
 .t-kahraman-eylem { display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; margin-top: 32px; }
-.t-bag-altcizgi { color: #fff; font-size: var(--punto-orta); text-decoration: underline; text-underline-offset: 5px; text-decoration-color: var(--t-turuncu-a); text-decoration-thickness: 2px; white-space: nowrap; }
-.t-bag-altcizgi:hover { color: var(--t-turuncu-a); }
+.t-hafta-onizleme { display: inline-flex; align-items: center; gap: 14px; margin-top: 16px; padding: 12px 14px; border-radius: 14px; background: rgb(255 255 255 / 0.07); border: 1px solid rgb(255 255 255 / 0.14); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); color: #fff; text-decoration: none; transition: background .15s, border-color .15s, transform .15s; }
+.t-hafta-onizleme:hover { background: rgb(255 255 255 / 0.11); border-color: rgb(255 255 255 / 0.28); color: #fff; transform: translateY(-1px); }
+.t-mini-hafta { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; flex: none; }
+.t-mini-hafta > span { display: grid; gap: 2px; justify-items: center; align-content: start; }
+.t-mini-hafta b { font-family: var(--marka-mono); font-weight: 400; font-size: 8px; letter-spacing: .06em; color: var(--t-acik-mavi, #c9d6ff); margin-bottom: 3px; }
+.t-mini-hafta u { display: block; width: 10px; height: 10px; border-radius: 2px; box-sizing: border-box; }
+.t-mini-bitti { background: var(--t-turuncu); }
+.t-mini-tasindi { background: #ffd9c2; }
+.t-mini-kaldi { border: 1.5px solid var(--t-mercan); }
+.t-hafta-onizleme-metin { display: grid; gap: 3px; }
+.t-hafta-onizleme-metin small { font-family: var(--marka-mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: var(--t-turuncu-a); }
+.t-hafta-onizleme-metin strong { font-size: var(--punto-orta); font-weight: 700; }
+.t-hafta-onizleme-metin strong::after { content: " →"; color: var(--t-turuncu-a); }
 .t-sayilar { display: flex; flex-wrap: wrap; gap: 24px clamp(32px, 5cqw, 80px); justify-content: flex-end; align-self: flex-end; }
 .t-sayi { display: grid; gap: 4px; text-align: center; }
 .t-sayi-deger { font-family: var(--marka-baslik); font-weight: 700; font-size: clamp(40px, 4.4cqw, 64px); line-height: 1; letter-spacing: -.03em; }
