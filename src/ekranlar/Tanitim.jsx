@@ -1,819 +1,304 @@
 import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
-import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
+import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.js'
 import '../tanitim.css'
 
-/* ═══════════════════════════════════════════════════════════════
-   Yardımcılar
-   ═══════════════════════════════════════════════════════════════ */
+/* Koç videosu: public/video/koc.mp4 (10–20 sn, sessiz, döngü).
+   Dosya yoksa lacivert zemin ve yer tutucu görünür; sayfa bozulmaz. */
+const VIDEO = '/video/koc.mp4'
 
-/** Az hareket tercihi açık mı? Tüm animasyonlar buna saygı duyar. */
-function azHareketMi() {
-  return typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches
-}
-
-/** Öğe ekrana girdiğinde bir kez true olur. */
-function useGorunur(esik = 0.15) {
+function KocVideosu() {
+  const [var_, setVar] = useState(false)
   const ref = useRef(null)
-  const [gorundu, setGorundu] = useState(false)
-
   useEffect(() => {
-    if (azHareketMi()) { setGorundu(true); return }
-    const g = new IntersectionObserver(
-      ([giris]) => { if (giris.isIntersecting) { setGorundu(true); g.disconnect() } },
-      { threshold: esik, rootMargin: '0px 0px -8% 0px' },
-    )
-    if (ref.current) g.observe(ref.current)
-    return () => g.disconnect()
-  }, [esik])
-
-  return [ref, gorundu]
-}
-
-/** Kaydırınca aşağıdan beliren sarmalayıcı. */
-function Belir({ children, gecikme = 0, className = '', ...kalan }) {
-  const [ref, gorundu] = useGorunur()
-  return (
-    <div
-      ref={ref}
-      className={`t-belir ${gorundu ? 't-belir--acik' : ''} ${className}`}
-      style={{ transitionDelay: `${gecikme}ms` }}
-      {...kalan}
-    >
-      {children}
-    </div>
-  )
-}
-
-/** "3.450" gibi bir sayıyı görünür olunca sayarak yazar. */
-function SayanSayi({ metin }) {
-  const [ref, gorundu] = useGorunur(0.4)
-  const [deger, setDeger] = useState(metin)
-
-  useEffect(() => {
-    if (!gorundu) return
-    const hedef = Number(metin.replace(/\./g, '').replace(',', '.'))
-    if (!Number.isFinite(hedef) || azHareketMi()) { setDeger(metin); return }
-
-    const sure = 1100
-    const bas = performance.now()
-    let kare
-
-    const adim = (simdi) => {
-      const o = Math.min(1, (simdi - bas) / sure)
-      const yumusak = 1 - Math.pow(1 - o, 3)
-      setDeger(Math.round(hedef * yumusak).toLocaleString('tr-TR'))
-      if (o < 1) kare = requestAnimationFrame(adim)
-      else setDeger(metin)
-    }
-    kare = requestAnimationFrame(adim)
-    return () => cancelAnimationFrame(kare)
-  }, [gorundu, metin])
-
-  return <span ref={ref}>{deger}</span>
-}
-
-/** {kelime} işaretli kısmı fosforlu vurguya çevirir. */
-function Vurgulu({ metin }) {
-  return metin.split(/(\{[^}]+\})/g).map((p, i) =>
-    p.startsWith('{')
-      ? <span key={i} className="t-vurgu">{p.slice(1, -1)}</span>
-      : <span key={i}>{p}</span>,
-  )
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Telefon maketi ve içindeki ekranlar
-   ═══════════════════════════════════════════════════════════════ */
-
-function Telefon({ baslik, tarih, egik = false, children }) {
-  return (
-    <div className={`t-telefon ${egik ? 't-telefon--egik' : ''}`} aria-hidden="true">
-      <div className="t-telefon-ekran">
-        <div className="t-telefon-cizgi" />
-        <div className="t-ekran-basi">
-          <h3>{baslik}</h3>
-          <span className="t-ekran-tarih">{tarih}</span>
-        </div>
-        {children}
-      </div>
-    </div>
-  )
-}
-
-function EkranGorev({ gorevler }) {
-  const bitti = gorevler.filter((g) => g.bitti).length
-  return (
-    <>
-      <ul className="t-gorevler">
-        {gorevler.map((g, i) => (
-          <li
-            key={g.ad}
-            className={`t-gorev ${g.bitti ? 't-gorev--bitti' : ''}`}
-            style={{ animationDelay: `${i * 90}ms` }}
-          >
-            <span className="t-kutu" />
-            <span className="t-gorev-ad">{g.ad}</span>
-            <span className="t-gorev-adet">{g.adet}</span>
-          </li>
-        ))}
-      </ul>
-      <div className="t-ekran-alt">
-        <span>Bugünün planı</span>
-        <span><b>{bitti}/{gorevler.length}</b> tamam</span>
-      </div>
-    </>
-  )
-}
-
-function EkranIlerleme({ ilerlemeler }) {
-  return (
-    <>
-      <ul className="t-ilerlemeler">
-        {ilerlemeler.map((d, i) => (
-          <li key={d.ad}>
-            <div className="t-ilerleme-ust">
-              <span>{d.ad}</span>
-              <em>{d.not}</em>
-            </div>
-            <div className="t-ray">
-              <i style={{ '--oran': `${d.oran}%`, animationDelay: `${i * 120}ms` }} />
-            </div>
-          </li>
-        ))}
-      </ul>
-      <div className="t-ekran-alt">
-        <span>Bitirilen konu</span>
-        <span><b>83</b> / 130</span>
-      </div>
-    </>
-  )
-}
-
-function EkranNet({ netler }) {
-  const G = 280, Y = 150
-  const bos = { sol: 22, sag: 16, ust: 18, alt: 26 }
-  const enAz = Math.min(...netler.map((d) => d.net)) - 8
-  const enCok = Math.max(...netler.map((d) => d.net)) + 6
-
-  const x = (i) => bos.sol + (i * (G - bos.sol - bos.sag)) / (netler.length - 1)
-  const y = (n) => bos.ust + ((enCok - n) * (Y - bos.ust - bos.alt)) / (enCok - enAz)
-
-  const yol = netler.map((d, i) => `${x(i)},${y(d.net)}`).join(' ')
-  const alan = `${bos.sol},${Y - bos.alt} ${yol} ${x(netler.length - 1)},${Y - bos.alt}`
-  const son = netler[netler.length - 1]
-
-  return (
-    <>
-      <div className="t-mini-grafik">
-        <svg viewBox={`0 0 ${G} ${Y}`}>
-          <defs>
-            <linearGradient id="tGrad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#5b8cff" stopOpacity="0.28" />
-              <stop offset="100%" stopColor="#5b8cff" stopOpacity="0" />
-            </linearGradient>
-          </defs>
-
-          {[0, 0.5, 1].map((o) => {
-            const cy = bos.ust + o * (Y - bos.ust - bos.alt)
-            return (
-              <g key={o}>
-                <line x1={bos.sol} y1={cy} x2={G - bos.sag} y2={cy} className="t-mg-eksen" />
-                <text x={0} y={cy + 3} className="t-mg-yazi">
-                  {Math.round(enAz + (enCok - enAz) * (1 - o))}
-                </text>
-              </g>
-            )
-          })}
-
-          <polygon points={alan} className="t-mg-alan" />
-          <polyline points={yol} className="t-mg-cizgi" />
-
-          {netler.map((d, i) => (
-            <g key={d.ay}>
-              <circle
-                cx={x(i)} cy={y(d.net)} r={i === netler.length - 1 ? 4 : 2.75}
-                className={`t-mg-nokta ${i === netler.length - 1 ? 't-mg-nokta--son' : ''}`}
-              />
-              <text x={x(i)} y={Y - 8} className="t-mg-yazi" textAnchor="middle">{d.ay}</text>
-            </g>
-          ))}
-
-          <text x={x(netler.length - 1)} y={y(son.net) - 11} className="t-mg-deger">{son.net}</text>
-        </svg>
-      </div>
-      <div className="t-ekran-alt">
-        <span>Nisan → Eylül</span>
-        <span><b>+{son.net - netler[0].net}</b> net</span>
-      </div>
-    </>
-  )
-}
-
-function EkranVeli({ veli }) {
-  return (
-    <>
-      <div className="t-ozet-kart">
-        {veli.satirlar.map((s) => (
-          <div key={s.ad} className="t-ozet-satir">
-            <span>{s.ad}</span>
-            <b>{s.deger}</b>
-          </div>
-        ))}
-      </div>
-      <p className="t-ozet-not">{veli.not}</p>
-      <div className="t-ekran-alt">
-        <span>Veli erişimi</span>
-        <span><b>Sadece görüntüleme</b></span>
-      </div>
-    </>
-  )
-}
-
-/** Sekme anahtarına göre doğru ekranı basar. */
-function Ekran({ anahtar, maket }) {
-  if (anahtar === 'ilerleme') return <EkranIlerleme ilerlemeler={maket.ilerlemeler} />
-  if (anahtar === 'net') return <EkranNet netler={maket.netler} />
-  if (anahtar === 'veli') return <EkranVeli veli={maket.veli} />
-  return <EkranGorev gorevler={maket.gorevler} />
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   Bölümler
-   ═══════════════════════════════════════════════════════════════ */
-
-function Ustluk({ ad, onGiris }) {
-  const [yapisik, setYapisik] = useState(false)
-  const [acik, setAcik] = useState(false)
-
-  useEffect(() => {
-    const bak = () => setYapisik(window.scrollY > 12)
-    bak()
-    window.addEventListener('scroll', bak, { passive: true })
-    return () => window.removeEventListener('scroll', bak)
+    const v = ref.current
+    if (!v) return
+    const ac = () => { setVar(true); v.play?.().catch(() => {}) }
+    v.addEventListener('loadeddata', ac)
+    return () => v.removeEventListener('loadeddata', ac)
   }, [])
-
-  const basHarf = ad.split(' ').map((k) => k[0]).join('').slice(0, 2)
-  const baglar = [
-    ['#sistem', 'Sistem'],
-    ['#nasil', 'Süreç'],
-    ['#videolar', 'Videolar'],
-    ['#seminerler', 'Seminerler'],
-    ['#belgeler', 'Belgeler'],
-    ['#sorular', 'Sorular'],
-  ]
-
   return (
-    <header className={`t-ust ${yapisik ? 't-ust--yapisik' : ''}`}>
-      <div className="t-kap">
-        <div className="t-ust-ic">
-          <a className="t-marka" href="#tepe">
-            <span className="t-marka-im" aria-hidden="true">{basHarf}</span>
-            <span>
-              <span className="t-marka-ad">{ad}</span>
-              <span className="t-marka-alt">YKS ve LGS koçluğu</span>
-            </span>
-          </a>
-
-          <nav className="t-nav">
-            {baglar.map(([adres, metin]) => <a key={adres} href={adres}>{metin}</a>)}
-            <button className="t-dugme t-dugme--cizgi t-dugme--kucuk" onClick={onGiris}>Giriş yap</button>
-            <a className="t-dugme t-dugme--ana t-dugme--kucuk" href="#iletisim">Ücretsiz tanışma</a>
-          </nav>
-
-          <button
-            className="t-menu-dugme"
-            aria-expanded={acik}
-            aria-label={acik ? 'Menüyü kapat' : 'Menüyü aç'}
-            onClick={() => setAcik((a) => !a)}
-          >
-            <span /><span /><span />
-          </button>
-        </div>
-
-        {acik && (
-          <nav className="t-cep-menu">
-            {baglar.map(([adres, metin]) => (
-              <a key={adres} href={adres} onClick={() => setAcik(false)}>{metin}</a>
-            ))}
-            <a href="#iletisim" onClick={() => setAcik(false)}>İletişim</a>
-            <button onClick={() => { setAcik(false); onGiris() }}>Giriş yap</button>
-          </nav>
-        )}
-      </div>
-    </header>
+    <>
+      <video ref={ref} src={VIDEO} className="t-video" autoPlay muted loop playsInline aria-hidden="true" />
+      {!var_ && (
+        <>
+          <div className="t-video-zemin" aria-hidden="true" />
+          <div className="t-video-not" aria-hidden="true">▶ Koç videosu buraya: public/video/koc.mp4</div>
+        </>
+      )}
+      <div className="t-perde" aria-hidden="true" />
+    </>
   )
 }
 
-function VideoKart({ video }) {
-  return (
-    <article className="t-video">
-      <div className="t-video-cerceve">
-        {video.youtube ? (
-          <iframe
-            src={`https://www.youtube-nocookie.com/embed/${video.youtube}`}
-            title={video.baslik}
-            loading="lazy"
-            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        ) : video.kapak ? (
-          <div className="t-video-kapak">
-            <img src={video.kapak} alt="" loading="lazy" />
-            <span className="t-oynat" aria-hidden="true" />
-          </div>
-        ) : (
-          <div className="t-video-bos">
-            <span className="t-oynat" aria-hidden="true" />
-            <span>Video henüz eklenmedi</span>
-          </div>
-        )}
-        <span className="t-sure">{video.sure}</span>
-      </div>
-      <div className="t-video-govde">
-        <span className="t-video-tur">{video.tur}</span>
-        <h3>{video.baslik}</h3>
-        <p>{video.ozet}</p>
-        <div className="t-video-ayak">{video.tarih}</div>
-      </div>
-    </article>
-  )
-}
-
-function SeminerKart({ seminer }) {
-  return (
-    <article className="t-seminer">
-      <div className="t-seminer-gorsel">
-        {seminer.gorsel
-          ? <img src={seminer.gorsel} alt={seminer.baslik} loading="lazy" />
-          : <span className="t-seminer-bos">Görsel henüz eklenmedi</span>}
-      </div>
-      <div className="t-seminer-govde">
-        <h3>{seminer.baslik}</h3>
-        <p className="t-seminer-yer">{seminer.yer}</p>
-        <div className="t-seminer-bilgi">
-          {seminer.etiketler.map((e) => <span className="t-cip" key={e}>{e}</span>)}
-        </div>
-      </div>
-    </article>
-  )
-}
-
-function YorumDongusu({ liste }) {
-  const [i, setI] = useState(0)
-  const [durdu, setDurdu] = useState(false)
-
-  useEffect(() => {
-    if (durdu || liste.length < 2 || azHareketMi()) return
-    const z = setInterval(() => setI((v) => (v + 1) % liste.length), 6500)
-    return () => clearInterval(z)
-  }, [durdu, liste.length])
-
-  const y = liste[i]
-  const basHarf = y.kisi.replace(/[^A-ZÇĞİÖŞÜ]/g, '').slice(0, 2)
-
-  return (
-    <div
-      className="t-dongu"
-      onMouseEnter={() => setDurdu(true)}
-      onMouseLeave={() => setDurdu(false)}
-    >
-      <blockquote key={i} className="t-dongu-yorum">
-        <p>{y.metin}</p>
-        <footer>
-          <span className="t-yorum-im" aria-hidden="true">{basHarf}</span>
-          <span>
-            <span className="t-yorum-kisi">{y.kisi}</span>
-            <span className="t-yorum-rol">{y.rol}</span>
-          </span>
-        </footer>
-      </blockquote>
-
-      <div className="t-dongu-kontrol">
-        <button
-          className="t-ok" aria-label="Önceki yorum"
-          onClick={() => setI((v) => (v - 1 + liste.length) % liste.length)}
-        >←</button>
-        <div className="t-benekler">
-          {liste.map((_, n) => (
-            <button
-              key={n}
-              className={`t-benek ${n === i ? 't-benek--etkin' : ''}`}
-              aria-label={`Yorum ${n + 1}`}
-              onClick={() => setI(n)}
-            />
-          ))}
-        </div>
-        <button
-          className="t-ok" aria-label="Sonraki yorum"
-          onClick={() => setI((v) => (v + 1) % liste.length)}
-        >→</button>
-      </div>
+function Gorev({ t }) {
+  if (t.durum === 'bitti') return (
+    <div className="t-gorev t-gorev--bitti">
+      <span className="t-kutu" />
+      <span><span className="t-gorev-ders">{t.ders} <span className="t-gorev-adet">· {t.adet}</span></span><span className="t-gorev-konu">{t.konu}</span></span>
     </div>
   )
-}
-
-function Soru({ soru, cevap }) {
-  const [acik, setAcik] = useState(false)
-  return (
-    <div className={`t-sss ${acik ? 't-sss--acik' : ''}`}>
-      <button className="t-sss-soru" aria-expanded={acik} onClick={() => setAcik((a) => !a)}>
-        {soru}
-        <span className="t-sss-isaret" aria-hidden="true" />
-      </button>
-      {acik && <p className="t-sss-cevap">{cevap}</p>}
+  if (t.durum === 'tasindi') return (
+    <div className="t-gorev t-gorev--tasindi">
+      <span className="t-kutu" />
+      <span><span className="t-gorev-ders">{t.ders} <span className="t-gorev-adet">· {t.adet}</span></span><span className="t-gorev-konu">{t.konu} → perşembeye</span></span>
     </div>
   )
+  if (t.durum === 'kaldi') return (
+    <div className="t-gorev t-gorev--kaldi">
+      <span className="t-kutu" />
+      <span><span className="t-gorev-ders">{t.ders} <span className="t-gorev-adet">· {t.adet}</span></span><span className="t-gorev-konu">{t.konu}</span></span>
+    </div>
+  )
+  return <div className="t-gorev t-gorev--bos">{t.ders} · {t.konu}</div>
 }
 
-/* ═══════════════════════════════════════════════════════════════
-   Sayfa
-   ═══════════════════════════════════════════════════════════════ */
+function NetGrafigi({ netler }) {
+  const G = 640, Y = 260, sol = 40, sag = 24, ust = 28, alt = 40
+  const enAz = Math.floor((Math.min(...netler.map((d) => d.net)) - 5) / 5) * 5
+  const enCok = Math.ceil((Math.max(...netler.map((d) => d.net)) + 5) / 5) * 5
+  const x = (i) => sol + 16 + (i * (G - sol - sag - 32)) / (netler.length - 1)
+  const y = (n) => ust + ((enCok - n) * (Y - ust - alt)) / (enCok - enAz)
+  const noktalar = netler.map((d, i) => ({ ...d, cx: x(i), cy: y(d.net) }))
+  const izgara = []
+  for (let v = enAz; v <= enCok; v += 10) izgara.push(v)
+  const son = noktalar[noktalar.length - 1]
+  return (
+    <svg viewBox={`0 0 ${G} ${Y}`} className="t-grafik" role="img" aria-label="Altı aylık TYT net gelişimi">
+      {izgara.map((v) => (
+        <g key={v}>
+          <line x1={sol} x2={G} y1={y(v)} y2={y(v)} className="t-grafik-izgara" />
+          <text x="0" y={y(v) + 4} className="t-grafik-yazi">{v}</text>
+        </g>
+      ))}
+      <polyline points={noktalar.map((p) => `${p.cx},${p.cy}`).join(' ')} className="t-grafik-cizgi" />
+      {noktalar.map((p) => (
+        <g key={p.ay}>
+          <circle cx={p.cx} cy={p.cy} r="5" className="t-grafik-nokta" />
+          <text x={p.cx} y={p.cy - 14} className="t-grafik-deger" textAnchor="middle">{p.net}</text>
+          <text x={p.cx} y="252" className="t-grafik-yazi" textAnchor="middle">{p.ay}</text>
+        </g>
+      ))}
+      <circle cx={son.cx} cy={son.cy} r="7" className="t-grafik-son" />
+    </svg>
+  )
+}
 
 export default function Tanitim({ onGiris }) {
-  const {
-    koc, sayilar, kayan, vitrin, yaklasim, videolar, seminerler,
-    belgeler, nasil, kimler, yorumlar, sorular, cagri, iletisim,
-  } = site
-  const [sekme, setSekme] = useState(vitrin.sekmeler[0].anahtar)
+  const { koc, sayilar, kayan, vitrin, sorular, iletisim } = site
+  const netler = vitrin.maket.netler
+  const eposta = `mailto:${iletisim.eposta}`
 
-  const etkin = vitrin.sekmeler.find((s) => s.anahtar === sekme) ?? vitrin.sekmeler[0]
-  const basHarf = koc.ad.split(' ').map((k) => k[0]).join('').slice(0, 2)
+  const hepsi = gunler.flatMap((g) => g.gorevler).filter((t) => t.durum !== 'bos')
+  const say = (d) => hepsi.filter((t) => t.durum === d).length
+  const ozet = { toplam: hepsi.length, bitti: say('bitti'), tasindi: say('tasindi'), kaldi: say('kaldi') }
+  ozet.oran = Math.round((ozet.bitti / ozet.toplam) * 100)
 
-  const bagAdres = [
-    iletisim.eposta && { ad: 'E-posta', adres: `mailto:${iletisim.eposta}`, metin: iletisim.eposta },
-    iletisim.telefon && { ad: 'Telefon', adres: `tel:${iletisim.telefon.replace(/\s/g, '')}`, metin: iletisim.telefon },
-    iletisim.whatsapp && { ad: 'WhatsApp', adres: `https://wa.me/${iletisim.whatsapp}`, metin: 'Mesaj gönder' },
-    iletisim.instagram && { ad: 'Instagram', adres: `https://instagram.com/${iletisim.instagram}`, metin: `@${iletisim.instagram}` },
-  ].filter(Boolean)
+  let enKotu = netler[1], enKucuk = Infinity
+  for (let i = 1; i < netler.length; i++) {
+    const a = netler[i].net - netler[i - 1].net
+    if (a < enKucuk) { enKucuk = a; enKotu = netler[i] }
+  }
 
   return (
     <div className="tanitim" id="tepe">
-      <Ustluk ad={koc.ad} onGiris={onGiris} />
+      <header className="t-ust">
+        <div className="t-kap t-ust-ic">
+          <div className="t-marka">
+            <span className="t-marka-ad">{koc.ad}</span>
+            <span className="t-marka-alt">YKS · LGS koçu</span>
+          </div>
+          <nav className="t-nav">
+            <a href="#hafta">Örnek hafta</a>
+            <a href="#carsamba">Yaklaşım</a>
+            <a href="#veli">Veli</a>
+            <a href="#kim">Koç</a>
+            <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--kucuk">Ücretsiz tanışma</a>
+            <button type="button" className="t-dugme t-dugme--cizgi t-dugme--kucuk" onClick={onGiris}>Giriş yap</button>
+          </nav>
+        </div>
+      </header>
 
-      {/* ---------- Kahraman ---------- */}
       <section className="t-kahraman">
+        <KocVideosu />
         <div className="t-kap t-kahraman-ic">
-          <div>
-            <p className="t-etiket">{koc.unvan}</p>
-            <h1><Vurgulu metin={koc.vaat} /></h1>
+          <div className="t-kahraman-metin">
+            <h1>Program yazmak kolay. <span className="t-vurgu">Yürütmek</span> iş.</h1>
+            <p className="t-kahraman-vaat">Haftalık program, konu takibi ve deneme analizi tek sistemde.</p>
             <p className="t-kahraman-alt">{koc.altVaat}</p>
-
             <div className="t-kahraman-eylem">
-              <a className="t-dugme t-dugme--ana" href="#iletisim">{cagri.dugme}</a>
-              <button className="t-dugme t-dugme--cizgi" onClick={onGiris}>Zaten öğrencisiyim</button>
-            </div>
-
-            <div className="t-kahraman-guven">
-              <span><i className="t-nokta" aria-hidden="true" />Tanışma görüşmesi ücretsiz</span>
-              <span><i className="t-nokta" aria-hidden="true" />Veli için ayrı hesap</span>
+              <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--buyuk">Tanışma görüşmesi ayarla</a>
+              <a href="#hafta" className="t-bag-altcizgi">Örnek haftayı oku ↓</a>
             </div>
           </div>
-
-          <div className="t-telefon-yuva">
-            <div className="t-yuzen t-yuzen--1" aria-hidden="true">🔥 <b>14 gün</b>&nbsp;çalışma serisi</div>
-            <div className="t-yuzen t-yuzen--2" aria-hidden="true">📈 <b>+23 net</b>&nbsp;Nisan → Eylül</div>
-            <div className="t-yuzen t-yuzen--3" aria-hidden="true">✓ Fizik · <b>25 soru</b></div>
-            <Telefon egik baslik="Bugün" tarih="Pzt · 14 Ekim">
-              <EkranGorev gorevler={vitrin.maket.gorevler} />
-            </Telefon>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Sayılar ---------- */}
-      <section className="t-bant t-bant--sayilar">
-        <div className="t-kap">
-          <Belir>
-            <div className="t-serit">
-              {sayilar.map((s) => (
-                <div key={s.not} className="t-serit-oge">
-                  {s.emoji && <span className="t-serit-em" aria-hidden="true">{s.emoji}</span>}
-                  <div className="t-serit-sayi">
-                    <SayanSayi metin={s.sayi} />
-                    <span className="t-serit-birim">{s.birim}</span>
-                  </div>
-                  <span className="t-serit-not">{s.not}</span>
-                </div>
-              ))}
-            </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Kayan ders şeridi ---------- */}
-      <section className="t-bant t-bant--dar t-bant--gri">
-        <p className="t-kayan-baslik">{kayan.baslik}</p>
-        <div className="t-ray-dis">
-          <div className="t-ray-ic">
-            {[0, 1].map((kopya) => (
-              <div className="t-ray-grup" key={kopya} aria-hidden={kopya === 1}>
-                {kayan.dersler.map((d) => <span className="t-rozet" key={d}>{d}</span>)}
+          <div className="t-sayilar">
+            {sayilar.map((s) => (
+              <div key={s.birim} className="t-sayi">
+                <span className="t-sayi-deger">{s.sayi}<span className="t-sayi-arti">+</span></span>
+                <span className="t-sayi-birim">{s.birim}</span>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ---------- Haftalık ilham ---------- */}
-      <section className="t-bant" id="haftalik">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Bu hafta</p>
-            <h2 className="t-baslik">Haftanın kitabı ve sözü</h2>
-            <p className="t-alt-metin">
-              Her hafta öğrencilere bir kitap ve bir söz bırakıyoruz. Aynısı
-              öğrencinin ve velinin panelinde de görünür.
-            </p>
-            <HaftalikIlham />
-          </Belir>
+      <div className="t-ders-serit">
+        <div className="t-kap t-ders-serit-ic">
+          <span className="t-ders-serit-baslik">Takip edilen dersler</span>
+          {kayan.dersler.map((d) => <span key={d}>{d}</span>)}
         </div>
-      </section>
+      </div>
 
-      {/* ---------- Vitrin (koyu bant) ---------- */}
-      <section className="t-bant t-bant--koyu" id="sistem">
-        <div className="t-kap">
-          <Belir>
-            <div className="t-vitrin-ic">
-              <div>
-                <p className="t-etiket">Platform</p>
-                <h2 className="t-baslik">{vitrin.baslik}</h2>
-                <p className="t-alt-metin">{vitrin.aciklama}</p>
+      <section className="t-kap t-hafta-bolum">
+        <p className="t-etiket"><i className="t-nokta" />Bir öğrencimin gerçek haftası · {ogrenci.hafta}</p>
+        <p className="t-giris-metin">Aşağıda kurgu bir öğrencinin bir haftası var: ne planlandı, ne bitti, ne kaldı ve ben ne yaptım. Reklam metni yerine bunu koydum, çünkü işim tam olarak bu.</p>
 
-                <div className="t-sekmeler" role="tablist" aria-label="Ekranlar">
-                  {vitrin.sekmeler.map((s) => (
-                    <button
-                      key={s.anahtar}
-                      role="tab"
-                      aria-selected={s.anahtar === sekme}
-                      className={`t-sekme ${s.anahtar === sekme ? 't-sekme--etkin' : ''}`}
-                      onClick={() => setSekme(s.anahtar)}
-                    >
-                      <span className="t-sekme-im" aria-hidden="true">{s.emoji}</span>
-                      <span>
-                        <span className="t-sekme-ad">{s.ad}</span>
-                        <span className="t-sekme-not">{s.not}</span>
-                      </span>
-                    </button>
-                  ))}
-                </div>
-              </div>
+        <div id="hafta" className="t-hafta-bas">
+          <div className="t-hafta-ogrenci">
+            <span className="t-hafta-ad">{ogrenci.ad}</span>
+            <span className="t-hafta-sinif">{ogrenci.sinif} · hedef {ogrenci.hedef}</span>
+          </div>
+          <div className="t-lejant">
+            <span><i className="t-lejant-kutu t-lejant-kutu--bitti" />{ozet.bitti} bitti</span>
+            <span><i className="t-lejant-kutu t-lejant-kutu--tasindi" />{ozet.tasindi} taşındı</span>
+            <span><i className="t-lejant-kutu t-lejant-kutu--kaldi" />{ozet.kaldi} kaldı</span>
+          </div>
+        </div>
 
-              <div className="t-telefon-yuva">
-                <Telefon key={etkin.anahtar} baslik={etkin.ekran.baslik} tarih={etkin.ekran.tarih}>
-                  <Ekran anahtar={etkin.anahtar} maket={vitrin.maket} />
-                </Telefon>
-              </div>
+        <div className="t-gunler">
+          {gunler.map((g) => (
+            <div key={g.ad} className="t-gun">
+              <div className="t-gun-bas"><span className="t-gun-ad">{g.ad}</span><span className="t-gun-tarih">{g.tarih}</span></div>
+              <div className="t-gorevler">{g.gorevler.map((t, i) => <Gorev key={i} t={t} />)}</div>
+              <p className="t-koc-notu"><span>koç notu</span>{g.not}</p>
             </div>
-          </Belir>
+          ))}
+        </div>
+
+        <div className="t-ozet">
+          <div><span className="t-ozet-sayi">{ozet.toplam}</span><span className="t-ozet-not">iş planlandı</span></div>
+          <div><span className="t-ozet-sayi">{ozet.oran}%</span><span className="t-ozet-not">tamamlandı — okulda sınav haftası olmasına rağmen</span></div>
+          <div><span className="t-ozet-sayi t-ozet-sayi--vurgu">+3,25</span><span className="t-ozet-not">net, cumartesi denemesinde</span></div>
+          <div><span className="t-ozet-sayi">1</span><span className="t-ozet-not">müdahale — çarşamba gecesi, aşağıda</span></div>
         </div>
       </section>
 
-      {/* ---------- Yaklaşım ---------- */}
-      <section className="t-bant t-bant--mavi">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Yaklaşım</p>
-            <h2 className="t-baslik">{yaklasim.baslik}</h2>
-            <p className="t-alt-metin">{yaklasim.aciklama}</p>
+      <section id="carsamba" className="t-koyu">
+        <div className="t-kap t-koyu-ic">
+          <div className="t-koyu-metin">
+            <p className="t-etiket t-etiket--acik">Çarşamba · 21:40</p>
+            <h2 className="t-baslik">Kötü gün olur. Kötü hafta olmasın.</h2>
+            <p className="t-alt-metin t-alt-metin--acik">Sistemin yapamadığı şey bu. Bir uygulama "3 görev kaldı" der ve kırmızı yakar. Ben listeyi küçültürüm, çünkü perşembe yapılan iki iş, hiç yapılmayan beş işten iyidir.</p>
             <div className="t-ilkeler">
-              {yaklasim.ilkeler.map((ilke, n) => (
-                <Belir key={ilke.baslik} gecikme={n * 80} className="t-hucre">
-                  <article className="t-ilke">
-                    <div className="t-ilke-im" aria-hidden="true">{ilke.emoji}</div>
-                    <h3>{ilke.baslik}</h3>
-                    <p>{ilke.metin}</p>
-                  </article>
-                </Belir>
+              {ilkeler.map((i) => (
+                <div key={i.baslik} className="t-ilke"><span className="t-ilke-baslik">{i.baslik}</span><span className="t-ilke-metin">{i.metin}</span></div>
               ))}
             </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Nasıl çalışıyoruz ---------- */}
-      <section className="t-bant t-bant--sicak" id="nasil">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Süreç</p>
-            <h2 className="t-baslik">{nasil.baslik}</h2>
-            <p className="t-alt-metin">{nasil.aciklama}</p>
-            <ol className="t-yol">
-              {nasil.adimlar.map((a, i) => (
-                <li key={a.baslik} className="t-durak">
-                  <span className="t-durak-no" aria-hidden="true">{i + 1}</span>
-                  <h3>{a.baslik}</h3>
-                  <p>{a.metin}</p>
-                  {i === 0 && <span className="t-cip">ÜCRETSİZ</span>}
-                </li>
-              ))}
-            </ol>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Videolar ---------- */}
-      <section className="t-bant" id="videolar">
-        <div className="t-kap">
-          <Belir>
-            <div className="t-video-baslik">
-              <div>
-                <p className="t-etiket">Videolar</p>
-                <h2 className="t-baslik">{videolar.baslik}</h2>
-                <p className="t-alt-metin">{videolar.aciklama}</p>
-              </div>
-              {videolar.kanal && (
-                <a className="t-dugme t-dugme--cizgi" href={videolar.kanal} target="_blank" rel="noreferrer">
-                  Kanala git
-                </a>
-              )}
-            </div>
-            <div className="t-videolar">
-              {videolar.liste.map((v, n) => (
-                <Belir key={v.baslik} gecikme={(n % 3) * 90} className="t-hucre t-video-hucre">
-                  <VideoKart video={v} />
-                </Belir>
-              ))}
-            </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Seminerler ---------- */}
-      <section className="t-bant t-bant--yesil" id="seminerler">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Sahne</p>
-            <h2 className="t-baslik">{seminerler.baslik}</h2>
-            <p className="t-alt-metin">{seminerler.aciklama}</p>
-            <div className="t-galeri">
-              {seminerler.liste.map((sm, n) => (
-                <Belir key={sm.baslik} gecikme={(n % 3) * 90} className="t-hucre">
-                  <SeminerKart seminer={sm} />
-                </Belir>
-              ))}
-            </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Kim ---------- */}
-      <section className="t-bant" id="kim">
-        <div className="t-kap">
-          <Belir>
-            <div className="t-kim">
-              <div className="t-portre">
-                {koc.portre ? <img src={koc.portre} alt={koc.ad} /> : <span>{basHarf}</span>}
-              </div>
-              <div className="t-kim-metin">
-                <p className="t-etiket">Koç</p>
-                <h2 className="t-baslik">Kimim</h2>
-                {koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}
-              </div>
-            </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Belgeler ---------- */}
-      <section className="t-bant t-bant--gri" id="belgeler">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Belgeler</p>
-            <h2 className="t-baslik">{belgeler.baslik}</h2>
-            <p className="t-alt-metin">{belgeler.aciklama}</p>
-            <div className="t-belge-serit">
-              <ul className="t-belge-raf">
-                {belgeler.liste.map((b) => (
-                  <li key={b.ad} className="t-belge">
-                    <div className="t-belge-gorsel">
-                      {b.gorsel
-                        ? <img src={b.gorsel} alt={b.ad} loading="lazy" />
-                        : <span className="t-belge-bos">Görsel eklenmedi</span>}
-                    </div>
-                    <h3>{b.ad}</h3>
-                    <p className="t-belge-kurum">{b.kurum}</p>
-                    <p className="t-belge-yil">{b.yil}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <p className="t-kaydir-ipucu">← yana kaydırın →</p>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Kimler için ---------- */}
-      <section className="t-bant t-bant--mavi">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Kapsam</p>
-            <h2 className="t-baslik">{kimler.baslik}</h2>
-            <div className="t-gruplar">
-              {kimler.gruplar.map((g) => (
-                <div key={g.ad} className="t-grup">
-                  {g.emoji && <span className="t-grup-em" aria-hidden="true">{g.emoji}</span>}
-                  <span className="t-grup-ad">{g.ad}</span>
-                  <span className="t-grup-alt">{g.aciklama}</span>
+          </div>
+          <div className="t-sohbet-yuva">
+            <div className="t-sohbet">
+              <div className="t-sohbet-bas"><span>{ogrenci.ad} ↔ Koç</span><span>Çar · 16 Eki</span></div>
+              {mesajlar.map((m, i) => (
+                <div key={i} className={`t-mesaj ${m.kim === 'koc' ? 't-mesaj--koc' : ''}`}>
+                  <div className="t-balon">{m.metin}</div>
+                  <span className="t-mesaj-saat">{m.saat}{m.kim === 'koc' ? ' · koç' : ''}</span>
                 </div>
               ))}
             </div>
-          </Belir>
-        </div>
-      </section>
-
-      {/* ---------- Yorumlar ---------- */}
-      {yorumlar.liste.length > 0 && (
-        <section className="t-bant t-bant--sicak">
-          <div className="t-kap">
-            <Belir>
-              <p className="t-etiket">Geri bildirim</p>
-              <h2 className="t-baslik">{yorumlar.baslik}</h2>
-              <YorumDongusu liste={yorumlar.liste} />
-            </Belir>
+            <p className="t-sohbet-not">Kurgu bir yazışma. Gerçek öğrenci mesajları paylaşılmaz.</p>
           </div>
-        </section>
-      )}
-
-      {/* ---------- Sık sorulanlar ---------- */}
-      <section className="t-bant" id="sorular">
-        <div className="t-kap">
-          <Belir>
-            <p className="t-etiket">Sorular</p>
-            <h2 className="t-baslik">{sorular.baslik}</h2>
-            <div className="t-sss-liste">
-              {sorular.liste.map((s) => <Soru key={s.soru} {...s} />)}
-            </div>
-          </Belir>
         </div>
       </section>
 
-      {/* ---------- Kapanış ---------- */}
-      <section className="t-bant t-bant--sicak t-cagri" id="iletisim">
-        <div className="t-kap">
-          <Belir>
-            <div className="t-cagri-ic">
-              <div>
-                <p className="t-etiket">İletişim</p>
-                <h2>{cagri.baslik}</h2>
-                <p className="t-cagri-metin">{cagri.metin}</p>
-                <div className="t-cagri-eylem">
-                  {iletisim.whatsapp && (
-                    <a className="t-dugme t-dugme--ana" href={`https://wa.me/${iletisim.whatsapp}`} target="_blank" rel="noreferrer">
-                      WhatsApp’tan yaz
-                    </a>
-                  )}
-                  {iletisim.eposta && (
-                    <a
-                      className={`t-dugme ${iletisim.whatsapp ? 't-dugme--cizgi' : 't-dugme--ana'}`}
-                      href={`mailto:${iletisim.eposta}`}
-                    >
-                      E-posta gönder
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              {bagAdres.length > 0 && (
-                <ul className="t-iletisim">
-                  {bagAdres.map((b) => (
-                    <li key={b.ad}>
-                      <span className="t-iletisim-ad">{b.ad}</span>
-                      <a href={b.adres} target={b.adres.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
-                        {b.metin}
-                      </a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </Belir>
+      <section id="net" className="t-kap t-bolum t-ikili t-ikili--alt">
+        <div className="t-ikili-metin">
+          <p className="t-etiket">Altı ay</p>
+          <h2 className="t-baslik">Haftalar birikir.</h2>
+          <p className="t-alt-metin">Yukarıdaki gibi 26 hafta. Netin sıçraması yok; sadece düşmeyen bir çizgi var. Denemede sıçrama arayan aile hayal kırıklığı yaşar, düşmeyen çizgi arayan aile üniversiteye gider.</p>
         </div>
-      </section>
-
-      <footer className="t-alt">
-        <div className="t-kap">
-          <div className="t-alt-ic">
-            <div>
-              <span className="t-alt-marka">{koc.ad}</span>
-              <p className="t-alt-not">
-                YKS ve LGS koçluğu. Haftalık program, konu takibi ve deneme analizi tek sistemde.
-              </p>
-            </div>
-            <div className="t-alt-bag">
-              <a href="#sistem">Sistem</a>
-              <a href="#nasil">Süreç</a>
-              <a href="#videolar">Videolar</a>
-              <a href="#seminerler">Seminerler</a>
-              <a href="#belgeler">Belgeler</a>
-              <a href="#sorular">Sorular</a>
-              <a href="#iletisim">İletişim</a>
-              <button onClick={onGiris}>Giriş yap</button>
-            </div>
+        <div className="t-grafik-yuva">
+          <NetGrafigi netler={netler} />
+          <div className="t-grafik-alt">
+            <span>TYT net · aylık ortalama</span>
+            <span className="t-grafik-fark">+{netler[netler.length - 1].net - netler[0].net} net / 6 ay</span>
+            <span>en kötü ay: {enKotu.ay} (düşüş yok)</span>
           </div>
-          <div className="t-alt-cizgi">© {new Date().getFullYear()} {koc.ad}</div>
         </div>
+      </section>
+
+      <section id="veli" className="t-kap t-bolum t-ikili">
+        <div className="t-ikili-metin t-ikili-metin--sag">
+          <p className="t-etiket">Veli</p>
+          <h2 className="t-baslik">Pazar akşamı size gelen özet.</h2>
+          <p className="t-alt-metin">Yandaki kart velinin gördüğü her şey. Günlük liste yok, mesajlar yok. "Bugün ne yaptın?" sorusunu sormanız gerekmesin diye var; sorunuz olursa muhatabınız benim, çocuğunuz değil.</p>
+        </div>
+        <div className="t-veli-kart">
+          <div className="t-veli-bas"><span>Haftalık özet</span><span>{ogrenci.hafta}</span></div>
+          <div className="t-veli-izgara">
+            <div><span className="t-veli-sayi">{ozet.bitti}/{ozet.toplam}</span><span>iş tamamlandı</span></div>
+            <div><span className="t-veli-sayi">84,5</span><span>TYT net (önceki 81,25)</span></div>
+            <div><span className="t-veli-sayi">6/7</span><span>gün çalışıldı</span></div>
+            <div><span className="t-veli-sayi">1</span><span>plan değişikliği</span></div>
+          </div>
+          <div className="t-veli-notu"><b>Koçun veliye notu</b>Sınav haftasında bir gün düştü, planı hafiflettim; cumartesi netine yansımadı. Gelecek hafta manyetizma ağırlıklı. Elif'e "aferin" deyin, "daha çok çalış" demeyin — çalıştı.</div>
+          <p className="t-veli-dip">Bu özet gerçek panelde her pazar 20:00'de yayınlanır.</p>
+        </div>
+      </section>
+
+      <section id="baslangic" className="t-kap t-bolum">
+        <div className="t-bolum-bas">
+          <div>
+            <p className="t-etiket">Başlangıç</p>
+            <h2 className="t-baslik">İlk hafta program yok.</h2>
+          </div>
+          <p className="t-bolum-bas-not">Tanımadığım öğrenciye program yazmam. Önce ne kadar çalışabildiğini görürüm, sonra ona göre yazarım.</p>
+        </div>
+        <ol className="t-adimlar">
+          {baslangic.map((b, i) => (
+            <li key={b.baslik} className="t-adim">
+              <div className="t-adim-bas"><span className="t-adim-no">{String(i + 1).padStart(2, '0')}</span><span className="t-adim-sure">{b.sure}</span></div>
+              <h3>{b.baslik}</h3>
+              <p>{b.metin}</p>
+            </li>
+          ))}
+        </ol>
+      </section>
+
+      <section id="kim" className="t-kap t-bolum t-kim">
+        <img src={koc.portre} alt={koc.ad} className="t-portre" />
+        <div className="t-kim-metin">
+          <p className="t-etiket">Koç</p>
+          <div className="t-biyografi">{koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}</div>
+          <div className="t-kim-dip">
+            {sayilar.map((s) => <span key={s.birim}><b>{s.sayi}</b> {s.birim}</span>)}
+            <a href="#belgeler">Belgeler →</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="sorular" className="t-kap t-bolum">
+        <h2 className="t-baslik t-baslik--kucuk">{sorular.baslik}</h2>
+        <div className="t-sorular">
+          {sorular.liste.map((q) => (
+            <div key={q.soru} className="t-soru"><h3>{q.soru}</h3><p>{q.cevap}</p></div>
+          ))}
+        </div>
+      </section>
+
+      <section id="iletisim" className="t-kap t-cagri">
+        <div className="t-cagri-metin">
+          <h2>Sizin haftanız nasıl geçiyor?</h2>
+          <p>30 dakikalık tanışma görüşmesinde bunu konuşuruz. Ücretsiz; sonunda "size uygun değilim" de diyebilirim.</p>
+        </div>
+        <div className="t-cagri-eylem">
+          <a href={eposta} className="t-dugme t-dugme--ana">Tanışma görüşmesi iste</a>
+          <a href={eposta} className="t-cagri-eposta">{iletisim.eposta}</a>
+        </div>
+      </section>
+
+      <footer className="t-kap t-alt">
+        <span>© {new Date().getFullYear()} {koc.ad}</span>
+        <span>Bu sayfadaki öğrenci ve yazışma kurgudur.</span>
       </footer>
     </div>
   )
