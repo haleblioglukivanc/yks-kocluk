@@ -29,8 +29,8 @@
   background: var(--g-kagit);
   overflow: clip;
 }
-.tanitim a { color: var(--t-turuncu-m); }
-.tanitim a:hover { color: var(--t-mercan); }
+.tanitim :where(a) { color: var(--t-turuncu-m); }
+.tanitim :where(a:hover) { color: var(--t-mercan); }
 .tanitim h1, .tanitim h2, .tanitim h3 { font-family: var(--marka-baslik); margin: 0; }
 
 .t-kap { max-width: 1280px; margin: 0 auto; padding-left: clamp(20px, 4cqw, 48px); padding-right: clamp(20px, 4cqw, 48px); }
