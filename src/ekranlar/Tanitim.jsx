@@ -7,6 +7,82 @@ import '../tanitim.css'
    Dosya yoksa lacivert zemin ve yer tutucu görünür; sayfa bozulmaz. */
 const VIDEO = '/video/koc.mp4'
 
+function Gunler() {
+  const kap = useRef(null)
+  const [aktif, setAktif] = useState(0)
+  const dokunuldu = useRef(false)
+
+  // Hangi gün görünüyor? (sekme vurgusu için)
+  useEffect(() => {
+    const el = kap.current
+    if (!el) return
+    const olc = () => {
+      const kolonlar = Array.from(el.children)
+      const sol = el.scrollLeft + parseFloat(getComputedStyle(el).paddingLeft || 0)
+      let i = 0
+      kolonlar.forEach((k, n) => { if (k.offsetLeft - sol <= 8) i = n })
+      setAktif(i)
+    }
+    el.addEventListener('scroll', olc, { passive: true })
+    const isaretle = () => { dokunuldu.current = true }
+    el.addEventListener('pointerdown', isaretle, { passive: true })
+    el.addEventListener('wheel', isaretle, { passive: true })
+    return () => { el.removeEventListener('scroll', olc); el.removeEventListener('pointerdown', isaretle); el.removeEventListener('wheel', isaretle) }
+  }, [])
+
+  // Bölüm ekrana ilk girdiğinde küçük bir "beni kaydır" hareketi (bir kez)
+  useEffect(() => {
+    const el = kap.current
+    if (!el) return
+    if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+    let yapildi = false
+    const go = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting || yapildi) return
+      yapildi = true; go.disconnect()
+      if (el.scrollWidth - el.clientWidth < 40 || dokunuldu.current) return
+      const bas = el.scrollLeft, mesafe = 56, sure = 900, t0 = performance.now()
+      const adim = (t) => {
+        if (dokunuldu.current) return
+        const k = Math.min(1, (t - t0) / sure)
+        el.scrollLeft = bas + Math.sin(k * Math.PI) * mesafe
+        if (k < 1) requestAnimationFrame(adim)
+      }
+      setTimeout(() => requestAnimationFrame(adim), 350)
+    }, { threshold: 0.35 })
+    go.observe(el)
+    return () => go.disconnect()
+  }, [])
+
+  const git = (i) => {
+    const el = kap.current; const k = el?.children[i]
+    if (!el || !k) return
+    dokunuldu.current = true
+    el.scrollTo({ left: k.offsetLeft - parseFloat(getComputedStyle(el).paddingLeft || 0), behavior: 'smooth' })
+  }
+
+  return (
+    <>
+      <div className="t-gun-sekmeler" role="tablist" aria-label="Haftanın günleri">
+        {gunler.map((g, i) => (
+          <button key={g.ad} type="button" role="tab" aria-selected={i === aktif}
+            className={'t-gun-sekme' + (i === aktif ? ' t-gun-sekme--aktif' : '')} onClick={() => git(i)}>
+            {g.kisa}
+          </button>
+        ))}
+      </div>
+      <div className="t-gunler" ref={kap}>
+        {gunler.map((g) => (
+          <div key={g.ad} className="t-gun">
+            <div className="t-gun-bas"><span className="t-gun-ad">{g.ad}</span><span className="t-gun-tarih">{g.tarih}</span></div>
+            <div className="t-gorevler">{g.gorevler.map((t, i) => <Gorev key={i} t={t} />)}</div>
+            <p className="t-koc-notu"><span>koç notu</span>{g.not}</p>
+          </div>
+        ))}
+      </div>
+    </>
+  )
+}
+
 function KocVideosu() {
   const [var_, setVar] = useState(false)
   const ref = useRef(null)
@@ -161,15 +237,7 @@ export default function Tanitim({ onGiris }) {
           </div>
         </div>
 
-        <div className="t-gunler">
-          {gunler.map((g) => (
-            <div key={g.ad} className="t-gun">
-              <div className="t-gun-bas"><span className="t-gun-ad">{g.ad}</span><span className="t-gun-tarih">{g.tarih}</span></div>
-              <div className="t-gorevler">{g.gorevler.map((t, i) => <Gorev key={i} t={t} />)}</div>
-              <p className="t-koc-notu"><span>koç notu</span>{g.not}</p>
-            </div>
-          ))}
-        </div>
+        <Gunler />
 
         <div className="t-ozet">
           <div><span className="t-ozet-sayi">{ozet.toplam}</span><span className="t-ozet-not">iş planlandı</span></div>

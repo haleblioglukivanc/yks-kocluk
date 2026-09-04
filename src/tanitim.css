@@ -108,7 +108,12 @@
 .t-lejant-kutu--tasindi { background: var(--t-turuncu); }
 .t-lejant-kutu--kaldi { border: 1.5px solid var(--t-kalan); background: #fff; }
 
-.t-gunler { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(196px, 1fr); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; margin: 0 calc(-1 * clamp(20px, 4cqw, 48px)); padding: 0 clamp(20px, 4cqw, 48px); }
+.t-gunler { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(196px, 1fr); overflow-x: auto; scrollbar-width: none; scroll-snap-type: x mandatory; margin: 0 calc(-1 * clamp(20px, 4cqw, 48px)); padding: 0 clamp(20px, 4cqw, 48px); scroll-padding-inline: clamp(20px, 4cqw, 48px); }
+.t-gun-sekmeler { display: flex; gap: 6px; margin: 14px 0 2px; overflow-x: auto; scrollbar-width: none; }
+.t-gun-sekmeler::-webkit-scrollbar { display: none; }
+.t-gun-sekme { flex: none; appearance: none; border: 1px solid var(--g-cizgi); background: transparent; color: var(--g-grafit); border-radius: 999px; padding: 6px 12px; font-family: var(--marka-mono); font-size: var(--punto-mini); letter-spacing: .06em; cursor: pointer; transition: background .15s, color .15s, border-color .15s; }
+.t-gun-sekme:hover { border-color: var(--g-murekkep); color: var(--g-murekkep); }
+.t-gun-sekme--aktif, .t-gun-sekme--aktif:hover { background: var(--g-murekkep); border-color: var(--g-murekkep); color: var(--g-kagit); }
 .t-gunler::-webkit-scrollbar { display: none; }
 .t-gun { scroll-snap-align: start; border-right: 1px solid var(--g-cizgi); padding: 18px 14px 20px 0; margin-right: 14px; display: flex; flex-direction: column; gap: 14px; min-height: 340px; }
 .t-gun-bas { display: flex; justify-content: space-between; align-items: baseline; }
