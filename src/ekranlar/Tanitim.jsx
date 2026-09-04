@@ -10,7 +10,8 @@ const VIDEO = '/video/koc.mp4'
 function Gunler() {
   const kap = useRef(null)
   const [aktif, setAktif] = useState(0)
-  const dokunuldu = useRef(false)
+  const dokunuldu = useRef(false)   // kullanıcı kendisi yatay kaydırdı mı?
+  const animasyonda = useRef(false) // ipucu hareketi sürüyor mu?
 
   // Hangi gün görünüyor? (sekme vurgusu için)
   useEffect(() => {
@@ -22,12 +23,10 @@ function Gunler() {
       let i = 0
       kolonlar.forEach((k, n) => { if (k.offsetLeft - sol <= 8) i = n })
       setAktif(i)
+      if (!animasyonda.current) dokunuldu.current = true
     }
     el.addEventListener('scroll', olc, { passive: true })
-    const isaretle = () => { dokunuldu.current = true }
-    el.addEventListener('pointerdown', isaretle, { passive: true })
-    el.addEventListener('wheel', isaretle, { passive: true })
-    return () => { el.removeEventListener('scroll', olc); el.removeEventListener('pointerdown', isaretle); el.removeEventListener('wheel', isaretle) }
+    return () => el.removeEventListener('scroll', olc)
   }, [])
 
   // Bölüm ekrana ilk girdiğinde küçük bir "beni kaydır" hareketi (bir kez)
@@ -40,14 +39,22 @@ function Gunler() {
       if (!e.isIntersecting || yapildi) return
       yapildi = true; go.disconnect()
       if (el.scrollWidth - el.clientWidth < 40 || dokunuldu.current) return
-      const bas = el.scrollLeft, mesafe = 56, sure = 900, t0 = performance.now()
-      const adim = (t) => {
+      const bas = el.scrollLeft, mesafe = 88, sure = 1100
+      const eskiSnap = el.style.scrollSnapType
+      const bitir = () => { animasyonda.current = false; el.style.scrollSnapType = eskiSnap }
+      const basla = () => {
         if (dokunuldu.current) return
-        const k = Math.min(1, (t - t0) / sure)
-        el.scrollLeft = bas + Math.sin(k * Math.PI) * mesafe
-        if (k < 1) requestAnimationFrame(adim)
+        animasyonda.current = true
+        el.style.scrollSnapType = 'none' // mıknatıs hizalama hareketi geri çekmesin
+        const t0 = performance.now()
+        const adim = (t) => {
+          const k = Math.min(1, (t - t0) / sure)
+          el.scrollLeft = bas + Math.sin(k * Math.PI) * mesafe
+          if (k < 1) requestAnimationFrame(adim); else { el.scrollLeft = bas; setTimeout(bitir, 60) }
+        }
+        requestAnimationFrame(adim)
       }
-      setTimeout(() => requestAnimationFrame(adim), 350)
+      setTimeout(basla, 400)
     }, { threshold: 0.35 })
     go.observe(el)
     return () => go.disconnect()
