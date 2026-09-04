@@ -109,10 +109,6 @@ export default function Tanitim({ onGiris }) {
             <span className="t-marka-alt">YKS · LGS koçu</span>
           </div>
           <nav className="t-nav">
-            <a href="#hafta">Örnek hafta</a>
-            <a href="#carsamba">Yaklaşım</a>
-            <a href="#veli">Veli</a>
-            <a href="#kim">Koç</a>
             <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--kucuk">Ücretsiz tanışma</a>
             <button type="button" className="t-dugme t-dugme--cizgi t-dugme--kucuk" onClick={onGiris}>Giriş yap</button>
           </nav>
