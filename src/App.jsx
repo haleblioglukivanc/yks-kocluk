@@ -20,8 +20,6 @@ import UstCubuk from './bilesenler/UstCubuk.jsx'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
-import BildirimIzni from './bilesenler/BildirimIzni.jsx'
-import { aboneligiTazele, izinEkraniGerekliMi } from './lib/bildirim.js'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
@@ -194,9 +192,6 @@ export default function App() {
      sekmeye dönüş sayıyı tazeliyor. Tek kaynağa güvenmiyoruz: realtime
      bağlantısı düşerse rozet takılı kalmasın. */
   const kullaniciId = profil?.id ?? null
-  /* Açılışta cihaz kaydını tazele: aynı telefonda hesap değişse de
-     bildirim doğru kişiye gitsin. */
-  useEffect(() => { if (kullaniciId) aboneligiTazele(kullaniciId) }, [kullaniciId])
   useEffect(() => {
     if (!kullaniciId) {
       setOkunmamisMesaj(0)
@@ -503,9 +498,7 @@ export default function App() {
         onGit={git}
       />
 
-      {/* İzin ekranı iOS'ta kurulum adımını da anlatır; ikisi birden çıkmasın. */}
-      {!izinEkraniGerekliMi() && <KurulumDaveti />}
-      <BildirimIzni profil={profil} />
+      <KurulumDaveti />
     </div>
   )
 }
