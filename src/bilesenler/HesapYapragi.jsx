@@ -42,6 +42,9 @@ export default function HesapYapragi({
     return () => document.removeEventListener('keydown', tus)
   }, [acik, onKapat])
 
+  if (!acik) return null
+  const yonetici = profil?.rol === 'yonetici'
+
   const [bildirim, setBildirim] = useState(null)   // null: bilinmiyor
   const [bildirimNotu, setBildirimNotu] = useState(null)
   useEffect(() => {
@@ -66,9 +69,6 @@ export default function HesapYapragi({
     if (h) { setBildirimNotu(h); return }
     setBildirim(true)
   }
-
-  if (!acik) return null
-  const yonetici = profil?.rol === 'yonetici'
 
   return (
     <div className="yaprak-arka" onClick={onKapat}>

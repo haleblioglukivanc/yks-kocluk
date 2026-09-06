@@ -32,14 +32,8 @@ function erteleme() {
 /* Ekran ilk girişte gelir; "sonra" denirse 3 gün sonra bir kez daha; sonra
    yalnız Hesap yaprağından açılır. */
 export function izinEkraniGerekliMi() {
-  /* iPhone Safari'de bildirim nesnesi hiç yok; orada izin sorulamaz ama
-     kurulum adımı anlatılmalı. Kuruluysa normal akış. */
-  if (kurulumGerekli()) {
-    /* eslint-disable-next-line no-empty */
-  } else {
-    if (!destekliMi()) return false
-    if (izin() === 'granted' || izin() === 'denied') return false
-  }
+  if (!destekliMi() && !kurulumGerekli()) return false
+  if (izin() === 'granted' || izin() === 'denied') return false
   const e = erteleme()
   if (!e) return true
   if (e.sayi >= 2) return false
