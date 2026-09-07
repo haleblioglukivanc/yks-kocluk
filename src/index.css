@@ -2237,29 +2237,26 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .rt-alt { margin: 0.15rem 0 0; font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.62); }
 .rt-kutu {
   display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
-  margin-top: 0.9rem; padding: 0.75rem 0.9rem;
-  border-radius: 16px; background: rgba(255, 255, 255, 0.07);
 }
 .rt-metin { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
-.rt-etiket { font-size: var(--punto-kucuk); font-weight: 600; }
-.rt-detay { font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.66); line-height: 1.35; }
+.rt-etiket { font-size: var(--punto-kucuk); font-weight: 600; color: var(--murekkep); }
+.rt-detay { font-size: var(--punto-mini); color: var(--grafit); line-height: 1.35; }
 .rt-durum {
   align-self: flex-start; margin-top: 0.2rem; padding: 0.2rem 0.6rem; border-radius: 999px;
   font-size: 0.7rem; font-weight: 600; line-height: 1.2;
 }
-.rt-durum--iyi { background: var(--k-yesil); color: #0f2a1c; }
-.rt-durum--dikkat { background: var(--k-amber-zemin); color: var(--k-amber); }
+.rt-durum--iyi { background: var(--isaret-zemin); color: var(--isaret-metin); }
+.rt-durum--dikkat { background: var(--sicak-zemin); color: var(--sicak-metin); }
 .rt-gosterge { position: relative; flex: 0 0 auto; width: 120px; height: 66px; }
 .rt-gosterge svg { display: block; }
 .rt-deger {
+  color: var(--murekkep);
   position: absolute; left: 0; right: 0; bottom: 0; text-align: center;
   font-family: var(--display); font-size: 1.35rem; font-weight: 700; letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums; line-height: 1;
 }
-/* Tepenin içindeki hedef çubukları beyaz yazıyla okunsun */
-.rt .hedef-net { margin-top: 0.9rem; }
-.rt .hedef-cubuk { background: rgba(255, 255, 255, 0.14); }
-.rt .hedef-ad, .rt .hedef-deger, .rt .hedef-eniyi { color: rgba(255, 255, 255, 0.85); }
+/* Rapor dikiş kartının altındaki hedef çubukları kartın kendi renklerinde */
+.rt-dikis .hedef-net { margin-top: 0.9rem; }
 .ob-basla, .ob-tamam {
   font: inherit; font-size: var(--punto-mini); font-weight: 700; cursor: pointer;
   padding: 0.45rem 0.95rem; border-radius: 999px; border: 0;
@@ -3107,6 +3104,8 @@ body[data-mod='gece'] {
 
 body[data-mod='gece'] .uygulama,
 .uygulama--gece {
+  --tepe-ust: var(--k-yuzey-2);
+  --tepe-alt: var(--k-kagit);
   --kagit:    var(--k-kagit);
   --yuzey:    var(--k-yuzey);
   --yuzey-2:  var(--k-yuzey-2);
@@ -3552,7 +3551,7 @@ body[data-mod='gece'] .uygulama .kareli,
 
 .ust-serit {
   position: sticky; top: 0; z-index: 5;
-  background: var(--k-yuzey-2);
+  background: var(--tepe-ust);
   padding-top: env(safe-area-inset-top);
 }
 .ust-cubuk {
@@ -3593,7 +3592,7 @@ body[data-mod='gece'] .uygulama .kareli,
   background: var(--k-yuzey); color: var(--k-metin, var(--k-murekkep));
   font-size: 0.8rem;
 }
-.ust-ikon .ust-rozet { border-color: var(--k-yuzey-2); background: var(--g-kirmizi); }
+.ust-ikon .ust-rozet { border-color: var(--tepe-ust); background: var(--g-kirmizi); }
 
 /* Bugün ekranı: koyu başlık şeritle birleşir, kenarlara taşar */
 .uygulama--koyu-tepe > main { padding-top: 0; }
@@ -3602,9 +3601,37 @@ body[data-mod='gece'] .uygulama .kareli,
   margin-top: 0;
   border-radius: 0 0 24px 24px;
   box-shadow: none;
-  padding: 0.35rem clamp(1rem, 4vw, 1.75rem) 1.5rem;
-  background: linear-gradient(180deg, var(--k-yuzey-2) 0%, var(--k-kagit) 100%);
+  padding: 0.35rem clamp(1rem, 4vw, 1.75rem) 3.4rem;
+  background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%);
 }
+
+/* İnce tepe: koyu blok yalnızca Kâmil'i ve başlığı taşır; ekranın ilk kartı
+   iki bölgenin dikişine oturur (yarısı koyuda, yarısı açıkta). Dikişe oturan
+   üç şey var: karar kartı (.kart), rapor kutusu (.dikis-kart) ve sekmeli
+   ekranlarda sekme çubuğu. Gündüz beyaz kart kendiliğinden öne çıkar; gece
+   kart gövdeden bir ton açık, ince amber kenar geceye özgü imza. */
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + :is(.kart, .dikis-kart) {
+  position: relative; z-index: 2;
+  margin-top: -3rem;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  box-shadow: 0 12px 24px -14px rgba(14, 22, 38, 0.45);
+}
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde:has(> .sekmeler:first-child) { position: relative; z-index: 2; margin-top: -3rem; }
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde > .sekmeler:first-child {
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-radius: 14px;
+  padding: 0.3rem;
+  box-shadow: 0 12px 24px -14px rgba(14, 22, 38, 0.45);
+}
+body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + :is(.kart, .dikis-kart),
+body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde > .sekmeler:first-child {
+  border-color: rgba(232, 163, 23, 0.45);
+  box-shadow: 0 0 0 4px rgba(232, 163, 23, 0.06), 0 14px 28px -14px rgba(0, 0, 0, 0.8);
+}
+/* Dikiş kartı (rapor kutusu) kart gibi giyinir */
+.dikis-kart { border-radius: var(--r); padding: 0.9rem 1rem; min-width: 0; }
 /* Başlıkla açılmayan ekranlarda (vekalet şeridi gibi) üst boşluk geri gelir.
    İç içe .panel (koç paneli kendi kabını çiziyor) boşluk almaz. */
 .uygulama--koyu-tepe :is(.panel, .panel > .panel) > :first-child:not(.hero-yuzey):not(.panel):not(.sekme-govde) { margin-top: clamp(1rem, 4vw, 1.75rem); }

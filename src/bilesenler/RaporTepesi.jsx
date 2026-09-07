@@ -18,7 +18,7 @@ function Gosterge({ yuzde, deger, etiket }) {
   return (
     <div className="rt-gosterge" role="img" aria-label={`${etiket} ${deger}`}>
       <svg viewBox="0 0 120 66" width="120" height="66">
-        <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="rgba(255,255,255,0.14)"
+        <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--cizgi-2)"
               strokeWidth="10" strokeLinecap="round" />
         {oran > 0 && (
           <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--marka-koyu-amber)"
@@ -42,23 +42,31 @@ export default function RaporTepesi({
   durumMetni,
   children,
 }) {
+  /* İnce tepe: koyu blok yalnızca başlığı ve dönemi taşır. Gösterge kutusu
+     ayrı bir "dikiş kartı" olarak hemen altına gelir; index.css onu koyu
+     bloğun içine yarım taşırır. Kart açık zeminde olduğu için içindeki
+     yazı ve çubuklar kartın kendi renkleriyle çizilir. */
   return (
-    <section className="hero-yuzey rt" aria-label={baslik}>
-      <h1 className="rt-baslik">{baslik}</h1>
-      {altBaslik && <p className="rt-alt">{altBaslik}</p>}
+    <>
+      <section className="hero-yuzey rt" aria-label={baslik}>
+        <h1 className="rt-baslik">{baslik}</h1>
+        {altBaslik && <p className="rt-alt">{altBaslik}</p>}
+      </section>
 
-      <div className="rt-kutu">
-        <div className="rt-metin">
-          <span className="rt-etiket">{etiket}</span>
-          {detay && <span className="rt-detay">{detay}</span>}
-          {durum && durumMetni && (
-            <span className={`rt-durum rt-durum--${durum}`}>{durumMetni}</span>
-          )}
+      <div className="dikis-kart rt-dikis">
+        <div className="rt-kutu">
+          <div className="rt-metin">
+            <span className="rt-etiket">{etiket}</span>
+            {detay && <span className="rt-detay">{detay}</span>}
+            {durum && durumMetni && (
+              <span className={`rt-durum rt-durum--${durum}`}>{durumMetni}</span>
+            )}
+          </div>
+          <Gosterge yuzde={yuzde} deger={deger} etiket={etiket} />
         </div>
-        <Gosterge yuzde={yuzde} deger={deger} etiket={etiket} />
-      </div>
 
-      {children}
-    </section>
+        {children}
+      </div>
+    </>
   )
 }

@@ -176,9 +176,9 @@ export default function App() {
     /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
        Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
     const etiket = document.querySelector('meta[name="theme-color"]')
-    /* Üst şerit her iki modda da koyu: durum çubuğu onunla aynı renkte
-       olsun ki tepe tek parça görünsün. */
-    const renk = !panelAcik ? '#ffffff' : '#202b3d'
+    /* Üst şerit her iki modda da koyu ama tonu farklı (tema.css --tepe-ust):
+       durum çubuğu onunla aynı renkte olsun ki tepe tek parça görünsün. */
+    const renk = !panelAcik ? '#ffffff' : mod === 'gece' ? '#202b3d' : '#2e3a52'
     if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
