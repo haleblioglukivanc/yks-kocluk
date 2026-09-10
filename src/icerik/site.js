@@ -52,7 +52,7 @@ export const site = {
   // Gerçek belgeleri public/belgeler/ içine koyup gorsel yolunu değiştirin.
   belgeler: {
     baslik: 'Belgeler',
-    aciklama: 'Eğitim ve sertifikalar. Yana kaydırarak hepsini görebilirsiniz.',
+    aciklama: 'Eğitim ve sertifikalar. Bir belgeye tıklayınca büyük hâlini görürsünüz.',
     liste: [
       { ad: 'Lisans Diploması', kurum: '[DEMO] Eğitim Fakültesi', yil: '2015', gorsel: '/belgeler/ornek-01.png' },
       { ad: 'Eğitim Koçluğu Sertifikası', kurum: '[DEMO] Sürekli Eğitim Merkezi', yil: '2016', gorsel: '/belgeler/ornek-02.png' },

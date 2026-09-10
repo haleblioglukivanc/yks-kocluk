@@ -239,3 +239,74 @@
 @media (prefers-reduced-motion: reduce) {
   .tanitim * { transition: none !important; animation: none !important; }
 }
+
+/* ── Belgeler: akan küçük çerçeveler ─────────────────────────── */
+.t-belgeler { overflow: hidden; }
+.t-belge-serit {
+  --belge-en: 150px;
+  --belge-bosluk: 22px;
+  margin-top: 8px;
+  padding: 10px 0 18px;
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.t-belge-akis {
+  display: flex; gap: var(--belge-bosluk); width: max-content;
+  animation: belge-akis calc(var(--n) * 5s) linear infinite;
+}
+.t-belge-serit:hover .t-belge-akis,
+.t-belge-serit:focus-within .t-belge-akis { animation-play-state: paused; }
+.t-belge-serit--sabit { mask-image: none; -webkit-mask-image: none; overflow-x: auto; padding-left: clamp(20px, 4cqw, 48px); }
+.t-belge-serit--sabit .t-belge-akis { animation: none; }
+@keyframes belge-akis {
+  to { transform: translateX(calc(-1 * var(--n) * (var(--belge-en) + var(--belge-bosluk)))); }
+}
+
+.t-belge {
+  all: unset; cursor: pointer; display: grid; gap: 10px; width: var(--belge-en);
+  justify-items: start; transition: transform .25s ease;
+}
+.t-belge:hover, .t-belge:focus-visible { transform: translateY(-4px); }
+.t-belge:focus-visible .t-belge-cerceve { outline: 2px solid var(--t-turuncu); outline-offset: 3px; }
+.t-belge-cerceve {
+  display: block; width: 100%; aspect-ratio: 3 / 4; box-sizing: border-box;
+  padding: 7px; background: #fff; border: 1px solid var(--g-cizgi-2); border-radius: 3px;
+  box-shadow: 0 1px 0 rgba(7,11,24,.04), 0 10px 24px -14px rgba(7,11,24,.45);
+  transition: box-shadow .25s ease, border-color .25s ease;
+}
+.t-belge:hover .t-belge-cerceve { border-color: var(--t-turuncu-k); box-shadow: 0 1px 0 rgba(7,11,24,.04), 0 18px 32px -14px rgba(7,11,24,.55); }
+.t-belge-cerceve img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid var(--g-cizgi); }
+.t-belge-alt { display: grid; gap: 2px; width: 100%; line-height: 1.3; }
+.t-belge-alt b { font-size: 13px; color: var(--g-murekkep); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-belge-alt small { font-family: var(--marka-mono); font-size: 11px; color: var(--g-grafit); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Büyük görünüm */
+.t-belge-perde {
+  position: fixed; inset: 0; z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  padding: 24px; gap: 8px; background: rgba(7,11,24,.86); backdrop-filter: blur(6px);
+  animation: belge-perde .2s ease;
+}
+@keyframes belge-perde { from { opacity: 0 } }
+.t-belge-buyuk { margin: 0; justify-self: center; max-width: min(92vw, 720px); display: grid; gap: 14px; justify-items: center; }
+.t-belge-buyuk img {
+  max-width: 100%; max-height: 74vh; display: block; background: #fff; padding: 10px; border-radius: 3px;
+  box-shadow: 0 30px 60px -20px rgba(0,0,0,.7); animation: belge-gecis .3s ease;
+}
+@keyframes belge-gecis { from { opacity: 0; transform: scale(.97) } }
+.t-belge-buyuk figcaption { display: grid; justify-items: center; gap: 2px; text-align: center; color: #fff; }
+.t-belge-buyuk figcaption b { font-family: var(--marka-baslik); font-size: 18px; }
+.t-belge-buyuk figcaption span { color: var(--t-acik-mavi); font-size: var(--punto-orta); }
+.t-belge-buyuk figcaption small { font-family: var(--marka-mono); font-size: 11px; color: var(--t-acik-mavi); opacity: .7; margin-top: 4px; }
+.t-belge-ok, .t-belge-kapat {
+  all: unset; cursor: pointer; display: grid; place-items: center; width: 44px; height: 44px; border-radius: 999px;
+  color: #fff; font-size: 30px; line-height: 1; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18);
+  transition: background .15s;
+}
+.t-belge-ok:hover, .t-belge-kapat:hover { background: rgba(255,255,255,.18); }
+.t-belge-kapat { position: absolute; top: 20px; right: 20px; font-size: 26px; }
+@media (max-width: 640px) {
+  .t-belge-serit { --belge-en: 124px; --belge-bosluk: 16px; }
+  .t-belge-perde { grid-template-columns: 1fr; padding: 16px; }
+  .t-belge-ok { position: absolute; top: 50%; transform: translateY(-50%); }
+  .t-belge-ok--sol { left: 12px; } .t-belge-ok--sag { right: 12px; }
+}

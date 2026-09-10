@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
 import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.js'
+import BelgeSeridi from '../bilesenler/BelgeSeridi.jsx'
 import '../tanitim.css'
 
 /* Koç videosu: public/video/koc.mp4 (10–20 sn, sessiz, döngü).
@@ -168,7 +169,7 @@ function NetGrafigi({ netler }) {
 }
 
 export default function Tanitim({ onGiris }) {
-  const { koc, sayilar, kayan, vitrin, sorular, iletisim } = site
+  const { koc, sayilar, belgeler, kayan, vitrin, sorular, iletisim } = site
   const netler = vitrin.maket.netler
   const eposta = `mailto:${iletisim.eposta}`
 
@@ -359,6 +360,8 @@ export default function Tanitim({ onGiris }) {
           </div>
         </div>
       </section>
+
+      <BelgeSeridi belgeler={belgeler} />
 
       <section id="sorular" className="t-kap t-bolum">
         <h2 className="t-baslik t-baslik--kucuk">{sorular.baslik}</h2>
