@@ -8,7 +8,7 @@ import '../tanitim.css'
    bitince başa döner; geçişte yumuşak solma olur. İlk video yüklenemezse
    lacivert zemin ve yer tutucu görünür; sayfa bozulmaz. */
 const VIDEOLAR = [
-  { src: '/video/seminer.mp4', konum: '28% center' }, // salon: konuşmacı solda
+  { src: '/video/seminer.mp4', konum: '72% center' }, // salon (aynalı): konuşmacı sağda
   { src: '/video/koc.mp4',     konum: '70% center' }, // masa: eller sağda
 ]
 
