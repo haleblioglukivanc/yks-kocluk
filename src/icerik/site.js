@@ -43,7 +43,7 @@ export const site = {
 
     // Gerçek fotoğraf: public/ içine koyup yolu yazın, örn. '/kivanc.jpg'.
     // ⚠️ Şimdilik temsili illüstrasyon.
-    portre: '/portre.svg',
+    portre: '/portre.jpg',
   },
 
   // ⚠️ DEMO — gerçek belgelerle değiştirilecek.
