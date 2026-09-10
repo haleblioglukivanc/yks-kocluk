@@ -58,7 +58,8 @@
 
 /* ── Kahraman ─────────────────────────────────────────────────── */
 .t-kahraman { position: relative; background: var(--t-lacivert); color: #fff; overflow: hidden; min-height: clamp(560px, 72vh, 760px); display: flex; align-items: stretch; }
-.t-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; opacity: .85; }
+.t-video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 70% center; opacity: .85; transition: opacity .9s ease; }
+.t-video--bekle { opacity: 0; }
 .t-video-zemin { position: absolute; inset: 0; background: radial-gradient(60rem 40rem at 78% 55%, rgba(30, 79, 208, .55), transparent 62%), radial-gradient(30rem 24rem at 92% 10%, rgba(242, 106, 27, .35), transparent 60%), var(--t-lacivert); }
 .t-video-not { position: absolute; right: clamp(16px, 4cqw, 64px); top: clamp(16px, 3cqw, 40px); display: inline-flex; align-items: center; gap: 8px; padding: 8px 14px; border-radius: 999px; border: 1px dashed rgba(255, 255, 255, .35); font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--t-acik-mavi); }
 .t-perde { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(7, 11, 24, .92) 0%, rgba(7, 11, 24, .78) 38%, rgba(11, 18, 48, .35) 70%, rgba(11, 18, 48, .55) 100%), linear-gradient(180deg, rgba(7, 11, 24, .2), rgba(7, 11, 24, 0) 30%, rgba(7, 11, 24, .7) 100%); }

@@ -4,9 +4,13 @@ import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.j
 import BelgeSeridi from '../bilesenler/BelgeSeridi.jsx'
 import '../tanitim.css'
 
-/* Koç videosu: public/video/koc.mp4 (10–20 sn, sessiz, döngü).
-   Dosya yoksa lacivert zemin ve yer tutucu görünür; sayfa bozulmaz. */
-const VIDEO = '/video/koc.mp4'
+/* Koç videoları: public/video/ altında, sessiz. Sırayla oynar, sonuncusu
+   bitince başa döner; geçişte yumuşak solma olur. İlk video yüklenemezse
+   lacivert zemin ve yer tutucu görünür; sayfa bozulmaz. */
+const VIDEOLAR = [
+  { src: '/video/seminer.mp4', konum: '28% center' }, // salon: konuşmacı solda
+  { src: '/video/koc.mp4',     konum: '70% center' }, // masa: eller sağda
+]
 
 function Gunler() {
   const kap = useRef(null)
@@ -93,21 +97,49 @@ function Gunler() {
 
 function KocVideosu() {
   const [var_, setVar] = useState(false)
-  const ref = useRef(null)
+  const [aktif, setAktif] = useState(0)
+  const refs = useRef([])
   useEffect(() => {
-    const v = ref.current
-    if (!v) return
-    const ac = () => { setVar(true); v.play?.().catch(() => {}) }
-    v.addEventListener('loadeddata', ac)
-    return () => v.removeEventListener('loadeddata', ac)
+    const vs = refs.current.filter(Boolean)
+    if (vs.length !== VIDEOLAR.length) return
+    const ac = () => { setVar(true); vs[0].play?.().catch(() => {}) }
+    vs[0].addEventListener('loadeddata', ac)
+    const bitisler = vs.map((v, i) => {
+      const f = () => {
+        const sonraki = (i + 1) % vs.length
+        const s = vs[sonraki]
+        try { s.currentTime = 0 } catch {}
+        s.play?.().catch(() => {})
+        setAktif(sonraki)
+      }
+      v.addEventListener('ended', f)
+      return f
+    })
+    return () => {
+      vs[0].removeEventListener('loadeddata', ac)
+      vs.forEach((v, i) => v.removeEventListener('ended', bitisler[i]))
+    }
   }, [])
   return (
     <>
-      <video ref={ref} src={VIDEO} className="t-video" autoPlay muted loop playsInline aria-hidden="true" />
+      {VIDEOLAR.map((v, i) => (
+        <video
+          key={v.src}
+          ref={el => { refs.current[i] = el }}
+          src={v.src}
+          className={'t-video' + (i === aktif ? '' : ' t-video--bekle')}
+          style={{ objectPosition: v.konum }}
+          autoPlay={i === 0}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden="true"
+        />
+      ))}
       {!var_ && (
         <>
           <div className="t-video-zemin" aria-hidden="true" />
-          <div className="t-video-not" aria-hidden="true">▶ Koç videosu buraya: public/video/koc.mp4</div>
+          <div className="t-video-not" aria-hidden="true">▶ Koç videosu buraya: public/video/seminer.mp4</div>
         </>
       )}
       <div className="t-perde" aria-hidden="true" />
