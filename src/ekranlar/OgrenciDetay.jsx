@@ -5,7 +5,7 @@ import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import KapsamSecimi from '../bilesenler/KapsamSecimi.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
-import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
+import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
@@ -328,12 +328,12 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
 /* ─────────────────────────── Program ─────────────────────────── */
 
 function Program({ ogrenci }) {
-  const [secim, setSecim] = useState(null) // { blok, tarih, periyot }
+  const [secim, setSecim] = useState(null) // { blok, tarih }
   const [tazele, setTazele] = useState(0)
 
   return (
-    <Kart baslik="Haftalık program" altBaslik="Zaman dilimine göre">
-      {/* Form ızgaranın altında değil, dokunulan hücrenin altında açılıyor.
+    <Kart baslik="Haftalık program" altBaslik="Gün gün">
+      {/* Form, dokunulan günün listesinin hemen altında açılıyor.
           Yerleşimi ortak bileşen yönetiyor; öğrenci paneli de aynı yeri kullanır. */}
       <ProgramIzgarasi
         key={tazele}
@@ -382,7 +382,7 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
   const gun = new Date(tarih).toLocaleDateString('tr-TR', {
     weekday: 'long', day: 'numeric', month: 'long',
   })
-  const saat = periyot ? PERIYOTLAR[periyot - 1] : 'Gün boyu'
+  const altMetin = blok ? 'Bu işi düzenle' : 'Bu güne yeni iş'
 
   async function sil() {
     await supabase.from('gorevler').delete().eq('id', blok.id)
@@ -394,7 +394,7 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
       <header className="hucre-basi">
         <div>
           <span className="hucre-gun">{gun}</span>
-          <span className="hucre-saat">{saat}</span>
+          <span className="hucre-saat">{altMetin}</span>
         </div>
         <button className="metin-dugme" onClick={onKapat}>Kapat</button>
       </header>

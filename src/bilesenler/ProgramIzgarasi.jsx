@@ -1,11 +1,9 @@
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
-import { dersGorunumu } from '../lib/dersGorunum.js'
 import GorevKaynagi from './GorevKaynagi.jsx'
-import { GOREV_TUR_ADI } from '../lib/gorevTuru.js'
+import { GOREV_TUR_ADI, GOREV_TUR_KISA } from '../lib/gorevTuru.js'
 
-export const PERIYOTLAR = ['09—11', '11—13', '14—16', '16—18', '19—21', '21—23']
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
 /** Yerel saate göre YYYY-MM-DD. toISOString UTC'ye kaydırır, kullanılmaz. */
@@ -23,8 +21,11 @@ const acikTarihAnahtari = (acikSecim, secilen) => {
   const s = acikSecim ?? secilen
   if (!s) return null
   if (s.rutinGunler) return 'rutin'
-  return `${s.tarih ?? ''}-${s.periyot ?? ''}`
+  return `${s.tarih ?? ''}-${s.blok?.id ?? s.id ?? 'yeni'}`
 }
+
+const gunAdi = (anahtar, bicim) =>
+  new Date(`${anahtar}T00:00:00`).toLocaleDateString('tr-TR', bicim)
 
 export function haftaGunleri(bas) {
   return Array.from({ length: 7 }, (_, i) => {
@@ -35,9 +36,13 @@ export function haftaGunleri(bas) {
 }
 
 /**
- * Haftalık program ızgarası.
- * Satırlar zaman dilimi, sütunlar gün. Koç boş hücreye ders atar,
- * öğrenci dolu hücreye dokunup bitmiş olarak işaretler.
+ * Haftalık program — gün bazlı.
+ *
+ * Eskiden satırlar zaman dilimi, sütunlar gündü. Koçluk saat bazlı
+ * yürümüyor: "salı 14—16 arası" diye bir plan yok, "salı şu üç iş" var.
+ * O yüzden saat kolonu kalktı; üstte yedi günlük şerit, altında seçili
+ * günün listesi. Şerit öğrenci panelindeki HaftaSeridi ile aynı sınıfları
+ * kullanır, iki taraf aynı görünsün diye.
  */
 export default function ProgramIzgarasi({
   ogrenci,
@@ -51,14 +56,25 @@ export default function ProgramIzgarasi({
   const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
-  // Öğrenci bloğa dokununca önce ayrıntı açılır; "bitti" oradan işaretlenir.
+  // Öğrenci işe dokununca önce ayrıntı açılır; "bitti" oradan işaretlenir.
   // Doğrudan işaretlemek, koçun yazdığı notu ve hedefi görünmez kılıyordu.
   const [secilen, setSecilen] = useState(null)
+  const [gunSecimi, setGunSecimi] = useState(null)
   const acilirRef = useRef(null)
 
   const gunler = haftaGunleri(bas)
-  const ilk = gunAnahtari(gunler[0])
-  const son = gunAnahtari(gunler[6])
+  const anahtarlar = gunler.map(gunAnahtari)
+  const ilk = anahtarlar[0]
+  const son = anahtarlar[6]
+  const bugun = gunAnahtari(new Date())
+
+  /* Hafta değişince seçim o haftaya taşınır: bugün o haftadaysa bugün,
+     değilse pazartesi. Ayrı bir effect'e gerek yok. */
+  const seciliGun = anahtarlar.includes(gunSecimi)
+    ? gunSecimi
+    : anahtarlar.includes(bugun)
+      ? bugun
+      : ilk
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase
@@ -69,7 +85,9 @@ export default function ProgramIzgarasi({
       .eq('ogrenci_id', ogrenci.id)
       .gte('tarih', ilk)
       .lte('tarih', son)
+      .order('durum')
       .order('periyot', { nullsFirst: false })
+      .order('id')
     if (error) setHata(hataMetni(error))
     setGorevler(data ?? [])
   }, [ogrenci.id, ilk, son])
@@ -96,38 +114,35 @@ export default function ProgramIzgarasi({
     yukle()
   }
 
-  const bugun = gunAnahtari(new Date())
-  const harita = {}
-  ;(gorevler ?? []).forEach((g) => {
-    if (g.periyot) harita[`${g.tarih}-${g.periyot}`] = g
-  })
-  const gunBoyu = (gorevler ?? []).filter((g) => !g.periyot)
+  const hafta = gorevler ?? []
+  const sayim = Object.fromEntries(
+    anahtarlar.map((t) => {
+      const l = hafta.filter((g) => g.tarih === t)
+      return [t, { toplam: l.length, biten: l.filter((g) => g.durum === 'tamamlandi').length }]
+    }),
+  )
+  const toplam = hafta.length
+  const biten = hafta.filter((g) => g.durum === 'tamamlandi').length
+  const oran = toplam ? Math.round((biten / toplam) * 100) : 0
+  const gunListesi = hafta.filter((g) => g.tarih === seciliGun)
+  const gunSayimi = sayim[seciliGun] ?? { toplam: 0, biten: 0 }
 
-  /* Rutinler isme göre gruplanıyor. "Paragraf" her gün tekrarlanıyorsa
-     yedi ayrı satır yerine tek satır ve yedi gün rozeti görünür. */
-  const rutinHarita = new Map()
-  for (const g of gunBoyu) {
+  /* Tekrarlar: aynı ad haftada üç ve daha fazla güne yazılmışsa bu bir
+     rutindir; gün listesinde yine görünür ama burada haftaya yayılmış
+     hâliyle tek satırda okunur. */
+  const adHarita = new Map()
+  for (const g of hafta) {
     const ad = g.dersler?.ad ?? g.baslik
-    if (!rutinHarita.has(ad)) rutinHarita.set(ad, [])
-    rutinHarita.get(ad).push(g)
+    if (!adHarita.has(ad)) adHarita.set(ad, [])
+    adHarita.get(ad).push(g)
   }
-  const rutinler = [...rutinHarita.entries()].map(([ad, liste]) => ({
-    ad,
-    gorevler: liste.slice().sort((a, b) => a.tarih.localeCompare(b.tarih)),
-    biten: liste.filter((g) => g.durum === 'tamamlandi').length,
-  }))
-
-  const bloklar = (gorevler ?? []).filter((g) => g.periyot)
-  const biten = bloklar.filter((g) => g.durum === 'tamamlandi').length
-  const oran = bloklar.length ? Math.round((biten / bloklar.length) * 100) : 0
-
-  /* Veri girişi tablonun altında değil, dokunulan hücrenin hemen altında
-     açılır. Hangi güne/saate yazdığın gözden kaçmasın diye.
-     Koç tarafında panel dışarıdan (acikSecim + panel), öğrenci tarafında
-     içeriden (secilen -> BlokAyrinti) gelir; yerleşim ikisinde de aynı. */
-  const acikTarih = acikSecim?.tarih ?? secilen?.tarih ?? null
-  const acikPeriyot = acikSecim?.periyot ?? secilen?.periyot ?? null
-  const acikSutun = acikTarih ? gunler.findIndex((g) => gunAnahtari(g) === acikTarih) : -1
+  const rutinler = [...adHarita.entries()]
+    .filter(([, liste]) => new Set(liste.map((g) => g.tarih)).size >= 3)
+    .map(([ad, liste]) => ({
+      ad,
+      gorevler: liste.slice().sort((a, b) => a.tarih.localeCompare(b.tarih)),
+      biten: liste.filter((g) => g.durum === 'tamamlandi').length,
+    }))
 
   const panelIcerik = secilen ? (
     <BlokAyrinti
@@ -138,8 +153,14 @@ export default function ProgramIzgarasi({
     />
   ) : (acikSecim ? panel : null)
 
-  // Rutin / gün boyu görevlerin hücresi yok: onlar tablonun altında açılır.
-  const satirdaAcik = Boolean(panelIcerik) && acikSutun >= 0 && acikPeriyot != null
+  // Rutin ekleme paneli listenin değil, tekrarlar bölümünün altında açılır.
+  const rutinPaneli = Boolean(acikSecim?.rutinGunler)
+  const acikGorevId = acikSecim?.blok?.id ?? secilen?.id ?? null
+
+  function gorevSec(g) {
+    if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
+    else setSecilen(g)
+  }
 
   return (
     <div className="prg">
@@ -173,119 +194,130 @@ export default function ProgramIzgarasi({
       ) : (
         <>
           <div className="prg-ozet">
-            <span className="prg-ozet-etiket">Tamamlanan blok</span>
-            <span className="prg-ozet-sayi">{biten}/{bloklar.length}</span>
+            <span className="prg-ozet-etiket">Tamamlanan iş</span>
+            <span className="prg-ozet-sayi">{biten}/{toplam}</span>
             <div className="prg-cubuk"><div style={{ width: `${oran}%` }} /></div>
           </div>
 
-          <div className="prg-kaydir">
-            <table className="prg-tablo">
-              <thead>
-                <tr>
-                  <th />
-                  {gunler.map((g, i) => (
-                    <th key={i} className={gunAnahtari(g) === bugun ? 'prg-bugun' : undefined}>
-                      {KISA_GUN[i]}
-                      <span className="prg-gun-no">{g.getDate()}</span>
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {PERIYOTLAR.map((saat, si) => (
-                  <Fragment key={saat}>
-                  <tr>
-                    <td className="prg-saat">{saat}</td>
-                    {gunler.map((g) => {
-                      const anahtar = `${gunAnahtari(g)}-${si + 1}`
-                      const blok = harita[anahtar]
-                      const bugunSutunu = gunAnahtari(g) === bugun
-                      if (blok) {
-                        const bitti = blok.durum === 'tamamlandi'
-                        const gor = dersGorunumu(blok.dersler?.ad ?? blok.baslik)
-                        return (
-                          <td key={anahtar} className={bugunSutunu ? 'prg-bugun-sutun' : undefined}>
-                            <button
-                              className={`hucre hucre--dolu${bitti ? ' hucre--bitti' : ''}${
-                                anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
-                              }`}
-                              onClick={() => {
-                                if (duzenlenebilir) onHucreSec?.(blok, gunAnahtari(g), si + 1)
-                                else setSecilen(blok)
-                              }}
-                              aria-pressed={bitti}
-                              title={[
-                                blok.baslik,
-                                blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null,
-                                blok.aciklama,
-                              ].filter(Boolean).join(' · ')}
-                              style={{ '--ders-renk': gor.renk }}
-                            >
-                              <span className="hucre-kod">{gor.kod}</span>
-                              <span className="hucre-tam">{gor.ad || blok.baslik}</span>
-                            </button>
-                          </td>
-                        )
-                      }
-                      return (
-                        <td key={anahtar} className={bugunSutunu ? 'prg-bugun-sutun' : undefined}>
-                          <button
-                            className={`hucre hucre--bos${
-                              anahtar === `${acikTarih}-${acikPeriyot}` ? ' hucre--secili' : ''
-                            }`}
-                            disabled={!duzenlenebilir}
-                            onClick={() => onHucreSec?.(null, gunAnahtari(g), si + 1)}
-                            aria-label="Blok ekle"
-                          >
-                            <span className="hucre-isaret">{duzenlenebilir ? '+' : '·'}</span>
-                          </button>
-                        </td>
-                      )
-                    })}
-                  </tr>
-                  {satirdaAcik && acikPeriyot === si + 1 && (
-                    <tr className="prg-acilir-satir">
-                      <td colSpan={8}>
-                        <div
-                          className="prg-acilir"
-                          ref={acilirRef}
-                          style={{ '--ok-sutun': acikSutun }}
-                        >
-                          <span className="prg-acilir-ok" aria-hidden="true" />
-                          {panelIcerik}
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                  </Fragment>
-                ))}
-              </tbody>
-            </table>
+          {/* Gün şeridi: öğrenci panelindeki şeritle aynı sınıflar */}
+          <div className="hafta-serit" role="tablist" aria-label="Haftanın günleri">
+            {anahtarlar.map((t, i) => {
+              const s = sayim[t] ?? { toplam: 0, biten: 0 }
+              const bugunMu = t === bugun
+              const gecmis = t < bugun
+              return (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={t === seciliGun}
+                  className={`hafta-gun${t === seciliGun ? ' hafta-gun--secili' : ''}${
+                    bugunMu ? ' hafta-gun--bugun' : ''
+                  }${gecmis ? ' hafta-gun--gecmis' : ''}`}
+                  onClick={() => setGunSecimi(t)}
+                >
+                  <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
+                  <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
+                  <span className="hafta-gun-nokta" aria-label={`${s.biten}/${s.toplam} iş`}>
+                    {s.toplam === 0 ? (
+                      <i className="hafta-nokta hafta-nokta--yok" />
+                    ) : s.toplam <= 4 ? (
+                      Array.from({ length: s.toplam }, (_, k) => (
+                        <i key={k} className={`hafta-nokta${k < s.biten ? ' hafta-nokta--dolu' : ''}`} />
+                      ))
+                    ) : (
+                      <b className="hafta-nokta-sayi">{s.biten}/{s.toplam}</b>
+                    )}
+                  </span>
+                </button>
+              )
+            })}
           </div>
+
+          {/* Seçili günün planı */}
+          <section className="prg-gun">
+            <header className="prg-gun-basi">
+              <div>
+                <h4 className="prg-gun-ad">{gunAdi(seciliGun, { weekday: 'long' })}</h4>
+                <span className="prg-gun-tarih">
+                  {gunAdi(seciliGun, { day: 'numeric', month: 'long' })}
+                  {seciliGun === bugun ? ' · bugün' : ''}
+                </span>
+              </div>
+              {gunSayimi.toplam > 0 && (
+                <span className="sayi prg-gun-sayac">{gunSayimi.biten}/{gunSayimi.toplam}</span>
+              )}
+            </header>
+
+            {gunListesi.length === 0 ? (
+              <p className="prg-gun-bos">
+                {duzenlenebilir
+                  ? 'Bu güne henüz iş yazılmadı.'
+                  : 'Bu gün boş — serbest çalışabilirsin.'}
+              </p>
+            ) : (
+              <ul className="liste gorev-liste">
+                {gunListesi.map((g) => {
+                  const bitti = g.durum === 'tamamlandi'
+                  const etiket = [g.dersler?.ad, g.konular?.ad, GOREV_TUR_KISA[g.tur]]
+                    .filter(Boolean)
+                    .join(' · ')
+                  return (
+                    <li key={g.id}>
+                      <button
+                        className={`gorev-satir prg-gorev${bitti ? ' gorev-satir--bitti' : ''}${
+                          acikGorevId === g.id ? ' prg-gorev--acik' : ''
+                        }`}
+                        data-durum={bitti ? 'iyi' : 'notr'}
+                        onClick={() => gorevSec(g)}
+                      >
+                        <span className="nokta" aria-hidden="true" />
+                        <span className="gorev-govde">
+                          <span className="gorev-baslik">
+                            {g.baslik}
+                            {g.hedef_adet && !/\d/.test(g.baslik) ? ` — ${g.hedef_adet} soru` : ''}
+                          </span>
+                          {etiket && <span className="gorev-etiket">{etiket}</span>}
+                        </span>
+                        <span className="prg-gorev-ok" aria-hidden="true">›</span>
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+
+            {duzenlenebilir && (
+              <button
+                className="dugme dugme--ikincil prg-gorev-ekle"
+                onClick={() => onHucreSec?.(null, seciliGun, null)}
+              >
+                Bu güne iş ekle
+              </button>
+            )}
+
+            {panelIcerik && !rutinPaneli && (
+              <div className="prg-alt-panel" ref={acilirRef}>{panelIcerik}</div>
+            )}
+          </section>
 
           <p className="prg-ipucu">
             {saltOkunur
-              ? 'Önizleme: bloğa dokunup ayrıntıyı görebilirsin, değişiklik yapılamaz.'
+              ? 'Önizleme: işe dokunup ayrıntıyı görebilirsin, değişiklik yapılamaz.'
               : duzenlenebilir
-                ? 'Boş hücreye dokunup ders atayın. Yeşil bloklar öğrencinin tamamladıklarıdır.'
-                : 'Bloğa dokun: ne çözeceğini ve koçunun notunu gösterir.'}
+                ? 'Bir güne dokun, o günün planı altta açılır. Yeşil işaretliler öğrencinin tamamladıklarıdır.'
+                : 'İşe dokun: ne çözeceğini ve koçunun notunu gösterir.'}
           </p>
 
-          {/* Hücresi olmayan görevler (rutin, gün boyu) tablonun altında açılır */}
-          {panelIcerik && !satirdaAcik && (
-            <div className="prg-alt-panel" ref={acilirRef}>{panelIcerik}</div>
-          )}
-
-          {(gunBoyu.length > 0 || duzenlenebilir) && (
+          {(rutinler.length > 0 || duzenlenebilir) && (
             <div className="prg-serbest">
               <div className="rutin-baslik">
-                <h4>Rutinler</h4>
+                <h4>Hafta boyu tekrarlar</h4>
                 {duzenlenebilir && (
                   <button
                     className="rutin-ekle"
-                    onClick={() => onRutinEkle?.(gunler.map(gunAnahtari))}
-                    aria-label="Rutin ekle"
-                    title="Rutin ekle"
+                    onClick={() => onRutinEkle?.(anahtarlar)}
+                    aria-label="Tekrar eden iş ekle"
+                    title="Tekrar eden iş ekle"
                   >
                     +
                   </button>
@@ -294,7 +326,8 @@ export default function ProgramIzgarasi({
               <ul>
                 {rutinler.length === 0 && duzenlenebilir && (
                   <li className="rutin-bos">
-                    Saate bağlı olmayan tekrar eden görevler burada. Artıya dokunup ekleyin.
+                    Haftanın çoğu gününe yazılan işler burada tek satırda toplanır.
+                    Artıya dokunup ekleyin.
                   </li>
                 )}
                 {rutinler.map((r) => (
@@ -309,10 +342,7 @@ export default function ProgramIzgarasi({
                           key={g.id}
                           className={`rutin-gun${g.durum === 'tamamlandi' ? ' rutin-gun--bitti' : ''}`}
                           title={g.baslik}
-                          onClick={() => {
-                            if (duzenlenebilir) onHucreSec?.(g, g.tarih, null)
-                            else setSecilen(g)
-                          }}
+                          onClick={() => gorevSec(g)}
                         >
                           {new Date(g.tarih).toLocaleDateString('tr-TR', { weekday: 'short' })}
                         </button>
@@ -321,6 +351,9 @@ export default function ProgramIzgarasi({
                   </li>
                 ))}
               </ul>
+              {panelIcerik && rutinPaneli && (
+                <div className="prg-alt-panel" ref={acilirRef}>{panelIcerik}</div>
+              )}
             </div>
           )}
         </>
@@ -328,7 +361,6 @@ export default function ProgramIzgarasi({
     </div>
   )
 }
-
 
 
 /** Öğrencinin bloğa dokununca gördüğü ayrıntı: hangi konu, kaç soru,
