@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
+import KapsamSecimi from '../bilesenler/KapsamSecimi.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -416,6 +417,8 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   /* Seçim artık ders satırına değil ders grubuna bağlı: koç "Matematik"
      diyor, TYT/AYT ayrımını konu belirliyor. */
   const [grupKod, setGrupKod] = useState('')
+  /* Konu seçilmeyen görevde kapsamı koç söylüyor. */
+  const [kapsamDersId, setKapsamDersId] = useState('')
   const [konuId, setKonuId] = useState('')
   const [tur, setTur] = useState('konu_anlatimi')
   const [kaynakId, setKaynakId] = useState(null)
@@ -458,10 +461,12 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   /* Görev bir ders satırına yazılıyor: konu seçiliyse onun dersi,
      değilse grubun ilk kapsamı (TYT varsa TYT). */
   const secilenKonu = konular.find((k) => String(k.id) === konuId) ?? null
+  const kapsamDersi =
+    (grup?.dersler ?? []).find((d) => String(d.id) === kapsamDersId) ?? grup?.dersler[0] ?? null
   const dersId = secilenKonu
     ? String(secilenKonu.ders_id)
-    : grup
-      ? String(grup.dersler[0].id)
+    : kapsamDersi
+      ? String(kapsamDersi.id)
       : ''
 
   async function ekle() {
@@ -473,9 +478,15 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
     setHata('')
 
     const konu = secilenKonu
+    /* Konusuz görevde ders adının önüne kapsam yazılıyor: öğrenci
+       "Matematik soru çözümü" değil "AYT Matematik soru çözümü" görsün. */
+    const dersAdi =
+      grup && grup.dersler.length > 1 && kapsamDersi
+        ? `${dersKapsamAdi(kapsamDersi)} ${grup.ad}`
+        : (grup?.ad ?? '')
     const baslik = konu
       ? `${GOREV_TUR_ADI[tur]} — ${konu.ad}`
-      : `${grup?.ad ?? ''} ${GOREV_TUR_ADI[tur].toLowerCase()}`
+      : `${dersAdi} ${GOREV_TUR_ADI[tur].toLowerCase()}`
 
     const { error } = await supabase.from('gorevler').insert({
       ogrenci_id: ogrenci.id,
@@ -518,6 +529,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           onChange={(e) => {
             setGrupKod(e.target.value)
             setKonuId('')
+            setKapsamDersId('')
             setKaynakId(null)
           }}
         >
@@ -562,6 +574,15 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           })}
         </select>
       </Alan>
+
+      {/* Konu seçiliyse kapsam zaten konudan geliyor; şerit yalnızca
+          konusuz görevde soruluyor. */}
+      {!konuId && (
+        <KapsamSecimi grup={grup} deger={kapsamDersId} onSec={(id) => {
+          setKapsamDersId(id)
+          setKaynakId(null)
+        }} />
+      )}
 
       <Alan etiket="Tür">
         <select value={tur} onChange={(e) => setTur(e.target.value)}>
@@ -1040,6 +1061,7 @@ const GUN_ADI = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 function RutinFormu({ ogrenci, gunler, onEklendi }) {
   const [dersler, setDersler] = useState([])
   const [dersId, setDersId] = useState('')
+  const [kapsamDersId, setKapsamDersId] = useState('')
   const [tur, setTur] = useState('soru_cozumu')
   const [hedef, setHedef] = useState('20')
   const [aciklama, setAciklama] = useState('')
@@ -1057,10 +1079,12 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
       .then(({ data }) => setDersler(data ?? []))
   }, [ogrenci.katalog_id])
 
-  /* Rutin konuya bağlı değil; ders grubu yeterli. TYT/AYT ayrımı
-     rutinde bir şey değiştirmediği için ekranda da görünmüyor. */
+  /* Rutin konuya bağlı değil, o yüzden kapsamı konudan çıkaramıyoruz:
+     iki kapsamlı derslerde koç TYT mi AYT mi olduğunu kendisi söylüyor. */
   const gruplar = dersleriGrupla(dersler)
   const grup = gruplar.find((g) => g.kod === dersId) ?? null
+  const kapsamDersi =
+    (grup?.dersler ?? []).find((d) => String(d.id) === kapsamDersId) ?? grup?.dersler[0] ?? null
 
   const secilenGunler = gunler.filter((_, i) => secili[i])
 
@@ -1082,9 +1106,12 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
         koc_id: ogrenci.koc_id,
         tarih,
         periyot: null,
-        ders_id: Number(grup.dersler[0].id),
+        ders_id: Number(kapsamDersi.id),
         tur,
-        baslik: grup?.ad ?? 'Rutin',
+        baslik:
+          grup && grup.dersler.length > 1 && kapsamDersi
+            ? `${dersKapsamAdi(kapsamDersi)} ${grup.ad}`
+            : (grup?.ad ?? 'Rutin'),
         hedef_adet: ADETLI_TURLER.has(tur) && hedef ? Number(hedef) : null,
         aciklama: aciklama.trim() || null,
         durum: 'bekliyor',
@@ -1106,13 +1133,23 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
   return (
     <div className="form-kutu">
       <Alan etiket="Ders">
-        <select value={dersId} onChange={(e) => setDersId(e.target.value)}>
+        <select
+          value={dersId}
+          onChange={(e) => {
+            setDersId(e.target.value)
+            setKapsamDersId('')
+          }}
+        >
           <option value="">Ders seç</option>
           {gruplar.map((g) => (
             <option key={g.kod} value={g.kod}>{g.ad}</option>
           ))}
         </select>
       </Alan>
+
+      {/* Rutin konuya bağlı değil: TYT mi AYT mi olduğunu koç söylüyor,
+          yoksa rapordaki ders kırılımı yanlış tarafa yazıyor. */}
+      <KapsamSecimi grup={grup} deger={kapsamDersId} onSec={setKapsamDersId} />
 
       <Alan etiket="Tür">
         <select value={tur} onChange={(e) => setTur(e.target.value)}>

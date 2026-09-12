@@ -1465,14 +1465,16 @@ body[data-tema='panel'] {
 }
 .rutin-bos { font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
 
-.gun-secim { display: flex; flex-wrap: wrap; gap: 0.35rem; }
-.gun-kutu {
+/* Aynı şerit iki yerde: günler ve kapsam (TYT/AYT). Tek kural,
+   iki ad — birinde yapılan düzeltme ötekine de geçsin. */
+.gun-secim, .kapsam-secim { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.gun-kutu, .kapsam-kutu {
   min-width: 3rem; min-height: 40px; padding: 0.4rem 0.5rem;
   border: 1px dashed var(--cizgi); border-radius: 8px;
   background: transparent; color: var(--grafit);
   font: inherit; font-size: var(--punto-mini); cursor: pointer;
 }
-.gun-kutu--secili {
+.gun-kutu--secili, .kapsam-kutu--secili {
   background: var(--serin-zemin);
   border: 1px solid var(--serin-kenar);
   color: var(--serin-metin); font-weight: 600;
