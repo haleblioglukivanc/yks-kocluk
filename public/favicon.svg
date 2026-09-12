@@ -1,7 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="12" fill="#131C33" />
-  <circle cx="24" cy="24" r="8" fill="#EDEFF3" />
-  <circle cx="40" cy="24" r="8" fill="#EDEFF3" />
-  <circle cx="24" cy="40" r="8" fill="#EDEFF3" />
-  <circle cx="40" cy="40" r="6.8" fill="none" stroke="#EDEFF3" stroke-width="2.4" />
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Kıvanç Haleblioğlu">
+  <rect width="64" height="64" rx="12" fill="#0f1520" />
+  <g transform="translate(3.2 9.9) scale(0.613)" fill="none" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
+    <g stroke="#e9eef7">
+      <path d="M14 8V64" />
+      <path d="M14 36H50" />
+      <path d="M50 36L78 8" />
+      <path d="M50 36L80 64" />
+    </g>
+    <path d="M50 8V64" stroke="#ffc24a" />
+  </g>
 </svg>

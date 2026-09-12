@@ -291,6 +291,7 @@ main {
   margin-bottom: 2rem;
 }
 .giris-marka { font-family: 'Bricolage Grotesque', system-ui, sans-serif; font-weight: 800; font-size: 1.125rem; letter-spacing: -0.02em; }
+.giris-marka { display: inline-flex; align-items: center; gap: 0.45rem; }
 .giris-marka-alt { font-family: var(--marka-mono); font-size: 0.6875rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gi-acik-mavi); }
 .giris-etiket {
   position: relative; width: 100%; max-width: 24rem; margin: 0 0 0.875rem;
@@ -3613,11 +3614,17 @@ body[data-mod='gece'] .uygulama .kareli,
   font: 700 0.95rem var(--display); letter-spacing: -0.01em;
   color: var(--k-murekkep);
 }
-.ust-logo-isaret {
-  width: 1.5rem; height: 1.5rem; border-radius: 7px;
-  display: grid; place-items: center;
-  background: var(--k-amber); color: var(--k-kagit);
-  font-size: 0.8rem; font-weight: 800;
+/* Marka işareti — HK monogramı (bkz. bilesenler/Marka.jsx). Kutu yok:
+   amber yalnızca ortak dikey hatta görünür, geniş yüzey olarak kullanılmaz.
+   Çizimin kendisi tek bileşende durduğu için buradaki kural da tek yerde. */
+.marka-isaret { display: block; flex: 0 0 auto; overflow: visible; }
+.marka-isaret .marka-akt { stroke: var(--fosfor); }
+
+.ust-logo-isaret { color: var(--k-murekkep); }
+.marka-isaret.ust-logo-isaret .marka-akt { stroke: var(--k-amber); }
+.ust-logo-ad {
+  white-space: nowrap;
+  font-size: clamp(0.72rem, 3.1vw, 0.95rem);
 }
 .ust-ikonlar { display: flex; gap: 0.6rem; }
 .ust-ikon {

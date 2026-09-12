@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { MarkaIsareti } from '../bilesenler/Marka.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari } from '../bilesenler/Ortak.jsx'
 
@@ -32,7 +33,10 @@ export default function Giris({ onGeri }) {
     <div className="giris-sayfa giris-kagit">
       <div className="giris-zemin" aria-hidden="true" />
       <div className="giris-ust">
-        <span className="giris-marka">Kıvanç Haleblioğlu</span>
+        <span className="giris-marka">
+          <MarkaIsareti yukseklik={20} sinif="giris-marka-isaret" />
+          Kıvanç Haleblioğlu
+        </span>
         <span className="giris-marka-alt">YKS · LGS koçu</span>
       </div>
       <p className="giris-etiket"><i />Öğrenci · veli · koç girişi</p>

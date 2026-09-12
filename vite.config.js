@@ -17,8 +17,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'YKS Koçluk',
-        short_name: 'YKS Koçluk',
+        name: 'Kıvanç Hoca ile koçluk',
+        // Ana ekranda ikonun altında bu yazar; uzun ad orada kırpılır.
+        short_name: 'Kıvanç Hoca',
         description:
           'Tek koç, çok öğrenci. Program, deneme takibi ve konu ilerlemesi tek yerde.',
         lang: 'tr',

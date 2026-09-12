@@ -1,4 +1,5 @@
 import { Avatar } from './Fotograf.jsx'
+import { MarkaIsareti } from './Marka.jsx'
 
 /**
  * Uygulamanın tepesindeki ince şerit: sol köşede logo, sağda zil ve profil.
@@ -27,8 +28,8 @@ export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, zi
   return (
     <div className="ust-cubuk">
       <button type="button" className="ust-logo" onClick={onLogo} aria-label="Ana ekran">
-        <span className="ust-logo-isaret" aria-hidden="true">K</span>
-        <span className="ust-logo-ad">Koçluk</span>
+        <MarkaIsareti yukseklik={18} sinif="ust-logo-isaret" />
+        <span className="ust-logo-ad">Kıvanç Hoca ile koçluk</span>
       </button>
       <div className="ust-ikonlar">
         <button
