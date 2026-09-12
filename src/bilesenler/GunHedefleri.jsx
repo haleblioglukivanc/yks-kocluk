@@ -1,5 +1,9 @@
 import { useEffect, useState } from 'react'
-import { GOREV_TUR_KISA } from '../lib/gorevTuru.js'
+import {
+  GOREV_TUR_KISA,
+  GOREV_DURUM_ANLAMI,
+  GOREV_DURUM_ROZETI,
+} from '../lib/gorevTuru.js'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
@@ -80,7 +84,11 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
               const bitti = g.durum === 'tamamlandi'
               const etiket = [g.ders, g.konu].filter(Boolean).join(' · ')
               return (
-                <li key={g.id} className={`gorev-satir${bitti ? ' gorev-satir--bitti' : ''}`}>
+                <li
+                  key={g.id}
+                  className={`gorev-satir${bitti ? ' gorev-satir--bitti' : ''}`}
+                  data-durum={GOREV_DURUM_ANLAMI[g.durum] ?? 'notr'}
+                >
                   <button
                     className="gorev-tik"
                     role="checkbox"
@@ -104,6 +112,9 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
                     <span className="gorev-baslik">{g.baslik}</span>
                     {(etiket || g.tur) && (
                       <span className="gorev-etiket">{etiket || GOREV_TUR_KISA[g.tur] || g.tur}</span>
+                    )}
+                    {GOREV_DURUM_ROZETI[g.durum] && (
+                      <span className="rozet gorev-durum">{GOREV_DURUM_ROZETI[g.durum]}</span>
                     )}
                     <GorevKaynagi gorev={g} />
                     {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}

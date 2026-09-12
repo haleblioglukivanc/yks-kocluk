@@ -2,7 +2,12 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
-import { GOREV_TUR_ADI, GOREV_TUR_KISA } from '../lib/gorevTuru.js'
+import {
+  GOREV_TUR_ADI,
+  GOREV_TUR_KISA,
+  GOREV_DURUM_ANLAMI,
+  GOREV_DURUM_ROZETI,
+} from '../lib/gorevTuru.js'
 import { yerelGun, haftaBasi as haftaBasiHesapla } from '../lib/tarih.js'
 
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
@@ -264,13 +269,16 @@ export default function ProgramIzgarasi({
                         className={`gorev-satir prg-gorev${bitti ? ' gorev-satir--bitti' : ''}${
                           acikGorevId === g.id ? ' prg-gorev--acik' : ''
                         }`}
-                        data-durum={bitti ? 'iyi' : 'notr'}
+                        data-durum={GOREV_DURUM_ANLAMI[g.durum] ?? 'notr'}
                         onClick={() => gorevSec(g)}
                       >
                         <span className="nokta" aria-hidden="true" />
                         <span className="gorev-govde">
                           <span className="gorev-baslik">{g.baslik}</span>
                           {etiket && <span className="gorev-etiket">{etiket}</span>}
+                          {GOREV_DURUM_ROZETI[g.durum] && (
+                            <span className="rozet gorev-durum">{GOREV_DURUM_ROZETI[g.durum]}</span>
+                          )}
                         </span>
                         {g.hedef_adet != null && (
                           <span className="gorev-adet">{g.hedef_adet} soru</span>

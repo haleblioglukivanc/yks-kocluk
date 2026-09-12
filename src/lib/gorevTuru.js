@@ -43,3 +43,26 @@ export const ADETLI_TURLER = new Set(['soru_cozumu', 'okuma', 'tekrar'])
 export function gorevTuruAdi(tur, sozluk = GOREV_TUR_ADI) {
   return sozluk[tur] ?? tur
 }
+
+/* ── Görev durumları ───────────────────────────────────────────
+   Dört durum var ve üçü ekranda birbirinden ayrılmalı. Renk
+   sistem katmanından gelir: satıra data-durum verilir, nokta ve
+   rozet rengini oradan okur (bkz. sistem.css).
+
+   tamamlandi → iyi   (yeşil)  bitti
+   devam      → eylem (mavi)   başlanmış, sürüyor
+   atlandi    → izle  (amber)  geride ama acil değil
+   bekliyor   → notr  (gri)    henüz sırada, bilgi taşımıyor */
+export const GOREV_DURUM_ANLAMI = {
+  tamamlandi: 'iyi',
+  devam: 'eylem',
+  atlandi: 'izle',
+  bekliyor: 'notr',
+}
+
+/* Rozet metni yalnızca kendiliğinden okunmayan iki durumda çıkar:
+   bitti zaten üstü çizili, bekliyor da varsayılan hâl. */
+export const GOREV_DURUM_ROZETI = {
+  devam: 'devam ediyor',
+  atlandi: 'atlandı',
+}

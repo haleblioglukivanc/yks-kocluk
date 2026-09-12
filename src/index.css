@@ -1494,6 +1494,14 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 }
 .gorev-govde { flex: 1; min-width: 0; }
 .gorev-baslik { display: block; font-size: 1.03rem; line-height: 1.3; overflow-wrap: anywhere; }
+/* Durum rozeti: rengini satırın data-durum'undan alıyor (sistem.css),
+   burada yalnızca ölçüsü var. */
+.gorev-durum {
+  display: inline-block; margin: 5px 0 0 5px; padding: 2px 7px; border-radius: 5px;
+  font-size: var(--punto-mini); font-weight: 600;
+}
+.gorev-etiket + .gorev-durum { margin-left: 5px; }
+
 /* Adet sağda ve mono: listede alt alta hizalanıyor, başlık kısalıyor. */
 .gorev-adet {
   flex: 0 0 auto; margin-top: 2px; padding: 3px 7px; border-radius: 7px;
