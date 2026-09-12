@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
 import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.js'
 import BelgeSeridi from '../bilesenler/BelgeSeridi.jsx'
+import { MarkaIsareti } from '../bilesenler/Marka.jsx'
 import '../tanitim.css'
 
 /* Koç videoları: public/video/ altında, sessiz. Sırayla oynar, sonuncusu
@@ -221,7 +222,10 @@ export default function Tanitim({ onGiris }) {
       <header className="t-ust">
         <div className="t-kap t-ust-ic">
           <div className="t-marka">
-            <span className="t-marka-ad">{koc.ad}</span>
+            <span className="t-marka-kilit">
+              <MarkaIsareti yukseklik={22} sinif="t-marka-isaret" />
+              <span className="t-marka-ad">{koc.ad}</span>
+            </span>
             <span className="t-marka-alt">YKS · LGS koçu</span>
           </div>
           <nav className="t-nav">

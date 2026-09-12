@@ -17,9 +17,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Kıvanç Hoca ile koçluk',
-        // Ana ekranda ikonun altında bu yazar; uzun ad orada kırpılır.
-        short_name: 'Kıvanç Hoca',
+        name: 'KH Koçluk',
+        short_name: 'KH Koçluk',
         description:
           'Tek koç, çok öğrenci. Program, deneme takibi ve konu ilerlemesi tek yerde.',
         lang: 'tr',

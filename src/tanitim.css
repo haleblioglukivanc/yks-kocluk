@@ -50,6 +50,11 @@
 .t-ust { background: var(--t-gece); color: #fff; }
 .t-ust-ic { padding-top: 16px; padding-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; flex-wrap: wrap; }
 .t-marka { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+/* İşaret ismin soluna kilitlenir; ikisi bir blok, "YKS · LGS koçu" satırı
+   eskisi gibi ada göre hizalanır. Amber, logonun sabit imzasıdır: tanıtım
+   sayfasının turuncusuna dönüşmez, koyu zeminde parlak tonu kullanır. */
+.t-marka-kilit { display: inline-flex; align-items: center; gap: 8px; }
+.tanitim .t-marka-isaret .marka-akt { stroke: var(--k-amber); }
 .t-marka-ad { font-family: var(--marka-baslik); font-weight: 800; font-size: 18px; letter-spacing: -.02em; }
 .t-marka-alt { font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--k-soluk); letter-spacing: .1em; text-transform: uppercase; }
 .t-nav { display: flex; gap: 24px; align-items: center; font-size: var(--punto-orta); flex-wrap: wrap; }
