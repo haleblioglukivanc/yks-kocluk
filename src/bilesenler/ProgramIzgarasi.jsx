@@ -3,18 +3,14 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { GOREV_TUR_ADI, GOREV_TUR_KISA } from '../lib/gorevTuru.js'
+import { yerelGun, haftaBasi as haftaBasiHesapla } from '../lib/tarih.js'
 
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
-/** Yerel saate göre YYYY-MM-DD. toISOString UTC'ye kaydırır, kullanılmaz. */
-export const gunAnahtari = (t) => t.toLocaleDateString('sv-SE')
-
-export function haftaBasi(tarih) {
-  const t = new Date(tarih)
-  t.setDate(t.getDate() - ((t.getDay() + 6) % 7))
-  t.setHours(0, 0, 0, 0)
-  return t
-}
+/* Gün metni ve hafta başı tek yerde: lib/tarih.js. Buradaki adlar
+   DenemeFormu ve OgrenciDetay'da kullanıldığı için korunuyor. */
+export const gunAnahtari = yerelGun
+export const haftaBasi = haftaBasiHesapla
 
 /** Açık panelin kimliği. Değişince panel görünür alana kaydırılır. */
 const acikTarihAnahtari = (acikSecim, secilen) => {

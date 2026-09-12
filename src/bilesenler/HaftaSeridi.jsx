@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GunHedefleri from './GunHedefleri.jsx'
+import { gunEkle } from '../lib/tarih.js'
 
 /**
  * Hafta şeridi: Program sekmesinin yerini aldı.
@@ -15,12 +16,6 @@ import GunHedefleri from './GunHedefleri.jsx'
  */
 
 const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
-
-function gunEkle(iso, i) {
-  const t = new Date(`${iso}T00:00:00`)
-  t.setDate(t.getDate() + i)
-  return t.toISOString().slice(0, 10)
-}
 
 /* Izgaranın join'li satırını GunHedefleri'nin düz satırına çevirir;
    ogrenci_bugun_ozeti de aynı düz şekli veriyor. */

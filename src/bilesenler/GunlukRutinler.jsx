@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Uyari } from './Ortak.jsx'
+import { gunEkle } from '../lib/tarih.js'
 
 /* Rutin, günlük görevden farklı bir şey: her hafta aynı satır, her gün bir
    kutu. Onay kutusu değil optik form baloncuğu kullanıyoruz — yedi günü tek
@@ -8,13 +9,6 @@ import { Kart, Uyari } from './Ortak.jsx'
 
 const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 const TAM_GUN = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar']
-
-/** haftaBasi 'YYYY-AA-GG' pazartesi; i gün sonrası yine ISO metin. */
-function gunEkle(iso, i) {
-  const t = new Date(`${iso}T00:00:00`)
-  t.setDate(t.getDate() + i)
-  return t.toISOString().slice(0, 10)
-}
 
 export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, onDegisti, saltOkunur = false }) {
   const [liste, setListe] = useState(rutinler ?? [])
