@@ -101,16 +101,18 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
                     </svg>
                   </button>
                   <div className="gorev-govde">
-                    <span className="gorev-baslik">
-                      {g.baslik}
-                      {g.hedef_adet && !/\d/.test(g.baslik) ? ` — ${g.hedef_adet} soru` : ''}
-                    </span>
+                    <span className="gorev-baslik">{g.baslik}</span>
                     {(etiket || g.tur) && (
                       <span className="gorev-etiket">{etiket || GOREV_TUR_KISA[g.tur] || g.tur}</span>
                     )}
                     <GorevKaynagi gorev={g} />
                     {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}
                   </div>
+                  {/* Adet başlığın içinde değil sağda: listede alt alta
+                      hizalanıyor, başlık da kısalıyor. */}
+                  {g.hedef_adet != null && (
+                    <span className="gorev-adet">{g.hedef_adet} soru</span>
+                  )}
                 </li>
               )
             })}

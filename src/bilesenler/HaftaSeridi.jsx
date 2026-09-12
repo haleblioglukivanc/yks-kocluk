@@ -123,16 +123,11 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
               >
                 <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
                 <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
-                <span className="hafta-gun-nokta" aria-label={`${s.biten}/${s.toplam} blok`}>
-                  {s.toplam === 0 ? (
-                    <i className="hafta-nokta hafta-nokta--yok" />
-                  ) : s.toplam <= 4 ? (
-                    Array.from({ length: s.toplam }, (_, k) => (
-                      <i key={k} className={`hafta-nokta${k < s.biten ? ' hafta-nokta--dolu' : ''}`} />
-                    ))
-                  ) : (
-                    <b className="hafta-nokta-sayi">{s.biten}/{s.toplam}</b>
-                  )}
+                {/* Nokta yerine sayaç: dört işten fazlası noktayla
+                    sayılamıyordu, iki gösterim arasında geçiş de
+                    şeridi tutarsız yapıyordu. */}
+                <span className="hafta-gun-sayi" aria-label={`${s.biten}/${s.toplam} iş`}>
+                  {s.toplam === 0 ? '—' : `${s.biten}/${s.toplam}`}
                 </span>
               </button>
             )
