@@ -1,14 +1,14 @@
-// Kâmil'in kural motoru.
+// Çizbi'nin kural motoru.
 //
 // Ses tonu kuralları (bunlar kod kadar bağlayıcı):
 //  1. Asla suçlama. '3 gündür girmedin' yok; 'bugün 15 dakika bile sayılır' var.
 //  2. Her mesajın bir işi var: ya eylem önerir, ya kutlar, ya risk söyler.
-//  2b. Her mesajın bir yeri var: `ekran` yoksa Bugün'de (Kâmil'in evi)
+//  2b. Her mesajın bir yeri var: `ekran` yoksa Bugün'de (Çizbi'nin evi)
 //      söylenir; varsa yalnız o ekranda, köşeden gelen baloncukla.
 //  3. Öğrenciye asla başka öğrenciyle kıyas yapılmaz.
 //  4. Ünlem işareti yok, emoji yok. Sıcaklık kelimelerden gelir.
 //  5. Kötü haber verirken önce normalleştir, sonra tek bir adım öner.
-//  6. Veli tarafında Kâmil neredeyse hiç konuşmaz.
+//  6. Veli tarafında Çizbi neredeyse hiç konuşmaz.
 
 
 
@@ -35,7 +35,7 @@ const OGRENCI_KURALLARI = [
     eylem: () => ({ etiket: 'Görevlere bak', sekme: 'bugun' }),
   },
   {
-    /* Rozet artık öğrenciye Kâmil'den değil koçtan gelir (karar kuyruğu,
+    /* Rozet artık öğrenciye Çizbi'den değil koçtan gelir (karar kuyruğu,
        tebrik kartı). Kural kapalı; kayıt tutarlılığı için duruyor. */
     kod: 'yeni_rozet',
     ekran: 'konular',
@@ -48,7 +48,7 @@ const OGRENCI_KURALLARI = [
     kod: 'haftalik_hedef_tutuldu',
     rol: 'ogrenci', oncelik: 97, tekrar: 'haftada_bir', ruh: 'bilendi',
     kosul: (b) => Boolean(o(b).kalemtiras?.hedefTutuldu),
-    mesaj: () => 'Bu haftanın çalışma hedefini tamamladın. Kâmil bilendi, önümüzdeki hafta tam boy başlıyor.',
+    mesaj: () => 'Bu haftanın çalışma hedefini tamamladın. Çizbi bilendi, önümüzdeki hafta tam boy başlıyor.',
   },
   {
     kod: 'seri_kilometre',
@@ -276,7 +276,7 @@ function tekrarUygunMu(kural, gecmis, simdi) {
 }
 
 /**
- * Kâmil'in ne diyeceğini seçer.
+ * Çizbi'nin ne diyeceğini seçer.
  * Bir oturumda en fazla `gunlukLimit` (varsayılan 2) mesaj döner.
  * Hiç uygun kural yoksa boş dizi döner — sessiz kalmak da bir cevap.
  */

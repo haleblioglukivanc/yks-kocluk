@@ -30,7 +30,7 @@ const SEKME_YOLU = Object.fromEntries(Object.entries(OGRENCI_SEKME).map(([y, s])
    adres çubuğunu sitenin dışına taşıyordu: sayfa açık kaldığı sürece
    görünmüyor, yenilendiği anda 404. Aynı nedenle '/' ile karşılaştıran
    her yer sessizce yanlış cevap veriyordu (Panel sekmesi hiç etkin
-   görünmüyordu, panelde iki Kâmil birden çıkıyordu). Alan adı alınıp
+   görünmüyordu, panelde iki Çizbi birden çıkıyordu). Alan adı alınıp
    site bir gün alt dizine taşınırsa bu kod hazır.
 
    Çözüm: dışarıda tam adres, içeride her zaman '/' ile başlayan yol. */
@@ -301,16 +301,16 @@ export default function App() {
 
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
 
-  /* Panel ekranları Kâmil'i başlıkta gösteriyor; köşedeki kopya orada
+  /* Panel ekranları Çizbi'yi başlıkta gösteriyor; köşedeki kopya orada
      fazlalık olurdu. Bir ekranda iki maskot olmaz. */
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
   const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null
-  /* Vekalette de öğrenci başlığı (dolayısıyla Kâmil) ekranda: köşedeki
+  /* Vekalette de öğrenci başlığı (dolayısıyla Çizbi) ekranda: köşedeki
      kopyası orada da gizlenmeli, yoksa iki maskot olur. */
-  /* Yonetim ekraninda Kamil hic cikmiyor: orasi motivasyon degil isletme
+  /* Yonetim ekraninda Çizbi hic cikmiyor: orasi motivasyon degil isletme
      ekrani. Kosedeki kopya da Sistem kartinin ustune biniyordu. */
-  /* Öğrencide Bugün başlıkta Kâmil taşır; Yol'da harita kendi
-     Kâmil'ini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
+  /* Öğrencide Bugün başlıkta Çizbi taşır; Yol'da harita kendi
+     Çizbi'sini çizer. Denemeler'de başlık yok, köşedeki kopya kalır. */
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
@@ -325,7 +325,7 @@ export default function App() {
     Boolean(gozuyleId) ||
     yol === '/yonetim'
 
-  /* Kâmil'in köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
+  /* Çizbi'nin köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
   const ekranAdi = anaEkranda ? 'bugun' : yol === '/yol' ? 'konular' : yol.split('/')[1] || 'bugun'
 
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
@@ -476,9 +476,9 @@ export default function App() {
       </nav>
       )}
 
-      {/* Kâmil panel ekranlarında başlığın kendisi olduğu için köşedeki
+      {/* Çizbi panel ekranlarında başlığın kendisi olduğu için köşedeki
           kopyası yalnızca orada gizleniyor. Diğer ekranlarda başlık yok,
-          Kâmil köşede kalmalı. */}
+          Çizbi köşede kalmalı. */}
       {!basliktaKalemVar && <KalemKosede profil={profil} ekran={ekranAdi} />}
 
       <HesapYapragi

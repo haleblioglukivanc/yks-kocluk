@@ -70,10 +70,10 @@
 }
 
 .yol-kamil { position: absolute; width: 56px; pointer-events: none; z-index: 1; transition: left 0.5s cubic-bezier(0.2, 0.8, 0.2, 1), top 0.5s; }
-/* Durak sağdaysa Kâmil aynalanır; kolu ve bakışı durağa döner. */
+/* Durak sağdaysa Çizbi aynalanır; kolu ve bakışı durağa döner. */
 .yol-kamil--ayna { transform: scaleX(-1); }
 
-/* Anlatıcı: kartın altında sabit duran balon, Kâmil konuşur */
+/* Anlatıcı: kartın altında sabit duran balon, Çizbi konuşur */
 .yol-balon {
   position: sticky; bottom: calc(env(safe-area-inset-bottom) + 4.25rem);
   display: flex; gap: 0.75rem; align-items: center;

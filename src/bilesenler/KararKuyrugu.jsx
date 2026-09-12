@@ -56,7 +56,7 @@ export default function KararKuyrugu({ onOgrenciAc }) {
             <p className="kuyruk-bitis-baslik">Bugünlük bitti</p>
             <p className="kuyruk-bitis-alt">
               {verilen > 0 ? `${verilen} karar verdin.` : 'Bekleyen karar yok.'}
-              {' '}Yeni bir şey olursa Kâmil söyler.
+              {' '}Yeni bir şey olursa Çizbi söyler.
             </p>
           </div>
         </Kart>

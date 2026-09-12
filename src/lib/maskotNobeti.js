@@ -1,10 +1,10 @@
 import { useSyncExternalStore } from 'react'
 
-/* Bir ekranda iki Kâmil olmaz. Başlıktaki Kâmil'i App yol bakarak gizliyor
+/* Bir ekranda iki Çizbi olmaz. Başlıktaki Çizbi'yi App yol bakarak gizliyor
    ama sekme içindeki ekranlar (konu yolu gibi) App'ten görünmüyor. Bu yüzden
-   ekran kendisi "Kâmil bende" diyor, köşedeki kopya de kenara çekiliyor.
+   ekran kendisi "Çizbi bende" diyor, köşedeki kopya de kenara çekiliyor.
 
-   Sayaç tutuluyor: iki ekran üst üste açılıp biri kapanınca köşedeki Kâmil
+   Sayaç tutuluyor: iki ekran üst üste açılıp biri kapanınca köşedeki Çizbi
    erken geri gelmesin. */
 
 let sayac = 0
@@ -34,7 +34,7 @@ function abone(f) {
 
 const oku = () => sayac > 0
 
-/** Ekranda başka bir Kâmil var mı? */
+/** Ekranda başka bir Çizbi var mı? */
 export function useMaskotDevrildiMi() {
   return useSyncExternalStore(abone, oku, () => false)
 }

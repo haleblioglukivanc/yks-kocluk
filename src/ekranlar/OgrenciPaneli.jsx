@@ -108,7 +108,7 @@ export default function OgrenciPaneli({
       const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti', {
         p_ogrenci_id: hedefId,
       })
-      // Kâmil artık uygulama kabuğunda, köşede duruyor; burada sadece veri
+      // Çizbi artık uygulama kabuğunda, köşede duruyor; burada sadece veri
       if (bugun) setOzet(bugun)
 
       // Vekaletteyken çağırmıyoruz: RPC auth.uid()'e bakar, koç öğrenci
@@ -199,7 +199,7 @@ export default function OgrenciPaneli({
               ) : (
                 <>
                   <strong>Günü tamamla</strong>
-                  <span>Rutinler · çözülen soru · Kâmil'in özeti</span>
+                  <span>Rutinler · çözülen soru · Çizbi'nin özeti</span>
                 </>
               )}
             </button>

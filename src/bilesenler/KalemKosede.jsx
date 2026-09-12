@@ -5,7 +5,7 @@ import Kalem, { KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 /**
- * Kâmil ziyaretçi: Bugün dışındaki ekranlarda yalnız o ekrana ait bir
+ * Çizbi ziyaretçi: Bugün dışındaki ekranlarda yalnız o ekrana ait bir
  * sözü varsa köşeden gelir, baloncukla söyler, "Tamam" deyince gider.
  * Sözü yoksa ekranda hiç yok; boşta bekleyen düğme kalktı.
  */
@@ -19,7 +19,7 @@ export default function KalemKosede({ profil, ekran = 'bugun' }) {
 
   const yukle = useCallback(async () => {
     if (!profil?.id) return
-    /* Ekranda zaten bir Kâmil varsa buradan hiç sorgu atma: yoksa kural
+    /* Ekranda zaten bir Çizbi varsa buradan hiç sorgu atma: yoksa kural
        motoru ikinci kez çalışıp kalem_olaylari'na çift kayıt atıyor ve
        gunluk_limit tek girişte tükeniyor. */
     if (ekrandaMaskotVar) return
@@ -67,7 +67,7 @@ export default function KalemKosede({ profil, ekran = 'bugun' }) {
     yukle()
   }, [yukle])
 
-  /* Konu yolu gibi ekranlar Kâmil'i kendi içinde gösteriyor; köşedeki
+  /* Konu yolu gibi ekranlar Çizbi'yi kendi içinde gösteriyor; köşedeki
      kopya orada fazlalık olur. */
   if (!profil || ekrandaMaskotVar || !olay || !acik) return null
 

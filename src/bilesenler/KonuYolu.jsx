@@ -38,7 +38,7 @@ function tarihKisa(t) {
   return new Date(t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
-/* Kâmil'in söylediği cümle. Öğrenciye "sen", koça "öğrenci" diye konuşur. */
+/* Çizbi'nin söylediği cümle. Öğrenciye "sen", koça "öğrenci" diye konuşur. */
 function soz(rol, durak, bolge, olay) {
   const ben = rol === 'ogrenci'
   if (olay === 'bolge') return ben
@@ -92,7 +92,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const haritaRef = useRef(null)
   const [cizgi, setCizgi] = useState({ soluk: '', renkli: '', kamil: null, w: 0, h: 0 })
 
-  /* Haritada Kâmil zaten var: köşedeki kopyası bu ekranda görünmesin. */
+  /* Haritada Çizbi zaten var: köşedeki kopyası bu ekranda görünmesin. */
   useEffect(() => maskotuDevral(), [])
 
   const yukle = useCallback(async () => {
@@ -139,7 +139,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
         else soluk += seg
       }
       const k = simdiki ? pts.find((p) => p.d.id === simdiki.id) : null
-      /* Durak sağ yarıdaysa Kâmil soluna geçer ve sağı gösterir (aynalanır);
+      /* Durak sağ yarıdaysa Çizbi soluna geçer ve sağı gösterir (aynalanır);
          sol yarıdaysa sağında durur, kolu zaten sola uzanır. */
       const solda = Boolean(k) && k.x > h.width / 2
       setCizgi({
@@ -262,7 +262,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
             style={{ left: cizgi.kamil.x, top: cizgi.kamil.y }}
             aria-hidden="true"
           >
-            {/* Haritadaki Kâmil durağı gösterir; konuşan Kâmil balondaki. */}
+            {/* Haritadaki Çizbi durağı gösterir; konuşan Çizbi balondaki. */}
             <Kalem ruh={ruh === 'kutlama' ? 'kutlama' : 'isaret'} boyut={56} />
           </div>
         )}

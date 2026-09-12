@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-// Kâmil — YKS koçluk platformunun maskotu (v2: mavi silgi, iri gözler).
-export const KALEM_ADI = 'Kâmil';
+// Çizbi — YKS koçluk platformunun maskotu (v2: mavi silgi, iri gözler).
+export const KALEM_ADI = 'Çizbi';
 
 export const RUHLAR = [
   'bekliyor', 'dusunuyor', 'sevinc', 'sasirdi',

@@ -2,7 +2,7 @@ import { supabase } from './supabase.js'
 import { kalemNeDesin, olayKaydiOlustur, kuralEylemi, kuralEkrani } from './kalem-kurallari.js'
 
 /**
- * Kâmil'in ne diyeceğini belirler.
+ * Çizbi'nin ne diyeceğini belirler.
  *
  * Önemli: bugün gösterilmiş ama kapatılmamış bir mesaj varsa yenisi
  * üretilmez, duran mesaj geri döner. Aksi halde mesaj bir kez görünüp

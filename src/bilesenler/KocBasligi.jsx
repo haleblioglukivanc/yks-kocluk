@@ -14,7 +14,7 @@ import { maskotuDevral } from '../lib/maskotNobeti.js'
  * alsaydık hangisinin dikkat istediği anlaşılmazdı.
  */
 
-/* Kâmil'in kural motorundan gelen sözü yoksa günün manşetini kendimiz
+/* Çizbi'nin kural motorundan gelen sözü yoksa günün manşetini kendimiz
    kuruyoruz. Sıra önemli: önce dikkat isteyen şey, sonra iyi haber. */
 function varsayilanSoz(ozet) {
   if (!ozet) return { ruh: 'bekliyor', mesaj: 'Güne bakıyorum.' }
@@ -73,7 +73,7 @@ export default function KocBasligi({ profil, ozet, onGit }) {
     yukle()
   }, [yukle])
 
-  // Kâmil başlıkta: köşedeki kopya kenara çekilsin.
+  // Çizbi başlıkta: köşedeki kopya kenara çekilsin.
   useEffect(() => maskotuDevral(), [])
 
   const soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilanSoz(ozet)

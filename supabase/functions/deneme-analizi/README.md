@@ -5,7 +5,7 @@ görevler veritabanındaki kural katmanında (`deneme_analizi_hazirla`) hesaplan
 fonksiyon yalnız koça dönük 2-3 cümlelik bulguyu modelden ister ve aynı satıra yazar.
 
 ## Sınırlar
-- Çıktı **koça** gider. Öğrenciye giden Kâmil cümlesi `deneme_analizi_karar` içinde
+- Çıktı **koça** gider. Öğrenciye giden Çizbi cümlesi `deneme_analizi_karar` içinde
   şablondan üretilir; model metni öğrenciye hiç inmez.
 - Koç onaylamadan (`deneme_analizi_karar('onayla')`) öğrenciye görev de mesaj da gitmez.
 - Sağlayıcı anahtarı tanımlı değilse fonksiyon `atlandi` döner; sistem kural

@@ -2,10 +2,10 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 
 /* Koçun karar kuyruğundan gönderdiği mesaj, öğrenci uygulamayı açtığı anda
-   koyu başlıkta Kâmil'in cümlesinin yerine çıkar: koç yazdıysa o gün koç
+   koyu başlıkta Çizbi'nin cümlesinin yerine çıkar: koç yazdıysa o gün koç
    konuşur. Mesaj kutusuna girmesini beklemiyoruz: geri dönmesi istenen
    öğrenci zaten kutuya bakmayan öğrenci. Okundu işaretlenince başlık
-   Kâmil'e döner; mesaj kutuda kalmaya devam eder. */
+   Çizbi'ye döner; mesaj kutuda kalmaya devam eder. */
 
 export function useKocMesaji(ogrenciId, etkin = true) {
   const [mesaj, setMesaj] = useState(null)

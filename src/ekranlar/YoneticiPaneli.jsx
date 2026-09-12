@@ -269,7 +269,7 @@ function Sistem({ s }) {
 
         <li className="liste-satir">
           <div>
-            <span className="liste-ad">Kâmil olayları</span>
+            <span className="liste-ad">Çizbi olayları</span>
             <span className="liste-alt">
               son 7 günde {s.kalem_olay_7g} tetiklenme · {s.kalem_kapatilan_7g} tanesi kapatıldı
             </span>

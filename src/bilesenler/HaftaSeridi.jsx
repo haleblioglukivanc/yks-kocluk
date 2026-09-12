@@ -10,7 +10,7 @@ import GunHedefleri from './GunHedefleri.jsx'
  * geliyordu; ızgara koçun planlama aracı, orada kalıyor. Burada yedi gün
  * bir şerit, altında seçili günün listesi. Bugün seçiliyken liste
  * panelin canlı verisinden (ozet.gorevler) çizilir ki tik anında
- * Sıradaki kartı ve Kâmil'le aynı sayıyı görsün; diğer günler haftalık
+ * Sıradaki kartı ve Çizbi'yle aynı sayıyı görsün; diğer günler haftalık
  * sorgudan gelir. İki durumda da aynı GunHedefleri.
  */
 

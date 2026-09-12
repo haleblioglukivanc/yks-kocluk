@@ -92,7 +92,7 @@ export default function Bildirimler({ profil, onGit }) {
       {liste === null ? (
         <Yukleniyor />
       ) : liste.length === 0 ? (
-        <Bos baslik="Bekleyen bir şey yok" aciklama="Yeni bir şey olursa Kâmil söyler." />
+        <Bos baslik="Bekleyen bir şey yok" aciklama="Yeni bir şey olursa Çizbi söyler." />
       ) : (
         <ul className="bildirim-liste">
           {liste.map((o) => (

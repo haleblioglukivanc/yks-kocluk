@@ -13,10 +13,10 @@ import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
  * kim olduğunu zaten biliyor; orada kart ayna oluyor, alet değil.
  *
  * Bunun yerine ekranın tepesi tek bir soruyu cevaplıyor: şimdi ne yapmalıyım.
- * Cümleyi Kâmil kuruyor. Kural motorunun söyleyecek bir sözü varsa o
+ * Cümleyi Çizbi kuruyor. Kural motorunun söyleyecek bir sözü varsa o
  * öncelikli; yoksa sıradaki iş yazılıyor.
  *
- * Kâmil burada olduğu için köşedeki kopyası öğrenci rolünde gizleniyor:
+ * Çizbi burada olduğu için köşedeki kopyası öğrenci rolünde gizleniyor:
  * bir ekranda iki maskot olmaz.
  */
 
@@ -26,7 +26,7 @@ function siradakiIs(ozet) {
   return (ozet?.gorevler ?? []).find((g) => g.durum !== 'tamamlandi') ?? null
 }
 
-/* Kâmil'in kendi cümlesi yoksa sıradaki işi söyler. Ses tonu kuralları
+/* Çizbi'nin kendi cümlesi yoksa sıradaki işi söyler. Ses tonu kuralları
    kural motorundakiyle aynı: suçlama yok, ünlem yok, kıyas yok. */
 function varsayilanSoz(ozet, saat) {
   if (!ozet) return { ruh: 'bekliyor', mesaj: 'Bugüne bakıyorum.' }
@@ -63,9 +63,9 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
 
   const yukle = useCallback(async () => {
     if (!profil?.id || !ozet) return
-    /* Vekalette Kâmil'in olay kaydı tutulmaz: kalem_olaylari politikası
+    /* Vekalette Çizbi'nin olay kaydı tutulmaz: kalem_olaylari politikası
        profil_id = auth.uid() olduğu için motor koçun kendi maskot
-       satırlarına yazardı. Kâmil konuşmaya devam eder (varsayilanSoz),
+       satırlarına yazardı. Çizbi konuşmaya devam eder (varsayilanSoz),
        sadece kayıt tutmaz. */
     if (vekaleten) {
       setOlay(null)
@@ -84,8 +84,8 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
     yukle()
   }, [yukle])
 
-  /* Kâmil burada görünüyor: nöbeti devral ki köşedeki kopya kenara çekilsin.
-     Devir yapılmazsa iki Kâmil aynı anda konuşur ve günlük mesaj limiti
+  /* Çizbi burada görünüyor: nöbeti devral ki köşedeki kopya kenara çekilsin.
+     Devir yapılmazsa iki Çizbi aynı anda konuşur ve günlük mesaj limiti
      tek girişte tükenir. */
   useEffect(() => maskotuDevral(), [])
 
@@ -117,7 +117,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   /* Selam satırı: ad ve tarih. Öğrenci kim olduğunu biliyor ama ekranın
      tepesi "bugün" demeli; tarih o işi görüyor. Zemin koyu: sıcak amber
      denendi, üstteki koyu şeritle iki parça görünüyordu ve yazılar
-     okunmuyordu. Sıcaklık tarih rengine ve Kâmil'e kaldı. Sınava kalan gün burada
+     okunmuyordu. Sıcaklık tarih rengine ve Çizbi'ye kaldı. Sınava kalan gün burada
      değil — sınav tarihi henüz kayıtta yok, uydurmuyoruz. */
   const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
@@ -142,7 +142,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
           </p>
 
           {/* Genel Başla düğmesi kalktı: sıradaki iş hemen alttaki kartta ve
-              düğmesi orada. Ekranda tek birincil düğme olur. Kâmil'in
+              düğmesi orada. Ekranda tek birincil düğme olur. Çizbi'nin
               kural motorundan gelen kendi eylemi varsa o burada kalır. */}
           <div className="ob-dugmeler">
             {kocKonusuyor && (

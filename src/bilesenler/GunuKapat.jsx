@@ -11,14 +11,14 @@ import BugunCozulen from './BugunCozulen.jsx'
  * Rutin işaretleme ve çözülen soru girişi eskiden Bugün'de iki ayrı kart
  * olarak duruyordu; gün içinde sürekli görünüyor ama günde bir kez, akşam
  * dolduruluyordu. Buraya, üç adımlık bir alt sayfaya taşındı:
- *   1 rutinler  2 çözülen soru  3 Kâmil'in özeti + "Günü kapat"
+ *   1 rutinler  2 çözülen soru  3 Çizbi'nin özeti + "Günü kapat"
  * Kartlar aynı bileşenler (GunlukRutinler, BugunCozulen); yalnız kap değişti.
  * Koçun öğrenci gözüyle ekranı da bunu çizer, salt okunur.
  *
  * Günü kapatan öğrenci değil, saat: gece 00:05'te sistem her öğrencinin
  * gününü kapatır (private.gunleri_kapat). Öğrenci bu akışı bitirdiyse
  * gun_kapanis'a tam=true yazılır, bitirmediyse gece işi tam=false yazar.
- * Koç listede otomatik görür; Kâmil 22:00'den sonra hatırlatır.
+ * Koç listede otomatik görür; Çizbi 22:00'den sonra hatırlatır.
  * "Tamamlanan" gün yeniden açılıp düzeltilebilir; upsert aynı satırı günceller.
  */
 
