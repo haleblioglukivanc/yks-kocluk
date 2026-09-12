@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import KapsamSecimi from '../bilesenler/KapsamSecimi.jsx'
+import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi, { PERIYOTLAR } from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -101,6 +102,9 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
             onRozetler={() => setSekme('rozetler')}
           />
           <Program ogrenci={ogrenci} />
+          {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
+              vermişim. Yeni görev yazarken elindekine bakmak için. */}
+          <OgrenciKaynaklari ogrenciId={ogrenci.id} rol="koc" />
         </>
       )}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}

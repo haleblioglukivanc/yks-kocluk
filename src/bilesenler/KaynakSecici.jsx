@@ -58,7 +58,7 @@ export default function KaynakSecici({
   const [liste, setListe] = useState(null)
   const [baglam, setBaglam] = useState(null)
   const [arama, setArama] = useState('')
-  const [tumunuAc, setTumunuAc] = useState(false)
+  const [tumDersi, setTumDersi] = useState(false)
 
   useEffect(() => {
     if (!ogrenciId || !dersId) {
@@ -95,7 +95,7 @@ export default function KaynakSecici({
   /* Ders değişince arama ve açık bölüm sıfırlanıyor: koç yeni derse
      baktığında liste tepeden başlasın. */
   useEffect(() => {
-    setTumunuAc(false)
+    setTumDersi(false)
     setArama('')
   }, [dersId])
 
@@ -117,16 +117,23 @@ export default function KaynakSecici({
   const durum = baglam?.konu_durumu ?? 'baslanmadi'
   const seviye = baglam?.seviye_onerisi ?? null
 
-  /* Kütüphane 240+ kaynağa çıktı: ders bazlı ilgililik yetmiyor, TYT
-     görevinde AYT kitapları üste karışıyordu. Üst bölüm hem dersi hem
-     kapsamı tutanlar; aynı dersin öbür kapsamı alt bölümde kalıyor. */
+  /* Kütüphane 240+ kaynağa çıktı. Hepsini alt alta dökmek görev formunu
+     ekranlar boyu uzatıyordu, o yüzden liste arama öncelikli: varsayılanda
+     yalnızca ilk üç öneri duruyor, gerisi arama kutusundan geliyor.
+
+     Üst bölüm hem dersi hem kapsamı tutanlar; TYT görevinde AYT kitabı
+     öneri sırasına karışmıyor ama arandığında yine bulunuyor. */
   const dersinkiler = suzulmus.filter((k) => k.ilgili && k.kapsam_uyumu)
-  const digerleri = suzulmus.filter((k) => !(k.ilgili && k.kapsam_uyumu))
   const dersAdi = (liste.find((k) => k.ilgili) ?? {}).ders_ad ?? 'Bu ders'
   const dersKapsami = kapsamKisa((liste.find((k) => k.ilgili && k.kapsam_uyumu) ?? {}).kapsam)
-  /* Arama yapılıyorsa alt bölüm kendiliğinden açılıyor: koç adıyla
-     aradığı kaynağı kapalı bir başlığın altında kaybetmesin. */
-  const digerAcik = tumunuAc || Boolean(arama.trim())
+
+  const araniyor = Boolean(arama.trim())
+  const ONERI_ADEDI = 3
+  const gosterilen = araniyor
+    ? suzulmus.slice(0, 25)
+    : tumDersi
+      ? dersinkiler
+      : dersinkiler.slice(0, ONERI_ADEDI)
 
   const satir = (k) => (
     <div key={k.id}>
@@ -155,7 +162,7 @@ export default function KaynakSecici({
 
   return (
     <div className="kaynak-secici">
-      {konuId && dersinkiler.length > 0 && (
+      {konuId && dersinkiler.length > 0 && !araniyor && (
         <p className="kaynak-oneri">
           <span className="kaynak-oneri-simge" aria-hidden="true">
             ✏️
@@ -166,7 +173,7 @@ export default function KaynakSecici({
         </p>
       )}
 
-      {dersinkiler.length > 0 &&
+      {dersinkiler.length > 0 && !araniyor &&
         (seviye ? (
           <p className="kaynak-oneri kaynak-oneri--sessiz">
             Son denemelere göre <strong>{SEVIYE_ADI[seviye]}</strong> seviyesi uygun görünüyor.
@@ -178,16 +185,14 @@ export default function KaynakSecici({
           </p>
         ))}
 
-      {liste.length > 6 && (
-        <input
-          type="search"
-          className="kaynak-ara"
-          value={arama}
-          onChange={(e) => setArama(e.target.value)}
-          placeholder="Kaynak adı veya yayınevi ara"
-          aria-label="Kaynaklarda ara"
-        />
-      )}
+      <input
+        type="search"
+        className="kaynak-ara"
+        value={arama}
+        onChange={(e) => setArama(e.target.value)}
+        placeholder={`Kaynak ara — ${liste.length} kaynak`}
+        aria-label="Kaynaklarda ara"
+      />
 
       {liste.length === 0 ? (
         <p className="kaynak-oneri kaynak-oneri--sessiz">
@@ -195,38 +200,45 @@ export default function KaynakSecici({
         </p>
       ) : (
         <div className="kaynak-liste">
-          {dersinkiler.length > 0 ? (
-            <>
-              <p className="kaynak-ayrac">
-                {dersAdi} kaynakları{dersKapsami ? ` · ${dersKapsami}` : ''} ({dersinkiler.length})
-              </p>
-              {dersinkiler.map(satir)}
-            </>
-          ) : (
+          <p className="kaynak-ayrac">
+            {araniyor
+              ? `${suzulmus.length} sonuç`
+              : dersinkiler.length === 0
+                ? 'Bu derse ait kaynak yok — yukarıdan ara'
+                : `${dersAdi}${dersKapsami ? ` · ${dersKapsami}` : ''} için öneriler`}
+          </p>
+
+          {gosterilen.map(satir)}
+
+          {araniyor && suzulmus.length === 0 && (
             <p className="kaynak-oneri kaynak-oneri--sessiz">
-              Bu derse ait kaynak yok. Aşağıdan başka bir dersin kaynağını da seçebilirsin.
+              Aradığın adla eşleşen kaynak yok. Kütüphanede olmayan bir kitabı
+              aşağıdan ekleyebilirsin.
             </p>
           )}
 
-          {digerleri.length > 0 && (
-            <>
-              <button
-                type="button"
-                className="kaynak-ayrac kaynak-ayrac--dugme"
-                onClick={() => setTumunuAc((a) => !a)}
-                aria-expanded={digerAcik}
-              >
-                <span>Kütüphanenin geri kalanı ({digerleri.length}) — diğer kapsam ve dersler</span>
-                <span aria-hidden="true">{digerAcik ? '▾' : '▸'}</span>
-              </button>
-              {digerAcik && digerleri.map(satir)}
-            </>
+          {araniyor && suzulmus.length > 25 && (
+            <p className="kaynak-oneri kaynak-oneri--sessiz">
+              İlk 25 sonuç gösteriliyor; aramayı daraltırsan kalanlar da gelir.
+            </p>
           )}
 
-          {suzulmus.length === 0 && (
-            <p className="kaynak-oneri kaynak-oneri--sessiz">
-              Aradığın adla eşleşen kaynak yok.
-            </p>
+          {/* Öneriler yetmediğinde dersin tamamı; arama sırasında gizli,
+              orada zaten kütüphanenin tamamında geziniliyor. */}
+          {!araniyor && dersinkiler.length > ONERI_ADEDI && (
+            <button
+              type="button"
+              className="kaynak-ayrac kaynak-ayrac--dugme"
+              onClick={() => setTumDersi((a) => !a)}
+              aria-expanded={tumDersi}
+            >
+              <span>
+                {tumDersi
+                  ? 'Yalnızca önerileri göster'
+                  : `${dersAdi} kaynaklarının tümü (${dersinkiler.length})`}
+              </span>
+              <span aria-hidden="true">{tumDersi ? '▾' : '▸'}</span>
+            </button>
           )}
         </div>
       )}

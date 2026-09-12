@@ -14,6 +14,7 @@ import { Kart } from '../bilesenler/Ortak.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import RaporTepesi from '../bilesenler/RaporTepesi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
+import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
@@ -203,6 +204,9 @@ export default function OgrenciPaneli({
               )}
             </button>
           )}
+          {/* Rutinler Günü tamamla akışında; elindeki kitaplar onun altında,
+              günün işi bittikten sonra bakılacak yerde. */}
+          <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" />
           {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
           <HaftalikIlham goster="soz" />
         </>
