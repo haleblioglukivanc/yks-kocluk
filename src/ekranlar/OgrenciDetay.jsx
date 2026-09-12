@@ -560,6 +560,10 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
             const kendi = konular.filter((k) => k.ders_id === d.id)
             if (kendi.length === 0) return null
             /* Tek kapsamlı derste başlık çizilmiyor: gereksiz katman. */
+            /* Kapsam hem optgroup başlığında hem seçeneğin kendi
+               metninde: TYT ve AYT'de aynı adlı konular var
+               ("2. Dereceden Denklemler"), optgroup başlığı da her
+               tarayıcıda aynı belirginlikte görünmüyor. */
             return grup.dersler.length === 1 ? (
               kendi.map((k) => (
                 <option key={k.id} value={k.id}>{k.ad}</option>
@@ -567,7 +571,9 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
             ) : (
               <optgroup key={d.id} label={dersKapsamAdi(d)}>
                 {kendi.map((k) => (
-                  <option key={k.id} value={k.id}>{k.ad}</option>
+                  <option key={k.id} value={k.id}>
+                    {k.ad} · {dersKapsamAdi(d)}
+                  </option>
                 ))}
               </optgroup>
             )
@@ -705,8 +711,8 @@ function Konular({ ogrenci }) {
                     <div key={d.id} className="ders-kapsam">
                       {g.dersler.length > 1 && (
                         <p className="ders-kapsam-basi">
-                          {dersKapsamAdi(d)}
-                          <span>{konuSayisi(d)} konu</span>
+                          <span className="ders-kapsam-rozet">{dersKapsamAdi(d)}</span>
+                          <span className="ders-kapsam-sayi">{konuSayisi(d)} konu</span>
                         </p>
                       )}
                       <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" />

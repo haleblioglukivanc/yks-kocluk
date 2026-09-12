@@ -117,8 +117,8 @@ export default function KonuHaritasi({ profilId }) {
                     <div key={d.dersId} className='ders-kapsam'>
                       {g.dersler.length > 1 && (
                         <p className='ders-kapsam-basi'>
-                          {dersKapsamAdi(d)}
-                          <span>{d.tamamlandi}/{d.toplam}</span>
+                          <span className='ders-kapsam-rozet'>{dersKapsamAdi(d)}</span>
+                          <span className='ders-kapsam-sayi'>{d.tamamlandi}/{d.toplam}</span>
                         </p>
                       )}
                       <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
