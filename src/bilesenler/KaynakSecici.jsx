@@ -117,9 +117,13 @@ export default function KaynakSecici({
   const durum = baglam?.konu_durumu ?? 'baslanmadi'
   const seviye = baglam?.seviye_onerisi ?? null
 
-  const dersinkiler = suzulmus.filter((k) => k.ilgili)
-  const digerleri = suzulmus.filter((k) => !k.ilgili)
+  /* Kütüphane 240+ kaynağa çıktı: ders bazlı ilgililik yetmiyor, TYT
+     görevinde AYT kitapları üste karışıyordu. Üst bölüm hem dersi hem
+     kapsamı tutanlar; aynı dersin öbür kapsamı alt bölümde kalıyor. */
+  const dersinkiler = suzulmus.filter((k) => k.ilgili && k.kapsam_uyumu)
+  const digerleri = suzulmus.filter((k) => !(k.ilgili && k.kapsam_uyumu))
   const dersAdi = (liste.find((k) => k.ilgili) ?? {}).ders_ad ?? 'Bu ders'
+  const dersKapsami = kapsamKisa((liste.find((k) => k.ilgili && k.kapsam_uyumu) ?? {}).kapsam)
   /* Arama yapılıyorsa alt bölüm kendiliğinden açılıyor: koç adıyla
      aradığı kaynağı kapalı bir başlığın altında kaybetmesin. */
   const digerAcik = tumunuAc || Boolean(arama.trim())
@@ -193,7 +197,9 @@ export default function KaynakSecici({
         <div className="kaynak-liste">
           {dersinkiler.length > 0 ? (
             <>
-              <p className="kaynak-ayrac">{dersAdi} kaynakları</p>
+              <p className="kaynak-ayrac">
+                {dersAdi} kaynakları{dersKapsami ? ` · ${dersKapsami}` : ''} ({dersinkiler.length})
+              </p>
               {dersinkiler.map(satir)}
             </>
           ) : (
@@ -210,7 +216,7 @@ export default function KaynakSecici({
                 onClick={() => setTumunuAc((a) => !a)}
                 aria-expanded={digerAcik}
               >
-                <span>Kütüphanenin geri kalanı ({digerleri.length})</span>
+                <span>Kütüphanenin geri kalanı ({digerleri.length}) — diğer kapsam ve dersler</span>
                 <span aria-hidden="true">{digerAcik ? '▾' : '▸'}</span>
               </button>
               {digerAcik && digerleri.map(satir)}

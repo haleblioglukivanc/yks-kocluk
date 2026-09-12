@@ -1,0 +1,1890 @@
+{
+  "_aciklama": [
+    "Piyasa kaynak kütüphanesi önerisi. Her satır bir kitap künyesi:",
+    "ad, yayınevi, ders, kapsam, faz ve seviye. İçerik taşımıyoruz,",
+    "yalnızca künye — koç görevde 'şu kitabın şu aralığı' diyebilsin.",
+    "telif = dis (üçüncü taraf, telifli), bicim = basili.",
+    "Seviye: 1 Temel, 2 Sınav ayarı, 3 Ayırt edici.",
+    "Sıra önemli: her ders/kapsam için en çok kullanılan kaynak üstte."
+  ],
+  "kaynaklar": [
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "konu_anlatimi",
+      "seviye": 1,
+      "yayinevi": "Hız ve Renk",
+      "ad": "TYT Türkçe Konu Anlatımlı"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "fasikul",
+      "seviye": 2,
+      "yayinevi": "Şenol Hoca",
+      "ad": "Paragraf Soru Bankası",
+      "aciklama": "Yalnızca paragraf; paragraf açığı olan öğrenci için"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt_ayt",
+      "faz": "fasikul",
+      "seviye": 2,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT AYT Dil Bilgisi Soru Bankası",
+      "aciklama": "Yalnızca dil bilgisi"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Marka Yayınları",
+      "ad": "TYT Türkçe Branş Denemesi"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Acil Yayınları",
+      "ad": "TYT Matematiğin İlacı",
+      "aciklama": "Konu özetli, kademeli zorluk; temelden gelen öğrenci için"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "TYT Matematik Soru Bankası",
+      "aciklama": "Geniş soru havuzu, bol pratik"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Matematik Soru Bankası",
+      "aciklama": "Yorum ağırlıklı, çeldiricisi güçlü"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Apotemi",
+      "ad": "TYT Matematik Soru Bankası",
+      "aciklama": "Piyasanın en zorlayıcısı; 30+ net hedefi"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "TYT Matematik Tamamı Çözümlü Soru Bankası",
+      "aciklama": "Her sorunun çözümü kitabın içinde"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "konu_anlatimi",
+      "seviye": 1,
+      "yayinevi": "Karekök",
+      "ad": "TYT Matematik Konu Anlatımlı"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Marka Yayınları",
+      "ad": "TYT Matematik Branş Denemesi"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Matematik Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Apotemi",
+      "ad": "AYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "konu_anlatimi",
+      "seviye": 2,
+      "yayinevi": "Karekök",
+      "ad": "AYT Matematik Konu Anlatımlı"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Matematik Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Karekök",
+      "ad": "TYT AYT Geometri Soru Bankası",
+      "aciklama": "Geometride piyasa standardı"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "TYT AYT Geometri Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Apotemi",
+      "ad": "Geometri Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "TYT AYT Geometri Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "konu_anlatimi",
+      "seviye": 1,
+      "yayinevi": "Karekök",
+      "ad": "TYT AYT Geometri Konu Anlatımlı"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "TYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Fizik Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "AYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "konu_anlatimi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "AYT Fizik Konu Anlatımlı"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Hız ve Renk",
+      "ad": "TYT Kimya Soru Bankası",
+      "aciklama": "Renkli test sistemi; konuyu yeni öğrenen için"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "TYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Aydın Yayınları",
+      "ad": "TYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Kimya Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Çap Yayınları",
+      "ad": "AYT Kimya Plus Soru Bankası",
+      "aciklama": "Konu anlatımlı yapı"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Apotemi",
+      "ad": "AYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Aydın Yayınları",
+      "ad": "AYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Biyoloji Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "TYT Biyoloji Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Biyoloji Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT AYT Biyoloji Soru Bankası",
+      "aciklama": "Sarmal testler; iki oturum birlikte"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "AYT Biyoloji Tamamı Video Çözümlü Soru Kitabı"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Üç Dört Beş (345)",
+      "ad": "AYT Biyoloji Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Endemik Yayınları",
+      "ad": "AYT Biyoloji Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Benim Hocam",
+      "ad": "TYT Tarih Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt_ayt",
+      "faz": "konu_anlatimi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT AYT Tarih El Kitabı"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Tarih Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "konu_anlatimi",
+      "seviye": 1,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT Coğrafya El Kitabı"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Coğrafya Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "AYT Edebiyat Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Edebiyat Tamamı Çözümlü Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Edebiyat Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Edebiyat Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Tonguç Akademi",
+      "ad": "TYT Felsefe Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "TYT Felsefe Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "TYT Felsefe Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Felsefe Grubu Tamamı Çözümlü Soru Bankası",
+      "aciklama": "Felsefe + mantık + psikoloji + sosyoloji"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Felsefe Grubu Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Felsefe Grubu Soru Bankası"
+    },
+    {
+      "ders": "yks_mantik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Felsefe Grubu Tamamı Çözümlü Soru Bankası (Mantık)",
+      "aciklama": "Felsefe grubu kitabının mantık bölümü"
+    },
+    {
+      "ders": "yks_mantik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Mantık)"
+    },
+    {
+      "ders": "yks_mantik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Mantık)"
+    },
+    {
+      "ders": "yks_psikoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Felsefe Grubu Tamamı Çözümlü Soru Bankası (Psikoloji)"
+    },
+    {
+      "ders": "yks_psikoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Psikoloji)"
+    },
+    {
+      "ders": "yks_psikoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Psikoloji)"
+    },
+    {
+      "ders": "yks_sosyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Benim Hocam",
+      "ad": "AYT Felsefe Grubu Tamamı Çözümlü Soru Bankası (Sosyoloji)"
+    },
+    {
+      "ders": "yks_sosyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Limit Yayınları",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Sosyoloji)"
+    },
+    {
+      "ders": "yks_sosyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Bilgi Sarmal",
+      "ad": "AYT Felsefe Grubu Soru Bankası (Sosyoloji)"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Türkçe Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Matematik Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Matematik Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT AYT Geometri Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Fizik Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Fizik Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Kimya Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Kimya Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Biyoloji Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Biyoloji Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Tarih Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Tarih Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Coğrafya Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Coğrafya Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Edebiyat Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "TYT Felsefe Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Paraf Yayınları",
+      "ad": "AYT Felsefe Soru Kütüphanesi",
+      "aciklama": "Özet konu anlatımı + modüler testler"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Türkçe Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Matematik Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Matematik Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT AYT Geometri Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Fizik Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Fizik Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Kimya Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Kimya Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Biyoloji Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Biyoloji Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Tarih Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Tarih Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Coğrafya Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Coğrafya Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Edebiyat Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "TYT Felsefe Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Toprak Yayıncılık",
+      "ad": "AYT Felsefe Yeni Nesil Soru Bankası",
+      "aciklama": "Zorluk düzeyi piyasa ortalamasının üstünde"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Türkçe 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Matematik 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Matematik 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT AYT Geometri 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Fizik 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Fizik 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Kimya 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Kimya 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Biyoloji 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Biyoloji 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Tarih 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Tarih 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Coğrafya 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Coğrafya 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Edebiyat 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "TYT Felsefe 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sınav Yayınları",
+      "ad": "AYT Felsefe 3 Kademeli Soru Bankası",
+      "aciklama": "Öğren / yorumla / ilişkilendir kademeleri"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Türkçe Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Matematik Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Matematik Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT AYT Geometri Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Fizik Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Fizik Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Kimya Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Kimya Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Biyoloji Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Biyoloji Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Tarih Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Tarih Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Coğrafya Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Coğrafya Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Edebiyat Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "TYT Felsefe Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Okyanus Yayıncılık",
+      "ad": "AYT Felsefe Özel Ders Konseptli Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "TYT Matematik Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "AYT Matematik Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "TYT AYT Geometri Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "TYT Fizik Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "AYT Fizik Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "TYT Kimya Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "AYT Kimya Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "TYT Biyoloji Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Nitelik Yayınları",
+      "ad": "AYT Biyoloji Tersyüz Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "TYT Türkçe Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "TYT Matematik Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "AYT Matematik Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "TYT Kimya Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "AYT Kimya Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "TYT Biyoloji Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 3,
+      "yayinevi": "Kafa Dengi Yayınları",
+      "ad": "AYT Biyoloji Orta ve İleri Düzey Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "TYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "AYT Tarih Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "TYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "AYT Coğrafya Soru Bankası"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "AYT Edebiyat Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "TYT Felsefe Soru Bankası"
+    },
+    {
+      "ders": "yks_felsefe",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "Sonuç Yayınları",
+      "ad": "AYT Felsefe Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "YKS TYT Matematik Soru Kitabı"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "YKS AYT Matematik Soru Kitabı"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "YKS TYT AYT Geometri Soru Kitabı"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "YKS TYT Kimya Soru Kitabı"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Palme Yayınevi",
+      "ad": "YKS AYT Kimya Soru Kitabı"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "TYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "AYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "TYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "AYT Fizik Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "TYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Esen Yayınları",
+      "ad": "AYT Kimya Soru Bankası"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Orijinal Yayınları",
+      "ad": "TYT Türkçe Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Orijinal Yayınları",
+      "ad": "TYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Orijinal Yayınları",
+      "ad": "AYT Matematik Soru Bankası"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "soru_bankasi",
+      "seviye": 2,
+      "yayinevi": "Orijinal Yayınları",
+      "ad": "TYT AYT Geometri Soru Bankası"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "TYT Fizik Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "AYT Fizik Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "TYT Kimya Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "AYT Kimya Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "TYT Biyoloji Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "soru_bankasi",
+      "seviye": 1,
+      "yayinevi": "ENS Yayıncılık",
+      "ad": "AYT Biyoloji Destek Soru Bankası",
+      "aciklama": "Video konu anlatımı ve soru çözümü"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Türkçe Branş Denemesi"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Matematik Branş Denemesi"
+    },
+    {
+      "ders": "yks_matematik",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Matematik Branş Denemesi"
+    },
+    {
+      "ders": "yks_geometri",
+      "kapsam": "tyt_ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT AYT Geometri Branş Denemesi"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Fizik Branş Denemesi"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Fizik Branş Denemesi"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Kimya Branş Denemesi"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Kimya Branş Denemesi"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Biyoloji Branş Denemesi"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Biyoloji Branş Denemesi"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Tarih Branş Denemesi"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Tarih Branş Denemesi"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "TYT Coğrafya Branş Denemesi"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Coğrafya Branş Denemesi"
+    },
+    {
+      "ders": "yks_edebiyat",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "Özdebir Yayınları",
+      "ad": "AYT Edebiyat Branş Denemesi"
+    },
+    {
+      "ders": "yks_turkce",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Türkçe Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Fizik Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_fizik",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Fizik Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Kimya Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_kimya",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Kimya Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Biyoloji Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_biyoloji",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Biyoloji Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Tarih Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_tarih",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Tarih Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "tyt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "TYT Coğrafya Simülasyon Denemeleri"
+    },
+    {
+      "ders": "yks_cografya",
+      "kapsam": "ayt",
+      "faz": "brans_denemesi",
+      "seviye": 2,
+      "yayinevi": "3D Yayınları",
+      "ad": "AYT Coğrafya Simülasyon Denemeleri"
+    }
+  ]
+}
