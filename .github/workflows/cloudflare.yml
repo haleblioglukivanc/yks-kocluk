@@ -1,0 +1,33 @@
+# Cloudflare Workers'a otomatik yayın.
+#
+# Tek seferlik kurulum: depo ayarlarında iki secret tanımlanır —
+# CLOUDFLARE_API_TOKEN (Workers Scripts: Edit yetkili) ve
+# CLOUDFLARE_ACCOUNT_ID. Sonrasında main'e her push kendiliğinden yayınlar,
+# yerel makinede wrangler'a gerek kalmaz.
+name: Cloudflare yayın
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  yayinla:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - name: Wrangler deploy
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
