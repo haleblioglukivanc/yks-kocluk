@@ -14,7 +14,10 @@ import { FAZ_ADI } from '../lib/kaynak.js'
  *
  * Aynı bileşen iki ekranda: koçun öğrenci sayfasında (hangi kitabı
  * vermişim) ve öğrencinin kendi panelinde (elimde hangi kitaplar var).
- * Fark yalnızca başlık ve ilk cümle.
+ *
+ * Öğrenci tarafında yalnızca kitap adları var. Yayınevi, faz, son
+ * verilen aralık ve görev sayısı koçun takip verisi; öğrencinin bu
+ * ekranda yanıtladığı soru "elimde hangi kitaplar var", o kadar.
  */
 
 const KAPSAM = { tyt: 'TYT', ayt: 'AYT', tyt_ayt: 'TYT + AYT' }
@@ -69,6 +72,15 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci' }) {
       baslik={baslik}
       altBaslik={ben ? 'Görevlerde kullandığın kitaplar' : 'Verdiğin görevlerden birikenler'}
     >
+      {ben ? (
+        <ul className="liste kaynak-adlar">
+          {liste.map((k) => (
+            <li key={k.id} className="liste-satir">
+              <span className="liste-ad">{k.ad}</span>
+            </li>
+          ))}
+        </ul>
+      ) : (
       <ul className="liste">
         {liste.map((k) => {
           const alt = [
@@ -95,6 +107,7 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci' }) {
           )
         })}
       </ul>
+      )}
     </Kart>
   )
 }

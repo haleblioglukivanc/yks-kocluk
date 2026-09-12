@@ -233,21 +233,25 @@ export default function ProgramIzgarasi({
             })}
           </div>
 
-          {/* Seçili günün planı */}
-          <section className="prg-gun">
+          {/* Seçili günün planı. Bugünse başlık bandı amber tona geçer:
+              hangi günde olduğu ilk bakışta okunsun. */}
+          <section className={`prg-gun${seciliGun === bugun ? ' prg-gun--bugun' : ''}`}>
             <header className="prg-gun-basi">
               <div>
                 <h4 className="prg-gun-ad">{gunAdi(seciliGun, { weekday: 'long' })}</h4>
                 <span className="prg-gun-tarih">
                   {gunAdi(seciliGun, { day: 'numeric', month: 'long' })}
-                  {seciliGun === bugun ? ' · bugün' : ''}
                 </span>
               </div>
-              {gunSayimi.toplam > 0 && (
-                <span className="sayi prg-gun-sayac">{gunSayimi.biten}/{gunSayimi.toplam}</span>
-              )}
+              <div className="prg-gun-sag">
+                {seciliGun === bugun && <span className="prg-gun-bugun">bugün</span>}
+                {gunSayimi.toplam > 0 && (
+                  <span className="sayi prg-gun-sayac">{gunSayimi.biten}/{gunSayimi.toplam}</span>
+                )}
+              </div>
             </header>
 
+            <div className="prg-gun-govde">
             {gunListesi.length === 0 ? (
               <p className="prg-gun-bos">
                 {duzenlenebilir
@@ -298,6 +302,7 @@ export default function ProgramIzgarasi({
             {panelIcerik && !rutinPaneli && (
               <div className="prg-alt-panel" ref={acilirRef}>{panelIcerik}</div>
             )}
+            </div>
           </section>
 
           <p className="prg-ipucu">

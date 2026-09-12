@@ -528,18 +528,35 @@ main {
    Saat kolonu kaldırıldı: koçluk saat bazlı değil, gün bazlı
    yürüyor. Gün şeridi (.hafta-serit) öğrenci panelinden geliyor,
    burada yalnızca altındaki gün paneli tanımlanıyor. */
-.prg-gun { margin-top: 0.875rem; }
+.prg-gun {
+  margin-top: 0.875rem; overflow: hidden;
+  background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px;
+}
 .prg-gun-basi {
-  display: flex; align-items: baseline; justify-content: space-between;
-  gap: 0.75rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--cizgi);
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
+  padding: 0.7rem 0.85rem; background: var(--yuzey-2); border-bottom: 1px solid var(--cizgi);
 }
 .prg-gun-ad {
   margin: 0; font-family: var(--display); font-weight: 700;
-  font-size: 1.25rem; line-height: 1.15; letter-spacing: -0.02em;
+  font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.025em;
 }
-.prg-gun-tarih { display: block; font-size: var(--punto-mini); color: var(--soluk); margin-top: 0.1rem; }
-.prg-gun-sayac { font-size: var(--punto-kucuk); color: var(--soluk); }
+.prg-gun-tarih { display: block; font-size: var(--punto-mini); color: var(--grafit); margin-top: 0.15rem; }
+.prg-gun-sag { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
+.prg-gun-sayac { font-size: var(--punto-kucuk); color: var(--grafit); }
+.prg-gun-govde { padding: 0.15rem 0.85rem 0.85rem; }
 .prg-gun-bos { margin: 0.875rem 0 0; font-size: var(--punto-kucuk); color: var(--soluk); }
+
+/* Bugün: başlık bandı amber tona geçer. Amber geniş yüzey olmaz, bu
+   yüzden yalnızca band ve kenar — gövde nötr kalıyor. */
+.prg-gun--bugun { border-color: var(--sicak-kenar); }
+.prg-gun--bugun .prg-gun-basi { background: var(--sicak-zemin); border-bottom-color: var(--sicak-kenar); }
+.prg-gun--bugun .prg-gun-ad,
+.prg-gun--bugun .prg-gun-tarih { color: var(--sicak-metin); }
+.prg-gun-bugun {
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em;
+  color: var(--sicak-metin); border: 1px solid var(--sicak-kenar);
+  border-radius: 999px; padding: 0.1rem 0.5rem;
+}
 
 /* Gün listesindeki satır: öğrenci panelindeki .gorev-satir ile aynı
    tipografi, tek fark satırın tamamının dokunulabilir olması. */
@@ -990,10 +1007,10 @@ body[data-tema='panel'] {
    Gün şeridi yedi eşit sütun; gün adı telefonda bir tık küçük.
    ============================================================ */
 
-.prg-gun-ad { font-size: 1.15rem; }
+.prg-gun-ad { font-size: 1.4rem; }
 
 @media (min-width: 34rem) {
-  .prg-gun-ad { font-size: 1.35rem; }
+  .prg-gun-ad { font-size: 1.65rem; }
 }
 
 /* Çizbi ızgaranın üstüne binince hücreyi okumayı zorlaştırıyordu:
@@ -1335,7 +1352,8 @@ body[data-tema='panel'] {
    Rengi bilerek uyarı tonunda; koçun hangi bağlamda olduğundan bir an
    bile şüphe etmemesi gerekiyor. */
 .gozuyle-serit--vekalet {
-  position: sticky; top: 0; z-index: 20;
+  /* Üst şerit ~3.5rem: band onun altına yapışır, üstüne binmez. */
+  position: sticky; top: calc(env(safe-area-inset-top) + 3.4rem); z-index: 10;
   background: var(--sicak-zemin);
   border-color: var(--sicak-kenar);
 }
@@ -2067,7 +2085,13 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 /* ═══ Hafta şeridi ═══
    Yedi gün, her günde blok noktaları. Bugün serin çerçeveli, seçili gün
    dolu; geçmiş günler soluk. */
-.hafta-serit { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+/* Şerit artık zemini olan bir band: yedi gün bir arada okunuyor,
+   içindeki seçili gün kabarık, bugün amber. */
+.hafta-serit {
+  display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px;
+  background: var(--yuzey-2); border: 1px solid var(--cizgi);
+  border-radius: 14px; padding: 4px;
+}
 .hafta-gun {
   display: flex; flex-direction: column; align-items: center; gap: 2px;
   padding: 0.45rem 0 0.4rem; border-radius: 10px; border: 1px solid transparent;
@@ -2081,10 +2105,17 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .hafta-nokta--yok { border-style: dashed; opacity: 0.5; }
 .hafta-nokta-sayi { font-family: var(--mono); font-size: 0.62rem; color: var(--grafit); }
 .hafta-gun--gecmis { opacity: 0.6; }
-.hafta-gun--bugun { border-color: var(--serin); }
-.hafta-gun--bugun .hafta-gun-no { color: var(--serin-metin); }
-.hafta-gun--secili { background: var(--yuzey-2); border-color: var(--cizgi-2); opacity: 1; }
-.hafta-gun--secili.hafta-gun--bugun { border-color: var(--serin); background: color-mix(in srgb, var(--serin) 10%, transparent); }
+/* Bugün amber, seçili gün kabarık beyaz. İkisi aynı günse ikisi birden:
+   kabarık zemin + amber kenar. */
+.hafta-gun--bugun { background: var(--sicak-zemin); border-color: var(--sicak-kenar); }
+.hafta-gun--bugun .hafta-gun-ad,
+.hafta-gun--bugun .hafta-gun-no { color: var(--sicak-metin); }
+.hafta-gun--secili {
+  background: var(--yuzey); border-color: var(--cizgi-2); opacity: 1;
+  box-shadow: 0 1px 3px rgb(22 32 46 / 0.14);
+}
+.hafta-gun--secili .hafta-gun-ad { color: var(--grafit); }
+.hafta-gun--secili.hafta-gun--bugun { background: var(--yuzey); border-color: var(--sicak); }
 
 /* ═══ Günü kapat ═══
    Bugün'ün altındaki kapı ve üç adımlık alt sayfa. */
@@ -3419,7 +3450,10 @@ body[data-mod='gece'] .uygulama .kareli,
    ═══════════════════════════════════════════════════════════════ */
 
 .ust-serit {
-  position: sticky; top: 0; z-index: 5;
+  /* Üst şerit her zaman en üstte kalmalı: vekalet bandı (z-index 10)
+     top:0'a yapışınca zilin ve hesap ikonunun üstüne biniyor, tıklamayı
+     yutuyordu. Band artık şeridin altından başlıyor. */
+  position: sticky; top: 0; z-index: 30;
   background: var(--tepe-ust);
   padding-top: env(safe-area-inset-top);
 }
@@ -3622,8 +3656,9 @@ body[data-mod='gece'] .uygulama .siradaki { box-shadow: 0 14px 30px -10px rgba(0
 
 /* Hafta şeridi: düz zeminde, seçili gün beyaz bir fişle yükselir */
 .uygulama .hafta-gun { border-color: transparent; }
-.uygulama .hafta-gun--bugun { background: var(--yuzey); box-shadow: 0 1px 3px rgba(22, 32, 46, 0.12); }
-.uygulama .hafta-gun--secili { background: var(--yuzey); box-shadow: 0 2px 6px rgba(22, 32, 46, 0.16); border-color: var(--serin); }
+.uygulama .hafta-gun--bugun { background: var(--sicak-zemin); border-color: var(--sicak-kenar); box-shadow: none; }
+.uygulama .hafta-gun--secili { background: var(--yuzey); box-shadow: 0 2px 6px rgba(22, 32, 46, 0.16); border-color: var(--cizgi-2); }
+.uygulama .hafta-gun--secili.hafta-gun--bugun { border-color: var(--sicak); }
 .hafta-ipucu { margin: 0.6rem 0 0; text-align: center; font-size: var(--punto-mini); color: var(--soluk); }
 
 /* Günü tamamla: kesikli kenar yerine sessiz, düz bir şerit */
