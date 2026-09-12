@@ -22,7 +22,7 @@ const BICIM_IKONU = {
   basili: '📕',
 }
 
-export function KaynakKarti({ kaynak, soluk = false, eylem }) {
+export function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
   const eskimis = baglantiEskimis(kaynak)
   const adres = kaynakAdresi(kaynak)
 
@@ -46,6 +46,10 @@ export function KaynakKarti({ kaynak, soluk = false, eylem }) {
         {kaynak.yayinevi && <p className="kaynak-alt">{kaynak.yayinevi}</p>}
 
         <div className="kaynak-etiketler">
+          {/* Hangi dersin kaynağı: liste artık kütüphanenin tamamını
+              gösterdiği için ad tek başına yetmiyor. */}
+          {etiket && <span className="kaynak-et kaynak-et--ders">{etiket}</span>}
+
           <span className="kaynak-et kaynak-et--faz">{FAZ_ADI[kaynak.faz] ?? kaynak.faz}</span>
 
           {/* Seviye bilinmiyorsa hiç yazılmıyor. Boş alan boş kalsın,
@@ -71,7 +75,7 @@ export function KaynakKarti({ kaynak, soluk = false, eylem }) {
   )
 }
 
-export function KaynakSecimi({ kaynak, secili, onSec, soluk }) {
+export function KaynakSecimi({ kaynak, secili, onSec, soluk, etiket }) {
   return (
     <label className="kaynak-secim">
       <input
@@ -81,7 +85,7 @@ export function KaynakSecimi({ kaynak, secili, onSec, soluk }) {
         onChange={() => onSec(kaynak)}
       />
       <span className="kaynak-isaret" aria-hidden="true" />
-      <KaynakKarti kaynak={kaynak} soluk={soluk} />
+      <KaynakKarti kaynak={kaynak} soluk={soluk} etiket={etiket} />
     </label>
   )
 }

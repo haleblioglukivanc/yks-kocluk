@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
+import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 
 /**
  * Bugün'ün merkezi: tek görev, tek düğme.
@@ -19,14 +20,6 @@ import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk 
  * Öğrenci panelinde dokunulabilir, vekalette de aynı bileşen çizilir.
  */
 
-const TUR_ADI = {
-  konu_anlatimi: 'Konu anlatımı',
-  soru_cozumu: 'Soru çözümü',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Çalışma',
-}
 /* Günün halkası: biten/toplam görev. Sayaç çalışmıyorken kartın sol yanı;
    sayaç halkasıyla karışmasın diye eylem rengi (mavi), sayaçta amber. */
 function GunHalkasi({ biten, toplam }) {
@@ -145,7 +138,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
   const varsayilan = varsayilanDk(sira.tur)
   const digerler = SAYAC_SURELERI.filter((dk) => dk !== varsayilan)
   const etiket = [sira.ders, sira.konu].filter(Boolean).join(' · ')
-  const tur = TUR_ADI[sira.tur]
+  const tur = GOREV_TUR_OGRENCI[sira.tur]
   const kalanSoru =
     sira.hedef_adet && sira.hedef_adet > 0
       ? Math.max(0, sira.hedef_adet - (sira.yapilan_adet ?? 0))

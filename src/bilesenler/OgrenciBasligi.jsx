@@ -3,6 +3,7 @@ import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
 import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
+import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 
 /**
  * Öğrenci panelinin başlığı.
@@ -19,14 +20,6 @@ import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
  * bir ekranda iki maskot olmaz.
  */
 
-const TUR_ADI = {
-  konu_anlatimi: 'Konu anlatımı',
-  soru_cozumu: 'Soru çözümü',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Çalışma',
-}
 
 /** Bugünün ilk bitmemiş görevi. Sıra zaten durum + id'ye göre geliyor. */
 function siradakiIs(ozet) {
@@ -56,7 +49,7 @@ function varsayilanSoz(ozet, saat) {
   }
 
   const parcalar = [is?.ders, is?.konu].filter(Boolean).join(' · ')
-  const baslik = is?.baslik || parcalar || TUR_ADI[is?.tur] || 'Çalışma'
+  const baslik = is?.baslik || parcalar || GOREV_TUR_OGRENCI[is?.tur] || 'Çalışma'
   const adet =
     is?.hedef_adet && is.hedef_adet > 0
       ? ` — ${Math.max(0, is.hedef_adet - (is.yapilan_adet ?? 0))} soru kaldı`

@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import { dersGorunumu } from '../lib/dersGorunum.js'
 import GorevKaynagi from './GorevKaynagi.jsx'
+import { GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 
 export const PERIYOTLAR = ['09—11', '11—13', '14—16', '16—18', '19—21', '21—23']
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
@@ -329,14 +330,6 @@ export default function ProgramIzgarasi({
 }
 
 
-const TUR_ADI = {
-  konu_anlatimi: 'Konu anlatımı',
-  soru_cozumu: 'Soru çözümü',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Diğer',
-}
 
 /** Öğrencinin bloğa dokununca gördüğü ayrıntı: hangi konu, kaç soru,
  *  koçun notu. Bitirme de buradan yapılır. */
@@ -352,7 +345,7 @@ function BlokAyrinti({ blok, saltOkunur, onKapat, onBitir }) {
         <div>
           <span className="hucre-gun">{blok.baslik}</span>
           <span className="hucre-saat">
-            {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur] ?? blok.tur]
+            {[blok.dersler?.ad, blok.konular?.ad, GOREV_TUR_ADI[blok.tur] ?? blok.tur]
               .filter(Boolean)
               .join(' · ')}
           </span>

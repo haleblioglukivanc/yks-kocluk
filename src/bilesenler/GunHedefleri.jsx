@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { GOREV_TUR_KISA } from '../lib/gorevTuru.js'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
@@ -7,14 +8,6 @@ import GorevKaynagi from './GorevKaynagi.jsx'
    ekranında salt okunur — iki ekranın aynı dosyadan çizilmesi, birinde
    yapılan düzeltmenin diğerinde unutulmasını engelliyor. */
 
-const TUR_ETIKET = {
-  konu_anlatimi: 'Konu',
-  soru_cozumu: 'Soru',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Diğer',
-}
 
 export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDegisti, baslik = 'Günün hedefleri' }) {
   const [gorevler, setGorevler] = useState(gelen ?? [])
@@ -113,7 +106,7 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
                       {g.hedef_adet && !/\d/.test(g.baslik) ? ` — ${g.hedef_adet} soru` : ''}
                     </span>
                     {(etiket || g.tur) && (
-                      <span className="gorev-etiket">{etiket || TUR_ETIKET[g.tur] || g.tur}</span>
+                      <span className="gorev-etiket">{etiket || GOREV_TUR_KISA[g.tur] || g.tur}</span>
                     )}
                     <GorevKaynagi gorev={g} />
                     {g.aciklama && <span className="gorev-not">{g.aciklama}</span>}

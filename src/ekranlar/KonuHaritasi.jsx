@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
+import { dersKapsamAdi, dersleriGrupla, grupToplami, kapsamEtiketi } from '../lib/dersGruplari.js'
 
 /* 300'den fazla konu var. Hepsini birden çekmek hem yavaş hem okunmaz olurdu:
    dersler özet gelir, konular ders açıldığında yüklenir. */
@@ -71,43 +72,61 @@ export default function KonuHaritasi({ profilId }) {
 
   /* Ders açılınca konu yolu (KonuYolu) kendi verisini konu_yolu RPC'sinden
      çeker; burada yalnızca özet tutulur. Aynı bileşen koç ekranında da var. */
-  function dersAc(dersId) {
-    setAcik((a) => (a === dersId ? null : dersId))
+  function dersAc(kod) {
+    setAcik((a) => (a === kod ? null : kod))
   }
 
   if (dersler === null) return <Yukleniyor />
 
+  /* TYT Matematik ve AYT Matematik katalogda iki satır, öğrencinin
+     yolunda tek ders. Çubuk da ikisinin toplamını gösteriyor: "matematikte
+     neredeyim" sorusunun tek bir cevabı var. */
+  const gruplar = dersleriGrupla(dersler)
+
   return (
     <>
       <Uyari>{hata}</Uyari>
-      {dersler.length === 0 ? (
+      {gruplar.length === 0 ? (
         <Kart baslik='Konu haritası'>
           <Bos baslik='Yol henüz çizilmedi' aciklama='Koçun konu listeni tanımlayınca harita burada belirir.' />
         </Kart>
       ) : (
         <Kart baslik='Konu haritası' altBaslik='Dersi aç, yoldaki durağa dokun'>
-          {dersler.map((d) => (
-            <div key={d.dersId} className='ders-blok'>
-              <button className='ders-basi' onClick={() => dersAc(d.dersId)} aria-expanded={acik === d.dersId}>
-                <div>
-                  <span className='liste-ad'>{d.ders}</span>
-                  <span className='liste-alt'>
-                    {String(d.kapsam).toUpperCase().replace('_', '/')} · {d.toplam} konu
+          {gruplar.map((g) => {
+            const t = grupToplami(g, ['toplam', 'tamamlandi', 'onayli', 'calisiliyor', 'tekrar'])
+            const acikMi = acik === g.kod
+            return (
+              <div key={g.kod} className='ders-blok'>
+                <button className='ders-basi' onClick={() => dersAc(g.kod)} aria-expanded={acikMi}>
+                  <div>
+                    <span className='liste-ad'>{g.ad}</span>
+                    <span className='liste-alt'>
+                      {kapsamEtiketi(g)} · {t.toplam} konu
+                    </span>
+                  </div>
+                  <span className='ders-sayi' aria-hidden='true'>
+                    {t.tamamlandi}/{t.toplam}
+                    <svg viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' /></svg>
                   </span>
-                </div>
-                <span className='ders-sayi' aria-hidden='true'>
-                  {d.tamamlandi}/{d.toplam}
-                  <svg viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' /></svg>
-                </span>
-              </button>
+                </button>
 
-              <Cubuk toplam={d.toplam} tamamlandi={d.tamamlandi} onayli={d.onayli} calisiliyor={d.calisiliyor} tekrar={d.tekrar} />
+                <Cubuk toplam={t.toplam} tamamlandi={t.tamamlandi} onayli={t.onayli} calisiliyor={t.calisiliyor} tekrar={t.tekrar} />
 
-              {acik === d.dersId && (
-                <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
-              )}
-            </div>
-          ))}
+                {acikMi &&
+                  g.dersler.map((d) => (
+                    <div key={d.dersId} className='ders-kapsam'>
+                      {g.dersler.length > 1 && (
+                        <p className='ders-kapsam-basi'>
+                          {dersKapsamAdi(d)}
+                          <span>{d.tamamlandi}/{d.toplam}</span>
+                        </p>
+                      )}
+                      <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
+                    </div>
+                  ))}
+              </div>
+            )
+          })}
         </Kart>
       )}
     </>

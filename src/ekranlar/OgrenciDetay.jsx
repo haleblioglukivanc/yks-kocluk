@@ -10,16 +10,10 @@ import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import Rozetlerim from './Rozetlerim.jsx'
+import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
+import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
-const TUR_ADI = {
-  konu_anlatimi: 'Konu anlatımı',
-  soru_cozumu: 'Soru çözümü',
-  tekrar: 'Tekrar',
-  deneme: 'Deneme',
-  okuma: 'Okuma',
-  diger: 'Diğer',
-}
 const DURUM_ADI = { bekliyor: 'Bekliyor', devam: 'Devam ediyor', tamamlandi: 'Tamamlandı', atlandi: 'Atlandı' }
 export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) {
   const [ogrenci, setOgrenci] = useState(null)
@@ -414,15 +408,14 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
   )
 }
 
-
-/* Adet girilmesi anlamlı olan türler. Konu anlatımına "30 soru" demek tuhaf. */
-const ADETLI = new Set(['soru_cozumu', 'okuma', 'tekrar'])
-
-/** Boş bir hücreye ders atar. Ders seçilince o dersin konuları yüklenir. */
+/** Boş bir hücreye ders atar. Ders seçilince o ders grubunun bütün
+ *  konuları (TYT + AYT) yüklenir. */
 function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [dersler, setDersler] = useState([])
   const [konular, setKonular] = useState([])
-  const [dersId, setDersId] = useState('')
+  /* Seçim artık ders satırına değil ders grubuna bağlı: koç "Matematik"
+     diyor, TYT/AYT ayrımını konu belirliyor. */
+  const [grupKod, setGrupKod] = useState('')
   const [konuId, setKonuId] = useState('')
   const [tur, setTur] = useState('konu_anlatimi')
   const [kaynakId, setKaynakId] = useState(null)
@@ -436,24 +429,40 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
     if (!ogrenci.katalog_id) return
     supabase
       .from('dersler')
-      .select('id, ad, sira')
+      .select('id, ad, sira, kapsam, ders_kod')
       .eq('katalog_id', ogrenci.katalog_id)
       .order('sira')
       .then(({ data }) => setDersler(data ?? []))
   }, [ogrenci.katalog_id])
 
+  const gruplar = dersleriGrupla(dersler)
+  const grup = gruplar.find((g) => g.kod === grupKod) ?? null
+  const grupDersIdleri = (grup?.dersler ?? []).map((d) => d.id)
+
+  /* Konular grubun bütün ders satırlarından çekiliyor: TYT ve AYT
+     konuları tek listede, kapsam başlıklarıyla ayrılmış halde. */
   useEffect(() => {
-    if (!dersId) {
+    if (grupDersIdleri.length === 0) {
       setKonular([])
       return
     }
     supabase
       .from('konular')
-      .select('id, ad, sira')
-      .eq('ders_id', dersId)
+      .select('id, ad, sira, ders_id')
+      .in('ders_id', grupDersIdleri)
       .order('sira')
       .then(({ data }) => setKonular(data ?? []))
-  }, [dersId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [grupKod, dersler])
+
+  /* Görev bir ders satırına yazılıyor: konu seçiliyse onun dersi,
+     değilse grubun ilk kapsamı (TYT varsa TYT). */
+  const secilenKonu = konular.find((k) => String(k.id) === konuId) ?? null
+  const dersId = secilenKonu
+    ? String(secilenKonu.ders_id)
+    : grup
+      ? String(grup.dersler[0].id)
+      : ''
 
   async function ekle() {
     if (!dersId) {
@@ -463,9 +472,10 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
     setBekliyor(true)
     setHata('')
 
-    const ders = dersler.find((d) => String(d.id) === dersId)
-    const konu = konular.find((k) => String(k.id) === konuId)
-    const baslik = konu ? `${TUR_ADI[tur]} — ${konu.ad}` : `${ders?.ad ?? ''} ${TUR_ADI[tur].toLowerCase()}`
+    const konu = secilenKonu
+    const baslik = konu
+      ? `${GOREV_TUR_ADI[tur]} — ${konu.ad}`
+      : `${grup?.ad ?? ''} ${GOREV_TUR_ADI[tur].toLowerCase()}`
 
     const { error } = await supabase.from('gorevler').insert({
       ogrenci_id: ogrenci.id,
@@ -476,7 +486,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       konu_id: konuId ? Number(konuId) : null,
       tur,
       baslik,
-      hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
+      hedef_adet: ADETLI_TURLER.has(tur) && hedef ? Number(hedef) : null,
       aciklama: aciklama.trim() || null,
       kaynak_id: kaynakId,
       kaynak_aralik: kaynakId && kaynakAralik.trim() ? kaynakAralik.trim() : null,
@@ -504,31 +514,58 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
     <div className="form-kutu">
       <Alan etiket="Ders">
         <select
-          value={dersId}
+          value={grupKod}
           onChange={(e) => {
-            setDersId(e.target.value)
+            setGrupKod(e.target.value)
             setKonuId('')
+            setKaynakId(null)
           }}
         >
           <option value="">Ders seç</option>
-          {dersler.map((d) => (
-            <option key={d.id} value={d.id}>{d.ad}</option>
+          {gruplar.map((g) => (
+            <option key={g.kod} value={g.kod}>{g.ad}</option>
           ))}
         </select>
       </Alan>
 
-      <Alan etiket="Konu" ipucu="İstersen boş bırak">
-        <select value={konuId} onChange={(e) => setKonuId(e.target.value)} disabled={!konular.length}>
+      <Alan
+        etiket="Konu"
+        ipucu={grup && grup.dersler.length > 1 ? `${kapsamEtiketi(grup)} tek listede` : 'İstersen boş bırak'}
+      >
+        <select
+          value={konuId}
+          onChange={(e) => {
+            setKonuId(e.target.value)
+            /* Konu kapsamı değiştirebiliyor (TYT ↔ AYT); kaynak listesi
+               yenilendiği için eski seçim taşınmıyor. */
+            setKaynakId(null)
+            setKaynakAralik('')
+          }}
+          disabled={!konular.length}
+        >
           <option value="">{konular.length ? 'Konu seç' : 'Önce ders seç'}</option>
-          {konular.map((k) => (
-            <option key={k.id} value={k.id}>{k.ad}</option>
-          ))}
+          {(grup?.dersler ?? []).map((d) => {
+            const kendi = konular.filter((k) => k.ders_id === d.id)
+            if (kendi.length === 0) return null
+            /* Tek kapsamlı derste başlık çizilmiyor: gereksiz katman. */
+            return grup.dersler.length === 1 ? (
+              kendi.map((k) => (
+                <option key={k.id} value={k.id}>{k.ad}</option>
+              ))
+            ) : (
+              <optgroup key={d.id} label={dersKapsamAdi(d)}>
+                {kendi.map((k) => (
+                  <option key={k.id} value={k.id}>{k.ad}</option>
+                ))}
+              </optgroup>
+            )
+          })}
         </select>
       </Alan>
 
       <Alan etiket="Tür">
         <select value={tur} onChange={(e) => setTur(e.target.value)}>
-          {Object.entries(TUR_ADI).map(([k, ad]) => (
+          {Object.entries(GOREV_TUR_ADI).map(([k, ad]) => (
             <option key={k} value={k}>{ad}</option>
           ))}
         </select>
@@ -550,7 +587,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
         onAralik={setKaynakAralik}
       />
 
-      {ADETLI.has(tur) && (
+      {ADETLI_TURLER.has(tur) && (
         <Alan etiket="Hedef adet">
           <input
             type="number"
@@ -597,7 +634,7 @@ function Denemeler({ ogrenci }) {
 
 function Konular({ ogrenci }) {
   const [dersler, setDersler] = useState(null)
-  const [acikDers, setAcikDers] = useState(null)
+  const [acikGrup, setAcikGrup] = useState(null)
 
   useEffect(() => {
     if (!ogrenci.katalog_id) {
@@ -606,7 +643,7 @@ function Konular({ ogrenci }) {
     }
     supabase
       .from('dersler')
-      .select('id, ad, kapsam, konular(count)')
+      .select('id, ad, kapsam, sira, ders_kod, konular(count)')
       .eq('katalog_id', ogrenci.katalog_id)
       .order('sira')
       .then(({ data }) => setDersler(data ?? []))
@@ -614,24 +651,49 @@ function Konular({ ogrenci }) {
 
   if (dersler === null) return <Kart baslik="Konular"><Yukleniyor /></Kart>
 
+  /* Katalogda TYT Matematik ve AYT Matematik iki ayrı satır. Ekranda tek
+     ders: "Matematik" açılınca ikisinin konuları alt alta, kapsam
+     başlıklarıyla ayrılmış geliyor. Konu listesi böylece bütün kalıyor. */
+  const gruplar = dersleriGrupla(dersler)
+  const konuSayisi = (d) => d.konular?.[0]?.count ?? 0
+
   /* Öğrencinin gördüğü yolun aynısı; fark eylemler: koç durum seçer ve onaylar.
      Onay verilince öğrencinin haritasında durak yeşile döner. */
   return (
     <Kart baslik="Konu yolu" altBaslik={ogrenci.kataloglar?.ad}>
-      {dersler.length === 0 ? (
+      {gruplar.length === 0 ? (
         <Bos baslik="Katalog atanmamış" aciklama="Bilgileri düzenleyip bir katalog seçin." />
       ) : (
         <ul className="ders-liste">
-          {dersler.map((d) => (
-            <li key={d.id}>
-              <button className="ders-satir" onClick={() => setAcikDers((a) => (a === d.id ? null : d.id))} aria-expanded={acikDers === d.id}>
-                <span className="liste-ad">{d.ad}</span>
-                <span className="liste-alt">{d.kapsam.replace('_', '+').toUpperCase()}</span>
-                <span className="sayi">{d.konular?.[0]?.count ?? 0} konu</span>
-              </button>
-              {acikDers === d.id && <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" />}
-            </li>
-          ))}
+          {gruplar.map((g) => {
+            const toplam = g.dersler.reduce((n, d) => n + konuSayisi(d), 0)
+            const acik = acikGrup === g.kod
+            return (
+              <li key={g.kod}>
+                <button
+                  className="ders-satir"
+                  onClick={() => setAcikGrup((a) => (a === g.kod ? null : g.kod))}
+                  aria-expanded={acik}
+                >
+                  <span className="liste-ad">{g.ad}</span>
+                  <span className="liste-alt">{kapsamEtiketi(g)}</span>
+                  <span className="sayi">{toplam} konu</span>
+                </button>
+                {acik &&
+                  g.dersler.map((d) => (
+                    <div key={d.id} className="ders-kapsam">
+                      {g.dersler.length > 1 && (
+                        <p className="ders-kapsam-basi">
+                          {dersKapsamAdi(d)}
+                          <span>{konuSayisi(d)} konu</span>
+                        </p>
+                      )}
+                      <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" />
+                    </div>
+                  ))}
+              </li>
+            )
+          })}
         </ul>
       )}
     </Kart>
@@ -941,7 +1003,7 @@ function BlokDuzenle({ blok, onSil, onDegisti }) {
       <div>
         <span className="liste-ad">{blok.baslik}</span>
         <span className="liste-alt">
-          {[blok.dersler?.ad, blok.konular?.ad, TUR_ADI[blok.tur],
+          {[blok.dersler?.ad, blok.konular?.ad, GOREV_TUR_ADI[blok.tur],
             blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null]
             .filter(Boolean).join(' · ')}
         </span>
@@ -989,11 +1051,16 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
     if (!ogrenci.katalog_id) return
     supabase
       .from('dersler')
-      .select('id, ad, sira')
+      .select('id, ad, sira, kapsam, ders_kod')
       .eq('katalog_id', ogrenci.katalog_id)
       .order('sira')
       .then(({ data }) => setDersler(data ?? []))
   }, [ogrenci.katalog_id])
+
+  /* Rutin konuya bağlı değil; ders grubu yeterli. TYT/AYT ayrımı
+     rutinde bir şey değiştirmediği için ekranda da görünmüyor. */
+  const gruplar = dersleriGrupla(dersler)
+  const grup = gruplar.find((g) => g.kod === dersId) ?? null
 
   const secilenGunler = gunler.filter((_, i) => secili[i])
 
@@ -1009,17 +1076,16 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
     setBekliyor(true)
     setHata('')
 
-    const ders = dersler.find((d) => String(d.id) === dersId)
     const { error } = await supabase.from('gorevler').insert(
       secilenGunler.map((tarih) => ({
         ogrenci_id: ogrenci.id,
         koc_id: ogrenci.koc_id,
         tarih,
         periyot: null,
-        ders_id: Number(dersId),
+        ders_id: Number(grup.dersler[0].id),
         tur,
-        baslik: ders?.ad ?? 'Rutin',
-        hedef_adet: ADETLI.has(tur) && hedef ? Number(hedef) : null,
+        baslik: grup?.ad ?? 'Rutin',
+        hedef_adet: ADETLI_TURLER.has(tur) && hedef ? Number(hedef) : null,
         aciklama: aciklama.trim() || null,
         durum: 'bekliyor',
       })),
@@ -1042,21 +1108,21 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
       <Alan etiket="Ders">
         <select value={dersId} onChange={(e) => setDersId(e.target.value)}>
           <option value="">Ders seç</option>
-          {dersler.map((d) => (
-            <option key={d.id} value={d.id}>{d.ad}</option>
+          {gruplar.map((g) => (
+            <option key={g.kod} value={g.kod}>{g.ad}</option>
           ))}
         </select>
       </Alan>
 
       <Alan etiket="Tür">
         <select value={tur} onChange={(e) => setTur(e.target.value)}>
-          {Object.entries(TUR_ADI).map(([k, ad]) => (
+          {Object.entries(GOREV_TUR_ADI).map(([k, ad]) => (
             <option key={k} value={k}>{ad}</option>
           ))}
         </select>
       </Alan>
 
-      {ADETLI.has(tur) && (
+      {ADETLI_TURLER.has(tur) && (
         <Alan etiket="Günlük hedef">
           <input
             type="number"
