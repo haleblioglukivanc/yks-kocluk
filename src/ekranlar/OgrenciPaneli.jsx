@@ -3,7 +3,6 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
 import KutlamaKatmani from '../bilesenler/KutlamaKatmani.jsx'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
@@ -176,14 +175,11 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
+          {/* Bugün tek soruyu yanıtlar: şimdi ne yapmalıyım. Hafta şeridi
+              ve haftanın sözü buradan çıktı — ikisi de gün içinde değil,
+              haftada bir bakılan şeyler; her gün altı kez açılan ekranda
+              sıradaki işin önüne geçiyorlardı. */}
           <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} />
-          <HaftaSeridi
-            ogrenciId={kayit.id}
-            haftaBasi={ozet?.haftaBasi}
-            bugun={ozet?.bugun}
-            bugunGorevler={ozet?.gorevler}
-            onDegisti={yenile}
-          />
           {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
               Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
           {ozet?.bugun && (
@@ -207,8 +203,6 @@ export default function OgrenciPaneli({
           {/* Rutinler Günü tamamla akışında; elindeki kitaplar onun altında,
               günün işi bittikten sonra bakılacak yerde. */}
           <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" />
-          {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
-          <HaftalikIlham goster="soz" />
         </>
       ) : sekme === 'konular' ? (
         <>
