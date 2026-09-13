@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
+import { kuralMesaji } from '../lib/kalem-kurallari.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
 import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
 import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
@@ -60,6 +61,12 @@ function varsayilanSoz(ozet, saat) {
 
 export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit, sade = false }) {
   const [olay, setOlay] = useState(null)
+  /* Motor yalnızca gün değiştiğinde çalışıyor. Her tikte yeniden
+     çalıştırılınca mesaj birkaç kez değişiyordu: bir an varsayılan
+     cümle, bir an kuralın cümlesi, sonra tekrar. Cümlenin güncel
+     kalması için motoru tekrar çağırmak gerekmiyor; metin aşağıda o
+     anki veriyle yeniden yazılıyor. */
+  const ozetGunu = ozet?.bugun ?? null
 
   const yukle = useCallback(async () => {
     if (!profil?.id || !ozet) return
@@ -77,8 +84,10 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
       ad: profil.ad_soyad,
       veri: ozet,
     })
-    setOlay(olaylar[0] ?? null)
-  }, [profil?.id, profil?.ad_soyad, ozet, vekaleten])
+    /* Sonuç boşsa eldeki mesaj korunuyor: null'a düşürmek ekranı bir an
+       varsayılan cümleye çeviriyordu. */
+    if (olaylar[0]) setOlay(olaylar[0])
+  }, [profil?.id, profil?.ad_soyad, ozetGunu, vekaleten])
 
   useEffect(() => {
     yukle()
@@ -103,7 +112,14 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
      o da yoksa günün varsayılan cümlesi. Geçmişten kalan görevler ayrı bir
      kutu değil, cümlenin devamı. */
   const kocKonusuyor = Boolean(kocMesaji)
-  let soz = olay ? { ruh: olay.ruh, mesaj: olay.mesaj } : varsayilan
+  const tazeMetin = olay
+    ? kuralMesaji(
+        olay.kod,
+        { rol: 'ogrenci', ad: profil?.ad_soyad, ekran: 'bugun', saat, ogrenci: ozet },
+        olay.mesaj,
+      )
+    : null
+  let soz = olay ? { ruh: olay.ruh, mesaj: tazeMetin } : varsayilan
   if (kocKonusuyor) soz = { ruh: 'anlatiyor', mesaj: kocMesaji.mesaj.icerik }
   else if (!olay && (ozet?.gecikmisGorev ?? 0) > 0)
     soz = { ...soz, mesaj: `${soz.mesaj} Geçmiş günlerden ${ozet.gecikmisGorev} görev kaldı; bir tanesiyle başlamak yeter.` }

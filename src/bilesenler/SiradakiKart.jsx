@@ -251,7 +251,12 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* İki ayrı durum: saat hâlâ sürüyor ama başlanmadı, ya da saat
      tamamen geçti. Eskiden ikisine de "saati geçti" deniyordu; oysa
      20:26'da 21:10'a kadar süren bir çalışmada geçen bir şey yok. */
-  const basSaatiGecti = basDk !== null && simdiDk >= basDk + 15
+  /* Panel saatinde açılmıyor: çalışmanın başlamasından 15 dakika sonra
+     geliyor. Sunucudaki kontrol de aynı payı kullanıyor; ekran ile
+     bildirim aynı anda konuşsun. Saatinde gelen bir uyarı, öğrenci
+     kitabını açarken sitem etmiş olurdu. */
+  const GECIKME_PAYI_DK = 15
+  const basSaatiGecti = basDk !== null && simdiDk >= basDk + GECIKME_PAYI_DK
   const suresiDoldu = bitDk !== null && simdiDk > bitDk
   const gecikti = basSaatiGecti
   const varsayilan = varsayilanDk(sira.tur)
