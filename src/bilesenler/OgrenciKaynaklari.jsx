@@ -65,7 +65,20 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     return eslesen.length ? eslesen : null
   }, [ben, liste, bugunDersler])
 
-  const gosterilen = suzulmus && !tumu ? suzulmus : liste
+  /* Aynı kitap birden çok görevde kullanıldığında listeye birden çok
+     kez düşüyordu. Öğrencinin sorusu "elimde hangi kitaplar var";
+     aynı adı iki kere görmek cevabı uzatıyor, zenginleştirmiyor. */
+  const gosterilen = useMemo(() => {
+    const kaynak = suzulmus && !tumu ? suzulmus : liste
+    if (!kaynak) return kaynak
+    const gorulen = new Set()
+    return kaynak.filter((k) => {
+      const anahtar = (k.ad ?? '').trim().toLocaleLowerCase('tr-TR')
+      if (gorulen.has(anahtar)) return false
+      gorulen.add(anahtar)
+      return true
+    })
+  }, [suzulmus, tumu, liste])
 
   if (liste === null) {
     return (
