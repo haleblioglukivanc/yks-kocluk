@@ -3867,3 +3867,7 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
 }
 .blok-talep-metin::placeholder { color: #8b97ad; }
 .blok-talep-bilgi { margin: 0.75rem 0 0; font-size: 0.875rem; color: #9fd8b4; }
+
+/* Blok kartı zamana bağlı: risk gibi öne çıkan bir renk taşıyor. */
+.kuyruk-tip[data-tip='blok'] { color: var(--marka-alev); }
+.uygulama .kuyruk-tip[data-tip='blok'] { background: var(--kizil-zemin); color: var(--kizil-metin); }

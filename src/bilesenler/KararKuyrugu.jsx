@@ -14,6 +14,7 @@ const SEBEP = { bilgi: 'bilgi eksiği', dikkat: 'dikkat', sure: 'süre' }
 
 const TIP_ETIKET = {
   risk: 'Kaybolan öğrenci',
+  blok: 'Blok',
   konu: 'Konu onayı',
   analiz: 'Deneme analizi',
   veli_ozet: 'Veli özeti',
