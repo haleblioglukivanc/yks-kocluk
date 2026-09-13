@@ -7,6 +7,7 @@ import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
+import AcilGorusme, { GunGorusmesi } from '../bilesenler/AcilGorusme.jsx'
 import { useKocMesaji } from '../bilesenler/KocMesaji.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
 import GunuKapat from '../bilesenler/GunuKapat.jsx'
@@ -184,6 +185,7 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
+          <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
           <SiradakiKart
             gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
             bugunMu={gunVerisi?.bugunMu !== false}
@@ -222,6 +224,9 @@ export default function OgrenciPaneli({
               )}
             </button>
           )}
+          {/* Acil görüşme: ulaşılabilir ama gün boyu göz önünde durup davet
+              etmiyor. Günün işi bittikten sonra bakılacak yerde. */}
+          <AcilGorusme />
           {/* Rutinler Günü tamamla akışında; elindeki kitaplar onun altında,
               günün işi bittikten sonra bakılacak yerde. */}
           <OgrenciKaynaklari

@@ -4056,3 +4056,69 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
 .gorusme-hafta li { display: flex; gap: 0.6rem; font-size: var(--punto-mini); }
 .gorusme-gun { flex: 0 0 4.5rem; font-weight: 700; }
 .gorusme-ozet { flex: 1; min-width: 0; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* ═══ Öğrenci: acil görüşme ═══
+   Ulaşılabilir ama davet etmeyen bir yer: günün işinin altında, kitapların
+   üstünde. Kırmızı yalnızca burada aciliyeti işaret eder. */
+.acil-kutu {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.9rem 0;
+  padding: 0.9rem 1rem;
+  border-radius: 16px;
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+}
+.acil-kutu > strong { font-size: var(--punto-orta); font-weight: 700; }
+.acil-kutu > p { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
+.acil-kutu--bekliyor { background: var(--sicak-zemin); border-color: var(--sicak-kenar, var(--cizgi)); }
+.acil-kutu--bekliyor > p { color: var(--sicak-metin); opacity: 0.9; }
+.acil-kutu--kapali { opacity: 0.75; }
+.acil-dugme {
+  font: inherit;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--kizil-kenar, var(--cizgi));
+  background: var(--kizil-zemin);
+  color: var(--kizil-metin);
+  cursor: pointer;
+}
+.acil-dugmeler { display: flex; gap: 0.5rem; }
+.acil-dugmeler .acil-dugme { flex: 1; }
+.acil-secim { display: flex; gap: 0.4rem; }
+.acil-secenek {
+  flex: 1;
+  font: inherit;
+  font-size: var(--punto-mini);
+  font-weight: 600;
+  padding: 0.55rem 0.4rem;
+  border-radius: 10px;
+  border: 1px solid var(--cizgi);
+  background: var(--yuzey-2);
+  color: var(--soluk);
+  cursor: pointer;
+}
+.acil-secenek[aria-pressed='true'] {
+  background: var(--sicak);
+  border-color: var(--sicak);
+  color: var(--sicak-uzeri, #fff);
+}
+.acil-hak { font-size: var(--punto-mini); color: var(--soluk); }
+
+/* Kurulan randevu günün içinde: çalışma değil, bu yüzden sayaçsız. */
+.gun-gorusme {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 14px;
+  background: var(--kizil-zemin);
+  border: 1px solid var(--kizil-kenar, var(--cizgi));
+  color: var(--kizil-metin);
+}
+.gun-gorusme-saat { flex: 0 0 3rem; font-family: var(--marka-mono); font-weight: 700; }
+.gun-gorusme-ic { display: grid; gap: 0.2rem; min-width: 0; }
+.gun-gorusme-ic strong { font-size: var(--punto-orta); font-weight: 700; }
+.gun-gorusme-ic span { font-size: var(--punto-mini); opacity: 0.9; }

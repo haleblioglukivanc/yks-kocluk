@@ -63,7 +63,10 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const [talepGitti, setTalepGitti] = useState(false)
   const [hata, setHata] = useState('')
 
-  const liste = gorevler ?? []
+  const tumu = gorevler ?? []
+  /* Görüşme bir çalışma değil: sayacı, atlanması, tamamlanması yok. Günde
+     görünür ama sıradaki iş seçilirken hesaba katılmaz. */
+  const liste = tumu.filter((g) => g.tur !== 'gorusme')
   /* Koç bir göreve saat verdiyse o gün blok düzenine geçer: sıra saatten
      belli olur, öğrenci değiştiremez. Tek bir saatli görev bile varsa
      gün saatlidir; yarı saatli yarı serbest bir gün ikisini de

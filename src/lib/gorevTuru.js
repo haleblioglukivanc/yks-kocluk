@@ -19,6 +19,7 @@ export const GOREV_TUR_ADI = {
   deneme: 'Branş denemesi',
   okuma: 'Okuma',
   diger: 'Diğer',
+  gorusme: 'Koçunla görüşme',
 }
 
 /** Öğrenciye dönük yüz: "Diğer" yerine "Çalışma". */
@@ -35,6 +36,7 @@ export const GOREV_TUR_KISA = {
   deneme: 'Branş',
   okuma: 'Okuma',
   diger: 'Diğer',
+  gorusme: 'Görüşme',
 }
 
 /** Hedef adedi sorulan türler (30 soru, 20 sayfa…). */
