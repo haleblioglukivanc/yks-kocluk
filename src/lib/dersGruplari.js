@@ -27,9 +27,10 @@ export const KAPSAM_ADI = {
 const KAPSAM_SIRA = { tyt: 1, tyt_ayt: 2, ayt: 3, ydt: 4 }
 
 /* Ders adı kaynağına göre farklı anahtarla geliyor: bazı sorgular `ad`,
-   bazıları `dersAd` döndürüyor. İkisini de kabul etmezsek ad boş kalıyor
+   bazıları `ders` ya da `dersAd` döndürüyor (konu_ozetim: `ders`).
+   Hepsini kabul etmezsek ad boş kalıyor
    ve ekranda dersin yerinde yalnızca kapsam ile konu sayısı görünüyor. */
-const adiAl = (d) => d?.ad ?? d?.dersAd ?? ''
+const adiAl = (d) => d?.ad ?? d?.ders ?? d?.dersAd ?? ''
 
 const anahtar = (d) =>
   d.ders_kod || d.dersKod || adiAl(d).trim().toLocaleLowerCase('tr-TR')
