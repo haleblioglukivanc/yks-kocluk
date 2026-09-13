@@ -77,11 +77,14 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
   const sira =
     bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null
 
-  async function tamamla(g) {
+  /* Iki yonlu: isaretlemek kadar geri almak da gerekiyor. Ogrenci yanlis
+     tikleyebilir ya da bitirdigi bir konuyu tekrar calismak isteyebilir;
+     tek yonlu bir tik, yanlisi duzeltmenin yolunu kapatiyordu. */
+  async function durumYaz(g, bittiMi) {
     if (saltOkunur) return
     const { error } = await supabase
       .from('gorevler')
-      .update({ durum: 'tamamlandi' })
+      .update({ durum: bittiMi ? 'tamamlandi' : 'bekliyor' })
       .eq('id', g.id)
     if (error) {
       setHata(hataMetni(error))
@@ -89,6 +92,44 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
     }
     setHata('')
     onDegisti?.()
+  }
+
+  const tamamla = (g) => durumYaz(g, true)
+
+  /* Gunun butun isleri, sirada duran haric. Hem sira varken hem de gun
+     bittiginde ayni liste ciziliyor: eskiden "hepsi bitti" hali listeyi
+     hic gostermiyordu ve bitirilen isler ekrandan kayboluyordu. */
+  function Kalanlar({ haric }) {
+    const satirlar = liste.filter((g) => g.id !== haric)
+    if (satirlar.length === 0) return null
+    return (
+      <ul className="siradaki-kalanlar">
+        {satirlar.map((g) => {
+          const bitti = g.durum === 'tamamlandi'
+          return (
+            <li key={g.id} className={bitti ? 'sk-satir sk-satir--bitti' : 'sk-satir'}>
+              <button
+                className="sk-tik"
+                role="checkbox"
+                aria-checked={bitti}
+                aria-label={`${g.baslik || g.konu || 'Görev'}${bitti ? ' geri al' : ' tamamlandı'}`}
+                disabled={saltOkunur}
+                onClick={() => durumYaz(g, !bitti)}
+              >
+                <svg viewBox="0 0 12 12" aria-hidden="true">
+                  <path d="M2 6.2 4.6 8.8 10 3.4" fill="none" stroke="currentColor"
+                        strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </button>
+              <span className="sk-ad">
+                {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
+              </span>
+              <span className="sk-ders">{g.ders}</span>
+            </li>
+          )
+        })}
+      </ul>
+    )
   }
 
   /* ── Sayaç çalışıyor: aynı kart halkaya dönüşür ── */
@@ -130,6 +171,9 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
         }
       >
         <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
+        {/* Gün bitince de liste duruyor: bitirilen işler ekrandan
+            kaybolmuyor, tikine tekrar dokunup geri alınabiliyor. */}
+        <Kalanlar haric={null} />
       </Kart>
     )
   }
@@ -204,40 +248,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
         )}
       </div>
 
-      {/* Günün geri kalanı aynı kartın içinde. Eskiden ayrı bir "Günün
-          hedefleri" kartı vardı ve sıradaki işi kitabıyla notuyla bir kez
-          daha yazıyordu: öğrenci ilk ekranda aynı işi iki kere okuyordu.
-          Burada sıradaki iş yukarıda açık, diğerleri tek satır. */}
-      {liste.length > 1 && (
-        <ul className="siradaki-kalanlar">
-          {liste
-            .filter((g) => g.id !== sira.id)
-            .map((g) => {
-              const bitti = g.durum === 'tamamlandi'
-              return (
-                <li key={g.id} className={bitti ? 'sk-satir sk-satir--bitti' : 'sk-satir'}>
-                  <button
-                    className="sk-tik"
-                    role="checkbox"
-                    aria-checked={bitti}
-                    aria-label={`${g.baslik || g.konu || 'Görev'} tamamlandı`}
-                    disabled={saltOkunur}
-                    onClick={() => (bitti ? null : tamamla(g))}
-                  >
-                    <svg viewBox="0 0 12 12" aria-hidden="true">
-                      <path d="M2 6.2 4.6 8.8 10 3.4" fill="none" stroke="currentColor"
-                            strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </button>
-                  <span className="sk-ad">
-                    {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
-                  </span>
-                  <span className="sk-ders">{g.ders}</span>
-                </li>
-              )
-            })}
-        </ul>
-      )}
+      <Kalanlar haric={sira.id} />
     </section>
   )
 }

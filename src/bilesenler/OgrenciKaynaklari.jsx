@@ -41,6 +41,9 @@ const ayniDers = (a, b) => {
 export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDersler }) {
   const [liste, setListe] = useState(null)
   const [tumu, setTumu] = useState(false)
+  /* Kapalı açılıyor: kitap listesi günün işini yapmak için gerekli değil,
+     ihtiyaç duyulunca bakılan bir raf. Kapalıyken bir satır yer kaplıyor. */
+  const [acik, setAcik] = useState(false)
 
   useEffect(() => {
     if (!ogrenciId) return
@@ -103,35 +106,55 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     )
   }
 
+  if (ben) {
+    const sayi = gosterilen?.length ?? 0
+    return (
+      <section className="kart kaynak-kart">
+        <button
+          className="kaynak-basi"
+          aria-expanded={acik}
+          onClick={() => setAcik((a) => !a)}
+        >
+          <span className="kaynak-emoji" aria-hidden="true">📚</span>
+          <span className="kaynak-ad">
+            Kaynaklarım
+            <small>{suzulmus && !tumu ? 'Bugünkü derslerin kitapları' : 'Görevlerde kullandığın kitaplar'}</small>
+          </span>
+          <span className="kaynak-sayi">{sayi}</span>
+          <svg className={acik ? 'kaynak-ok kaynak-ok--acik' : 'kaynak-ok'} viewBox="0 0 24 24"
+               width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
+               strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </button>
+
+        {acik && (
+          <>
+            {suzulmus && (
+              <button className="metin-dugme kaynak-tumu" onClick={() => setTumu((t) => !t)}>
+                {tumu ? 'Bugünküler' : 'Tümü'}
+              </button>
+            )}
+            <ul className="liste kaynak-adlar">
+              {gosterilen.map((k) => (
+                <li key={k.id} className="liste-satir">
+                  <span className="liste-ad">{k.ad}</span>
+                </li>
+              ))}
+            </ul>
+          </>
+        )}
+      </section>
+    )
+  }
+
   return (
     <Kart
       baslik={baslik}
-      altBaslik={
-        ben
-          ? suzulmus && !tumu
-            ? 'Bugünkü derslerin kitapları'
-            : 'Görevlerde kullandığın kitaplar'
-          : 'Verdiğin görevlerden birikenler'
-      }
-      eylem={
-        ben && suzulmus ? (
-          <button type="button" className="metin-dugme" onClick={() => setTumu((t) => !t)}>
-            {tumu ? 'Bugünküler' : 'Tümü'}
-          </button>
-        ) : null
-      }
+      altBaslik="Verdiğin görevlerden birikenler"
     >
-      {ben ? (
-        <ul className="liste kaynak-adlar">
-          {gosterilen.map((k) => (
-            <li key={k.id} className="liste-satir">
-              <span className="liste-ad">{k.ad}</span>
-            </li>
-          ))}
-        </ul>
-      ) : (
       <ul className="liste">
-        {liste.map((k) => {
+        {gosterilen.map((k) => {
           const alt = [
             k.yayinevi,
             k.dersAd ? `${k.dersAd}${k.kapsam ? ` · ${KAPSAM[k.kapsam] ?? ''}` : ''}` : null,
@@ -147,8 +170,6 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
                 <span className="liste-alt">{alt}</span>
                 {k.sonAralik && <span className="liste-alt">Son verilen: {k.sonAralik}</span>}
               </div>
-              {/* Sayı öğüt değil bilgi: kaç görevde geçti, en son ne zaman.
-                  Açık görev varsa öne çıkıyor, çünkü sırada bekleyen iş o. */}
               <span className="sayi">
                 {k.acikGorev > 0 ? `${k.acikGorev} açık` : son ? son : `${k.gorevSayisi} görev`}
               </span>
@@ -156,7 +177,6 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
           )
         })}
       </ul>
-      )}
     </Kart>
   )
 }
