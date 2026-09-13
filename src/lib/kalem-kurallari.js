@@ -134,7 +134,9 @@ const OGRENCI_KURALLARI = [
     kod: 'gecikmis_birikti',
     rol: 'ogrenci', oncelik: 65, tekrar: 'gunde_bir', ruh: 'dusunuyor',
     kosul: (b) => o(b).gecikmisGorev >= 3,
-    mesaj: (b) => `${o(b).gecikmisGorev} görev bekliyor. Hepsini bugün bitirmek şart değil, birini seç yeter.`,
+    /* "6 görev bekliyor" cümlesi, bugünün hepsi bittiğinde ekranın geri
+       kalanıyla çelişiyordu: bunlar bugünün değil, geçmiş günlerin işleri. */
+    mesaj: (b) => `Geçmiş günlerden ${o(b).gecikmisGorev} görev bekliyor. Hepsini bugün bitirmek şart değil, birini seç yeter.`,
     eylem: () => ({ etiket: 'Bekleyenler', sekme: 'bugun' }),
   },
   {

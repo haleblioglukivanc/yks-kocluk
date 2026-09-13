@@ -68,17 +68,6 @@ export default function GunHedefleri({ gorevler: gelen, saltOkunur = false, onDe
         />
       ) : (
         <>
-          {/* Yüzde çubuğu yerine hedef başına bir baloncuk: kaç tane kaldığı
-              sayılabiliyor, "%60" soyut kalıyordu. */}
-          <div className="baloncuk-serit" aria-hidden="true">
-            {gorevler.map((g) => (
-              <span
-                key={g.id}
-                className={`baloncuk${g.durum === 'tamamlandi' ? ' baloncuk--dolu' : ''}`}
-              />
-            ))}
-          </div>
-
           <ul className="liste gorev-liste">
             {gorevler.map((g) => {
               const bitti = g.durum === 'tamamlandi'
