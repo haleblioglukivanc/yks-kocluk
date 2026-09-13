@@ -52,7 +52,7 @@ function Cubuk({ toplam, tamamlandi, onayli = 0, calisiliyor, tekrar }) {
 
 export default function KonuHaritasi({ profilId }) {
   const [dersler, setDersler] = useState(null)
-  const [acik, setAcik] = useState(null)
+  const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
 
   /* profilId hedef öğrenciyi söyler. Vekaletteyken oturum koçun olduğu için
@@ -71,15 +71,9 @@ export default function KonuHaritasi({ profilId }) {
 
   useEffect(() => {
     setDersler(null)
-    setAcik(null)
+    setSecili(null)
     ozetiYukle()
   }, [ozetiYukle])
-
-  /* Ders açılınca konu yolu (KonuYolu) kendi verisini konu_yolu RPC'sinden
-     çeker; burada yalnızca özet tutulur. Aynı bileşen koç ekranında da var. */
-  function dersAc(kod) {
-    setAcik((a) => (a === kod ? null : kod))
-  }
 
   if (dersler === null) return <Yukleniyor />
 
@@ -88,52 +82,68 @@ export default function KonuHaritasi({ profilId }) {
      neredeyim" sorusunun tek bir cevabı var. */
   const gruplar = dersleriGrupla(dersler)
 
-  return (
-    <>
-      <Uyari>{hata}</Uyari>
-      {gruplar.length === 0 ? (
+  /* Yol'a girmenin sebebi "neredeyim" sorusu ve cevabı patikanın içinde.
+     Eskiden altı ders alt alta kapalı duruyordu: patika iki dokunuş
+     uzaktaydı ve liste hangisine basacağına dair bir şey söylemiyordu.
+     Artık patika doğrudan açılıyor, dersler üstte bir şerit.
+
+     Açılışta seçilen ders: üzerinde çalışılan konu olan ilk ders. Yoksa
+     ilk ders. Tarih bilgisi özet sorgusunda yok; "çalışılıyor" durumu
+     öğrencinin şu an nerede olduğuna en yakın veri. */
+  const varsayilan =
+    gruplar.find((g) => grupToplami(g, ['calisiliyor']).calisiliyor > 0) ?? gruplar[0]
+  const etkin = gruplar.find((g) => g.kod === secili) ?? varsayilan
+
+  if (gruplar.length === 0) {
+    return (
+      <>
+        <Uyari>{hata}</Uyari>
         <Kart baslik='Konu haritası'>
           <Bos baslik='Yol henüz çizilmedi' aciklama='Koçun konu listeni tanımlayınca harita burada belirir.' />
         </Kart>
-      ) : (
-        <Kart baslik='Konu haritası' altBaslik='Dersi aç, yoldaki durağa dokun'>
+      </>
+    )
+  }
+
+  const t = grupToplami(etkin, ['toplam', 'tamamlandi', 'onayli', 'calisiliyor', 'tekrar'])
+
+  return (
+    <>
+      <Uyari>{hata}</Uyari>
+      <Kart baslik={etkin.ad} altBaslik={`${kapsamEtiketi(etkin)} · ${t.toplam} konu`}>
+        <div className='ders-serit' role='tablist' aria-label='Dersler'>
           {gruplar.map((g) => {
-            const t = grupToplami(g, ['toplam', 'tamamlandi', 'onayli', 'calisiliyor', 'tekrar'])
-            const acikMi = acik === g.kod
+            const gt = grupToplami(g, ['toplam', 'tamamlandi'])
+            const bu = g.kod === etkin.kod
             return (
-              <div key={g.kod} className='ders-blok'>
-                <button className='ders-basi' onClick={() => dersAc(g.kod)} aria-expanded={acikMi}>
-                  <div>
-                    <span className='liste-ad'>{g.ad}</span>
-                    <span className='liste-alt'>
-                      {kapsamEtiketi(g)} · {t.toplam} konu
-                    </span>
-                  </div>
-                  <span className='ders-sayi' aria-hidden='true'>
-                    {t.tamamlandi}/{t.toplam}
-                    <svg viewBox='0 0 24 24'><path d='M6 9l6 6 6-6' /></svg>
-                  </span>
-                </button>
-
-                <Cubuk toplam={t.toplam} tamamlandi={t.tamamlandi} onayli={t.onayli} calisiliyor={t.calisiliyor} tekrar={t.tekrar} />
-
-                {acikMi &&
-                  g.dersler.map((d) => (
-                    <div key={d.dersId} className='ders-kapsam'>
-                      {g.dersler.length > 1 && (
-                        <p className='ders-kapsam-basi'>
-                          <span className='ders-kapsam-rozet'>{dersKapsamAdi(d)}</span>
-                          <span className='ders-kapsam-sayi'>{d.tamamlandi}/{d.toplam}</span>
-                        </p>
-                      )}
-                      <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
-                    </div>
-                  ))}
-              </div>
+              <button
+                key={g.kod}
+                role='tab'
+                aria-selected={bu}
+                className={bu ? 'ders-cip ders-cip--etkin' : 'ders-cip'}
+                onClick={() => setSecili(g.kod)}
+              >
+                <span className='ders-cip-ad'>{g.ad}</span>
+                <span className='ders-cip-sayi'>{gt.tamamlandi}/{gt.toplam}</span>
+              </button>
             )
           })}
-        </Kart>
-      )}
+        </div>
+
+        <Cubuk toplam={t.toplam} tamamlandi={t.tamamlandi} onayli={t.onayli} calisiliyor={t.calisiliyor} tekrar={t.tekrar} />
+
+        {etkin.dersler.map((d) => (
+          <div key={d.dersId} className='ders-kapsam'>
+            {etkin.dersler.length > 1 && (
+              <p className='ders-kapsam-basi'>
+                <span className='ders-kapsam-rozet'>{dersKapsamAdi(d)}</span>
+                <span className='ders-kapsam-sayi'>{d.tamamlandi}/{d.toplam}</span>
+              </p>
+            )}
+            <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
+          </div>
+        ))}
+      </Kart>
     </>
   )
 }
