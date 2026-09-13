@@ -301,8 +301,8 @@ export default function App() {
     )
   }
 
-  /* v2: paralel öğrenci arayüzü (?v2=1 ile açılır, ?v2=0 ile kapanır).
-     Bayrak kapalıyken buradan hiç geçilmez, v1 aynen çalışır. Açıkken
+  /* v2: öğrenci arayüzü. Varsayılan açık, ?v2=0 ile v1'e dönülür.
+     v1 silinmedi, bayrak kapatılınca eskisi gibi çalışır. Açıkken
      App'in kabuğu — üst şerit, alt gezinme, köşedeki Çizbi — hiç
      çizilmez; v2 kendi kabuğunu getirir. */
   if (profil.rol === 'ogrenci' && v2Acik()) {
