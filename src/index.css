@@ -3819,3 +3819,8 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
 /* Ayraç, halka satırı ile işi ayırmak içindi; iş kendi zeminini alınca
    çizgi bloğun içinde kalıp anlamsızlaştı. */
 .siradaki-odak .siradaki-sira { margin-top: 0; padding-top: 0; border-top: 0; }
+
+/* Halka satırı kalktı: odak bloğu kartın üstüne, şeridin hemen altına
+   oturuyor. Boş bir çember gün başında "hiçbir şey yapmadın" diyordu ve
+   aynı sayı şeritteki bugün kutusunda zaten yazıyordu. */
+.siradaki-odak { margin-top: 0.25rem; }
