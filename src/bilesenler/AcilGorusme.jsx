@@ -10,12 +10,20 @@ import { Uyari } from './Ortak.jsx'
  * Zorunlu sebep tam da yazamayan öğrenciyi durdururdu; öğrenciden istenen
  * tek şey aciliyet: bugün mü, bu hafta içinde mi.
  *
- * Randevunun günü, saati ve süresi koçun insiyatifinde. Öğrenci burada
- * saat seçmez; koç kurunca randevu gününe blok olarak düşer (GunGorusmesi).
+ * Ekranda sabit bir kutu olarak duruyordu; her gün yer kaplayıp hiçbir şey
+ * söylemiyordu. Şimdi selam satırının sağında küçük bir ikon. Dokunuş
+ * doğrudan sinyal göndermiyor: haftada tek hak var, cepte yanlış dokunma
+ * hakkı konuşmadan yakardı. Dokununca yaprak açılır, sinyal gönder deyince
+ * gider. İkon kendiliğinden sallanmaz — hareket öğrencinin dokunuşuna
+ * cevap verir, duran kırmızı bir ikonun kendi kendine titremesi her gün
+ * alarm gibi görünürdü.
+ *
+ * Randevunun günü, saati ve süresi koçun insiyatifinde.
  */
 export default function AcilGorusme() {
   const [hak, setHak] = useState(null)
   const [acik, setAcik] = useState(false)
+  const [canli, setCanli] = useState(false)
   const [aciliyet, setAciliyet] = useState('bu_hafta')
   const [notMetni, setNotMetni] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
@@ -42,50 +50,68 @@ export default function AcilGorusme() {
       setHata(hataMetni(error))
       return
     }
-    if (data?.durum === 'hak_yok') {
-      setHak({ kullanilabilir: false, bekleyen: false })
-      setAcik(false)
-      return
-    }
     setAcik(false)
     setNotMetni('')
+    if (data?.durum === 'hak_yok') {
+      setHak({ kullanilabilir: false, bekleyen: false })
+      return
+    }
     yukle()
   }
 
   if (!hak) return null
 
+  /* Talep gönderildi: ikon durumu söyler, öğrenci ikinci kez basmaya
+     çalışmaz. */
   if (hak.bekleyen) {
     return (
-      <div className="acil-kutu acil-kutu--bekliyor">
-        <strong>Görüşme isteğin koçuna iletildi</strong>
-        <p>Kıvanç Hoca günü ve saati belirleyince gününde görürsün.</p>
-      </div>
+      <span className="acil acil--bekliyor" title="Görüşme isteğin koçuna iletildi">
+        <span className="acil-ikon" aria-hidden="true">⏳</span>
+        <span className="acil-yazi">Koçuna iletildi</span>
+      </span>
     )
   }
 
+  /* Hak bitti: ikon kaybolmuyor, soluklaşıyor. Kaybolsa öğrenci gördüğünü
+     sanırdı; sönük durması hem yerini öğretir hem yenileneceğini söyler. */
   if (!hak.kullanilabilir) {
     return (
-      <div className="acil-kutu acil-kutu--kapali">
-        <strong>Bu haftaki görüşme hakkını kullandın</strong>
-        <p>Hakkın pazartesi yenilenir. Acil bir şey varsa mesaj yazabilirsin.</p>
-      </div>
+      <span className="acil acil--soluk" title="Bu haftaki görüşme hakkını kullandın · pazartesi yenilenir">
+        <span className="acil-ikon" aria-hidden="true">💬</span>
+      </span>
     )
+  }
+
+  function ac() {
+    setCanli(false)
+    requestAnimationFrame(() => setCanli(true))
+    setAcik(true)
   }
 
   return (
-    <div className="acil-kutu">
-      <strong>Acil konuşmam lazım</strong>
-      <p>
-        Kafanı meşgul eden bir şey varsa haftada bir kez koçundan görüşme
-        isteyebilirsin. Sebep yazmak zorunda değilsin.
-      </p>
-
-      {hata ? <Uyari>{hata}</Uyari> : null}
+    <>
+      <button
+        type="button"
+        className={acik ? 'acil acil--acik' : 'acil'}
+        onClick={() => (acik ? setAcik(false) : ac())}
+        aria-expanded={acik}
+      >
+        <span className={canli ? 'acil-ikon acil-ikon--canli' : 'acil-ikon'} aria-hidden="true">
+          💬
+        </span>
+        <span className="acil-yazi">Acil konuşmam lazım</span>
+      </button>
 
       {acik ? (
-        <>
+        <div className="acil-yaprak">
+          <strong>Ne zaman konuşalım?</strong>
+          <p>Sebep yazmak zorunda değilsin. Günü ve saati koçun belirleyecek.</p>
+
+          {hata ? <Uyari>{hata}</Uyari> : null}
+
           <div className="acil-secim" role="group" aria-label="Ne zaman konuşmak istiyorsun">
             <button
+              type="button"
               className="acil-secenek"
               aria-pressed={aciliyet === 'bugun'}
               onClick={() => setAciliyet('bugun')}
@@ -93,6 +119,7 @@ export default function AcilGorusme() {
               Bugün konuşmalıyım
             </button>
             <button
+              type="button"
               className="acil-secenek"
               aria-pressed={aciliyet === 'bu_hafta'}
               onClick={() => setAciliyet('bu_hafta')}
@@ -100,30 +127,32 @@ export default function AcilGorusme() {
               Bu hafta içinde
             </button>
           </div>
+
           <textarea
             className="kuyruk-alan"
-            rows={3}
+            rows={2}
             value={notMetni}
-            placeholder="İstersen birkaç kelime yaz (zorunlu değil)"
+            placeholder="İstersen birkaç kelime yaz"
             onChange={(e) => setNotMetni(e.target.value)}
             aria-label="Koçuna not"
           />
+
           <div className="acil-dugmeler">
-            <button className="acil-dugme" disabled={bekliyor} onClick={gonder}>
+            <button type="button" className="acil-dugme" disabled={bekliyor} onClick={gonder}>
               Görüşme iste
             </button>
-            <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => setAcik(false)}>
+            <button
+              type="button"
+              className="dugme dugme--ikincil"
+              disabled={bekliyor}
+              onClick={() => setAcik(false)}
+            >
               Vazgeç
             </button>
           </div>
-        </>
-      ) : (
-        <button className="acil-dugme" onClick={() => setAcik(true)}>
-          Koçundan görüşme iste
-        </button>
-      )}
-      <span className="acil-hak">Bu hafta hakkın duruyor · pazartesi yenilenir</span>
-    </div>
+        </div>
+      ) : null}
+    </>
   )
 }
 

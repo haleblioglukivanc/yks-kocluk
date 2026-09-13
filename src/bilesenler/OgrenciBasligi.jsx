@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import AcilGorusme from './AcilGorusme.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { kuralMesaji } from '../lib/kalem-kurallari.js'
@@ -183,6 +184,9 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
             </div>
           )}
         </div>
+        {/* Acil görüşme: selam satırının sağında, ulaşılabilir ama davet
+            etmeyen bir yerde. Yaprak açılınca şeridin altına iner. */}
+        {!vekaleten && <AcilGorusme />}
       </div>
     )
   }

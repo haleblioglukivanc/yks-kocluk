@@ -4057,35 +4057,88 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
 .gorusme-gun { flex: 0 0 4.5rem; font-weight: 700; }
 .gorusme-ozet { flex: 1; min-width: 0; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-/* ═══ Öğrenci: acil görüşme ═══
-   Ulaşılabilir ama davet etmeyen bir yer: günün işinin altında, kitapların
-   üstünde. Kırmızı yalnızca burada aciliyeti işaret eder. */
-.acil-kutu {
+/* Kurulan randevu günün içinde: çalışma değil, bu yüzden sayaçsız. */
+.gun-gorusme {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-bottom: 0.6rem;
+  padding: 0.8rem 0.9rem;
+  border-radius: 14px;
+  background: var(--kizil-zemin);
+  border: 1px solid var(--kizil-kenar, var(--cizgi));
+  color: var(--kizil-metin);
+}
+.gun-gorusme-saat { flex: 0 0 3rem; font-family: var(--marka-mono); font-weight: 700; }
+.gun-gorusme-ic { display: grid; gap: 0.2rem; min-width: 0; }
+.gun-gorusme-ic strong { font-size: var(--punto-orta); font-weight: 700; }
+.gun-gorusme-ic span { font-size: var(--punto-mini); opacity: 0.9; }
+
+/* ═══ Öğrenci: acil görüşme girişi ═══
+   Sabit kutu yerine selam satırının sağında küçük bir ikon. Yaprak açılınca
+   şeridin altına iner: .ob-sade sarmalı olduğu için tam genişliğe geçer. */
+.ob-sade { flex-wrap: wrap; }
+
+.acil {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  max-width: 8.5rem;
+}
+.acil-ikon {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  font-size: 1rem;
+  background: var(--kizil-zemin);
+  border: 1px solid var(--kizil-kenar, var(--cizgi));
+}
+.acil-yazi {
+  font-size: var(--punto-mini);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: left;
+  color: var(--kizil-metin);
+}
+.acil--bekliyor { cursor: default; }
+.acil--bekliyor .acil-ikon { background: var(--sicak-zemin); border-color: var(--sicak-kenar, var(--cizgi)); }
+.acil--bekliyor .acil-yazi { color: var(--sicak-metin); }
+.acil--soluk { cursor: default; }
+.acil--soluk .acil-ikon { background: var(--yuzey-2); border-color: var(--cizgi); filter: grayscale(1); opacity: 0.5; }
+.acil:focus-visible { outline: 2px solid var(--sicak); outline-offset: 3px; border-radius: 999px; }
+
+/* Hareket öğrencinin dokunuşuna cevap verir; ikon kendiliğinden sallanmaz. */
+@keyframes acil-sallan {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-11deg); }
+  40% { transform: rotate(9deg); }
+  60% { transform: rotate(-6deg); }
+  80% { transform: rotate(4deg); }
+}
+.acil-ikon--canli { animation: acil-sallan 0.6s ease; }
+@media (prefers-reduced-motion: reduce) { .acil-ikon--canli { animation: none; } }
+
+.acil-yaprak {
+  flex-basis: 100%;
   display: grid;
   gap: 0.5rem;
-  margin: 0.9rem 0;
-  padding: 0.9rem 1rem;
-  border-radius: 16px;
+  margin-top: 0.6rem;
+  padding: 0.85rem 0.95rem;
+  border-radius: 15px;
   background: var(--yuzey);
-  border: 1px solid var(--cizgi);
-}
-.acil-kutu > strong { font-size: var(--punto-orta); font-weight: 700; }
-.acil-kutu > p { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
-.acil-kutu--bekliyor { background: var(--sicak-zemin); border-color: var(--sicak-kenar, var(--cizgi)); }
-.acil-kutu--bekliyor > p { color: var(--sicak-metin); opacity: 0.9; }
-.acil-kutu--kapali { opacity: 0.75; }
-.acil-dugme {
-  font: inherit;
-  font-weight: 700;
-  padding: 0.75rem 1rem;
-  border-radius: 12px;
   border: 1px solid var(--kizil-kenar, var(--cizgi));
-  background: var(--kizil-zemin);
-  color: var(--kizil-metin);
-  cursor: pointer;
 }
-.acil-dugmeler { display: flex; gap: 0.5rem; }
-.acil-dugmeler .acil-dugme { flex: 1; }
+.acil-yaprak > strong { font-size: var(--punto-orta); font-weight: 700; }
+.acil-yaprak > p { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.45; }
 .acil-secim { display: flex; gap: 0.4rem; }
 .acil-secenek {
   flex: 1;
@@ -4104,21 +4157,15 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
   border-color: var(--sicak);
   color: var(--sicak-uzeri, #fff);
 }
-.acil-hak { font-size: var(--punto-mini); color: var(--soluk); }
-
-/* Kurulan randevu günün içinde: çalışma değil, bu yüzden sayaçsız. */
-.gun-gorusme {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  margin-bottom: 0.6rem;
-  padding: 0.8rem 0.9rem;
-  border-radius: 14px;
-  background: var(--kizil-zemin);
+.acil-dugmeler { display: flex; gap: 0.5rem; }
+.acil-dugme {
+  flex: 2;
+  font: inherit;
+  font-weight: 700;
+  padding: 0.7rem 1rem;
+  border-radius: 12px;
   border: 1px solid var(--kizil-kenar, var(--cizgi));
+  background: var(--kizil-zemin);
   color: var(--kizil-metin);
+  cursor: pointer;
 }
-.gun-gorusme-saat { flex: 0 0 3rem; font-family: var(--marka-mono); font-weight: 700; }
-.gun-gorusme-ic { display: grid; gap: 0.2rem; min-width: 0; }
-.gun-gorusme-ic strong { font-size: var(--punto-orta); font-weight: 700; }
-.gun-gorusme-ic span { font-size: var(--punto-mini); opacity: 0.9; }
