@@ -3815,3 +3815,7 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
 }
 .sk-sec:hover::after, .sk-sec:focus-visible::after { color: var(--dolgu); }
 .siradaki-kalanlar { display: flex; flex-direction: column; gap: 0.25rem; }
+
+/* Ayraç, halka satırı ile işi ayırmak içindi; iş kendi zeminini alınca
+   çizgi bloğun içinde kalıp anlamsızlaştı. */
+.siradaki-odak .siradaki-sira { margin-top: 0; padding-top: 0; border-top: 0; }
