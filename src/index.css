@@ -3874,3 +3874,6 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
 
 /* Cümle gelene kadar satır yüksekliği korunuyor ki ekran zıplamasın. */
 .ob-sade-mesaj:empty::before { content: '\00a0'; }
+
+/* Okunmuş bildirim listede kalır ama öne çıkmaz. */
+.bildirim[data-durum='okundu'] { opacity: 0.55; }

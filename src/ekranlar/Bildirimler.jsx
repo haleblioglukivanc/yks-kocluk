@@ -63,17 +63,22 @@ export default function Bildirimler({ profil, onGit }) {
       /* Bildirim kuyruğu şimdiye kadar yalnızca telefona push gönderiyordu;
          uygulama içinde hiçbir yerde görünmüyordu. Push izni verilmemişse
          bildirim hiç ulaşmıyordu. Artık aynı kayıtlar burada da duruyor. */
+      /* Okunmuşlar da listeleniyor. Yalnızca okunmamışları çekince ekran
+         ikinci açılışta boşalıyordu: bildirim okunmuş olabilir ama yok
+         olmamalı, geriye dönüp bakılabilmeli. Zil sayısı temizleniyor,
+         liste duruyor; okunmuşlar soluk görünüyor. */
+      const birHaftaOnce = new Date(Date.now() - 7 * 86400000).toISOString()
       const { data: kuyrukBildirim } = await supabase
         .from('bildirim_kuyrugu')
-        .select('id, tip, baslik, govde, yol, olusturuldu')
-        .eq('okundu_mu', false)
+        .select('id, tip, baslik, govde, yol, olusturuldu, okundu_mu')
+        .gte('olusturuldu', birHaftaOnce)
         .order('olusturuldu', { ascending: false })
-        .limit(20)
+        .limit(30)
       for (const b of kuyrukBildirim ?? []) {
         olaylar.push({
           id: `bildirim-${b.id}`,
           tip: b.tip,
-          durum: b.tip === 'blok_kacirildi' ? 'eylem' : 'notr',
+          durum: b.okundu_mu ? 'okundu' : b.tip === 'blok_kacirildi' ? 'eylem' : 'notr',
           baslik: b.baslik,
           alt: b.govde || '',
           zaman: b.olusturuldu,
@@ -100,11 +105,9 @@ export default function Bildirimler({ profil, onGit }) {
       if (!iptal) setListe(olaylar)
 
       /* Ekran açıldıysa bildirimler görülmüş sayılır; zil de temizlenir. */
-      if ((kuyrukBildirim ?? []).length > 0) {
-        await supabase
-          .from('bildirim_kuyrugu')
-          .update({ okundu_mu: true })
-          .in('id', kuyrukBildirim.map((b) => b.id))
+      const okunmamislar = (kuyrukBildirim ?? []).filter((b) => !b.okundu_mu).map((b) => b.id)
+      if (okunmamislar.length > 0) {
+        await supabase.from('bildirim_kuyrugu').update({ okundu_mu: true }).in('id', okunmamislar)
       }
     })()
     return () => { iptal = true }
