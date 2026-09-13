@@ -26,8 +26,13 @@ export const KAPSAM_ADI = {
    yürüdüğü sıra bu; hazırlık TYT konularıyla başlıyor. */
 const KAPSAM_SIRA = { tyt: 1, tyt_ayt: 2, ayt: 3, ydt: 4 }
 
+/* Ders adı kaynağına göre farklı anahtarla geliyor: bazı sorgular `ad`,
+   bazıları `dersAd` döndürüyor. İkisini de kabul etmezsek ad boş kalıyor
+   ve ekranda dersin yerinde yalnızca kapsam ile konu sayısı görünüyor. */
+const adiAl = (d) => d?.ad ?? d?.dersAd ?? ''
+
 const anahtar = (d) =>
-  d.ders_kod || d.dersKod || (d.ad ?? '').trim().toLocaleLowerCase('tr-TR')
+  d.ders_kod || d.dersKod || adiAl(d).trim().toLocaleLowerCase('tr-TR')
 
 /**
  * Ders satırlarını ders koduna göre gruplar.
@@ -43,13 +48,13 @@ export function dersleriGrupla(dersler = []) {
     if (!kod) continue
     let g = gruplar.get(kod)
     if (!g) {
-      g = { kod, ad: d.ad ?? '', sira: d.sira ?? 0, dersler: [] }
+      g = { kod, ad: adiAl(d), sira: d.sira ?? 0, dersler: [] }
       gruplar.set(kod, g)
     }
     g.dersler.push(d)
     /* Aynı ders iki katalog satırında farklı adlanabiliyor
        ("Edebiyat" / "Türk Dili ve Edebiyatı"). Uzun olan tam addır. */
-    if ((d.ad ?? '').length > g.ad.length) g.ad = d.ad
+    if (adiAl(d).length > g.ad.length) g.ad = adiAl(d)
     g.sira = Math.min(g.sira, d.sira ?? 0)
   }
 
