@@ -61,7 +61,7 @@ function Halka({ durum }) {
   )
 }
 
-export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }) {
+export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, serit = null, bugunMu = true, gunAdi = 'Günün hedefi' }) {
   const sayac = useSayac()
   const durum = sayac?.durum ?? null
   useSayacTiki(!!durum?.calisiyor)
@@ -139,6 +139,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
       : 'Serbest çalışma'
     return (
       <Kart baslik={baslik} altBaslik={`${durum.hedefDk} dk`}>
+        {serit}
         <Halka durum={durum} />
         <div className="sayac-dugmeler">
           {durum.calisiyor ? (
@@ -149,6 +150,31 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
           <button className="dugme dugme--birincil" onClick={sayac.bitir}>Bitir ve kaydet</button>
         </div>
         {!durum.calisiyor && <p className="kart-alt">Duraklattın. Süre işlemiyor.</p>}
+      </Kart>
+    )
+  }
+
+  /* ── Bugün değil: geçmiş ya da gelecek bir gün seçilmiş ──
+     Aynı kart o günü gösterir; başla düğmesi yok, çünkü sayaç yalnız
+     bugünün işine basılır. Başlık güne göre değişir ki öğrenci hangi
+     güne baktığını kaybetmesin. */
+  if (!bugunMu) {
+    return (
+      <Kart
+        baslik={gunAdi}
+        altBaslik={
+          liste.length === 0
+            ? 'Bu gün için plan yok'
+            : `${liste.length - bekleyen.length}/${liste.length} iş`
+        }
+      >
+        {serit}
+        <Uyari>{hata}</Uyari>
+        {liste.length === 0 ? (
+          <p className="kart-alt">Koçun bu güne bir şey koymamış.</p>
+        ) : (
+          <Kalanlar haric={null} />
+        )}
       </Kart>
     )
   }
@@ -170,6 +196,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
           </div>
         }
       >
+        {serit}
         <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
         {/* Gün bitince de liste duruyor: bitirilen işler ekrandan
             kaybolmuyor, tikine tekrar dokunup geri alınabiliyor. */}
@@ -197,6 +224,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false }
 
   return (
     <section className="kart siradaki" aria-label="Bugünün hedefi">
+      {serit}
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
       <div className="siradaki-ust">

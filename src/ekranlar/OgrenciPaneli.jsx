@@ -67,6 +67,10 @@ export default function OgrenciPaneli({
   /* Gün kapandığında Yol'a geçilir ve bugün çalışılan ders açık gelir:
      günün sonunda öğrencinin göreceği şey, bugün nereyi geçtiği. */
   const [odakDers, setOdakDers] = useState(null)
+  /* Hafta şeridi artık görev kartının başlığı: seçili gün burada tutuluyor,
+     o günün listesi de şeritten buraya geliyor ve aynı karta besleniyor. */
+  const [seciliGun, setSeciliGun] = useState(null)
+  const [gunVerisi, setGunVerisi] = useState(null)
   /* Koçun okunmamış mesajı başlıkta çıkar; vekalette koç kendi mesajını görmesin. */
   const kocMesaji = useKocMesaji(hedefId, !vekaleten)
 
@@ -180,13 +184,23 @@ export default function OgrenciPaneli({
 
       {sekme === 'bugun' ? (
         <>
-          <SiradakiKart gorevler={ozet?.gorevler} onDegisti={yenile} />
-          <HaftaSeridi
-            ogrenciId={kayit.id}
-            haftaBasi={ozet?.haftaBasi}
-            bugun={ozet?.bugun}
-            bugunGorevler={ozet?.gorevler}
-            onDegisti={yenile}
+          <SiradakiKart
+            gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
+            bugunMu={gunVerisi?.bugunMu !== false}
+            gunAdi={gunVerisi?.bugunMu === false ? gunVerisi.ad : 'Bugünün hedefi'}
+            onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
+            serit={
+              <HaftaSeridi
+                ogrenciId={kayit.id}
+                haftaBasi={ozet?.haftaBasi}
+                bugun={ozet?.bugun}
+                bugunGorevler={ozet?.gorevler}
+                onDegisti={yenile}
+                secili={seciliGun ?? ozet?.bugun ?? null}
+                onSec={setSeciliGun}
+                onListe={setGunVerisi}
+              />
+            }
           />
           {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
               Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}

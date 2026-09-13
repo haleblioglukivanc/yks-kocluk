@@ -3765,3 +3765,8 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .kaynak-ok { flex: none; color: var(--soluk); transition: transform 0.2s ease; }
 .kaynak-ok--acik { transform: rotate(180deg); }
 .kaynak-tumu { display: block; margin: 0.25rem 0 0 auto; }
+
+/* Şerit kartın başlığı olduğu için kendi zemini ve kenarı yok. */
+.hafta-serit-kap { margin: -0.25rem 0 1rem; }
+.hafta-serit-kap .hafta-serit { background: none; padding: 0; }
+.hafta-kaydir { display: block; margin: 0.5rem 0 0 auto; }
