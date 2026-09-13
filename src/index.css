@@ -3971,3 +3971,88 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
 
 .kuyruk-tip[data-tip='gorusme'] { color: var(--marka-alev); }
 .uygulama .kuyruk-tip[data-tip='gorusme'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
+
+/* ═══ Acil görüşme: randevu kurucu ═══
+   Gün, saat ve süre koçta. Süre seçimi ders bloğundakiyle aynı dilde. */
+.randevu { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; }
+.randevu-alan { flex: 1; min-width: 0; display: grid; gap: 0.3rem; }
+.randevu-alan > span { font-size: var(--punto-mini); color: var(--soluk); }
+.randevu-alan input {
+  width: 100%;
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 0.6rem;
+  border-radius: 10px;
+  border: 1px solid var(--cizgi);
+  background: var(--yuzey-2);
+  color: var(--metin);
+}
+.sure-secim {
+  display: flex;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+}
+.sure-dugme {
+  flex: 1;
+  font: inherit;
+  font-size: var(--punto-mini);
+  font-weight: 700;
+  padding: 0.5rem 0.2rem;
+  border-radius: 10px;
+  border: 1px solid var(--cizgi);
+  background: var(--yuzey-2);
+  color: var(--soluk);
+  cursor: pointer;
+}
+.sure-dugme[aria-pressed='true'] {
+  background: var(--sicak);
+  border-color: var(--sicak);
+  color: var(--sicak-uzeri, #fff);
+}
+
+/* Sert uyarı koçun kendi saatini korur, yumuşak uyarı yalnızca haber verir. */
+.cakisma {
+  font-size: var(--punto-mini);
+  line-height: 1.45;
+  padding: 0.6rem 0.7rem;
+  border-radius: 12px;
+  margin: 0 0 0.6rem;
+}
+.cakisma p { margin: 0; }
+.cakisma strong { font-weight: 700; }
+.cakisma--sert { background: var(--kizil-zemin); color: var(--kizil-metin); }
+.cakisma--yumusak { background: var(--sicak-zemin); color: var(--sicak-metin); }
+.oteleme {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
+}
+
+/* ═══ Koçun görüşme günü ═══ */
+.gorusme-serit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.8rem;
+  margin-bottom: 0.75rem;
+  border-radius: 14px;
+  background: var(--kizil-zemin);
+  border: 1px solid var(--kizil-kenar, var(--cizgi));
+  color: var(--kizil-metin);
+}
+.gorusme-serit-ic { flex: 1; min-width: 0; display: grid; gap: 0.15rem; }
+.gorusme-serit-ic strong { font-size: var(--punto-mini); font-weight: 700; }
+.gorusme-serit-ic span {
+  font-size: var(--punto-mini);
+  opacity: 0.85;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.gorusme-hafta { flex-basis: 100%; list-style: none; margin: 0.3rem 0 0; padding: 0; display: grid; gap: 0.25rem; }
+.gorusme-hafta li { display: flex; gap: 0.6rem; font-size: var(--punto-mini); }
+.gorusme-gun { flex: 0 0 4.5rem; font-weight: 700; }
+.gorusme-ozet { flex: 1; min-width: 0; opacity: 0.85; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

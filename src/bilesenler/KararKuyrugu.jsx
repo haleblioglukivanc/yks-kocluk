@@ -87,6 +87,7 @@ export default function KararKuyrugu({ onOgrenciAc }) {
   if (!odak) {
     return (
       <>
+        <GorusmeSeridi />
         <Kart>
           <div className="kuyruk-bitis">
             <p className="kuyruk-bitis-baslik">Bugünlük bitti</p>
@@ -107,6 +108,8 @@ export default function KararKuyrugu({ onOgrenciAc }) {
     <>
       {hata ? <Uyari>{hata}</Uyari> : null}
 
+      <GorusmeSeridi />
+
       <SegmentSeridi
         sayilar={sayilar}
         aktif={odak.segment}
@@ -116,13 +119,23 @@ export default function KararKuyrugu({ onOgrenciAc }) {
         }}
       />
 
-      <KuyrukKarti
-        key={anahtar(odak)}
-        kart={odak}
-        onOgrenciAc={onOgrenciAc}
-        onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
-        onHata={setHata}
-      />
+      {odak.tip === 'gorusme' ? (
+        <GorusmeKarti
+          key={anahtar(odak)}
+          kart={odak}
+          onOgrenciAc={onOgrenciAc}
+          onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
+          onHata={setHata}
+        />
+      ) : (
+        <KuyrukKarti
+          key={anahtar(odak)}
+          kart={odak}
+          onOgrenciAc={onOgrenciAc}
+          onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
+          onHata={setHata}
+        />
+      )}
 
       <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} />
       <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
@@ -224,6 +237,245 @@ function IyiHaber({ kartlar, onBitti, onHata }) {
       <button className="metin-dugme" disabled={bekliyor} onClick={gonder}>
         Tebrik et
       </button>
+    </div>
+  )
+}
+
+/* ══ Acil görüşme ══
+   Gün, saat ve süre tamamen koçun insiyatifinde; kart randevu kurulunca ya da
+   telefonla görüşülüp kapatılınca kuyruktan düşer. Çakışma canlı kontrol
+   edilir: koçun kendi saati sertçe kapalı, öğrencinin bloğu yalnızca uyarı. */
+
+const SURELER = [15, 30, 45, 60]
+
+function bugunISO() {
+  const d = new Date()
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
+
+function varsayilanSaat() {
+  const d = new Date(Date.now() + 30 * 60 * 1000)
+  d.setMinutes(d.getMinutes() <= 30 ? 30 : 60, 0, 0)
+  return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
+}
+
+function GorusmeKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+  const [tarih, setTarih] = useState(bugunISO)
+  const [saat, setSaat] = useState(varsayilanSaat)
+  const [sure, setSure] = useState(30)
+  const [cakisma, setCakisma] = useState(null)
+  const [otele, setOtele] = useState(true)
+  const [yaziyor, setYaziyor] = useState(false)
+  const [metin, setMetin] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const a = kart.aksiyonlar ?? {}
+
+  /* Koç saati değiştirdikçe çakışma yeniden sorulur; yazarken her tuşta
+     istek gitmesin diye kısa bir bekleme var. */
+  useEffect(() => {
+    if (!tarih || !saat) return undefined
+    let gecerli = true
+    const zaman = setTimeout(async () => {
+      const { data, error } = await supabase.rpc('koc_gorusme_cakisma', {
+        p_ogrenci_id: kart.ogrenci_id,
+        p_tarih: tarih,
+        p_saat: saat.length === 5 ? `${saat}:00` : saat,
+        p_sure_dk: sure,
+      })
+      if (!gecerli) return
+      setCakisma(error ? null : data)
+    }, 300)
+    return () => {
+      gecerli = false
+      clearTimeout(zaman)
+    }
+  }, [kart.ogrenci_id, tarih, saat, sure])
+
+  const kocCak = cakisma?.koc ?? null
+  const ogrCak = cakisma?.ogrenci ?? null
+
+  async function kur() {
+    setBekliyor(true)
+    onHata('')
+    const { data, error } = await supabase.rpc('koc_gorusme_kur', {
+      p_talep_id: Number(kart.kaynak_id),
+      p_tarih: tarih,
+      p_saat: saat.length === 5 ? `${saat}:00` : saat,
+      p_sure_dk: sure,
+      p_otele: otele,
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    if (data?.durum === 'cakisma_koc') {
+      setCakisma({ koc: data.cakisma, ogrenci: ogrCak })
+      return
+    }
+    onBitti(true)
+  }
+
+  async function kapat(kapanis) {
+    setBekliyor(true)
+    onHata('')
+    const { error } = await supabase.rpc('koc_gorusme_kapat', {
+      p_talep_id: Number(kart.kaynak_id),
+      p_kapanis: kapanis,
+      p_metin: kapanis === 'mesaj' ? metin : null,
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    onBitti(true)
+  }
+
+  return (
+    <Kart kaldirilmis>
+      <div className="kuyruk-ust">
+        <span className="kuyruk-tip" data-tip="gorusme">{TIP_ETIKET.gorusme}</span>
+        <span className="kuyruk-sayac">haftalık hakkını kullandı</span>
+      </div>
+
+      <button className="kuyruk-kimlik" onClick={() => onOgrenciAc?.(kart.ogrenci_id)} title="Öğrenciyi aç">
+        <Avatar yol={kart.fotograf_yolu} ad={kart.ad} boyut="kucuk" />
+        <span>
+          <span className="liste-ad">{kart.ad}</span>
+          <span className="liste-alt">{kart.baglam}</span>
+        </span>
+      </button>
+
+      {kart.mesaj ? <p className="kuyruk-mesaj">{kart.mesaj}</p> : null}
+      <p className="kuyruk-oneri">{kart.oneri}</p>
+
+      {yaziyor ? (
+        <textarea
+          className="kuyruk-alan"
+          value={metin}
+          rows={4}
+          placeholder="Öğrenciye gidecek mesaj"
+          onChange={(e) => setMetin(e.target.value)}
+          aria-label="Öğrenciye gidecek mesaj"
+        />
+      ) : (
+        <>
+          <div className="randevu">
+            <label className="randevu-alan">
+              <span>Gün</span>
+              <input type="date" value={tarih} min={bugunISO()} onChange={(e) => setTarih(e.target.value)} />
+            </label>
+            <label className="randevu-alan">
+              <span>Saat</span>
+              <input type="time" value={saat} step={300} onChange={(e) => setSaat(e.target.value)} />
+            </label>
+          </div>
+
+          <div className="sure-secim" role="group" aria-label="Görüşme süresi">
+            {SURELER.map((d) => (
+              <button
+                key={d}
+                className="sure-dugme"
+                aria-pressed={d === sure}
+                onClick={() => setSure(d)}
+              >
+                {d} dk
+              </button>
+            ))}
+          </div>
+
+          {kocCak ? (
+            <p className="cakisma cakisma--sert">
+              <strong>Bu saat sende dolu.</strong> {kocCak.baslangic}–{kocCak.bitis} arası{' '}
+              {kocCak.ad} ile görüşmen var. {kocCak.ilk_bos} sonrası boş.
+            </p>
+          ) : null}
+
+          {ogrCak ? (
+            <div className="cakisma cakisma--yumusak">
+              <p>
+                <strong>{kart.ad.split(' ')[0]} için çakışma var.</strong> {ogrCak.baslangic}{' '}
+                {ogrCak.baslik}
+                {ogrCak.sure_dk ? ` · ${ogrCak.sure_dk} dk` : ''}
+              </p>
+              <label className="oteleme">
+                <input type="checkbox" checked={otele} onChange={() => setOtele((o) => !o)} />
+                <span>Bloğu görüşme bitince başlat</span>
+              </label>
+            </div>
+          ) : null}
+        </>
+      )}
+
+      <div className="kuyruk-dugmeler">
+        {yaziyor ? (
+          <Dugme bekliyor={bekliyor} onClick={() => kapat('mesaj')}>Mesajı gönder</Dugme>
+        ) : (
+          <Dugme bekliyor={bekliyor || Boolean(kocCak)} onClick={kur}>{a.onay ?? 'Görüşmeyi kur'}</Dugme>
+        )}
+        <div className="kuyruk-alt-dugmeler">
+          <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => setYaziyor((y) => !y)}>
+            {yaziyor ? 'Vazgeç' : (a.orta ?? 'Mesaj yaz')}
+          </button>
+          {!yaziyor ? (
+            <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => kapat('telefon')}>
+              {a.sil ?? 'Görüştük, kapat'}
+            </button>
+          ) : null}
+        </div>
+      </div>
+    </Kart>
+  )
+}
+
+/* Koçun kendi görüşme günü. Görüşmesi olmayan günde hiç çıkmaz. */
+function GorusmeSeridi() {
+  const [hafta, setHafta] = useState(null)
+  const [acik, setAcik] = useState(false)
+
+  useEffect(() => {
+    let gecerli = true
+    supabase.rpc('koc_gorusme_haftasi', { p_gun: 7 }).then(({ data, error }) => {
+      if (gecerli && !error) setHafta(data ?? [])
+    })
+    return () => {
+      gecerli = false
+    }
+  }, [])
+
+  if (!hafta || hafta.length === 0) return null
+  const bugun = hafta[0]
+  const ilerisi = hafta.slice(1).filter((g) => g.adet > 0)
+  if (bugun.adet === 0 && ilerisi.length === 0) return null
+
+  return (
+    <div className="gorusme-serit">
+      <div className="gorusme-serit-ic">
+        <strong>
+          {bugun.adet > 0
+            ? `Bugün ${bugun.adet} görüşmen var`
+            : `Bugün görüşmen yok · bu hafta ${ilerisi.reduce((t, g) => t + g.adet, 0)} görüşme`}
+        </strong>
+        <span>{bugun.adet > 0 ? bugun.ozet : ilerisi[0]?.ozet}</span>
+      </div>
+      {ilerisi.length > 0 ? (
+        <button className="metin-dugme" onClick={() => setAcik((v) => !v)} aria-expanded={acik}>
+          {acik ? 'Kapat' : 'Hafta'}
+        </button>
+      ) : null}
+      {acik ? (
+        <ul className="gorusme-hafta">
+          {hafta.slice(1).map((g) => (
+            <li key={g.tarih}>
+              <span className="gorusme-gun">
+                {new Date(`${g.tarih}T00:00:00`).toLocaleDateString('tr-TR', { weekday: 'short', day: 'numeric' })}
+              </span>
+              <span className="gorusme-ozet">{g.adet > 0 ? g.ozet : 'Görüşme yok'}</span>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </div>
   )
 }
