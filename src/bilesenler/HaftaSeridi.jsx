@@ -35,15 +35,18 @@ function duzlestir(g) {
    dokunduğun gün aynı kartın içinde açılıyor. Seçim yukarıda tutuluyor
    (secili / onSec) ve o günün listesi onListe ile yukarı veriliyor. */
 export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler, onDegisti, secili, onSec, onListe }) {
-  const [kaydirma, setKaydirma] = useState(0) // 0 bu hafta, 1 sonraki
   /* Açılışta kapalı: şerit yalnız yedi gün ve noktalar. Bir güne dokununca
      o günün listesi altından açılır; aynı güne tekrar dokununca kapanır.
      Ekran ilk açıldığında bir cümle, bir kart, bir düğme görünsün diye. */
   const [hafta, setHafta] = useState([])
   const [hata, setHata] = useState('')
 
-  const basi = haftaBasi ? gunEkle(haftaBasi, kaydirma * 7) : null
-  const gunler = basi ? Array.from({ length: 7 }, (_, i) => gunEkle(basi, i)) : []
+  /* İki hafta birden yükleniyor ve şerit yanal kaydırılıyor: ayrı bir
+     "sonraki hafta" düğmesi ya kartı uzatıyor ya günleri daraltıyordu.
+     Ders şeridinde de aynı davranış var, öğrenci yeni bir şey öğrenmiyor. */
+  const basi = haftaBasi ?? null
+  const gunler = basi ? Array.from({ length: 14 }, (_, i) => gunEkle(basi, i)) : []
+  const haftalar = [gunler.slice(0, 7), gunler.slice(7)]
 
   const yukle = useCallback(async () => {
     if (!ogrenciId || !basi) return
@@ -54,7 +57,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
       )
       .eq('ogrenci_id', ogrenciId)
       .gte('tarih', basi)
-      .lte('tarih', gunEkle(basi, 6))
+      .lte('tarih', gunEkle(basi, 13))
       .order('durum')
       .order('periyot', { nullsFirst: false })
       .order('id')
@@ -101,38 +104,31 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
   return (
     <div className="hafta-serit-kap">
       <Uyari>{hata}</Uyari>
-      <div className="hafta-serit" role="tablist" aria-label="Haftanın günleri">
-        {gunler.map((t, i) => {
-          const s = sayim[t] ?? { toplam: 0, biten: 0 }
-          const bugunMu = t === bugun
-          const gecmis = t < bugun
-          return (
-            <button
-              key={t}
-              role="tab"
-              aria-selected={t === secili}
-              className={`hafta-gun${t === secili ? ' hafta-gun--secili' : ''}${bugunMu ? ' hafta-gun--bugun' : ''}${gecmis ? ' hafta-gun--gecmis' : ''}`}
-              onClick={() => onSec?.(t)}
-            >
-              <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
-              <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
-              <span className="hafta-gun-sayi" aria-label={`${s.biten}/${s.toplam} iş`}>
-                {s.toplam === 0 ? '—' : `${s.biten}/${s.toplam}`}
-              </span>
-            </button>
-          )
-        })}
-        {/* Hafta değiştirme şeridin sonunda, sekizinci bir hücre gibi.
-            Ayrı bir satır olarak iki kartın arasında asılı kalıyordu. */}
-        <button
-          className="hafta-gun hafta-kaydir"
-          onClick={() => { setKaydirma((k) => (k ? 0 : 1)); onSec?.(kaydirma ? bugun : gunEkle(haftaBasi, 7)) }}
-          aria-label={kaydirma ? 'Bu haftaya dön' : 'Sonraki hafta'}
-          title={kaydirma ? 'Bu hafta' : 'Sonraki hafta'}
-        >
-          <span className="hafta-kaydir-ok" aria-hidden="true">{kaydirma ? '‹' : '›'}</span>
-          <span className="hafta-kaydir-ad">{kaydirma ? 'Bu hafta' : 'Sonraki'}</span>
-        </button>
+      <div className="hafta-kaydirak" role="tablist" aria-label="Haftanın günleri">
+        {haftalar.map((hafta7, h) => (
+          <div className="hafta-serit" key={h}>
+            {hafta7.map((t, i) => {
+              const say = sayim[t] ?? { toplam: 0, biten: 0 }
+              const bugunMu = t === bugun
+              const gecmis = t < bugun
+              return (
+                <button
+                  key={t}
+                  role="tab"
+                  aria-selected={t === secili}
+                  className={`hafta-gun${t === secili ? ' hafta-gun--secili' : ''}${bugunMu ? ' hafta-gun--bugun' : ''}${gecmis ? ' hafta-gun--gecmis' : ''}`}
+                  onClick={() => onSec?.(t)}
+                >
+                  <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
+                  <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
+                  <span className="hafta-gun-sayi" aria-label={`${say.biten}/${say.toplam} iş`}>
+                    {say.toplam === 0 ? '—' : `${say.biten}/${say.toplam}`}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        ))}
       </div>
     </div>
   )

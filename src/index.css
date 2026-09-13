@@ -3769,7 +3769,6 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 /* Şerit kartın başlığı olduğu için kendi zemini ve kenarı yok. */
 .hafta-serit-kap { margin: -0.25rem 0 1rem; }
 .hafta-serit-kap .hafta-serit { background: none; padding: 0; }
-.hafta-kaydir { display: block; margin: 0.5rem 0 0 auto; }
 
 /* Listedeki bekleyen işe dokununca o iş öne geçer. */
 .sk-sec {
@@ -3825,16 +3824,6 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
    aynı sayı şeritteki bugün kutusunda zaten yazıyordu. */
 .siradaki-odak { margin-top: 0.25rem; }
 
-/* Hafta değiştirme şeridin sonunda, sekizinci hücre gibi. */
-.hafta-kaydir {
-  flex: 0 0 auto; display: flex; flex-direction: column; align-items: center;
-  justify-content: center; gap: 0.15rem; cursor: pointer;
-  background: none; border: 1px dashed var(--cizgi); border-radius: 12px;
-  padding: 0.375rem 0.5rem; color: var(--soluk); font: inherit;
-}
-.hafta-kaydir-ok { font-size: 1.125rem; line-height: 1; }
-.hafta-kaydir-ad { font-size: 0.625rem; }
-
 /* Çizbi'nin cümlesi ekranın ilk cümlesi: biraz daha okunur. */
 .ob-sade-mesaj { font-size: 1.0625rem; line-height: 1.45; }
 
@@ -3842,3 +3831,17 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
    kartlar arasında ayrı bir şey olduğu anlaşılsın. */
 .uygulama .hi-kutu { background: var(--kagit); border-color: var(--cizgi-koyu, var(--cizgi)); }
 body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04); }
+
+/* Hafta şeridi yanal kaydırılıyor: iki hafta yan yana duruyor, bir
+   sayfa bir hafta. Sonraki haftanın kenarı görünür kalıyor ki devamı
+   olduğu anlaşılsın; ayrı bir düğme kartı uzatıyordu. */
+.hafta-kaydirak {
+  display: flex; gap: 0.5rem; overflow-x: auto;
+  scroll-snap-type: x mandatory; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -0.25rem; padding: 0 0.25rem;
+}
+.hafta-kaydirak::-webkit-scrollbar { display: none; }
+.hafta-kaydirak > .hafta-serit {
+  flex: 0 0 96%; scroll-snap-align: start; min-width: 0;
+}
