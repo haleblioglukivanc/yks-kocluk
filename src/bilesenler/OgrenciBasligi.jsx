@@ -126,7 +126,9 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         olay.mesaj,
       )
     : null
-  let soz = olay ? { ruh: olay.ruh, mesaj: tazeMetin } : varsayilan
+  /* tazeMetin null ise kural artık geçerli değil: günün varsayılan
+     cümlesine düşülüyor, o cümle zaten o anki veriden yazılıyor. */
+  let soz = olay && tazeMetin ? { ruh: olay.ruh, mesaj: tazeMetin } : varsayilan
   if (kocKonusuyor) soz = { ruh: 'anlatiyor', mesaj: kocMesaji.mesaj.icerik }
   else if (!olay && (ozet?.gecikmisGorev ?? 0) > 0)
     soz = { ...soz, mesaj: `${soz.mesaj} Geçmiş günlerden ${ozet.gecikmisGorev} görev kaldı; bir tanesiyle başlamak yeter.` }

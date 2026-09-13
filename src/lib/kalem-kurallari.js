@@ -325,7 +325,12 @@ export function kuralMesaji(kod, baglam, yedek) {
   const kr = TUM_KURALLAR.find((x) => x.kod === kod);
   if (!kr) return yedek;
   try {
-    if (kr.kosul && !kr.kosul(baglam)) return yedek;
+    /* Şartı artık sağlanmayan kural susar: null döner ve ekran günün
+       varsayılan cümlesine geçer. Kayıtlı metne düşmek işe yaramıyordu
+       -- "günaydın" kuralı akşam saatinde şartını kaybediyor ve sabah
+       yazılan "Bugün 4 işin var" cümlesi gece yarısına kadar donuk
+       kalıyordu. */
+    if (kr.kosul && !kr.kosul(baglam)) return null;
     return kr.mesaj(baglam) ?? yedek;
   } catch {
     return yedek;
