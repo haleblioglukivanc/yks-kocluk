@@ -61,6 +61,11 @@ function varsayilanSoz(ozet, saat) {
 
 export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit, sade = false }) {
   const [olay, setOlay] = useState(null)
+  /* Cümle üç adımda değişiyordu: önce varsayılan, sonra veri gelince
+     güncellenmiş varsayılan, sonra motorun cümlesi. Konuşurken yazının
+     altından kayması kötü; motor cevap verene kadar hiçbir şey
+     yazmıyoruz. Kısa bir boşluk, üç kez değişen bir cümleden iyidir. */
+  const [hazir, setHazir] = useState(false)
   /* Motor yalnızca gün değiştiğinde çalışıyor. Her tikte yeniden
      çalıştırılınca mesaj birkaç kez değişiyordu: bir an varsayılan
      cümle, bir an kuralın cümlesi, sonra tekrar. Cümlenin güncel
@@ -76,6 +81,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
        sadece kayıt tutmaz. */
     if (vekaleten) {
       setOlay(null)
+      setHazir(true)
       return
     }
     const olaylar = await kalemiCalistir({
@@ -87,6 +93,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
     /* Sonuç boşsa eldeki mesaj korunuyor: null'a düşürmek ekranı bir an
        varsayılan cümleye çeviriyordu. */
     if (olaylar[0]) setOlay(olaylar[0])
+    setHazir(true)
   }, [profil?.id, profil?.ad_soyad, ozetGunu, vekaleten])
 
   useEffect(() => {
@@ -154,8 +161,14 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
             {ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'} <span>{tarih}</span>
           </p>
           <p className="ob-sade-mesaj" role="status" aria-live="polite">
-            {kocKonusuyor && <b>Koçundan: </b>}
-            {soz.mesaj}
+            {kocKonusuyor ? (
+              <>
+                <b>Koçundan: </b>
+                {soz.mesaj}
+              </>
+            ) : (
+              hazir && soz.mesaj
+            )}
           </p>
           {kocKonusuyor && (
             <div className="ob-sade-dugmeler">
@@ -188,7 +201,7 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         <div className="ob-soz">
           {kocKonusuyor && <p className="ob-kim">Koçundan</p>}
           <p className="ob-mesaj" role="status" aria-live="polite">
-            {soz.mesaj}
+            {kocKonusuyor || hazir ? soz.mesaj : ''}
           </p>
 
           {/* Genel Başla düğmesi kalktı: sıradaki iş hemen alttaki kartta ve
