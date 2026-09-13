@@ -48,10 +48,17 @@
    ayrı renk olmaları ekranı okunmaz yapıyordu. Kırmızı büsbütün kalktı:
    bu ekranda acil bir şey yok, ayrıntı durağa dokununca zaten görünüyor. */
 
-/* bitti — koç onayladı ya da onay bekliyor */
-.yol-durak[data-yol="onayli"] .yol-nokta,
-.yol-durak[data-yol="bekliyor"] .yol-nokta {
+/* bitti — iki hâli var ve ikisi aynı şey değil. Öğrenci "bitirdim"
+   dediğinde durak koç onayına düşer; onay gelene kadar geri alınabilir.
+   Bu öğrencinin kendi işine ait bir durum, koçun kavramı değil: biri
+   kapanmış, diğeri birinin bakmasını bekliyor. Aynı renk ailesi, farklı
+   dolgu — yol hâlâ üç şey söylüyor ama bekleyeni yutmuyor. */
+.yol-durak[data-yol="onayli"] .yol-nokta {
   background: var(--marka-yesil-acik); border-color: var(--marka-yesil-acik); color: #06231a;
+}
+.yol-durak[data-yol="bekliyor"] .yol-nokta {
+  background: rgb(47 163 107 / 0.12); border-color: var(--marka-yesil-acik);
+  color: var(--marka-yesil-acik); border-style: dashed;
 }
 .yol-durak[data-yol="onayli"] .yol-ad,
 .yol-durak[data-yol="bekliyor"] .yol-ad { color: var(--grafit); }
