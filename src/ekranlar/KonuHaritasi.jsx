@@ -8,22 +8,27 @@ import { dersKapsamAdi, dersleriGrupla, grupToplami, kapsamEtiketi } from '../li
    dersler özet gelir, konular ders açıldığında yüklenir. */
 
 function Cubuk({ toplam, tamamlandi, onayli = 0, calisiliyor, tekrar }) {
-  const bekliyor = Math.max(0, tamamlandi - onayli)
-  const bos = Math.max(0, toplam - tamamlandi - calisiliyor - tekrar)
+  /* Öğrenciye üç durum: bitti, çalışıyorum, başlanmadı.
+     Eskiden beş vardı (onaylı / onay bekliyor / çalışılıyor / tekrar /
+     başlanmadı). Beşi de koçun kavramları: onay koçta, tekrar kararı
+     koçta. Öğrencinin bunları ayırt etmesi gerekmiyor, ayırt etmeye
+     çalışması ekranı okunmaz yapıyordu. Sayılar kaybolmuyor, birleşiyor:
+     onay bekleyen de bitmiştir, tekrar da çalışılan bir konudur. */
+  const bitti = tamamlandi
+  const calisilan = calisiliyor + tekrar
+  const bos = Math.max(0, toplam - bitti - calisilan)
   const y = (n) => (toplam ? (n / toplam) * 100 : 0)
-  const dokunuldu = tamamlandi + calisiliyor + tekrar > 0
+  const dokunuldu = bitti + calisilan > 0
   const parcalar = [
-    ['onayli', onayli, 'onaylı'],
-    ['bekliyor', bekliyor, 'onay bekliyor'],
-    ['calisiliyor', calisiliyor, 'çalışılıyor'],
-    ['tekrar', tekrar, 'tekrar'],
+    ['onayli', bitti, 'bitti'],
+    ['calisiliyor', calisilan, 'çalışıyorum'],
   ]
   return (
     <>
       <div
         className='konu-cubuk'
         role='img'
-        aria-label={`${toplam} konudan ${onayli} koç onaylı, ${bekliyor} onay bekliyor, ${calisiliyor} çalışılıyor, ${tekrar} tekrar gerekiyor, ${bos} başlanmadı`}
+        aria-label={`${toplam} konudan ${bitti} bitti, ${calisilan} çalışılıyor, ${bos} başlanmadı`}
       >
         {parcalar.map(([k, n]) => n > 0 && (
           <div key={k} className={`konu-cubuk--${k}`} style={{ width: `${y(n)}%` }} />

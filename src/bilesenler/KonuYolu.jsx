@@ -229,6 +229,21 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
     if (await yaz(d, { durum })) setSecili(null)
   }
 
+  /* Öğrenci ekranı açtığında gözü kendi durağını arıyor; yol uzun olduğu
+     için o durak çoğu zaman ekranın dışında kalıyordu. Yol yüklenince
+     bulunduğu durak ortaya getiriliyor. Bir kez: sonraki tazelemelerde
+     ekran kullanıcının altından kaymasın. */
+  const kaydirildi = useRef(false)
+  useEffect(() => {
+    if (!yol || kaydirildi.current) return
+    const kok = haritaRef.current
+    const simdi = kok?.querySelector('.yol-durak[data-yol="simdi"]')
+    if (!simdi) return
+    kaydirildi.current = true
+    const azHareket = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ?? false
+    simdi.scrollIntoView({ block: 'center', behavior: azHareket ? 'auto' : 'smooth' })
+  }, [yol])
+
   useEffect(() => {
     if (!patlayan) return
     const t = setTimeout(() => setPatlayan(null), 700)
@@ -243,12 +258,6 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   return (
     <div className="konu-yolu">
       <Uyari>{hata}</Uyari>
-
-      <div className="yol-ozet">
-        <span><strong>{yol.onayli}</strong> / {yol.toplam} durak</span>
-        <span>{yol.bolgeler.filter((b) => b.tamam).length} / {yol.bolgeler.length} bölge</span>
-      </div>
-      <div className="yol-cubuk"><i style={{ width: `${yol.toplam ? (yol.onayli / yol.toplam) * 100 : 0}%` }} /></div>
 
       <div className="yol-harita" ref={haritaRef}>
         <svg className="yol-cizgi" viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
