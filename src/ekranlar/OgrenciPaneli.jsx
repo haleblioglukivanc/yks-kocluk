@@ -64,6 +64,9 @@ export default function OgrenciPaneli({
   const [tazele, setTazele] = useState(0)
   const [kutlamalar, setKutlamalar] = useState([])
   const [kapatAcik, setKapatAcik] = useState(false)
+  /* Gün kapandığında Yol'a geçilir ve bugün çalışılan ders açık gelir:
+     günün sonunda öğrencinin göreceği şey, bugün nereyi geçtiği. */
+  const [odakDers, setOdakDers] = useState(null)
   /* Koçun okunmamış mesajı başlıkta çıkar; vekalette koç kendi mesajını görmesin. */
   const kocMesaji = useKocMesaji(hedefId, !vekaleten)
 
@@ -216,7 +219,7 @@ export default function OgrenciPaneli({
         </>
       ) : sekme === 'konular' ? (
         <>
-          <KonuHaritasi profilId={kayit.id} />
+          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} />
           {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
           <HaftalikIlham goster="kitap" />
@@ -233,6 +236,18 @@ export default function OgrenciPaneli({
       <GunuKapat
         acik={kapatAcik}
         onKapat={() => setKapatAcik(false)}
+        onTamamlandi={() => {
+          setKapatAcik(false)
+          /* Bugün bitirilen işlerden konusu olan sonuncusu: patikada
+             canlanacak durak onun dersinde. Konusu olan iş yoksa
+             (yalnız deneme çözülmüş olabilir) Yol yine açılır, ders
+             seçimi kendi kuralına düşer. */
+          const bugunku = [...(ozet?.gorevler ?? [])]
+            .filter((g) => g.durum === 'tamamlandi' && g.ders && g.konu)
+            .pop()
+          setOdakDers(bugunku?.ders ?? null)
+          setSekme('konular')
+        }}
         ogrenciId={kayit.id}
         katalogId={kayit.katalog_id}
         ozet={ozet}

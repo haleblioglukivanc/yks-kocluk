@@ -50,7 +50,15 @@ function Cubuk({ toplam, tamamlandi, onayli = 0, calisiliyor, tekrar }) {
   )
 }
 
-export default function KonuHaritasi({ profilId }) {
+/* Ders adlarını karşılaştırırken kapsam ayıklanır: görevde "Geometri",
+   katalogda "TYT AYT Geometri" olabiliyor. */
+const sade = (a) => (a ?? '').toLocaleLowerCase('tr-TR').replace(/\b(tyt|ayt|ydt)\b/g, '').trim()
+const ayniDers = (a, b) => {
+  const x = sade(a); const y = sade(b)
+  return Boolean(x) && Boolean(y) && (x === y || x.includes(y) || y.includes(x))
+}
+
+export default function KonuHaritasi({ profilId, odakDers }) {
   const [dersler, setDersler] = useState(null)
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
@@ -90,8 +98,12 @@ export default function KonuHaritasi({ profilId }) {
      Açılışta seçilen ders: üzerinde çalışılan konu olan ilk ders. Yoksa
      ilk ders. Tarih bilgisi özet sorgusunda yok; "çalışılıyor" durumu
      öğrencinin şu an nerede olduğuna en yakın veri. */
+  /* odakDers: gün kapandıktan sonra buraya geçilirken "bugün şurayı
+     çalıştın" bilgisi geliyor; o ders açık gelsin. Öğrenci sonradan
+     şeritten başka bir derse geçerse seçimi kendi tercihi kazanır. */
+  const odak = odakDers ? gruplar.find((g) => ayniDers(g.ad, odakDers)) : null
   const varsayilan =
-    gruplar.find((g) => grupToplami(g, ['calisiliyor']).calisiliyor > 0) ?? gruplar[0]
+    odak ?? gruplar.find((g) => grupToplami(g, ['calisiliyor']).calisiliyor > 0) ?? gruplar[0]
   const etkin = gruplar.find((g) => g.kod === secili) ?? varsayilan
 
   if (gruplar.length === 0) {
