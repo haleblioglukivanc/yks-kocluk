@@ -19,8 +19,12 @@ import { Uyari } from './Ortak.jsx'
  * alarm gibi görünürdü.
  *
  * Randevunun günü, saati ve süresi koçun insiyatifinde.
+ *
+ * Vekaleten bakan koç ekranın aynısını görür — ikon, hak durumu ve yaprak
+ * dahil. Gönderme kapalıdır: talebi öğrencinin kendisi açar, koçun onun
+ * adına haftalık hakkını yakması anlamsız olurdu.
  */
-export default function AcilGorusme() {
+export default function AcilGorusme({ ogrenciId = null, saltOkunur = false }) {
   const [hak, setHak] = useState(null)
   const [acik, setAcik] = useState(false)
   const [canli, setCanli] = useState(false)
@@ -30,9 +34,10 @@ export default function AcilGorusme() {
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
-    const { data, error } = await supabase.rpc('ogrenci_gorusme_hakki')
+    const { data, error } = await supabase.rpc('ogrenci_gorusme_hakki',
+      ogrenciId ? { p_ogrenci_id: ogrenciId } : {})
     if (!error) setHak(data ?? null)
-  }, [])
+  }, [ogrenciId])
 
   useEffect(() => {
     yukle()
@@ -108,12 +113,16 @@ export default function AcilGorusme() {
           <p>Sebep yazmak zorunda değilsin. Günü ve saati koçun belirleyecek.</p>
 
           {hata ? <Uyari>{hata}</Uyari> : null}
+          {saltOkunur ? (
+            <Uyari tur="bilgi">Vekaleten bakıyorsun. Talebi yalnızca öğrenci açabilir.</Uyari>
+          ) : null}
 
           <div className="acil-secim" role="group" aria-label="Ne zaman konuşmak istiyorsun">
             <button
               type="button"
               className="acil-secenek"
               aria-pressed={aciliyet === 'bugun'}
+              disabled={saltOkunur}
               onClick={() => setAciliyet('bugun')}
             >
               Bugün konuşmalıyım
@@ -122,6 +131,7 @@ export default function AcilGorusme() {
               type="button"
               className="acil-secenek"
               aria-pressed={aciliyet === 'bu_hafta'}
+              disabled={saltOkunur}
               onClick={() => setAciliyet('bu_hafta')}
             >
               Bu hafta içinde
@@ -132,13 +142,19 @@ export default function AcilGorusme() {
             className="kuyruk-alan"
             rows={2}
             value={notMetni}
+            disabled={saltOkunur}
             placeholder="İstersen birkaç kelime yaz"
             onChange={(e) => setNotMetni(e.target.value)}
             aria-label="Koçuna not"
           />
 
           <div className="acil-dugmeler">
-            <button type="button" className="acil-dugme" disabled={bekliyor} onClick={gonder}>
+            <button
+              type="button"
+              className="acil-dugme"
+              disabled={bekliyor || saltOkunur}
+              onClick={gonder}
+            >
               Görüşme iste
             </button>
             <button

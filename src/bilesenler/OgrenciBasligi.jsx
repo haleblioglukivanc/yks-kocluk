@@ -185,8 +185,10 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
           )}
         </div>
         {/* Acil görüşme: selam satırının sağında, ulaşılabilir ama davet
-            etmeyen bir yerde. Yaprak açılınca şeridin altına iner. */}
-        {!vekaleten && <AcilGorusme />}
+            etmeyen bir yerde. Yaprak açılınca şeridin altına iner.
+            Vekalette de görünür — koç öğrencinin gördüğü ekranın aynısını
+            görmeli — ama orada yalnızca okunur. */}
+        <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
       </div>
     )
   }
