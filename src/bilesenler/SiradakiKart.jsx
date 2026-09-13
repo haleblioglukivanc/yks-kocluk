@@ -56,6 +56,11 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
      geçer. Seçim oturumluk: iş bitince ya da sayfa yenilenince sıra
      kendi kuralına döner. */
   const [secim, setSecim] = useState(null)
+  /* Blok gecikince açılan küçük panel: ek süre ya da mazeret. */
+  const [talep, setTalep] = useState(null) // 'ek_sure' | 'mazeret'
+  const [talepMetni, setTalepMetni] = useState('')
+  const [ekDk, setEkDk] = useState(30)
+  const [talepGitti, setTalepGitti] = useState(false)
   const [hata, setHata] = useState('')
 
   const liste = gorevler ?? []
@@ -89,6 +94,23 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   }
 
   const tamamla = (g) => durumYaz(g, true)
+
+  async function talepGonder(gorevId, tur) {
+    const { error } = await supabase.rpc('blok_talebi_ac', {
+      p_gorev_id: gorevId,
+      p_tur: tur,
+      p_mesaj: talepMetni.trim() || null,
+      p_ek_dk: tur === 'ek_sure' ? ekDk : null,
+    })
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setHata('')
+    setTalep(null)
+    setTalepMetni('')
+    setTalepGitti(true)
+  }
 
   /* Gunun butun isleri, sirada duran haric. Hem sira varken hem de gun
      bittiginde ayni liste ciziliyor: eskiden "hepsi bitti" hali listeyi
@@ -216,6 +238,14 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   }
 
   /* ── Sıradaki iş ── */
+  /* Blok başlangıcından 15 dakika geçtiyse gecikmiş sayılır; sunucudaki
+     kontrol de aynı payı kullanıyor, iki taraf aynı anda konuşsun. */
+  const gecikti = (() => {
+    if (!sira.baslangic_saat) return false
+    const [sa, dk] = String(sira.baslangic_saat).split(':').map(Number)
+    const simdi = new Date()
+    return simdi.getHours() * 60 + simdi.getMinutes() >= sa * 60 + dk + 15
+  })()
   const varsayilan = varsayilanDk(sira.tur)
   const digerler = SAYAC_SURELERI.filter((dk) => dk !== varsayilan)
   const etiket = [sira.ders, sira.konu].filter(Boolean).join(' · ')
@@ -265,6 +295,62 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           </button>
         ))}
       </div>
+      {/* Blok saati geçtiyse öğrencinin iki çıkışı var. İkisi de koçun
+          önüne düşer; öğrenci kendi başına bloğu değiştiremez ama
+          sessiz de kalmak zorunda değil. */}
+      {saatli && gecikti && !talepGitti && (
+        <div className="blok-talep">
+          {talep === null ? (
+            <>
+              <p className="blok-talep-soru">Bloğun saati geçti. Bir şey mi oldu?</p>
+              <div className="blok-talep-dugmeler">
+                <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setTalep('ek_sure')}>
+                  Ek süre iste
+                </button>
+                <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setTalep('mazeret')}>
+                  Mazeret bildir
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              {talep === 'ek_sure' && (
+                <div className="blok-talep-sure">
+                  {[15, 30, 60].map((dk) => (
+                    <button
+                      key={dk}
+                      className={`dugme dugme--ufak ${ekDk === dk ? 'dugme--birincil' : 'dugme--ikincil'}`}
+                      onClick={() => setEkDk(dk)}
+                    >
+                      {dk} dk
+                    </button>
+                  ))}
+                </div>
+              )}
+              <input
+                className="blok-talep-metin"
+                value={talepMetni}
+                onChange={(e) => setTalepMetni(e.target.value)}
+                placeholder={talep === 'ek_sure' ? 'Kısa bir not (isteğe bağlı)' : 'Ne oldu? Tek cümle yeter.'}
+              />
+              <div className="blok-talep-dugmeler">
+                <button className="metin-dugme" onClick={() => { setTalep(null); setTalepMetni('') }}>
+                  Vazgeç
+                </button>
+                <button
+                  className="dugme dugme--birincil dugme--ufak"
+                  disabled={talep === 'mazeret' && !talepMetni.trim()}
+                  onClick={() => talepGonder(sira.id, talep)}
+                >
+                  Koçuna gönder
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      )}
+      {talepGitti && <p className="blok-talep-bilgi">Koçuna iletildi.</p>}
+
       <div className="siradaki-ikincil">
         <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamla(sira)}>
           ✓ Tamamla
