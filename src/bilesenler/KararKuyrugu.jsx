@@ -1,19 +1,20 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
 import { Avatar } from './Fotograf.jsx'
 import BugunCalisanlar from './BugunCalisanlar.jsx'
 
-/* Koçun günlük karar kuyruğu. Risk, konu onayı, deneme analizi, veli özeti ve
-   hedef ayarı tek sırada akar; koç bir kart görür, karar verir, sıradaki gelir.
-   Önceki dağınık kuyruklar (RiskRadari / AnalizKuyrugu / OnayKuyrugu /
-   VeliOzetKuyrugu) bunun yerini alır. Kural: öneri hazır gelir, koç onaylar;
-   öğrenciye giden metin karttan görünmeden hiçbir şey gönderilmez. */
+/* Koçun günlük karar kuyruğu. Kararlar dört segmente ayrılır: acil, süresi
+   dolacak, bugün, bu hafta. Koç tek kart görür ama şeritten istediği segmente
+   atlayabilir. Aciliyet koça konan cevap süresinden değil, kartın türünden
+   gelir. Kural: öneri hazır gelir, koç onaylar; öğrenciye giden metin karttan
+   görünmeden hiçbir şey gönderilmez. */
 
 const SEBEP = { bilgi: 'bilgi eksiği', dikkat: 'dikkat', sure: 'süre' }
 
 const TIP_ETIKET = {
   risk: 'Kaybolan öğrenci',
+  gorusme: 'Acil görüşme',
   blok: 'Blok',
   konu: 'Konu onayı',
   analiz: 'Deneme analizi',
@@ -22,11 +23,19 @@ const TIP_ETIKET = {
   tebrik: 'Tebrik',
 }
 
+const SEGMENT_ETIKET = { acil: 'Acil', pencere: 'Süreli', bugun: 'Bugün', hafta: 'Bu hafta' }
+const SEGMENT_SIRA = ['acil', 'pencere', 'bugun', 'hafta']
+
+function anahtar(k) {
+  return `${k.tip}-${k.kaynak_id}`
+}
+
 export default function KararKuyrugu({ onOgrenciAc }) {
   const [kartlar, setKartlar] = useState(null)
-  const [sira, setSira] = useState(0)
-  const [toplam, setToplam] = useState(0)
+  const [bitenler, setBitenler] = useState([])
   const [verilen, setVerilen] = useState(0)
+  const [segment, setSegment] = useState(null)
+  const [odakKey, setOdakKey] = useState(null)
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
@@ -37,19 +46,45 @@ export default function KararKuyrugu({ onOgrenciAc }) {
       return
     }
     setKartlar(data ?? [])
-    setToplam((data ?? []).length)
-    setSira(0)
+    setBitenler([])
+    setSegment(null)
+    setOdakKey(null)
   }, [])
 
   useEffect(() => {
     yukle()
   }, [yukle])
 
+  const kalanlar = useMemo(
+    () => (kartlar ?? []).filter((k) => !bitenler.includes(anahtar(k))),
+    [kartlar, bitenler],
+  )
+
+  /* Tebrik kuyruğa karışmıyor: iyi haber karar değil, en altta şerit olarak
+     duruyor ki bekleyen işin önünü kesmesin. */
+  const kutlamalar = useMemo(() => kalanlar.filter((k) => k.tip === 'tebrik'), [kalanlar])
+  const isler = useMemo(() => kalanlar.filter((k) => k.tip !== 'tebrik'), [kalanlar])
+
+  const sayilar = useMemo(() => {
+    const s = {}
+    for (const k of isler) s[k.segment] = (s[k.segment] ?? 0) + 1
+    return s
+  }, [isler])
+
+  function bittiIsaretle(kart, sayildi) {
+    setBitenler((b) => [...b, anahtar(kart)])
+    setOdakKey(null)
+    if (sayildi) setVerilen((v) => v + 1)
+  }
+
   if (kartlar === null) return <Yukleniyor metin="Kararlar geliyor" satir={4} />
 
-  const kart = kartlar[sira]
+  const aktifSegment = segment && sayilar[segment] ? segment : isler[0]?.segment ?? null
+  const odak =
+    isler.find((k) => anahtar(k) === odakKey) ?? isler.find((k) => k.segment === aktifSegment)
+  const sirada = odak ? isler.filter((k) => anahtar(k) !== anahtar(odak)) : []
 
-  if (!kart) {
+  if (!odak) {
     return (
       <>
         <Kart>
@@ -61,6 +96,7 @@ export default function KararKuyrugu({ onOgrenciAc }) {
             </p>
           </div>
         </Kart>
+        <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
         {/* Boş ekran boş kalmasın: kim bugün girdi, kim çalışıyor. */}
         <BugunCalisanlar onOgrenciAc={onOgrenciAc} />
       </>
@@ -70,53 +106,129 @@ export default function KararKuyrugu({ onOgrenciAc }) {
   return (
     <>
       {hata ? <Uyari>{hata}</Uyari> : null}
-      <KuyrukKarti
-        key={`${kart.tip}-${kart.kaynak_id}`}
-        kart={kart}
-        kalan={toplam - sira}
-        ilerleme={toplam ? Math.round((sira / toplam) * 100) : 0}
-        onOgrenciAc={onOgrenciAc}
-        onBitti={(sayildi) => {
-          if (sayildi) setVerilen((v) => v + 1)
-          setSira((s) => s + 1)
+
+      <SegmentSeridi
+        sayilar={sayilar}
+        aktif={odak.segment}
+        onSec={(s) => {
+          setSegment(s)
+          setOdakKey(null)
         }}
+      />
+
+      <KuyrukKarti
+        key={anahtar(odak)}
+        kart={odak}
+        onOgrenciAc={onOgrenciAc}
+        onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
         onHata={setHata}
       />
-      <Sirada kartlar={kartlar.slice(sira + 1)} />
+
+      <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} />
+      <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
     </>
   )
 }
 
-/* Bekleyen kararlar: açılışta yalnız sayı, dokununca liste. Kart tek
-   tek geldiği için koç sırada ne olduğunu göremiyordu. */
-function Sirada({ kartlar }) {
-  const [acik, setAcik] = useState(false)
+/* Segment şeridi: hangi işin ne kadar beklediği tek bakışta. Acil varsa kuyruk
+   kendiliğinden orada açılır; koç isterse başka segmente atlar. */
+function SegmentSeridi({ sayilar, aktif, onSec }) {
+  const gorunen = SEGMENT_SIRA.filter((s) => sayilar[s])
+  if (gorunen.length < 2) return null
+  return (
+    <div className="segment-serit" role="tablist" aria-label="Karar segmentleri">
+      {gorunen.map((s) => (
+        <button
+          key={s}
+          role="tab"
+          aria-selected={s === aktif}
+          className="segment-sekme"
+          data-segment={s}
+          onClick={() => onSec(s)}
+        >
+          {SEGMENT_ETIKET[s]}
+          <span className="segment-adet">{sayilar[s]}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+/* Bekleyen kararlar tek satır halinde. Önce dört tanesi görünür, gerisi
+   istendiğinde açılır; dokununca o karta atlanır. */
+function Sirada({ kartlar, onSec }) {
+  const [hepsi, setHepsi] = useState(false)
   if (kartlar.length === 0) return null
+  const gosterilen = hepsi ? kartlar : kartlar.slice(0, 4)
   return (
     <Kart
       duz
       baslik="Sırada"
       eylem={
-        <button className="metin-dugme" onClick={() => setAcik((a) => !a)} aria-expanded={acik}>
-          {acik ? 'Kapat' : `${kartlar.length} karar daha`}
-        </button>
+        kartlar.length > 4 ? (
+          <button className="metin-dugme" onClick={() => setHepsi((a) => !a)} aria-expanded={hepsi}>
+            {hepsi ? 'Kısalt' : `Hepsi · ${kartlar.length}`}
+          </button>
+        ) : null
       }
     >
-      {acik && (
-        <ul className="sirada-liste">
-          {kartlar.map((k) => (
-            <li key={`${k.tip}-${k.kaynak_id}`} className="sirada-satir">
-              <span className="kuyruk-tip" data-tip={k.tip}>{TIP_ETIKET[k.tip] ?? k.tip}</span>
+      <ul className="sirada-liste">
+        {gosterilen.map((k) => (
+          <li key={anahtar(k)}>
+            <button
+              className="sirada-satir sirada-satir--dokun"
+              data-segment={k.segment}
+              onClick={() => onSec(k)}
+            >
               <span className="sirada-ad">{k.ad}</span>
-            </li>
-          ))}
-        </ul>
-      )}
+              <span className="sirada-baglam">{k.baglam}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
     </Kart>
   )
 }
 
-function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
+/* İyi haberler kuyruğun altında ince bir şerit. Kutlama kartı tepede yer
+   kaplayınca bekleyen iş aşağı itiliyordu. */
+function IyiHaber({ kartlar, onBitti, onHata }) {
+  const [bekliyor, setBekliyor] = useState(false)
+  if (!kartlar || kartlar.length === 0) return null
+  const kart = kartlar[0]
+
+  async function gonder() {
+    setBekliyor(true)
+    onHata('')
+    const { error } = await supabase.rpc('koc_karar_ver', {
+      p_tip: kart.tip,
+      p_kaynak_id: kart.kaynak_id,
+      p_karar: 'onay',
+      p_metin: kart.mesaj ?? null,
+      p_secili: [],
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    onBitti(kart, true)
+  }
+
+  return (
+    <div className="iyi-haber">
+      <span className="iyi-haber-ic">
+        <strong>{kart.ad}</strong> {kart.baglam}
+        {kartlar.length > 1 ? ` · ${kartlar.length - 1} iyi haber daha` : ''}
+      </span>
+      <button className="metin-dugme" disabled={bekliyor} onClick={gonder}>
+        Tebrik et
+      </button>
+    </div>
+  )
+}
+
+function KuyrukKarti({ kart, onOgrenciAc, onBitti, onHata }) {
   const [metin, setMetin] = useState(kart.mesaj ?? '')
   const [duzenle, setDuzenle] = useState(false)
   const [bekliyor, setBekliyor] = useState(false)
@@ -162,12 +274,8 @@ function KuyrukKarti({ kart, kalan, ilerleme, onOgrenciAc, onBitti, onHata }) {
         <span className="kuyruk-tip" data-tip={kart.tip}>
           {TIP_ETIKET[kart.tip] ?? kart.tip}
         </span>
-        <span className="kuyruk-sayac">{kalan} karar kaldı</span>
       </div>
 
-      <div className="kuyruk-cubuk" aria-hidden="true">
-        <div className="kuyruk-cubuk-dolu" style={{ width: `${ilerleme}%` }} />
-      </div>
 
       <button className="kuyruk-kimlik" onClick={() => onOgrenciAc?.(kart.ogrenci_id)} title="Öğrenciyi aç">
         <Avatar yol={kart.fotograf_yolu} ad={kart.ad} boyut="kucuk" />
