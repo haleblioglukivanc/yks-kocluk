@@ -69,13 +69,19 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* Atlama oturumluk: sayfa yenilenince sıra başa döner. Kalıcı olsaydı
      "atlandı" durumuna yazmak gerekirdi, o da koçun raporuna girerdi. */
   const [atlanan, setAtlanan] = useState([])
+  /* Öğrencinin kendi seçimi. Sistem sıradaki işi tahmin ediyor ama o an
+     canı başka bir işi çekebilir; listeden bir işe dokununca o iş öne
+     geçer. Seçim oturumluk: iş bitince ya da sayfa yenilenince sıra
+     kendi kuralına döner. */
+  const [secim, setSecim] = useState(null)
   const [hata, setHata] = useState('')
 
   const liste = gorevler ?? []
   const bekleyen = liste.filter((g) => g.durum !== 'tamamlandi')
   const calisan = durum?.gorevId ? liste.find((g) => g.id === durum.gorevId) : null
+  const secilen = secim ? bekleyen.find((g) => g.id === secim) : null
   const sira =
-    bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null
+    secilen ?? bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null
 
   /* Iki yonlu: isaretlemek kadar geri almak da gerekiyor. Ogrenci yanlis
      tikleyebilir ya da bitirdigi bir konuyu tekrar calismak isteyebilir;
@@ -121,10 +127,25 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                         strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <span className="sk-ad">
-                {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
-              </span>
-              <span className="sk-ders">{g.ders}</span>
+              {bitti ? (
+                <>
+                  <span className="sk-ad">
+                    {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
+                  </span>
+                  <span className="sk-ders">{g.ders}</span>
+                </>
+              ) : (
+                <button
+                  className="sk-sec"
+                  onClick={() => setSecim(g.id)}
+                  aria-label={`${g.baslik || g.konu || 'Görev'} işine geç`}
+                >
+                  <span className="sk-ad">
+                    {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
+                  </span>
+                  <span className="sk-ders">{g.ders}</span>
+                </button>
+              )}
             </li>
           )
         })}
@@ -237,7 +258,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         </div>
       </div>
 
-      <p className="siradaki-sira">Sırada</p>
+      <p className="siradaki-sira">{secilen ? 'Seçtiğin iş' : 'Sırada'}</p>
       <h2 className="siradaki-baslik">{baslik}</h2>
       {(etiket || tur) && (
         <p className="siradaki-alt">{[etiket, tur].filter(Boolean).join(' · ')}</p>
@@ -270,7 +291,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           ✓ Tamamla
         </button>
         {bekleyen.length > 1 && (
-          <button className="metin-dugme" onClick={() => setAtlanan((a) => [...a, sira.id])}>
+          <button className="metin-dugme" onClick={() => { setSecim(null); setAtlanan((a) => [...a, sira.id]) }}>
             Atla ›
           </button>
         )}

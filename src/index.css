@@ -3770,3 +3770,11 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .hafta-serit-kap { margin: -0.25rem 0 1rem; }
 .hafta-serit-kap .hafta-serit { background: none; padding: 0; }
 .hafta-kaydir { display: block; margin: 0.5rem 0 0 auto; }
+
+/* Listedeki bekleyen işe dokununca o iş öne geçer. */
+.sk-sec {
+  display: flex; align-items: center; gap: 0.625rem; flex: 1; min-width: 0;
+  background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit;
+  cursor: pointer; text-align: left;
+}
+.sk-sec:hover .sk-ad, .sk-sec:focus-visible .sk-ad { color: var(--dolgu); }
