@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Bos, Kart, Yukleniyor } from './Ortak.jsx'
 import { FAZ_ADI } from '../lib/kaynak.js'
@@ -27,8 +27,20 @@ function tarihKisa(t) {
   return new Date(t).toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })
 }
 
-export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci' }) {
+/* Ders adlarını karşılaştırmak için sadeleştirir: "TYT Matematik" ile
+   "Matematik" aynı dersi işaret ediyor, biri kapsamlı yazılmış o kadar. */
+const sade = (a) => (a ?? '').toLocaleLowerCase('tr-TR').replace(/\b(tyt|ayt|ydt)\b/g, '').trim()
+
+const ayniDers = (a, b) => {
+  const x = sade(a)
+  const y = sade(b)
+  if (!x || !y) return false
+  return x === y || x.includes(y) || y.includes(x)
+}
+
+export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDersler }) {
   const [liste, setListe] = useState(null)
+  const [tumu, setTumu] = useState(false)
 
   useEffect(() => {
     if (!ogrenciId) return
@@ -43,6 +55,17 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci' }) {
 
   const ben = rol === 'ogrenci'
   const baslik = ben ? 'Kaynaklarım' : 'Öğrencinin kaynakları'
+
+  /* Bugün'de raf değil, bugünün rafı duruyor: öğrencinin bu ekranda
+     yanıtladığı soru "bugünkü işler için elimde ne var". Tüm liste bir
+     dokunuş uzakta; süzme bir şeyi saklamıyor, sıraya koyuyor. */
+  const suzulmus = useMemo(() => {
+    if (!ben || !liste || !bugunDersler?.length) return null
+    const eslesen = liste.filter((k) => bugunDersler.some((d) => ayniDers(d, k.dersAd)))
+    return eslesen.length ? eslesen : null
+  }, [ben, liste, bugunDersler])
+
+  const gosterilen = suzulmus && !tumu ? suzulmus : liste
 
   if (liste === null) {
     return (
@@ -70,11 +93,24 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci' }) {
   return (
     <Kart
       baslik={baslik}
-      altBaslik={ben ? 'Görevlerde kullandığın kitaplar' : 'Verdiğin görevlerden birikenler'}
+      altBaslik={
+        ben
+          ? suzulmus && !tumu
+            ? 'Bugünkü derslerin kitapları'
+            : 'Görevlerde kullandığın kitaplar'
+          : 'Verdiğin görevlerden birikenler'
+      }
+      eylem={
+        ben && suzulmus ? (
+          <button type="button" className="metin-dugme" onClick={() => setTumu((t) => !t)}>
+            {tumu ? 'Bugünküler' : 'Tümü'}
+          </button>
+        ) : null
+      }
     >
       {ben ? (
         <ul className="liste kaynak-adlar">
-          {liste.map((k) => (
+          {gosterilen.map((k) => (
             <li key={k.id} className="liste-satir">
               <span className="liste-ad">{k.ad}</span>
             </li>

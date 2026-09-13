@@ -206,7 +206,11 @@ export default function OgrenciPaneli({
           )}
           {/* Rutinler Günü tamamla akışında; elindeki kitaplar onun altında,
               günün işi bittikten sonra bakılacak yerde. */}
-          <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" />
+          <OgrenciKaynaklari
+            ogrenciId={kayit.id}
+            rol="ogrenci"
+            bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
+          />
           {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
           <HaftalikIlham goster="soz" />
         </>
