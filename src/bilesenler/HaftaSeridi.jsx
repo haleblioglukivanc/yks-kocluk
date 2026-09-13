@@ -43,8 +43,11 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
   const basi = haftaBasi ? gunEkle(haftaBasi, kaydirma * 7) : null
   const gunler = basi ? Array.from({ length: 7 }, (_, i) => gunEkle(basi, i)) : []
 
+  /* Bugünün listesi artık sıradaki işin kartında; şerit açılışta kapalı
+     geliyor ki aynı liste iki kere çizilmesin. Başka bir güne dokununca
+     o günün planı yine altında açılır. */
   useEffect(() => {
-    setSecili(bugun)
+    setSecili(null)
   }, [bugun])
 
   const yukle = useCallback(async () => {
