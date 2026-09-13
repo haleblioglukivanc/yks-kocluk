@@ -41,7 +41,10 @@ function ozetCumlesi(ozet) {
   return { ruh: 'sevinc', mesaj: 'Plan yoktu ama çalıştın. Bu sayılır.' }
 }
 
-export default function GunuKapat({ acik, onKapat, ogrenciId, katalogId, ozet, onDegisti, saltOkunur = false }) {
+/* onTamamlandi yalnızca gün gerçekten kaydedildiğinde çağrılır; onKapat
+   vazgeçildiğinde de çağrıldığı için ikisi ayrı. v2 bununla varış
+   ekranını açıyor, v1 bu proptan habersiz çalışmaya devam ediyor. */
+export default function GunuKapat({ acik, onKapat, onTamamlandi, ogrenciId, katalogId, ozet, onDegisti, saltOkunur = false }) {
   const [adim, setAdim] = useState(0)
   const [hata, setHata] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
@@ -87,7 +90,8 @@ export default function GunuKapat({ acik, onKapat, ogrenciId, katalogId, ozet, o
     }
     setHata('')
     onDegisti?.()
-    onKapat?.()
+    if (onTamamlandi) onTamamlandi()
+    else onKapat?.()
   }
 
   return (
