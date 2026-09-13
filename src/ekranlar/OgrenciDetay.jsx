@@ -429,6 +429,11 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [kaynakAralik, setKaynakAralik] = useState('')
   const [hedef, setHedef] = useState('')
   const [aciklama, setAciklama] = useState('')
+  /* Saat isteğe bağlı. Boş bırakılırsa gün eskisi gibi işler: görevler
+     koçun sırasıyla, öğrenci istediğinden başlar. Bir göreve saat
+     verildiği anda o gün saate bağlanır. */
+  const [basSaat, setBasSaat] = useState('')
+  const [bitSaat, setBitSaat] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
 
@@ -478,6 +483,14 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       setHata('Önce bir ders seç.')
       return
     }
+    if (basSaat && bitSaat && bitSaat <= basSaat) {
+      setHata('Bitiş saati başlangıçtan sonra olmalı.')
+      return
+    }
+    if (bitSaat && !basSaat) {
+      setHata('Bitiş saati verdiysen başlangıcı da yaz.')
+      return
+    }
     setBekliyor(true)
     setHata('')
 
@@ -505,6 +518,8 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       aciklama: aciklama.trim() || null,
       kaynak_id: kaynakId,
       kaynak_aralik: kaynakId && kaynakAralik.trim() ? kaynakAralik.trim() : null,
+      baslangic_saat: basSaat || null,
+      bitis_saat: bitSaat || null,
       durum: 'bekliyor',
     })
 
@@ -631,6 +646,18 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           />
         </Alan>
       )}
+
+      {/* Saat verilirse gün blok düzenine geçer: görevler saate göre
+          dizilir ve öğrenci sırayı değiştiremez. Boş bırakılırsa hiçbir
+          şey değişmez. */}
+      <div className="alan-ikili">
+        <Alan etiket="Başlangıç saati" ipucu="İsteğe bağlı">
+          <input type="time" value={basSaat} onChange={(e) => setBasSaat(e.target.value)} />
+        </Alan>
+        <Alan etiket="Bitiş saati">
+          <input type="time" value={bitSaat} onChange={(e) => setBitSaat(e.target.value)} />
+        </Alan>
+      </div>
 
       <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
         <textarea

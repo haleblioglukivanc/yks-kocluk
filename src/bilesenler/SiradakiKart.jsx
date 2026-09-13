@@ -5,6 +5,9 @@ import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
 import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 
+/* '10:00:00' -> '10:00' */
+const saatKisa = (t) => (t ? String(t).slice(0, 5) : '')
+
 /**
  * Bugün'ün merkezi: tek görev, tek düğme.
  *
@@ -56,11 +59,17 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const [hata, setHata] = useState('')
 
   const liste = gorevler ?? []
+  /* Koç bir göreve saat verdiyse o gün blok düzenine geçer: sıra saatten
+     belli olur, öğrenci değiştiremez. Tek bir saatli görev bile varsa
+     gün saatlidir; yarı saatli yarı serbest bir gün ikisini de
+     karıştırırdı. Saat yoksa hiçbir şey değişmez. */
+  const saatli = liste.some((g) => g.baslangic_saat)
   const bekleyen = liste.filter((g) => g.durum !== 'tamamlandi')
   const calisan = durum?.gorevId ? liste.find((g) => g.id === durum.gorevId) : null
-  const secilen = secim ? bekleyen.find((g) => g.id === secim) : null
-  const sira =
-    secilen ?? bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null
+  const secilen = !saatli && secim ? bekleyen.find((g) => g.id === secim) : null
+  const sira = saatli
+    ? (bekleyen[0] ?? null)
+    : (secilen ?? bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null)
 
   /* Iki yonlu: isaretlemek kadar geri almak da gerekiyor. Ogrenci yanlis
      tikleyebilir ya da bitirdigi bir konuyu tekrar calismak isteyebilir;
@@ -106,8 +115,9 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                         strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              {bitti ? (
+              {bitti || saatli ? (
                 <>
+                  {g.baslangic_saat && <span className="sk-saat">{saatKisa(g.baslangic_saat)}</span>}
                   <span className="sk-ad">
                     {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
                   </span>
@@ -223,7 +233,11 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
       <div className="siradaki-odak">
-      <p className="siradaki-sira">{secilen ? 'Seçtiğin iş' : 'Sırada'}</p>
+      <p className="siradaki-sira">
+        {sira.baslangic_saat
+          ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''} bloğu`
+          : secilen ? 'Seçtiğin iş' : 'Sırada'}
+      </p>
       <h2 className="siradaki-baslik">{baslik}</h2>
       {(etiket || tur) && (
         <p className="siradaki-alt">{[etiket, tur].filter(Boolean).join(' · ')}</p>
@@ -255,7 +269,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamla(sira)}>
           ✓ Tamamla
         </button>
-        {bekleyen.length > 1 && (
+        {!saatli && bekleyen.length > 1 && (
           <button className="metin-dugme" onClick={() => { setSecim(null); setAtlanan((a) => [...a, sira.id]) }}>
             Atla ›
           </button>

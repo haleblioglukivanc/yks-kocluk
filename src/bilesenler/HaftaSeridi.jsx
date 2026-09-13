@@ -53,11 +53,12 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
     const { data, error } = await supabase
       .from('gorevler')
       .select(
-        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, kaynak_aralik, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
+        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, kaynak_aralik, baslangic_saat, bitis_saat, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
       )
       .eq('ogrenci_id', ogrenciId)
       .gte('tarih', basi)
       .lte('tarih', gunEkle(basi, 13))
+      .order('baslangic_saat', { nullsFirst: false })
       .order('durum')
       .order('periyot', { nullsFirst: false })
       .order('id')
