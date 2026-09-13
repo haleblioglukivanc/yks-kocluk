@@ -198,15 +198,24 @@ export default function App() {
       return
     }
     let iptal = false
-    const say = () =>
-      supabase
-        .from('mesajlar')
-        .select('id', { count: 'exact', head: true })
-        .eq('alici_id', kullaniciId)
-        .eq('okundu_mu', false)
-        .then(({ count }) => {
-          if (!iptal) setOkunmamisMesaj(count ?? 0)
-        })
+    /* Zil iki kaynağı birden sayıyor: okunmamış mesajlar ve bildirim
+       kuyruğundaki okunmamış kayıtlar. İkincisi eskiden yalnızca push
+       olarak gidiyordu, uygulama içinde hiç görünmüyordu. */
+    const say = async () => {
+      const [mesaj, bildirim] = await Promise.all([
+        supabase
+          .from('mesajlar')
+          .select('id', { count: 'exact', head: true })
+          .eq('alici_id', kullaniciId)
+          .eq('okundu_mu', false),
+        supabase
+          .from('bildirim_kuyrugu')
+          .select('id', { count: 'exact', head: true })
+          .eq('alici_id', kullaniciId)
+          .eq('okundu_mu', false),
+      ])
+      if (!iptal) setOkunmamisMesaj((mesaj.count ?? 0) + (bildirim.count ?? 0))
+    }
 
     say()
 

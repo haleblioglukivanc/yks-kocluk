@@ -1,5 +1,5 @@
 import { supabase } from './supabase.js'
-import { kalemNeDesin, olayKaydiOlustur, kuralEylemi, kuralEkrani } from './kalem-kurallari.js'
+import { kalemNeDesin, olayKaydiOlustur, kuralEylemi, kuralEkrani, kuralMesaji } from './kalem-kurallari.js'
 
 /**
  * Çizbi'nin ne diyeceğini belirler.
@@ -48,7 +48,7 @@ export async function kalemiCalistir({ profilId, rol, ad, veri, ekran = 'bugun' 
       id: k.id,
       kod: k.kural_kodu,
       ruh: k.ruh ?? 'bekliyor',
-      mesaj: k.mesaj,
+      mesaj: kuralMesaji(k.kural_kodu, baglam, k.mesaj),
       eylem: kuralEylemi(k.kural_kodu, baglam),
     }))
   }

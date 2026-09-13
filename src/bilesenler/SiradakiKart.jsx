@@ -240,12 +240,20 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* ── Sıradaki iş ── */
   /* Blok başlangıcından 15 dakika geçtiyse gecikmiş sayılır; sunucudaki
      kontrol de aynı payı kullanıyor, iki taraf aynı anda konuşsun. */
-  const gecikti = (() => {
-    if (!sira.baslangic_saat) return false
-    const [sa, dk] = String(sira.baslangic_saat).split(':').map(Number)
-    const simdi = new Date()
-    return simdi.getHours() * 60 + simdi.getMinutes() >= sa * 60 + dk + 15
-  })()
+  const dakika = (t) => {
+    if (!t) return null
+    const [sa, dk] = String(t).split(':').map(Number)
+    return sa * 60 + dk
+  }
+  const simdiDk = (() => { const n = new Date(); return n.getHours() * 60 + n.getMinutes() })()
+  const basDk = dakika(sira.baslangic_saat)
+  const bitDk = dakika(sira.bitis_saat)
+  /* İki ayrı durum: saat hâlâ sürüyor ama başlanmadı, ya da saat
+     tamamen geçti. Eskiden ikisine de "saati geçti" deniyordu; oysa
+     20:26'da 21:10'a kadar süren bir çalışmada geçen bir şey yok. */
+  const basSaatiGecti = basDk !== null && simdiDk >= basDk + 15
+  const suresiDoldu = bitDk !== null && simdiDk > bitDk
+  const gecikti = basSaatiGecti
   const varsayilan = varsayilanDk(sira.tur)
   const digerler = SAYAC_SURELERI.filter((dk) => dk !== varsayilan)
   const etiket = [sira.ders, sira.konu].filter(Boolean).join(' · ')
@@ -265,7 +273,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       <div className="siradaki-odak">
       <p className="siradaki-sira">
         {sira.baslangic_saat
-          ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''} bloğu`
+          ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''}`
           : secilen ? 'Seçtiğin iş' : 'Sırada'}
       </p>
       <h2 className="siradaki-baslik">{baslik}</h2>
@@ -302,7 +310,11 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         <div className="blok-talep">
           {talep === null ? (
             <>
-              <p className="blok-talep-soru">Bloğun saati geçti. Bir şey mi oldu?</p>
+              <p className="blok-talep-soru">
+                {suresiDoldu
+                  ? 'Bu çalışmanın saati geçti. Bir şey mi oldu?'
+                  : 'Henüz başlamadın. Bir şey mi oldu?'}
+              </p>
               <div className="blok-talep-dugmeler">
                 <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setTalep('ek_sure')}>
                   Ek süre iste

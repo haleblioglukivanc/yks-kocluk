@@ -311,6 +311,27 @@ export function kuralEkrani(kod) {
   return TUM_KURALLAR.find((x) => x.kod === kod)?.ekran ?? 'bugun';
 }
 
+/**
+ * Kaydedilmiş bir mesajı o anki veriyle yeniden yazar.
+ *
+ * Metnin kendisi kalem_olaylari'na yazılıyor ve gün boyu oradan geri
+ * veriliyordu. Sayı içeren cümlelerde bu yanlışa dönüşüyordu: sabah
+ * "Bugün 4 işin var" yazılıyor, koç beşinciyi ekliyor ya da öğrenci
+ * hepsini bitiriyor, cümle donuk kalıyordu. Çizbi bir asistan; duruma
+ * göre konuşmalı. Artık kural kodu esas, cümle her gösterimde yeniden
+ * kuruluyor; kural artık geçerli değilse kayıtlı metne düşülüyor.
+ */
+export function kuralMesaji(kod, baglam, yedek) {
+  const kr = TUM_KURALLAR.find((x) => x.kod === kod);
+  if (!kr) return yedek;
+  try {
+    if (kr.kosul && !kr.kosul(baglam)) return yedek;
+    return kr.mesaj(baglam) ?? yedek;
+  } catch {
+    return yedek;
+  }
+}
+
 /** Veritabanından geri dönen mesajın eylemi kayıtlı değil; kural koduyla yeniden bulunur. */
 export function kuralEylemi(kod, baglam) {
   const kr = TUM_KURALLAR.find((x) => x.kod === kod);

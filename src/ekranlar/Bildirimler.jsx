@@ -60,6 +60,27 @@ export default function Bildirimler({ profil, onGit }) {
           })
         }
       }
+      /* Bildirim kuyruğu şimdiye kadar yalnızca telefona push gönderiyordu;
+         uygulama içinde hiçbir yerde görünmüyordu. Push izni verilmemişse
+         bildirim hiç ulaşmıyordu. Artık aynı kayıtlar burada da duruyor. */
+      const { data: kuyrukBildirim } = await supabase
+        .from('bildirim_kuyrugu')
+        .select('id, tip, baslik, govde, yol, olusturuldu')
+        .eq('okundu_mu', false)
+        .order('olusturuldu', { ascending: false })
+        .limit(20)
+      for (const b of kuyrukBildirim ?? []) {
+        olaylar.push({
+          id: `bildirim-${b.id}`,
+          tip: b.tip,
+          durum: b.tip === 'blok_kacirildi' ? 'eylem' : 'notr',
+          baslik: b.baslik,
+          alt: b.govde || '',
+          zaman: b.olusturuldu,
+          yol: b.yol || '/',
+        })
+      }
+
       if (kocMu) {
         const { data: kuyruk } = await supabase.rpc('koc_karar_kuyrugu', { p_limit: 20 })
         for (const kart of kuyruk ?? []) {
@@ -77,6 +98,14 @@ export default function Bildirimler({ profil, onGit }) {
       }
       olaylar.sort((a, b) => (b.zaman ?? '') > (a.zaman ?? '') ? 1 : -1)
       if (!iptal) setListe(olaylar)
+
+      /* Ekran açıldıysa bildirimler görülmüş sayılır; zil de temizlenir. */
+      if ((kuyrukBildirim ?? []).length > 0) {
+        await supabase
+          .from('bildirim_kuyrugu')
+          .update({ okundu_mu: true })
+          .in('id', kuyrukBildirim.map((b) => b.id))
+      }
     })()
     return () => { iptal = true }
   }, [kocMu])
