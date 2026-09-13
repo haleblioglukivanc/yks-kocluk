@@ -122,13 +122,18 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
             </button>
           )
         })}
+        {/* Hafta değiştirme şeridin sonunda, sekizinci bir hücre gibi.
+            Ayrı bir satır olarak iki kartın arasında asılı kalıyordu. */}
+        <button
+          className="hafta-gun hafta-kaydir"
+          onClick={() => { setKaydirma((k) => (k ? 0 : 1)); onSec?.(kaydirma ? bugun : gunEkle(haftaBasi, 7)) }}
+          aria-label={kaydirma ? 'Bu haftaya dön' : 'Sonraki hafta'}
+          title={kaydirma ? 'Bu hafta' : 'Sonraki hafta'}
+        >
+          <span className="hafta-kaydir-ok" aria-hidden="true">{kaydirma ? '‹' : '›'}</span>
+          <span className="hafta-kaydir-ad">{kaydirma ? 'Bu hafta' : 'Sonraki'}</span>
+        </button>
       </div>
-      <button
-        className="metin-dugme hafta-kaydir"
-        onClick={() => { setKaydirma((k) => (k ? 0 : 1)); onSec?.(kaydirma ? bugun : gunEkle(haftaBasi, 7)) }}
-      >
-        {kaydirma ? '‹ Bu hafta' : 'Sonraki hafta ›'}
-      </button>
     </div>
   )
 }
