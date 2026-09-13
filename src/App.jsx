@@ -20,8 +20,6 @@ import UstCubuk from './bilesenler/UstCubuk.jsx'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
-import { v2Acik } from './lib/v2bayrak.js'
-import V2Kabuk from './v2/V2Kabuk.jsx'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
@@ -299,14 +297,6 @@ export default function App() {
         </div>
       </div>
     )
-  }
-
-  /* v2: öğrenci arayüzü. Varsayılan açık, ?v2=0 ile v1'e dönülür.
-     v1 silinmedi, bayrak kapatılınca eskisi gibi çalışır. Açıkken
-     App'in kabuğu — üst şerit, alt gezinme, köşedeki Çizbi — hiç
-     çizilmez; v2 kendi kabuğunu getirir. */
-  if (profil.rol === 'ogrenci' && v2Acik()) {
-    return <V2Kabuk profil={profil} />
   }
 
   const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'

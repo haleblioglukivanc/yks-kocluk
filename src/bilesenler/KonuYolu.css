@@ -42,14 +42,28 @@
   max-width: 122px; background: var(--yuzey); padding: 2px 6px; border-radius: 8px;
 }
 
-.yol-durak[data-yol="onayli"] .yol-nokta { background: var(--marka-yesil-acik); border-color: var(--marka-yesil-acik); color: #06231a; }
-.yol-durak[data-yol="onayli"] .yol-ad { color: var(--grafit); }
-.yol-durak[data-yol="bekliyor"] .yol-nokta { border-color: var(--marka-yesil-acik); color: var(--marka-yesil-acik); background: rgb(47 163 107 / 0.12); }
+/* Üç durum, üç görünüm. Çubukla aynı dil: bitti, buradasın, kalanlar.
+   Eskiden altı ayrı renk vardı (onaylı, onay bekliyor, tekrar, planlı,
+   sırada ayrı ayrı). Onay ve tekrar koçun kavramları; öğrencinin yolunda
+   ayrı renk olmaları ekranı okunmaz yapıyordu. Kırmızı büsbütün kalktı:
+   bu ekranda acil bir şey yok, ayrıntı durağa dokununca zaten görünüyor. */
+
+/* bitti — koç onayladı ya da onay bekliyor */
+.yol-durak[data-yol="onayli"] .yol-nokta,
+.yol-durak[data-yol="bekliyor"] .yol-nokta {
+  background: var(--marka-yesil-acik); border-color: var(--marka-yesil-acik); color: #06231a;
+}
+.yol-durak[data-yol="onayli"] .yol-ad,
 .yol-durak[data-yol="bekliyor"] .yol-ad { color: var(--grafit); }
-.yol-durak[data-yol="simdi"] .yol-nokta { border-color: var(--fosfor); background: rgb(255 180 84 / 0.14); color: var(--fosfor); box-shadow: 0 0 0 6px rgb(255 180 84 / 0.12); }
-/* "Buradasın" işareti. Yolda yalnızca bir durak nabız atar; ikinci bir
-   yerde daha olsa göz nereye bakacağını şaşırır. Yavaş ve sessiz: dikkat
-   çeken değil, gözün kendiliğinden bulduğu bir hareket. */
+
+/* buradasın — yolda yalnızca bir tane */
+.yol-durak[data-yol="simdi"] .yol-nokta {
+  border-color: var(--fosfor); background: rgb(255 180 84 / 0.14); color: var(--fosfor);
+  box-shadow: 0 0 0 6px rgb(255 180 84 / 0.12);
+}
+.yol-durak[data-yol="simdi"] .yol-ad { color: var(--murekkep); font-weight: 600; }
+/* "Buradasın" işareti. Yavaş ve sessiz: dikkat çeken değil, gözün
+   kendiliğinden bulduğu bir hareket. */
 .yol-durak[data-yol="simdi"] .yol-nokta-sar::before {
   content: ""; position: absolute; inset: -6px; border-radius: 50%;
   border: 2px solid var(--fosfor); opacity: 0; pointer-events: none;
@@ -60,12 +74,17 @@
   70%  { transform: scale(1.32); opacity: 0; }
   100% { transform: scale(1.32); opacity: 0; }
 }
-.yol-durak[data-yol="simdi"] .yol-ad { color: var(--murekkep); font-weight: 600; }
-.yol-durak[data-yol="tekrar"] .yol-nokta { border-color: var(--uyari); color: var(--uyari); background: rgb(255 138 114 / 0.12); }
-.yol-durak[data-yol="tekrar"] .yol-ad { color: var(--murekkep); }
-.yol-durak[data-yol="planli"] .yol-nokta { border-color: var(--dolgu); color: var(--dolgu); }
-.yol-durak[data-yol="planli"] .yol-ad { color: var(--grafit); }
-.yol-durak[data-yol="sirada"] .yol-nokta { border-style: dashed; background: transparent; }
+
+/* kalanlar — tekrar, planlı ve sırada tek görünüş */
+.yol-durak[data-yol="tekrar"] .yol-nokta,
+.yol-durak[data-yol="planli"] .yol-nokta,
+.yol-durak[data-yol="sirada"] .yol-nokta {
+  background: transparent; border-color: var(--cizgi); color: var(--soluk);
+}
+.yol-durak[data-yol="sirada"] .yol-nokta { border-style: dashed; }
+.yol-durak[data-yol="tekrar"] .yol-ad,
+.yol-durak[data-yol="planli"] .yol-ad,
+.yol-durak[data-yol="sirada"] .yol-ad { color: var(--soluk); }
 
 .yol-nokta--pat { animation: yol-pat 0.5s cubic-bezier(0.3, 1.6, 0.5, 1); }
 @keyframes yol-pat { 40% { transform: scale(1.28); } }

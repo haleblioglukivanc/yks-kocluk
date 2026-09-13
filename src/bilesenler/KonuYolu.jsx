@@ -294,7 +294,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                   >
                     <span className="yol-nokta-sar">
                       <span className={`yol-nokta${patlayan === d.id ? ' yol-nokta--pat' : ''}`}>
-                        {d.yol === 'onayli' ? '✓' : i + 1}
+                        {d.yol === 'onayli' || d.yol === 'bekliyor' ? '✓' : i + 1}
                       </span>
                       {d.yol === 'bekliyor' && <span className="yol-nabiz" />}
                       {(d.hata_adet ?? 0) >= 2 && (
