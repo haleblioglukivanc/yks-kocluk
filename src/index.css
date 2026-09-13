@@ -3778,3 +3778,40 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
   cursor: pointer; text-align: left;
 }
 .sk-sec:hover .sk-ad, .sk-sec:focus-visible .sk-ad { color: var(--dolgu); }
+
+/* Odak bloğu — kartın içindeki "şu an yapılacak iş".
+   Beyaz zeminde her şey aynı ağırlıktaydı; bu blok günün tek birincil
+   işi olduğu için kendi zeminini taşıyor. Renk markanın üst şeridinden
+   geliyor: doygun bir gradyan YKS öğrencisine çocuksu kaçardı, koyu
+   lacivert ciddi kalıyor ve amber üstünde tek sıcak nokta oluyor. */
+.siradaki-odak {
+  margin: 1rem -0.5rem 0;
+  padding: 1rem 1.125rem 1.125rem;
+  border-radius: 16px;
+  background: linear-gradient(160deg, #2e3a52 0%, #232d42 100%);
+  color: #eef2f9;
+  box-shadow: 0 12px 28px -16px rgba(20, 28, 45, 0.75);
+}
+body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b3d 0%, #18212f 100%); }
+
+.siradaki-odak .siradaki-sira { color: #f5b841; }
+.siradaki-odak .siradaki-baslik { color: #ffffff; }
+.siradaki-odak .siradaki-alt,
+.siradaki-odak .siradaki-not { color: #b9c3d6; }
+.siradaki-odak .gorev-kaynak,
+.siradaki-odak .gorev-kaynak * { color: #cdd6e6; }
+.siradaki-odak .dugme--ikincil {
+  background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.22); color: #eef2f9;
+}
+.siradaki-odak .siradaki-ikincil .metin-dugme { color: #b9c3d6; }
+
+/* Listedeki satırların basılabilir olduğu anlaşılmıyordu: düz metin
+   gibi duruyorlardı. Kendi zeminleri ve sağda bir ok var artık. */
+.sk-satir { border-radius: 12px; padding: 0.5rem 0.625rem; }
+.sk-satir:not(.sk-satir--bitti) { background: var(--kagit); }
+.sk-sec::after {
+  content: "›"; flex: none; margin-left: 0.35rem;
+  font-size: 1.125rem; line-height: 1; color: var(--soluk);
+}
+.sk-sec:hover::after, .sk-sec:focus-visible::after { color: var(--dolgu); }
+.siradaki-kalanlar { display: flex; flex-direction: column; gap: 0.25rem; }

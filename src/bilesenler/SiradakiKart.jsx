@@ -258,6 +258,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         </div>
       </div>
 
+      <div className="siradaki-odak">
       <p className="siradaki-sira">{secilen ? 'Seçtiğin iş' : 'Sırada'}</p>
       <h2 className="siradaki-baslik">{baslik}</h2>
       {(etiket || tur) && (
@@ -295,6 +296,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
             Atla ›
           </button>
         )}
+      </div>
       </div>
 
       <Kalanlar haric={sira.id} />
