@@ -1,0 +1,88 @@
+/* ═══════════════════════════════════════════════════════════════
+   YERLEŞİM KATMANI — genişliğe göre kabuk
+   Platform değil genişlik dinlenir. Üç kesme noktası:
+     dar    < 40rem (640px)   telefon            alt çubuk
+     orta   40–64rem          tablet dikey       toplanmış alt çubuk
+     geniş  ≥ 64rem (1024px)  masaüstü, yatay tablet   sol yan çubuk
+   Medya sorgusu CSS değişkeni okuyamaz; bu üç sayı yalnız burada
+   ve SISTEM.md'de yazılır, başka yerde kesme noktası yazılmaz.
+   Renk, punto, bileşen buraya girmez: bu dosya yalnız kabuğu
+   (şerit, gezinme, içerik sütunu, yaprak) yerleştirir.
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── ORTA: tablet dikey ────────────────────────────────────────
+   Alt çubuk kalır ama üç ikon ekranın iki ucuna dağılmaz; ortada
+   başparmak genişliğinde toplanır. */
+@media (min-width: 40rem) {
+  .alt-gezinme { justify-content: center; }
+  .alt-bag { flex: 0 1 9rem; }
+}
+
+/* ── GENİŞ: masaüstü ve yatay tablet ───────────────────────────
+   Kabuk ızgara olur: solda koyu yan çubuk (marka + gezinme), sağda
+   üst şerit (zil, hesap) ve içerik. Koyu yüzey sol ve üstten çerçeve
+   çizer; kâğıt içeride kalır. */
+@media (min-width: 64rem) {
+  .uygulama {
+    display: grid;
+    grid-template-columns: 15rem minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    min-height: 100dvh;
+  }
+  .ust-serit { grid-column: 2; grid-row: 1; }
+  .uygulama > main { grid-column: 2; grid-row: 2; padding-bottom: 2rem; }
+  .baglanti-serit { grid-column: 2; }
+
+  /* Yan çubuk: alt çubukla aynı öğeler, dikey. */
+  .alt-gezinme {
+    grid-column: 1; grid-row: 1 / -1;
+    position: sticky; top: 0; align-self: start; height: 100dvh;
+    flex-direction: column; justify-content: flex-start; gap: 0.25rem;
+    padding: 4.25rem 0.75rem 1rem;
+    background: var(--tepe-ust); border-top: 0; border-right: 1px solid rgba(255, 255, 255, 0.08);
+    view-transition-name: none;
+  }
+  .alt-bag {
+    flex: none; width: 100%;
+    flex-direction: row; justify-content: flex-start; gap: 0.75rem;
+    padding: 0.7rem 0.85rem; min-height: 44px; border-radius: var(--r);
+    font-size: var(--punto-orta); color: rgba(255, 255, 255, 0.72); opacity: 1;
+  }
+  .alt-bag-ikon { width: auto; height: auto; }
+  .alt-bag--etkin { background: rgba(255, 255, 255, 0.12); color: var(--beyaz); }
+  .alt-bag--etkin .alt-bag-ikon { background: transparent; }
+  .alt-rozet { position: static; margin-left: auto; }
+  .alt-bag:active { transform: none; }
+
+  /* Marka yan çubuğun tepesine geçer; üst şeritte yalnız zil ve hesap kalır. */
+  .ust-cubuk { max-width: none; justify-content: flex-end; padding-inline: 2rem; }
+  .ust-logo { position: fixed; left: 1.25rem; top: 0.9rem; z-index: calc(var(--kat-tepe) + 1); }
+  .ust-logo-ad { font-size: var(--punto-orta); }
+
+  /* İçerik sütunu: ortalanmaz, sola yaslanır; okuma genişliği 52rem. */
+  main { max-width: 56rem; margin-inline: 0; padding-inline: 2rem; }
+  .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child {
+    margin-inline: -2rem; padding-inline: 2rem; border-radius: 0 0 24px 0;
+  }
+
+  /* Köşedeki Çizbi alt çubuğun üstüne değil sağ alt köşeye */
+  .kalem-kose { bottom: 1.25rem; }
+
+  /* Yapraklar alttan değil ortadan açılır: fare için pencere. */
+  .yaprak-arka, .alt-sayfa-perde { align-items: center; }
+  .yaprak, .alt-sayfa {
+    max-width: 30rem; border-radius: var(--r-buyuk); border-bottom: 1px solid var(--cizgi);
+    padding-bottom: 1.25rem; animation: pencere-gir 180ms ease-out;
+  }
+  .alt-sayfa { max-height: 86dvh; }
+  .alt-sayfa-tutamac, .yaprak-tutamac { display: none; }
+  @keyframes pencere-gir { from { transform: scale(0.97); opacity: 0; } }
+}
+
+/* ── FARE: yoğunluk ────────────────────────────────────────────
+   Genişlikten bağımsız: fareyle çalışan kullanıcı için satırlar ve
+   boşluklar bir kademe sıkılaşır. Dokunmatik laptop bile doğru çalışır. */
+@media (pointer: fine) and (min-width: 64rem) {
+  .kart { padding: 1rem 1.1rem; }
+  .ogrenci-satir, .hesap-satir, .bildirim { padding-block: 0.6rem; }
+}

@@ -126,6 +126,16 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
 - **Kartlar arası tek boşluk: 12px.** Ayrı ölçü gerekiyorsa önce sor:
   bu gerçekten yeni bir ilişki mi, yoksa aynı boşluğun bir tonu mu?
 
+## Genişlik
+
+Platform değil genişlik dinlenir. Üç kesme noktası, yalnız `src/yerlesim.css`'te
+yazılır (medya sorgusu değişken okuyamaz): dar `< 40rem` telefon (alt çubuk),
+orta `40–64rem` tablet dikey (ortada toplanmış alt çubuk), geniş `≥ 64rem`
+masaüstü ve yatay tablet (sol koyu yan çubuk, üst şeritte yalnız zil/hesap,
+içerik sola yaslı 56rem, yapraklar ortadan pencere). `yerlesim.css` yalnız
+kabuğu yerleştirir; renk, punto, bileşen oraya girmez. Her UI değişikliği üç
+genişlikte (390 / 820 / 1366) doğrulanır.
+
 ## Telefon
 
 - Dokunma hedefi 44px. Görünen boyutu küçük kalması gereken düğmeler
