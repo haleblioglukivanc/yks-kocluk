@@ -3478,7 +3478,7 @@ body[data-mod='gece'] .uygulama .kareli,
   font: 700 0.95rem var(--display); letter-spacing: -0.01em;
   color: var(--k-murekkep);
 }
-/* Marka işareti — HK monogramı (bkz. bilesenler/Marka.jsx). Kutu yok:
+/* Marka işareti — KH monogramı (bkz. bilesenler/Marka.jsx). Kutu yok:
    amber yalnızca ortak dikey hatta görünür, geniş yüzey olarak kullanılmaz.
    Çizimin kendisi tek bileşende durduğu için buradaki kural da tek yerde. */
 .marka-isaret { display: block; flex: 0 0 auto; overflow: visible; }

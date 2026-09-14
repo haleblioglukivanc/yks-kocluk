@@ -1,15 +1,17 @@
 /**
- * Marka işareti — HK monogramı.
+ * Marka işareti — KH monogramı.
  *
  * K'nin kolları sağa açılıp H'nin sol dikeyine değer; o ortak dikey amber
  * çizilir, markanın tek imza hattı budur. Harfler ismin okunuş sırasında:
  * Kıvanç Hoca. Turuncu başka hiçbir yere girmez.
  *
  * Tek yerde durur ki üst şerit, giriş ekranı ve favicon aynı çizimi
- * paylaşsın; birinde yapılan düzeltme hepsinde geçerli olsun.
+ * paylaşsın; birinde yapılan düzeltme hepsinde geçerli olsun. Depo dışında
+ * kullanılacak dosyalar (baskı, sosyal medya, banner) marka/ klasöründedir;
+ * yeniden çizilmez, oradan alınır.
  *
- * Marka adı "HK" değildir. Adı "Kıvanç Hoca"; iki harf de oradan gelir
- * (Hoca + Kıvanç). Soyadı halka açık yüzeylerde kullanılmaz; yalnızca
+ * Marka adı "KH" değildir. Adı "Kıvanç Hoca"; iki harf de oradan gelir
+ * ve ismin okunuş sırasındadır (Kıvanç + Hoca). Soyadı halka açık yüzeylerde kullanılmaz; yalnızca
  * sözleşme ve fatura gibi resmî yerlerde geçer. Bu iki harf yalnızca
  * ikondur ve daima ismin ya da bir başlığın yanında durur.
  */
