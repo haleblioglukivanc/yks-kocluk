@@ -74,3 +74,25 @@ def kilit(path, ink):
 kilit(f'{OUT}/logo-yatay.png', INK)
 kilit(f'{OUT}/logo-yatay-acik-zemin.png', KOYU)
 print('ok')
+
+# --- video filigrani (YouTube, 150x150, seffaf zemin) ----------------------
+def filigran(path, ink, boy=150, h_oran=0.52, daire=None, golge=True):
+    """Oynaticinin sag alt kosesinde duran isaret. Zemin seffaf; video acik
+    renkliyse harfler kaybolmasin diye altina yumusak golge konur."""
+    from PIL import ImageFilter
+    s = 6; P = boy * s
+    img = Image.new('RGBA', (P, P), (0, 0, 0, 0))
+    if daire:
+        ImageDraw.Draw(img).ellipse([0, 0, P - 1, P - 1], fill=hx(daire) + (225,))
+    olc = boy * h_oran * s / 100
+    ox, oy = (P - 106 * olc) / 2, (P - 100 * olc) / 2
+    if golge and not daire:
+        g = Image.new('RGBA', (P, P), (0, 0, 0, 0))
+        ciz(ImageDraw.Draw(g), olc, ox, oy + 2 * s, (0, 0, 0, 190), (0, 0, 0, 190))
+        img.alpha_composite(g.filter(ImageFilter.GaussianBlur(3 * s)))
+    ciz(ImageDraw.Draw(img), olc, ox, oy, hx(ink) + (255,), hx(AMBER) + (255,))
+    img.resize((boy, boy), Image.LANCZOS).save(path)
+
+filigran(f'{OUT}/filigran-150-seffaf.png', '#FFFFFF')
+filigran(f'{OUT}/filigran-150-daire.png', INK, daire=KOYU, h_oran=0.44)
+print('filigran ok')

@@ -22,6 +22,11 @@ Sitenin kendi kullandığı işaret `src/bilesenler/Marka.jsx` içinde, ikonlar
 | `profil-1080-acik.png` | Açık zeminli profil varyantı (ör. WhatsApp Business). |
 | `profil-800-koyu.png` | YouTube'un istediği tam ölçü. |
 | `banner-youtube-patika.png` | YouTube kanal bannerı, 2560 × 1440. Seçilen tasarım: "patika". |
+| `filigran-150-daire.png` | YouTube video filigranı, 150 × 150. Koyu daire zeminli; her renkteki videoda okunur, önerilen budur. |
+| `filigran-150-seffaf.png` | Aynı filigranın zeminsiz hali; harflerin altında hafif gölge var. Videolar hep koyuysa kullanılabilir. |
+
+Filigran, oynatıcının sağ alt köşesinde durur ve aynı zamanda abone ol düğmesidir;
+yalnızca masaüstünde görünür. YouTube 150 × 150 ve 1 MB altı ister.
 
 Profil görsellerinde monogram kasten ortada ve küçükçe durur: Instagram ile TikTok
 profili daire kırpar, köşeler gidince harfler yine rahat durur.
@@ -73,7 +78,7 @@ Normalde gerek yok — dosyalar hazır. Yeni bir ölçü ya da varyant lazım ol
 
 ```bash
 cd marka/uret
-python3 logo.py      # logo, profil görselleri, yatay kilit
+python3 logo.py      # logo, profil görselleri, yatay kilit, filigran
 python3 banner.py    # banner: patika + üç alternatif tasarım
 ```
 
