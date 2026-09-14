@@ -526,16 +526,7 @@ main {
 
 /* ═══════════ Program ızgarası (önceki demonun düzeni) ═══════════ */
 
-.prg-basi { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.875rem; }
-.prg-hafta { display: flex; align-items: center; gap: 0.625rem; }
-.prg-hafta-orta { text-align: center; min-width: 8.5rem; }
-.prg-hafta-etiket { display: block; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soluk); }
-.prg-hafta-tarih { display: block; font-family: var(--mono); font-size: var(--punto-mini); font-weight: 500; margin-top: 0.1rem; }
 
-.prg-basi-sag { display: flex; align-items: center; gap: 0.75rem; flex: 0 0 auto; }
-.prg-ozet-sayi { font-family: var(--mono); font-weight: 600; font-size: var(--punto-kucuk); }
-.prg-cubuk { height: 5px; background: var(--kagit); border-radius: 3px; overflow: hidden; margin-bottom: 0.75rem; }
-.prg-cubuk div { height: 100%; background: var(--isaret); border-radius: 3px; transition: width 320ms ease; }
 
 /* ── Seçili günün planı ──────────────────────────────────────
    Saat kolonu kaldırıldı: koçluk saat bazlı değil, gün bazlı
@@ -547,10 +538,20 @@ main {
 /* Gün şeridi yukarı yapışıyor: gün başlığı kaldırıldığı için hangi
    gündeyiz bilgisini kaydırma boyunca şerit taşıyor. Yapışma noktası
    üst şeridin yüksekliği kadar aşağıda (--yapisma, JS ile ölçülüyor). */
-.hafta-serit--yapisik {
+.prg-serit-kap {
   position: sticky; top: calc(var(--yapisma, 0px) + 4px); z-index: 12;
-  background: var(--yuzey-2);
-  box-shadow: 0 6px 14px -12px rgba(0, 0, 0, 0.45);
+  padding: 0.35rem 0 0.4rem;
+  background: var(--kagit);
+  box-shadow: 0 8px 14px -14px rgba(0, 0, 0, 0.5);
+}
+/* Haftalar yan yana kayıyor; her blok bir hafta. */
+.prg-serit-kap .hafta-kaydirak > .prg-hafta-blok {
+  flex: 0 0 97%; scroll-snap-align: start; min-width: 0;
+}
+.prg-hafta-adi {
+  display: block; margin: 0 0 0.25rem 0.15rem;
+  font-family: var(--mono); font-size: 0.68rem; letter-spacing: 0.04em;
+  color: var(--soluk);
 }
 
 .prg-gun {

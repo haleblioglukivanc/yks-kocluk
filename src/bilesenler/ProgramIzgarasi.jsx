@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
@@ -29,6 +29,15 @@ const acikTarihAnahtari = (acikSecim, secilen) => {
 const gunAdi = (anahtar, bicim) =>
   new Date(`${anahtar}T00:00:00`).toLocaleDateString('tr-TR', bicim)
 
+/** Şeritteki her bloğun üstündeki küçük etiket: "14 – 20 Eyl". */
+const haftaAdi = (blok) => {
+  const bicim = { day: 'numeric', month: 'short' }
+  const bas = new Date(`${blok[0]}T00:00:00`)
+  const son = new Date(`${blok[6]}T00:00:00`)
+  const ayAyni = bas.getMonth() === son.getMonth()
+  return `${bas.toLocaleDateString('tr-TR', ayAyni ? { day: 'numeric' } : bicim)} – ${son.toLocaleDateString('tr-TR', bicim)}`
+}
+
 export function haftaGunleri(bas) {
   return Array.from({ length: 7 }, (_, i) => {
     const t = new Date(bas)
@@ -55,7 +64,6 @@ export default function ProgramIzgarasi({
   acikSecim,
   panel,
 }) {
-  const [bas, setBas] = useState(() => haftaBasi(new Date()))
   const [gorevler, setGorevler] = useState(null)
   const [hata, setHata] = useState('')
   // Öğrenci işe dokununca önce ayrıntı açılır; "bitti" oradan işaretlenir.
@@ -69,6 +77,7 @@ export default function ProgramIzgarasi({
      güvenli alana göre değiştiği için ölçülüyor. */
   const [tepe, setTepe] = useState(0)
   const acilirRef = useRef(null)
+  const kaydirakRef = useRef(null)
 
   useEffect(() => {
     const olc = () => setTepe(document.querySelector('.ust-serit')?.offsetHeight ?? 0)
@@ -77,19 +86,44 @@ export default function ProgramIzgarasi({
     return () => window.removeEventListener('resize', olc)
   }, [])
 
-  const gunler = haftaGunleri(bas)
-  const anahtarlar = gunler.map(gunAnahtari)
+  /* Hafta gezinmesi ok düğmeleriyle değil, şeridi kaydırarak yapılıyor —
+     öğrenci panelindeki HaftaSeridi ile aynı davranış. Üstteki "← Hafta
+     14 Eyl – 20 Eyl → / Bu hafta" satırı bu yüzden kalktı.
+     Kapsam: iki geçmiş hafta, bu hafta, üç sonraki hafta. */
+  const GERI_HAFTA = 2
+  const HAFTA_SAYISI = 6
+  const seritBasi = useMemo(() => {
+    const b = haftaBasi(new Date())
+    return new Date(b.getFullYear(), b.getMonth(), b.getDate() - GERI_HAFTA * 7)
+  }, [])
+
+  const bloklar = useMemo(
+    () =>
+      Array.from({ length: HAFTA_SAYISI }, (_, h) =>
+        haftaGunleri(
+          new Date(seritBasi.getFullYear(), seritBasi.getMonth(), seritBasi.getDate() + h * 7),
+        ).map(gunAnahtari),
+      ),
+    [seritBasi],
+  )
+  const anahtarlar = bloklar.flat()
   const ilk = anahtarlar[0]
-  const son = anahtarlar[6]
+  const son = anahtarlar[anahtarlar.length - 1]
   const bugun = gunAnahtari(new Date())
 
-  /* Hafta değişince seçim o haftaya taşınır: bugün o haftadaysa bugün,
-     değilse pazartesi. Ayrı bir effect'e gerek yok. */
-  const seciliGun = anahtarlar.includes(gunSecimi)
-    ? gunSecimi
-    : anahtarlar.includes(bugun)
-      ? bugun
-      : ilk
+  const seciliGun = anahtarlar.includes(gunSecimi) ? gunSecimi : bugun
+
+  /* Rutinler ve "rutin ekle" seçili günün haftasına ait: altı haftanın
+     tamamına bakmak "haftada üç gün" ölçüsünü anlamsız kılardı. */
+  const seciliHafta = bloklar.find((b) => b.includes(seciliGun)) ?? bloklar[GERI_HAFTA]
+
+  /* Açılışta bu hafta görünsün: şerit soldaki geçmiş haftalardan
+     başlıyor, o yüzden bir kez kaydırılıyor. */
+  useEffect(() => {
+    const kap = kaydirakRef.current
+    const blok = kap?.children?.[GERI_HAFTA]
+    if (kap && blok) kap.scrollLeft = blok.offsetLeft - kap.offsetLeft
+  }, [gorevler === null])
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase
@@ -136,9 +170,6 @@ export default function ProgramIzgarasi({
       return [t, { toplam: l.length, biten: l.filter((g) => g.durum === 'tamamlandi').length }]
     }),
   )
-  const toplam = hafta.length
-  const biten = hafta.filter((g) => g.durum === 'tamamlandi').length
-  const oran = toplam ? Math.round((biten / toplam) * 100) : 0
   const gunListesi = hafta.filter((g) => g.tarih === seciliGun)
   const gunSayimi = sayim[seciliGun] ?? { toplam: 0, biten: 0 }
 
@@ -146,7 +177,7 @@ export default function ProgramIzgarasi({
      rutindir; gün listesinde yine görünür ama burada haftaya yayılmış
      hâliyle tek satırda okunur. */
   const adHarita = new Map()
-  for (const g of hafta) {
+  for (const g of hafta.filter((g) => seciliHafta.includes(g.tarih))) {
     const ad = g.dersler?.ad ?? g.baslik
     if (!adHarita.has(ad)) adHarita.set(ad, [])
     adHarita.get(ad).push(g)
@@ -179,73 +210,55 @@ export default function ProgramIzgarasi({
 
   return (
     <div className="prg">
-      <div className="prg-basi">
-        <div className="prg-hafta">
-          <button
-            className="ok-dugme"
-            onClick={() => setBas(new Date(bas.getFullYear(), bas.getMonth(), bas.getDate() - 7))}
-            aria-label="Önceki hafta"
-          >←</button>
-          <div className="prg-hafta-orta">
-            <span className="prg-hafta-etiket">Hafta</span>
-            <span className="prg-hafta-tarih">
-              {gunler[0].toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })} –{' '}
-              {gunler[6].toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' })}
-            </span>
-          </div>
-          <button
-            className="ok-dugme"
-            onClick={() => setBas(new Date(bas.getFullYear(), bas.getMonth(), bas.getDate() + 7))}
-            aria-label="Sonraki hafta"
-          >→</button>
-        </div>
-        <div className="prg-basi-sag">
-          <span className="prg-ozet-sayi" title="Bu hafta tamamlanan iş">{biten}/{toplam}</span>
-          <button className="metin-dugme" onClick={() => setBas(haftaBasi(new Date()))}>Bu hafta</button>
-        </div>
-      </div>
-
       <Uyari>{hata}</Uyari>
 
       {gorevler === null ? (
         <Yukleniyor />
       ) : (
         <>
-          {/* Haftalık ilerleme tek çizgi: "Tamamlanan iş 0/2" satırı
-              başlığa taşındı, burada yalnızca çubuk kaldı. */}
-          <div className="prg-cubuk"><div style={{ width: `${oran}%` }} /></div>
-
-          {/* Gün şeridi ekranın üstüne yapışıyor: gün başlığı kaldırıldığı
-              için hangi gündeyiz bilgisini kaydırırken de şerit taşıyor.
-              Yapışma noktası üst şeridin altı, yüksekliği ölçülerek. */}
+          {/* Gün şeridi: öğrenci panelindeki kaydırılabilir şeritle aynı
+              yapı. Haftalar yan yana, parmakla geçiliyor; şerit ekranın
+              üstüne yapışıyor ki kaydırırken hangi gün seçili görünsün. */}
           <div
-            className="hafta-serit hafta-serit--yapisik"
+            className="prg-serit-kap"
             style={{ '--yapisma': `${tepe}px` }}
-            role="tablist"
-            aria-label="Haftanın günleri"
           >
-            {anahtarlar.map((t, i) => {
-              const s = sayim[t] ?? { toplam: 0, biten: 0 }
-              const bugunMu = t === bugun
-              const gecmis = t < bugun
-              return (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={t === seciliGun}
-                  className={`hafta-gun${t === seciliGun ? ' hafta-gun--secili' : ''}${
-                    bugunMu ? ' hafta-gun--bugun' : ''
-                  }${gecmis ? ' hafta-gun--gecmis' : ''}`}
-                  onClick={() => setGunSecimi(t)}
-                >
-                  <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
-                  <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
-                  <span className="hafta-gun-sayi" aria-label={`${s.biten}/${s.toplam} iş`}>
-                    {s.toplam === 0 ? '—' : `${s.biten}/${s.toplam}`}
-                  </span>
-                </button>
-              )
-            })}
+            <div
+              className="hafta-kaydirak"
+              ref={kaydirakRef}
+              role="tablist"
+              aria-label="Günler"
+            >
+              {bloklar.map((blok) => (
+                <div className="prg-hafta-blok" key={blok[0]}>
+                  <span className="prg-hafta-adi">{haftaAdi(blok)}</span>
+                  <div className="hafta-serit">
+                    {blok.map((t, i) => {
+                      const s2 = sayim[t] ?? { toplam: 0, biten: 0 }
+                      const bugunMu = t === bugun
+                      const gecmis = t < bugun
+                      return (
+                        <button
+                          key={t}
+                          role="tab"
+                          aria-selected={t === seciliGun}
+                          className={`hafta-gun${t === seciliGun ? ' hafta-gun--secili' : ''}${
+                            bugunMu ? ' hafta-gun--bugun' : ''
+                          }${gecmis ? ' hafta-gun--gecmis' : ''}`}
+                          onClick={() => setGunSecimi(t)}
+                        >
+                          <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
+                          <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
+                          <span className="hafta-gun-sayi" aria-label={`${s2.biten}/${s2.toplam} iş`}>
+                            {s2.toplam === 0 ? '—' : `${s2.biten}/${s2.toplam}`}
+                          </span>
+                        </button>
+                      )
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
 
           {/* Seçili günün planı. Gün başlığı kaldırıldı: şeritteki seçili
@@ -348,7 +361,7 @@ export default function ProgramIzgarasi({
                     className="rutin-ekle"
                     onClick={() => {
                       setTekrarAcik(true)
-                      onRutinEkle?.(anahtarlar)
+                      onRutinEkle?.(seciliHafta)
                     }}
                     aria-label="Tekrar eden iş ekle"
                     title="Tekrar eden iş ekle"
