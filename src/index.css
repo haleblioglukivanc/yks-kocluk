@@ -95,11 +95,23 @@ table, .liste-sayi, .dny-d, .dny-y, .dny-b, .net-fark {
    alana odaklanınca sayfayı otomatik yakınlaştırıyor ve kullanıcı elle
    geri çekmek zorunda kalıyor. Görsel olarak küçültmek isteyen olursa
    punto değil padding azaltılır. */
-input[type='email'], input[type='password'], input[type='text'], input:not([type]), select, textarea {
-  width: 100%; padding: 0.625rem 0.75rem;
+/* Tür listesi eksikti: time, number, search ve date alanları bu kuralın
+   dışında kalıyordu. Biçimsiz kaldıkları için telefonda daracık gri
+   kutucuk gibi görünüyor ve dokunması zor oluyordu. Hepsi aynı kutu,
+   hepsi en az 44px yüksek (Apple ve Google'ın dokunma alanı ölçüsü). */
+input[type='email'], input[type='password'], input[type='text'],
+input[type='search'], input[type='number'], input[type='tel'],
+input[type='time'], input[type='date'], input[type='url'],
+input:not([type]), select, textarea {
+  width: 100%; min-height: 44px; padding: 0.625rem 0.75rem;
   border: 1px solid var(--cizgi); border-radius: 8px;
   background: var(--yuzey); color: var(--murekkep);
   font: inherit; font-size: var(--punto-govde);
+}
+/* Safari saat alanını içeriğine göre daraltıyor; kutu tam genişlik. */
+input[type='time'], input[type='date'] {
+  -webkit-appearance: none; appearance: none; display: block;
+  min-width: 0; text-align: left;
 }
 input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1px; border-color: transparent; }
 
@@ -110,7 +122,7 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
 .onay em { display: block; font-style: normal; font-size: var(--punto-mini); color: var(--soluk); margin-top: 0.2rem; line-height: 1.45; }
 
 .dugme {
-  padding: 0.6875rem 1rem; border: 0; border-radius: 8px;
+  min-height: 44px; padding: 0.6875rem 1rem; border: 0; border-radius: 8px;
   font: inherit; font-weight: 500; font-size: var(--punto-orta); cursor: pointer;
   transition: opacity 120ms ease;
 }
@@ -120,7 +132,7 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
 .dugme--tehlike { background: var(--d-zemin); color: var(--d-metin); border: 1px solid var(--d-kenar); }
 
 .metin-dugme {
-  background: none; border: 0; padding: 0.25rem;
+  background: none; border: 0; padding: 0.55rem 0.35rem;
   font: inherit; font-size: var(--punto-mini); color: var(--grafit);
   cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
 }
@@ -361,8 +373,9 @@ main {
 /* Hafta */
 
 .hafta-gezinme { display: flex; align-items: center; gap: 0.5rem; }
+/* Dokunma alanı: 30px küçüktü, parmak ucu 40px'e denk geliyor. */
 .ok-dugme {
-  width: 1.875rem; height: 1.875rem; border: 1px solid var(--cizgi); border-radius: 6px;
+  width: 2.5rem; height: 2.5rem; border: 1px solid var(--cizgi); border-radius: 10px;
   background: var(--yuzey); cursor: pointer; font: inherit; color: var(--murekkep);
 }
 .ok-dugme:hover { background: var(--kagit); }
@@ -563,7 +576,20 @@ main {
 }
 .prg-gorev:hover { background: var(--yuzey-2); }
 .prg-gorev--acik { background: var(--yuzey-2); }
+/* Ders şeridi: satırın solunda pastel bir çizgi. Tam doygun renk
+   marka diline girmesin diye zeminle karıştırılıyor. */
+.prg-gorev {
+  padding-left: 0.6rem;
+  border-left: 3px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 55%, var(--yuzey));
+}
+/* Nokta ders rengini almıyor: o işaret görevin durumunu söylüyor
+   (bekliyor/gecikmiş/bitti), dersi değil. İkisi karışmamalı. */
 .prg-gorev .nokta { margin-top: 7px; }
+.prg-gorev .gorev-etiket {
+  background: color-mix(in srgb, var(--ders-renk, var(--cizgi)) 12%, var(--yuzey));
+  color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 65%, var(--murekkep));
+}
+.prg-gorev.gorev-satir--bitti { border-left-color: var(--cizgi); }
 .prg-gorev-ok { flex: 0 0 auto; color: var(--soluk); font-size: 1.1rem; line-height: 1; margin-top: 2px; }
 .prg-gorev-ekle { width: 100%; margin-top: 0.75rem; }
 
@@ -581,16 +607,18 @@ main {
    özeti yazar, böylece açmadan da ne verildiği okunur. */
 .ayrinti-basi {
   display: flex; align-items: center; gap: 0.5rem; width: 100%;
-  margin-top: 0.25rem; padding: 0.55rem 0;
+  min-height: 48px; margin-top: 0.25rem; padding: 0.7rem 0;
   background: none; border: 0; border-top: 1px solid var(--cizgi);
-  font: inherit; font-size: var(--punto-mini); color: var(--soluk);
+  font: inherit; font-size: var(--punto-kucuk); color: var(--grafit);
   text-align: left; cursor: pointer;
 }
-.ayrinti-ad { font-weight: 600; color: var(--murekkep); flex: 0 0 auto; }
+.ayrinti-ad { font-weight: 700; font-size: var(--punto-orta); color: var(--murekkep); flex: 0 0 auto; }
+.ayrinti-ok { font-size: 1rem; color: var(--grafit); }
 .ayrinti-ozet {
   flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .ayrinti-ok { flex: 0 0 auto; }
+.ayrinti-basi .ayrinti-ozet { color: var(--grafit); }
 .ayrinti-basi:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
 .ayrinti-govde { display: flex; flex-direction: column; gap: 0.625rem; }
 
@@ -1402,7 +1430,7 @@ body[data-tema='panel'] {
 .rutin-sayi { font-family: var(--mono); font-size: var(--punto-mini); color: var(--soluk); }
 .rutin-gunler { display: flex; flex-wrap: wrap; gap: 0.3rem; }
 .rutin-gun {
-  min-width: 2.6rem; min-height: 36px; padding: 0.35rem 0.4rem;
+  min-width: 2.8rem; min-height: 44px; padding: 0.35rem 0.4rem;
   border: 1px dashed var(--cizgi); border-radius: 8px;
   background: transparent; color: var(--grafit);
   font: inherit; font-size: var(--punto-mini); cursor: pointer;
@@ -1428,7 +1456,7 @@ body[data-tema='panel'] {
 .rutin-ac:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
 .kaynak-bos-satir { margin: 0.25rem 0 0.15rem; font-size: var(--punto-mini); color: var(--soluk); }
 .rutin-ekle {
-  width: 36px; height: 36px; border-radius: 50%;
+  width: 44px; height: 44px; border-radius: 50%;
   border: 1px solid var(--sicak-kenar);
   background: var(--sicak-zemin);
   color: var(--kizil-metin); font-size: 1.25rem; line-height: 1; cursor: pointer;
@@ -1722,7 +1750,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 
 /* Geri düğmesi kartın içinde: üstünde ayrı bir bant durmuyor. */
 .kk-geri {
-  width: 34px; height: 34px; flex: 0 0 auto; margin-left: -0.25rem;
+  width: 40px; height: 40px; flex: 0 0 auto; margin-left: -0.25rem;
   display: grid; place-items: center;
   background: rgba(255, 255, 255, 0.1); border: 0; border-radius: 11px;
   color: #fff; cursor: pointer;
@@ -2890,7 +2918,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .kaynak-satir {
   position: relative;
   display: flex; align-items: center; gap: 0.5rem;
-  padding: 0.5rem 0.6875rem;
+  min-height: 44px; padding: 0.6rem 0.6875rem;
   background: var(--yuzey); border: 1px solid var(--cizgi);
   border-radius: var(--r);
   font-size: var(--punto-mini); cursor: pointer;
@@ -3307,13 +3335,13 @@ body[data-mod='gece'] .uygulama .kareli,
 .kk-sade .kk-kapali { margin-top: 0.7rem; }
 .kk-ana-eylem {
   flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
-  height: 36px; padding: 0 0.9rem;
+  height: 40px; padding: 0 1rem;
   font: inherit; font-size: 0.9rem; font-weight: 600;
   background: var(--marka-koyu-amber); color: var(--k-kagit, #1b1b1b);
   border: 0; border-radius: 12px; cursor: pointer;
 }
 .kk-ana-eylem:hover { filter: brightness(1.06); }
-.kk-sade .kk-ikon { width: 36px; height: 36px; border-radius: 11px; }
+.kk-sade .kk-ikon { width: 40px; height: 40px; border-radius: 12px; }
 .kk-goz { flex: 0 0 auto; }
 
 /* Ölçümler (Program sekmesinin tepesi) */

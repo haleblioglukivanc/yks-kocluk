@@ -9,6 +9,7 @@ import {
   GOREV_DURUM_ROZETI,
 } from '../lib/gorevTuru.js'
 import { yerelGun, haftaBasi as haftaBasiHesapla } from '../lib/tarih.js'
+import { dersGorunumu } from '../lib/dersGorunum.js'
 
 export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
@@ -281,6 +282,11 @@ export default function ProgramIzgarasi({
                   ]
                     .filter(Boolean)
                     .join(' · ')
+                  /* Ders rengi: aynı günde üç ayrı ders varken hangisinin
+                     hangisi olduğu adı okumadan görünsün. Renk büyük
+                     yüzey olmuyor — solda ince şerit ve etiketin soluk
+                     zemini; mavi/kırmızı/yeşilin anlamı bozulmuyor. */
+                  const ders = dersGorunumu(g.dersler?.ad)
                   return (
                     <li key={g.id}>
                       <button
@@ -288,6 +294,7 @@ export default function ProgramIzgarasi({
                           acikGorevId === g.id ? ' prg-gorev--acik' : ''
                         }`}
                         data-durum={GOREV_DURUM_ANLAMI[g.durum] ?? 'notr'}
+                        style={{ '--ders-renk': ders.renk }}
                         onClick={() => gorevSec(g)}
                       >
                         <span className="nokta" aria-hidden="true" />

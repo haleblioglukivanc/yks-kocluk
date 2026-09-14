@@ -795,7 +795,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       <div className="form-alt">
         <Uyari>{hata}</Uyari>
         <Dugme onClick={ekle} bekliyor={bekliyor}>
-          Bloğa ekle
+          Ders ekle
         </Dugme>
       </div>
     </div>
