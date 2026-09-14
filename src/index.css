@@ -2475,7 +2475,9 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
    etiketin soluna geçer ve etiketler "Öğrencil…" diye kırpılır. */
 
 .alt-gezinme {
-  position: sticky; bottom: 0;
+  /* Katman şart: konu haritasındaki duraklar ve Çizbi (z-index 1-2)
+     katmansız yapışkan çubuğun üstüne çıkıp onu gömüyordu. */
+  position: sticky; bottom: 0; z-index: var(--kat-tepe);
   display: flex; padding: 0;
   background: var(--yuzey); border-top: 1px solid var(--cizgi);
   view-transition-name: alt-gezinme;
