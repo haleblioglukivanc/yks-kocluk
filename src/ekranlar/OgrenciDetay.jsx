@@ -737,7 +737,13 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
             .filter(Boolean)
             .join(' · ') || 'kaynak, adet, saat, not'}
         </span>
-        <span className="ayrinti-ok" aria-hidden="true">{ayrinti ? '▾' : '▸'}</span>
+        <span className="ayrinti-ok" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor"
+               strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"
+               style={{ transform: ayrinti ? 'rotate(180deg)' : 'none', transition: 'transform 160ms ease' }}>
+            <path d="m6 9 6 6 6-6" />
+          </svg>
+        </span>
       </button>
 
       {ayrinti && <div className="ayrinti-govde">

@@ -559,9 +559,6 @@ main {
   background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px;
 }
 .prg-gun-govde { padding: 0.7rem 0.85rem 0.85rem; }
-/* Günün kendi ilerlemesi: haftalık çubuk hafta hakkında, bu gün hakkında. */
-.prg-gun-cubuk { height: 4px; background: var(--yuzey-2); border-radius: 99px; overflow: hidden; margin: 0.55rem 0 0.1rem; }
-.prg-gun-cubuk i { display: block; height: 100%; background: var(--isaret); border-radius: 99px; transition: width 320ms ease; }
 .prg-gun-bos { margin: 0.875rem 0 0; font-size: var(--punto-kucuk); color: var(--soluk); }
 
 /* Bugün: başlık bandı amber tona geçer. Amber geniş yüzey olmaz, bu
@@ -580,15 +577,16 @@ main {
 /* Ders şeridi: satırın solunda pastel bir çizgi. Tam doygun renk
    marka diline girmesin diye zeminle karıştırılıyor. */
 .prg-gorev {
-  padding-left: 0.6rem;
-  border-left: 3px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 55%, var(--yuzey));
+  padding-left: 0.7rem;
+  border-left: 5px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 80%, var(--yuzey));
 }
 /* Nokta ders rengini almıyor: o işaret görevin durumunu söylüyor
    (bekliyor/gecikmiş/bitti), dersi değil. İkisi karışmamalı. */
 .prg-gorev .nokta { margin-top: 7px; }
 .prg-gorev .gorev-etiket {
-  background: color-mix(in srgb, var(--ders-renk, var(--cizgi)) 12%, var(--yuzey));
-  color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 65%, var(--murekkep));
+  background: color-mix(in srgb, var(--ders-renk, var(--cizgi)) 20%, var(--yuzey));
+  color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 85%, var(--murekkep));
+  font-weight: 600;
 }
 .prg-gorev.gorev-satir--bitti { border-left-color: var(--cizgi); }
 .prg-gorev-ok { flex: 0 0 auto; color: var(--soluk); font-size: 1.1rem; line-height: 1; margin-top: 2px; }
@@ -606,15 +604,23 @@ main {
 /* ── Görev formunda "Ayrıntılar" ──
    Kaynak, adet, saat ve not kapalı başlar; başlıkta doldurulanların
    özeti yazar, böylece açmadan da ne verildiği okunur. */
+/* Düz bir metin satırıyken dokunulabilir olduğu anlaşılmıyordu. Artık
+   Ders ve Konu kutularıyla aynı görsel aileden: çerçeve, zemin, ok. */
 .ayrinti-basi {
   display: flex; align-items: center; gap: 0.5rem; width: 100%;
-  min-height: 48px; margin-top: 0.25rem; padding: 0.7rem 0;
-  background: none; border: 0; border-top: 1px solid var(--cizgi);
+  min-height: 48px; margin-top: 0.25rem; padding: 0.7rem 0.75rem;
+  background: var(--yuzey-2); border: 1px solid var(--cizgi); border-radius: 8px;
   font: inherit; font-size: var(--punto-kucuk); color: var(--grafit);
   text-align: left; cursor: pointer;
 }
+.ayrinti-basi:hover { background: var(--kagit); }
 .ayrinti-ad { font-weight: 700; font-size: var(--punto-orta); color: var(--murekkep); flex: 0 0 auto; }
-.ayrinti-ok { font-size: 1rem; color: var(--grafit); }
+.ayrinti-ok {
+  flex: 0 0 auto; display: grid; place-items: center;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--yuzey); border: 1px solid var(--cizgi);
+  color: var(--grafit); font-size: 0.7rem; line-height: 1;
+}
 .ayrinti-ozet {
   flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }

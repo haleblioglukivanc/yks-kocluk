@@ -171,7 +171,6 @@ export default function ProgramIzgarasi({
     }),
   )
   const gunListesi = hafta.filter((g) => g.tarih === seciliGun)
-  const gunSayimi = sayim[seciliGun] ?? { toplam: 0, biten: 0 }
 
   /* Tekrarlar: aynı ad haftada üç ve daha fazla güne yazılmışsa bu bir
      rutindir; gün listesinde yine görünür ama burada haftaya yayılmış
@@ -267,11 +266,9 @@ export default function ProgramIzgarasi({
               Bugün olduğu kenar renginden okunuyor. */}
           <section className={`prg-gun${seciliGun === bugun ? ' prg-gun--bugun' : ''}`}>
             <div className="prg-gun-govde">
-            {gunSayimi.toplam > 0 && (
-              <div className="prg-gun-cubuk">
-                <i style={{ width: `${Math.round((gunSayimi.biten / gunSayimi.toplam) * 100)}%` }} />
-              </div>
-            )}
+            {/* Günün ilerleme çubuğu kaldırıldı: aynı sayı şeritteki gün
+                kutusunda "0/2" olarak zaten duruyor, burada yalnızca
+                listenin üstünde gri bir çizgi olarak görünüyordu. */}
             {gunListesi.length === 0 ? (
               <p className="prg-gun-bos">
                 {saltOkunur
