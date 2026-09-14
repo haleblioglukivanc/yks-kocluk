@@ -567,6 +567,15 @@ main {
 .prg-gorev-ok { flex: 0 0 auto; color: var(--soluk); font-size: 1.1rem; line-height: 1; margin-top: 2px; }
 .prg-gorev-ekle { width: 100%; margin-top: 0.75rem; }
 
+/* Formun gönder alanı: alt sayfada kaydırırken de erişilir kalsın. */
+.form-alt {
+  position: sticky; bottom: 0; z-index: 1;
+  display: flex; flex-direction: column; gap: 0.5rem;
+  margin-top: 0.25rem; padding: 0.6rem 0 0.2rem;
+  background: linear-gradient(to bottom, transparent, var(--kagit) 28%);
+}
+.form-alt .dugme { width: 100%; }
+
 /* ── Görev formunda "Ayrıntılar" ──
    Kaynak, adet, saat ve not kapalı başlar; başlıkta doldurulanların
    özeti yazar, böylece açmadan da ne verildiği okunur. */
@@ -1704,13 +1713,22 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   border: 1px solid rgba(255, 255, 255, 0.16);
   color: #fff; border-radius: 16px; flex: 0 0 auto;
 }
-/* Fotoğraf koçun hatırlama aracı; kartta mümkün olduğunca büyük.
-   Kartı taşırmadan: küçük ekranda 5.5rem, genişte 6.5rem. */
-.kk-sade .avatar--buyuk {
-  width: clamp(5.5rem, 26vw, 6.5rem); height: clamp(5.5rem, 26vw, 6.5rem);
-  font-size: 1.6rem; border-radius: 20px;
+/* Fotoğraf eskiden 5.5–6.5rem'di ve kart yarım ekran yiyordu. Koçun
+   hatırlaması için 3rem yeterli; kazanılan yer programa gitti. */
+.kk-sade .avatar--orta {
+  width: 3rem; height: 3rem; font-size: 0.95rem; border-radius: 14px;
 }
-.kk-sade .kk-ust { align-items: center; gap: 1rem; }
+.kk-sade .kk-ust { align-items: center; gap: 0.7rem; }
+
+/* Geri düğmesi kartın içinde: üstünde ayrı bir bant durmuyor. */
+.kk-geri {
+  width: 34px; height: 34px; flex: 0 0 auto; margin-left: -0.25rem;
+  display: grid; place-items: center;
+  background: rgba(255, 255, 255, 0.1); border: 0; border-radius: 11px;
+  color: #fff; cursor: pointer;
+}
+.kk-geri:hover { background: rgba(255, 255, 255, 0.2); }
+.kk-geri:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 
 .kk-kimlik { flex: 1; min-width: 0; padding-top: 0.1rem; }
 .kk-ad {
@@ -2183,6 +2201,11 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .adim-nokta--etkin { width: 18px; background: var(--serin); }
 .alt-sayfa-govde { flex: 1; min-height: 0; overflow: auto; padding: 0.5rem 0.9rem; }
 .alt-sayfa-govde > .kart { margin: 0; }
+/* Alt sayfanın kendi zemini ve dolgusu var: içindeki form ikinci bir
+   kutu çizmiyor. */
+.alt-sayfa-govde > .form-kutu {
+  background: none; padding: 0.25rem 0.15rem 0; margin: 0;
+}
 .alt-sayfa-dugmeler { display: flex; gap: 0.5rem; padding: 0.6rem 0.9rem 0.9rem; border-top: 1px solid var(--cizgi); background: var(--kagit); }
 .alt-sayfa-dugmeler .dugme { flex: 1 1 auto; }
 
@@ -3243,23 +3266,38 @@ body[data-mod='gece'] .uygulama .kareli,
 
 /* Kimlik kartı, sade düzen */
 .kk-sade .kk-ust { align-items: center; }
-.kk-sade .kk-ad { margin-bottom: 0.15rem; }
+.kk-sade .kk-ad { margin-bottom: 0.1rem; font-size: 1.15rem; }
 .kk-alt-satir { margin: 0; font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.7); }
 .kk-sade .kk-risk { flex: 0 0 auto; align-self: flex-start; }
 .kk-risk--acil { background: var(--kizil-zemin); color: var(--kizil-metin); }
-.kk-hero { display: flex; align-items: baseline; gap: 0.6rem; margin-top: 1.1rem; }
+/* Haftalık hedef, seri ve son net: üç kutu değil, tek satır. */
+.kk-durum {
+  display: flex; align-items: baseline; gap: 0.45rem; flex-wrap: wrap;
+  margin: 0.8rem 0 0;
+}
 .kk-hero-sayi {
-  font-family: var(--display); font-size: 2.3rem; font-weight: 700;
-  letter-spacing: -0.03em; line-height: 1;
+  font-family: var(--display); font-size: 1.4rem; font-weight: 700;
+  letter-spacing: -0.02em; line-height: 1;
 }
-.kk-hero-ad { font-size: 0.85rem; color: rgba(255, 255, 255, 0.72); }
-/* Üç ölçüm kutusunun yerine geçen tek satır: seri + son net. */
-.kk-olcum-satir {
-  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
-  margin: 0.45rem 0 0; font-size: var(--punto-mini);
-  color: rgba(255, 255, 255, 0.72);
+.kk-hero-ad { font-size: var(--punto-mini); color: rgba(255, 255, 255, 0.72); }
+.kk-durum .kk-fark { font-style: normal; }
+
+/* Durum çipi ile eylem aynı satırda: ikisi de kendi satırını yemiyor.
+   Risk çipi eskiden sağ üstteydi ve altındaki uyarı cümlesiyle aynı
+   şeyi söylüyordu; birleştiler. */
+.kk-son-satir {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 0.6rem; margin-top: 0.75rem;
 }
-.kk-olcum-satir .kk-fark { font-style: normal; }
+.kk-durum-cip {
+  display: inline-flex; align-items: center; gap: 0.4rem; min-width: 0;
+  font-size: var(--punto-mini); font-weight: 600; line-height: 1.3;
+  padding: 0.3rem 0.6rem; border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12); color: rgba(255, 255, 255, 0.92);
+}
+.kk-durum-cip--izle { background: var(--sicak-zemin); color: var(--sicak-metin); }
+.kk-durum-cip--acil { background: var(--kizil-zemin); color: var(--kizil-metin); }
+.kk-durum-cip--iyi { background: var(--isaret-zemin); color: var(--isaret-metin); }
 
 .kk-uyari {
   display: flex; align-items: center; gap: 0.45rem;
@@ -3267,16 +3305,15 @@ body[data-mod='gece'] .uygulama .kareli,
   color: var(--marka-koyu-amber);
 }
 .kk-sade .kk-kapali { margin-top: 0.7rem; }
-.kk-eylem-satir { display: flex; gap: 0.5rem; margin-top: 1rem; }
 .kk-ana-eylem {
-  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 0.45rem;
-  height: 40px; padding: 0 1rem;
+  flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  height: 36px; padding: 0 0.9rem;
   font: inherit; font-size: 0.9rem; font-weight: 600;
   background: var(--marka-koyu-amber); color: var(--k-kagit, #1b1b1b);
   border: 0; border-radius: 12px; cursor: pointer;
 }
 .kk-ana-eylem:hover { filter: brightness(1.06); }
-.kk-sade .kk-ikon { width: 40px; height: 40px; border-radius: 12px; }
+.kk-sade .kk-ikon { width: 36px; height: 36px; border-radius: 11px; }
 .kk-goz { flex: 0 0 auto; }
 
 /* Ölçümler (Program sekmesinin tepesi) */

@@ -6,6 +6,8 @@ import { sebepCumlesi } from './OgrenciSatiri.jsx'
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
 
+const kapaliSinifi = (koc, aktif) => (koc && !aktif ? ' kimlik-kart--kapali' : '')
+
 /** Haftanın kalan günü; hedef yüzdesinin yanına "3 gün kaldı" için. */
 function kalanGun() {
   const g = new Date().getDay() // 0 Paz
@@ -35,6 +37,7 @@ export default function OgrenciKimlikKarti({
   rol = 'koc',
   ozet,
   netFarki,
+  onGeri,
   onMesaj,
   onGozuyle,
   onEk,
@@ -108,36 +111,50 @@ export default function OgrenciKimlikKarti({
     (ek.risk.hic_baslamadi || ek.risk.gun_gecti >= 2 || ek.risk.gecikmis_gorev > 0 ||
       ek.risk.eksik_ust_uste >= 2 || Number(ek.risk.net_farki ?? 0) <= -5)
 
+  /* Kart eskiden yarım ekran yiyordu: büyük avatar, 2.3rem'lik yüzde,
+     tam genişlik amber düğme, ayrıca sağ üstte risk çipi ve altında aynı
+     şeyi söyleyen uyarı satırı. Şimdi üç satır: kimlik, tek satır ölçüm,
+     durum + eylem. Geri düğmesi de kartın içine alındı; üstünde ayrı bir
+     "← Öğrenci listesi" satırı duruyordu. */
   return (
-      <div className={`hero-yuzey kimlik-kart kk-sade${kocGorunumu && !aktif ? ' kimlik-kart--kapali' : ''}`}>
+      <div className={`hero-yuzey kimlik-kart kk-sade${kapaliSinifi(kocGorunumu, aktif)}`}>
         <div className="kk-ust">
-          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="buyuk" />
+          {onGeri && (
+            <button className="kk-geri" onClick={onGeri} aria-label="Öğrenci listesine dön">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+                   strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+          )}
+          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
           <div className="kk-kimlik">
             <h2 className="kk-ad">{ad}</h2>
             <p className="kk-alt-satir">{cipler.join(' · ') || '—'}</p>
           </div>
-          {kocGorunumu && riskSeviyesi && (
-            <span className={`kk-cip kk-risk kk-risk--${riskSeviyesi}`}>
-              <i className="kk-nokta" aria-hidden="true" />
-              {RISK_ADI[riskSeviyesi] ?? riskSeviyesi}
-            </span>
+          {kocGorunumu && (
+            <button
+              className="kk-ikon kk-goz"
+              onClick={() => onGozuyle?.(ogrenci.id)}
+              aria-label="Panelini aç (vekaleten)"
+              title="Panelini aç"
+            >
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
+                <circle cx="12" cy="12" r="3" />
+              </svg>
+            </button>
           )}
         </div>
 
-        {/* Tek sayı: haftalık hedef. Seri ve son net eskiden altta üç
-            kutuydu; aynı bilgiyi ikinci kez çizmek yerine tek satıra indi. */}
-        <div className="kk-hero">
+        {/* Haftalık hedef, seri ve son net tek satırda. */}
+        <p className="kk-durum">
           <span className="kk-hero-sayi">{yuzde != null ? `%${yuzde}` : '—'}</span>
           <span className="kk-hero-ad">
-            haftalık hedef{kalan > 0 ? ` · ${kalan} gün kaldı` : ' · haftanın son günü'}
-          </span>
-        </div>
-
-        <p className="kk-olcum-satir">
-          <span>{ek?.seri ?? 0} gün seri</span>
-          <span aria-hidden="true">·</span>
-          <span>
-            son net {gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
+            haftalık hedef{kalan > 0 ? ` · ${kalan} gün` : ' · son gün'}
+            {' · '}{ek?.seri ?? 0} gün seri
+            {' · '}son net {gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
             {netFarki != null && netFarki !== 0 && (
               <i className={`kk-fark kk-fark--${netFarki > 0 ? 'artis' : 'dusus'}`}>
                 {netFarki > 0 ? '▲' : '▼'} {Math.abs(netFarki).toFixed(2)}
@@ -146,49 +163,31 @@ export default function OgrenciKimlikKarti({
           </span>
         </p>
 
-        {kocGorunumu && aktif && uyariVar && (
-          <p className="kk-uyari">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-                 strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 7.5v5M12 16.2v.2" />
-            </svg>
-            {uyari}
-          </p>
-        )}
-
-        {kocGorunumu && !aktif && (
-          <p className="kk-kapali">
-            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-                 strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <rect x="4" y="11" width="16" height="10" rx="2" />
-              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
-            </svg>
-            Uygulama erişimi kapalı
-          </p>
-        )}
-
+        {/* Risk çipi ile uyarı cümlesi aynı şeyi söylüyordu; tek satır oldu.
+            Eylem düğmesi de bu satırın sağında: kendi satırını yemiyor. */}
         {kocGorunumu && (
-          <div className="kk-eylem-satir">
+          <div className="kk-son-satir">
+            {!aktif ? (
+              <span className="kk-durum-cip kk-durum-cip--kapali">
+                <i className="kk-nokta" aria-hidden="true" />
+                Uygulama erişimi kapalı
+              </span>
+            ) : riskSeviyesi ? (
+              <span className={`kk-durum-cip kk-durum-cip--${riskSeviyesi}`}>
+                <i className="kk-nokta" aria-hidden="true" />
+                {RISK_ADI[riskSeviyesi] ?? riskSeviyesi}
+                {uyariVar && uyari ? ` · ${uyari.toLocaleLowerCase('tr-TR')}` : ''}
+              </span>
+            ) : (
+              <span />
+            )}
+
             <button className="kk-ana-eylem" onClick={() => onMesaj?.(ogrenci.id)}>
-              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor"
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                    strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
               </svg>
-              Mesaj gönder
-            </button>
-
-            <button
-              className="kk-ikon kk-goz"
-              onClick={() => onGozuyle?.(ogrenci.id)}
-              aria-label="Panelini aç (vekaleten)"
-              title="Panelini aç"
-            >
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
-                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
+              Mesaj
             </button>
           </div>
         )}

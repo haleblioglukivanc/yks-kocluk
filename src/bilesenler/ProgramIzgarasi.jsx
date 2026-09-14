@@ -270,7 +270,15 @@ export default function ProgramIzgarasi({
               <ul className="liste gorev-liste">
                 {gunListesi.map((g) => {
                   const bitti = g.durum === 'tamamlandi'
-                  const etiket = [g.dersler?.ad, g.konular?.ad, GOREV_TUR_KISA[g.tur]]
+                  /* Başlıkta "Soru çözümü — Cümlede Anlam", altındaki
+                     etikette "Türkçe · Cümlede Anlam · Soru" yazıyordu:
+                     konu da tür de iki kere. Başlık konunun adı, alt
+                     satır dersi ve türü söylüyor. */
+                  const ad = g.konular?.ad ?? g.dersler?.ad ?? g.baslik
+                  const etiket = [
+                    g.konular?.ad ? g.dersler?.ad : null,
+                    GOREV_TUR_KISA[g.tur],
+                  ]
                     .filter(Boolean)
                     .join(' · ')
                   return (
@@ -284,7 +292,7 @@ export default function ProgramIzgarasi({
                       >
                         <span className="nokta" aria-hidden="true" />
                         <span className="gorev-govde">
-                          <span className="gorev-baslik">{g.baslik}</span>
+                          <span className="gorev-baslik">{ad}</span>
                           {etiket && <span className="gorev-etiket">{etiket}</span>}
                           {GOREV_DURUM_ROZETI[g.durum] && (
                             <span className="rozet gorev-durum">{GOREV_DURUM_ROZETI[g.durum]}</span>

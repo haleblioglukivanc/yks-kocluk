@@ -59,13 +59,12 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
 
   return (
     <div className="panel">
-      <button className="metin-dugme geri" onClick={onGeri}>
-        ← Öğrenci listesi
-      </button>
-
+      {/* Geri artık kartın sol üstünde: tek satırlık "← Öğrenci listesi"
+          bandı kaldırıldı. */}
       <OgrenciKimlikKarti
         ogrenci={ogrenci}
         netDurumu={netDurumu}
+        onGeri={onGeri}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
       />
@@ -443,47 +442,54 @@ function Program({ ogrenci }) {
         onHucreSec={(blok, tarih, periyot) => setSecim({ blok, tarih, periyot })}
         onRutinEkle={(gunler) => setSecim({ rutinGunler: gunler })}
         acikSecim={secim}
-        panel={
-          secim ? (
-            <HucreDuzenle
-              ogrenci={ogrenci}
-              secim={secim}
-              onKapat={() => setSecim(null)}
-              onDegisti={() => {
-                setSecim(null)
-                setTazele((t) => t + 1)
-              }}
-            />
-          ) : null
-        }
       />
+
+      {/* Form eskiden gün kartının içinde, gri kutunun içinde açılıyordu:
+          üç çerçeve iç içe, dar alan, üstünde liste. Artık alt sayfa
+          olarak açılıyor — tam genişlik, arkadaki liste yerinde kalıyor. */}
+      {secim && (
+        <AltSayfa
+          baslik={sayfaBasligi(secim)}
+          altBaslik={sayfaAltBasligi(secim)}
+          onKapat={() => setSecim(null)}
+        >
+          <HucreDuzenle
+            ogrenci={ogrenci}
+            secim={secim}
+            onDegisti={() => {
+              setSecim(null)
+              setTazele((t) => t + 1)
+            }}
+          />
+        </AltSayfa>
+      )}
     </section>
   )
 }
 
-/** Bir hücreye ders atar ya da mevcut bloğu düzenler/siler. */
-function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
+const gunUzun = (tarih) =>
+  new Date(`${tarih}T00:00:00`).toLocaleDateString('tr-TR', {
+    day: 'numeric', month: 'long', weekday: 'long',
+  })
+
+const sayfaBasligi = (secim) =>
+  secim.rutinGunler ? 'Tekrar eden iş' : gunUzun(secim.tarih)
+
+const sayfaAltBasligi = (secim) =>
+  secim.rutinGunler
+    ? 'Seçtiğin günlere aynı görev yazılır'
+    : secim.blok
+      ? 'Bu işi düzenle'
+      : 'Bu güne yeni iş'
+
+/** Bir hücreye ders atar ya da mevcut bloğu düzenler/siler.
+ *  Başlık ve kapatma alt sayfaya ait; burada yalnızca form var. */
+function HucreDuzenle({ ogrenci, secim, onDegisti }) {
   const { blok, tarih, periyot, rutinGunler } = secim
 
   if (rutinGunler) {
-    return (
-      <div className="hucre-panel">
-        <header className="hucre-basi">
-          <div>
-            <span className="hucre-gun">Rutin ekle</span>
-            <span className="hucre-saat">Seçtiğin günlere aynı görev yazılır</span>
-          </div>
-          <button className="metin-dugme" onClick={onKapat}>Kapat</button>
-        </header>
-        <RutinFormu ogrenci={ogrenci} gunler={rutinGunler} onEklendi={onDegisti} />
-      </div>
-    )
+    return <RutinFormu ogrenci={ogrenci} gunler={rutinGunler} onEklendi={onDegisti} />
   }
-
-  const gun = new Date(tarih).toLocaleDateString('tr-TR', {
-    weekday: 'long', day: 'numeric', month: 'long',
-  })
-  const altMetin = blok ? 'Bu işi düzenle' : 'Bu güne yeni iş'
 
   async function sil() {
     await supabase.from('gorevler').delete().eq('id', blok.id)
@@ -491,15 +497,7 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
   }
 
   return (
-    <div className="hucre-panel">
-      <header className="hucre-basi">
-        <div>
-          <span className="hucre-gun">{gun}</span>
-          <span className="hucre-saat">{altMetin}</span>
-        </div>
-        <button className="metin-dugme" onClick={onKapat}>Kapat</button>
-      </header>
-
+    <>
       {blok ? (
         <BlokDuzenle blok={blok} onSil={sil} onDegisti={onDegisti} />
       ) : (
@@ -510,7 +508,7 @@ function HucreDuzenle({ ogrenci, secim, onKapat, onDegisti }) {
           onEklendi={onDegisti}
         />
       )}
-    </div>
+    </>
   )
 }
 
@@ -794,11 +792,12 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
         </Alan>
       </div>}
 
-      <Uyari>{hata}</Uyari>
-
-      <Dugme onClick={ekle} bekliyor={bekliyor}>
-        Bloğa ekle
-      </Dugme>
+      <div className="form-alt">
+        <Uyari>{hata}</Uyari>
+        <Dugme onClick={ekle} bekliyor={bekliyor}>
+          Bloğa ekle
+        </Dugme>
+      </div>
     </div>
   )
 }
