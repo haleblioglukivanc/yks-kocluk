@@ -147,7 +147,6 @@ export default function OgrenciPaneli({
         onSekme={setSekme}
         kocMesaji={kocMesaji}
         onGit={onGit}
-        sade
       />
       )}
 

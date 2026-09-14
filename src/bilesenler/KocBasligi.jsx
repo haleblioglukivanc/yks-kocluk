@@ -83,8 +83,17 @@ export default function KocBasligi({ profil, ozet, onGit }) {
     setOlay(null)
   }
 
+  /* Selam satırı: üç rolde aynı iskelet (ad + tarih / Çizbi + cümle /
+     eylemler). Koç kim olduğunu biliyor ama ekranın tepesi "bugün" demeli. */
+  const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
+  const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
+
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve günün özeti`}>
+      <div className="ob-selam-satir">
+        <h1 className="ob-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
+        <p className="ob-tarih">{tarih}</p>
+      </div>
       <div className="ob-ust">
         <div className="ob-kalem" aria-hidden="true">
           <Kalem ruh={soz.ruh} boyut={76} />

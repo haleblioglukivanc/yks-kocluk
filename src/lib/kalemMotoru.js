@@ -44,13 +44,20 @@ export async function kalemiCalistir({ profilId, rol, ad, veri, ekran = 'bugun' 
     (k) => new Date(k.gosterildi) >= gunBasi && !k.kapatildi_mi && kuralEkrani(k.kural_kodu) === ekran,
   )
   if (acikOlanlar.length > 0) {
-    return acikOlanlar.slice(0, gunlukLimit).map((k) => ({
-      id: k.id,
-      kod: k.kural_kodu,
-      ruh: k.ruh ?? 'bekliyor',
-      mesaj: kuralMesaji(k.kural_kodu, baglam, k.mesaj),
-      eylem: kuralEylemi(k.kural_kodu, baglam),
-    }))
+    /* Şartını kaybeden kural null mesaj döner (sabah özeti ikinci girişte
+       gibi). Böyle bir olay geri verilirse başlıkta boş cümle + "Tamam"
+       düğmesi kalıyordu; susan kural listeden düşer, ekran varsayılan
+       cümlesine geçer. */
+    const canli = acikOlanlar
+      .map((k) => ({
+        id: k.id,
+        kod: k.kural_kodu,
+        ruh: k.ruh ?? 'bekliyor',
+        mesaj: kuralMesaji(k.kural_kodu, baglam, k.mesaj),
+        eylem: kuralEylemi(k.kural_kodu, baglam),
+      }))
+      .filter((o) => o.mesaj)
+    if (canli.length > 0) return canli.slice(0, gunlukLimit)
   }
 
   const sonGosterim = {}

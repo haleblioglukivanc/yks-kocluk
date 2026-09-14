@@ -60,7 +60,7 @@ function varsayilanSoz(ozet, saat) {
   return { ruh: 'fikir', mesaj: `Sırada ${baslik}${adet}.` }
 }
 
-export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit, sade = false }) {
+export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit }) {
   const [olay, setOlay] = useState(null)
   /* Cümle üç adımda değişiyordu: önce varsayılan, sonra veri gelince
      güncellenmiş varsayılan, sonra motorun cümlesi. Konuşurken yazının
@@ -148,51 +148,6 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
 
-  /* Sade hâl: dev karşılama bandı yerine tek satır.
-     Bant ekranın tamamını kaplıyordu ve söylediği her şey (kaç iş var,
-     hangisi sırada) hemen altındaki kartta zaten yazıyordu; "Bugünü aç"
-     düğmesi de Bugün'deyken Bugün'ü açıyordu. Kalan gerçek değer
-     Çizbi'nin cümlesi ve koçun mesajı: ikisi de burada duruyor. */
-  if (sade) {
-    return (
-      <div className="ob-sade">
-        <span className="ob-sade-kalem" aria-hidden="true">
-          <Kalem ruh={soz.ruh} boyut={40} yipranma={ozet?.yipranma ?? 0} />
-        </span>
-        <div className="ob-sade-govde">
-          <p className="ob-sade-ust">
-            {ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'} <span>{tarih}</span>
-          </p>
-          <p className="ob-sade-mesaj" role="status" aria-live="polite">
-            {kocKonusuyor ? (
-              <>
-                <b>Koçundan: </b>
-                {soz.mesaj}
-              </>
-            ) : (
-              hazir && soz.mesaj
-            )}
-          </p>
-          {kocKonusuyor && (
-            <div className="ob-sade-dugmeler">
-              <button className="metin-dugme" disabled={kocMesaji.kapaniyor} onClick={kocMesaji.okudum}>
-                Okudum
-              </button>
-              <button className="metin-dugme" onClick={() => onGit?.('/mesajlar')}>
-                Cevap yaz
-              </button>
-            </div>
-          )}
-        </div>
-        {/* Acil görüşme: selam satırının sağında, ulaşılabilir ama davet
-            etmeyen bir yerde. Yaprak açılınca şeridin altına iner.
-            Vekalette de görünür — koç öğrencinin gördüğü ekranın aynısını
-            görmeli — ama orada yalnızca okunur. */}
-        <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
-      </div>
-    )
-  }
-
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
       <div className="ob-selam-satir">
@@ -244,6 +199,13 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
             )}
           </div>
         </div>
+      </div>
+
+      {/* Acil görüşme: Çizbi'nin cümlesinden sonra gelen eylem satırı.
+          Vekalette de görünür — koç öğrencinin gördüğü ekranın aynısını
+          görmeli — ama orada yalnızca okunur. */}
+      <div className="ob-eylem-satir">
+        <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
       </div>
 
       {sayacDurumu && (

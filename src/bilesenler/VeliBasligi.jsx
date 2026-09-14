@@ -46,8 +46,14 @@ export default function VeliBasligi({ ozet, cocukAdi, profil }) {
     }).then((o) => setOlay(o[0] ?? null))
   }, [profil?.id, profil?.ad_soyad, ozet])
   const ruh = olay ? olay.ruh : ozet ? RUH[ozet.trend] ?? 'bekliyor' : 'bekliyor'
+  const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
+  const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve haftanın özeti`}>
+      <div className="ob-selam-satir">
+        <h1 className="ob-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
+        <p className="ob-tarih">{tarih}</p>
+      </div>
       <div className="ob-ust">
         <div className="ob-kalem" aria-hidden="true">
           <Kalem ruh={ruh} boyut={76} />

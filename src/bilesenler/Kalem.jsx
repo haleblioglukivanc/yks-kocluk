@@ -337,26 +337,4 @@ export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
     </svg>
   );
 }
-
-export function KalemBalonu({ olay, onKapat, onEylem }) {
-  if (!olay) return null
-  return (
-    <div className='kalem-balon' role='status' aria-live='polite'>
-      <Kalem ruh={olay.ruh} boyut={54} yipranma={olay.yipranma ?? 0} />
-      <div className='kalem-balon-govde'>
-        <p className='kalem-ad'>{KALEM_ADI}</p>
-        <p className='kalem-mesaj'>{olay.mesaj}</p>
-        {olay.eylem && (
-          <button className='metin-dugme' onClick={() => onEylem?.(olay.eylem)}>
-            {olay.eylem.etiket}
-          </button>
-        )}
-      </div>
-      <button className='kalem-kapat' aria-label='Kapat' onClick={() => onKapat?.(olay)}>
-        &times;
-      </button>
-    </div>
-  )
-}
-
 export default Kalem
