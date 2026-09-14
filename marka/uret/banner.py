@@ -10,8 +10,10 @@ OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
 def v1():
     img = canvas(); vignette(img, 30); d = ImageDraw.Draw(img, 'RGBA')
 
-    pts = bez((-80, 1010), (620, 800), (1280, 1010), (2010, 866)) + \
-          bez((2010, 866), (2280, 852), (2430, 906), (2640, 878))[1:]
+    # Patika 55 px yukari alindi: duraklarin etiketleri mobil guvenli alanin
+    # (alt sinir y=931) icinde kalsin, telefonda kirpilmasin.
+    pts = bez((-80, 955), (620, 745), (1280, 955), (2010, 811)) + \
+          bez((2010, 811), (2280, 797), (2430, 851), (2640, 823))[1:]
     polyline(d, pts, 6, (34, 44, 66))
     seg = [p for p in pts if 500 <= p[0] <= 2070]
     polyline(d, seg, 7, AMBER_D)
@@ -24,16 +26,17 @@ def v1():
         r = 18 if son else 13
         d.ellipse([x-r-8, y-r-8, x+r+8, y+r+8], fill=BG)
         if son:
+            glow(img, x, y, 105, 105, (255, 194, 74), 16)
             d.ellipse([x-r, y-r, x+r, y+r], fill=AMBER)
         else:
             d.ellipse([x-r, y-r, x+r, y+r], fill=BG, outline=AMBER_D, width=5)
         text(d, (x, y + 42), lab, fl, AMBER if son else MUTED, 'ma')
 
-    monogram(d, 560, 518, 106)
-    text(d, (560, 668), TITLE, bric(96, 700), INK)
-    text(d, (566, 786), 'Haftalık program, deneme analizi ve çalışma düzeni',
+    monogram(d, 560, 512, 96)
+    text(d, (560, 630), TITLE, bric(96, 700), INK)
+    text(d, (566, 748), 'Haftalık program, deneme analizi ve çalışma düzeni',
          karla(40, 400), MUTED)
-    text(d, (2044, 552), SITE, karla(28, 600), (96, 112, 142), 'ra')
+    text(d, (2044, 522), SITE, karla(28, 600), (96, 112, 142), 'ra')
     return img
 
 # --------------------------------------------------- 2: Haftalik program
