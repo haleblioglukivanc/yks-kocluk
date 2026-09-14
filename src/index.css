@@ -3947,12 +3947,32 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
 .siradaki-odak .siradaki-ikincil .metin-dugme { color: #b9c3d6; }
 
 /* Listedeki satırların basılabilir olduğu anlaşılmıyordu: düz metin
-   gibi duruyorlardı. Kendi zeminleri ve sağda bir ok var artık. */
-.sk-satir { border-radius: 12px; padding: 0.5rem 0.625rem; }
-.sk-satir:not(.sk-satir--bitti) { background: var(--kagit); }
+   gibi duruyorlardı. Kendi zeminleri, kenarları, hafif gölgeleri ve
+   sağda bir ok var artık; basınca da bir tık içeri gidiyorlar.
+   Soldaki renkli şerit dersi söylüyor — koç ekranıyla aynı renkler. */
+.sk-satir {
+  border-radius: 12px; padding: 0.5rem 0.625rem; min-height: 48px;
+  border-left: 5px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 80%, var(--yuzey));
+}
+.sk-satir:not(.sk-satir--bitti) {
+  background: var(--yuzey);
+  border: 1px solid var(--cizgi);
+  border-left: 5px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 80%, var(--yuzey));
+  box-shadow: 0 1px 2px rgba(20, 28, 45, 0.06);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+}
+.sk-satir--bitti { border-left-color: var(--cizgi); }
+.sk-satir:not(.sk-satir--bitti):active { transform: translateY(1px); box-shadow: none; }
+.sk-ders {
+  padding: 0.1rem 0.4rem; border-radius: 999px;
+  background: color-mix(in srgb, var(--ders-renk, var(--cizgi)) 20%, var(--yuzey));
+  color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 85%, var(--murekkep));
+  font-weight: 600; white-space: nowrap;
+}
+.sk-satir--bitti .sk-ders { background: var(--yuzey-2); color: var(--soluk); font-weight: 500; }
 .sk-sec::after {
   content: "›"; flex: none; margin-left: 0.35rem;
-  font-size: 1.125rem; line-height: 1; color: var(--soluk);
+  font-size: 1.25rem; line-height: 1; color: var(--grafit);
 }
 .sk-sec:hover::after, .sk-sec:focus-visible::after { color: var(--dolgu); }
 .siradaki-kalanlar { display: flex; flex-direction: column; gap: 0.25rem; }

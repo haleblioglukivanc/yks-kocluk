@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
+import { dersGorunumu } from '../lib/dersGorunum.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
@@ -67,17 +68,19 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* Görüşme bir çalışma değil: sayacı, atlanması, tamamlanması yok. Günde
      görünür ama sıradaki iş seçilirken hesaba katılmaz. */
   const liste = tumu.filter((g) => g.tur !== 'gorusme')
-  /* Koç bir göreve saat verdiyse o gün blok düzenine geçer: sıra saatten
-     belli olur, öğrenci değiştiremez. Tek bir saatli görev bile varsa
-     gün saatlidir; yarı saatli yarı serbest bir gün ikisini de
-     karıştırırdı. Saat yoksa hiçbir şey değişmez. */
+  /* Koç saat verdiğinde sıra saatten belli olur ve öğrencinin sırada
+     duran iş budur. Ama kilitli değil (Eylül 2026'da değişti): saatli
+     günde de öğrenci listeden başka bir işe dokunup ona geçebilir.
+     Saat bir öneri ve düzen, bir yasak değil. */
   const saatli = liste.some((g) => g.baslangic_saat)
   const bekleyen = liste.filter((g) => g.durum !== 'tamamlandi')
   const calisan = durum?.gorevId ? liste.find((g) => g.id === durum.gorevId) : null
-  const secilen = !saatli && secim ? bekleyen.find((g) => g.id === secim) : null
-  const sira = saatli
-    ? (bekleyen[0] ?? null)
-    : (secilen ?? bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null)
+  const secilen = secim ? bekleyen.find((g) => g.id === secim) : null
+  const sira =
+    secilen ??
+    (saatli
+      ? (bekleyen[0] ?? null)
+      : (bekleyen.find((g) => !atlanan.includes(g.id)) ?? bekleyen[0] ?? null))
 
   /* Iki yonlu: isaretlemek kadar geri almak da gerekiyor. Ogrenci yanlis
      tikleyebilir ya da bitirdigi bir konuyu tekrar calismak isteyebilir;
@@ -125,8 +128,15 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       <ul className="siradaki-kalanlar">
         {satirlar.map((g) => {
           const bitti = g.durum === 'tamamlandi'
+          /* Ders rengi koç ekranındakiyle aynı kaynaktan: iki tarafta
+             aynı ders aynı renkte görünsün. */
+          const ders = dersGorunumu(g.ders)
           return (
-            <li key={g.id} className={bitti ? 'sk-satir sk-satir--bitti' : 'sk-satir'}>
+            <li
+              key={g.id}
+              className={bitti ? 'sk-satir sk-satir--bitti' : 'sk-satir'}
+              style={{ '--ders-renk': ders.renk }}
+            >
               <button
                 className="sk-tik"
                 role="checkbox"
@@ -140,7 +150,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                         strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              {bitti || saatli ? (
+              {bitti ? (
                 <>
                   {g.baslangic_saat && <span className="sk-saat">{saatKisa(g.baslangic_saat)}</span>}
                   <span className="sk-ad">
@@ -148,22 +158,25 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                   </span>
                   {/* Tiki koç attıysa öğrenci bunu bilmeli: kendi yapmadığı
                       bir işin bitmiş görünmesi açıklanmadan bırakılmaz. */}
-                  {bitti && g.koc_isaretledi ? (
+                  {g.koc_isaretledi ? (
                     <span className="sk-koc">Koçun işaretledi</span>
                   ) : (
-                    <span className="sk-ders">{g.ders}</span>
+                    g.ders && <span className="sk-ders">{g.ders}</span>
                   )}
                 </>
               ) : (
+                /* Saatli günde de dokunulabilir: sıra saatten belli oluyor
+                   ama öğrenci istediği işe geçebiliyor. */
                 <button
                   className="sk-sec"
                   onClick={() => setSecim(g.id)}
                   aria-label={`${g.baslik || g.konu || 'Görev'} işine geç`}
                 >
+                  {g.baslangic_saat && <span className="sk-saat">{saatKisa(g.baslangic_saat)}</span>}
                   <span className="sk-ad">
                     {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
                   </span>
-                  <span className="sk-ders">{g.ders}</span>
+                  {g.ders && <span className="sk-ders">{g.ders}</span>}
                 </button>
               )}
             </li>
@@ -381,7 +394,8 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamla(sira)}>
           ✓ Tamamla
         </button>
-        {!saatli && bekleyen.length > 1 && (
+        {/* Atla saatli günde de açık: sıra artık kilitli değil. */}
+        {bekleyen.length > 1 && (
           <button className="metin-dugme" onClick={() => { setSecim(null); setAtlanan((a) => [...a, sira.id]) }}>
             Atla ›
           </button>

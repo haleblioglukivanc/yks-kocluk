@@ -496,25 +496,25 @@ function HucreDuzenle({ ogrenci, secim, onDegisti }) {
     onDegisti()
   }
 
+  /* Mevcut bir işe dokununca eskiden yalnızca not kutusu ve sil düğmesi
+     açılıyordu: dersi, konusu, saati yanlış girilmişse işi silip baştan
+     yazmak gerekiyordu. Artık aynı form, dolu hâliyle. */
   return (
-    <>
-      {blok ? (
-        <BlokDuzenle blok={blok} onSil={sil} onDegisti={onDegisti} />
-      ) : (
-        <GorevFormu
-          ogrenci={ogrenci}
-          tarih={tarih}
-          periyot={periyot}
-          onEklendi={onDegisti}
-        />
-      )}
-    </>
+    <GorevFormu
+      ogrenci={ogrenci}
+      tarih={tarih}
+      periyot={periyot}
+      blok={blok ?? null}
+      onSil={blok ? sil : null}
+      onEklendi={onDegisti}
+    />
   )
 }
 
 /** Boş bir hücreye ders atar. Ders seçilince o ders grubunun bütün
  *  konuları (TYT + AYT) yüklenir. */
-function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
+function GorevFormu({ ogrenci, tarih, periyot, blok = null, onSil, onEklendi }) {
+  const duzenleme = Boolean(blok)
   const [dersler, setDersler] = useState([])
   const [konular, setKonular] = useState([])
   /* Seçim artık ders satırına değil ders grubuna bağlı: koç "Matematik"
@@ -522,23 +522,27 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [grupKod, setGrupKod] = useState('')
   /* Konu seçilmeyen görevde kapsamı koç söylüyor. */
   const [kapsamDersId, setKapsamDersId] = useState('')
-  const [konuId, setKonuId] = useState('')
-  const [tur, setTur] = useState('konu_anlatimi')
-  const [kaynakId, setKaynakId] = useState(null)
-  const [kaynakAralik, setKaynakAralik] = useState('')
-  const [hedef, setHedef] = useState('')
-  const [aciklama, setAciklama] = useState('')
+  const [konuId, setKonuId] = useState(blok?.konu_id ? String(blok.konu_id) : '')
+  const [tur, setTur] = useState(blok?.tur ?? 'konu_anlatimi')
+  const [kaynakId, setKaynakId] = useState(blok?.kaynak_id ?? null)
+  const [kaynakAralik, setKaynakAralik] = useState(blok?.kaynak_aralik ?? '')
+  const [hedef, setHedef] = useState(blok?.hedef_adet != null ? String(blok.hedef_adet) : '')
+  const [aciklama, setAciklama] = useState(blok?.aciklama ?? '')
   /* Saat isteğe bağlı. Boş bırakılırsa gün eskisi gibi işler: görevler
      koçun sırasıyla, öğrenci istediğinden başlar. Bir göreve saat
      verildiği anda o gün saate bağlanır. */
-  const [basSaat, setBasSaat] = useState('')
-  const [bitSaat, setBitSaat] = useState('')
+  const [basSaat, setBasSaat] = useState((blok?.baslangic_saat ?? '').slice(0, 5))
+  const [bitSaat, setBitSaat] = useState((blok?.bitis_saat ?? '').slice(0, 5))
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
   /* Form sekiz alandı ve hepsi her seferinde açıktı; oysa sıradan bir
      görev Ders + Konu + Tür ile yazılıyor. Gerisi kapalı başlıyor,
      ihtiyaç duyan açıyor. */
-  const [ayrinti, setAyrinti] = useState(false)
+  /* Düzenlemede ayrıntılar açık başlıyor: doldurulmuş bir alanın kapalı
+     kutunun içinde saklanması koçu şaşırtır. */
+  const [ayrinti, setAyrinti] = useState(
+    Boolean(blok && (blok.kaynak_id || blok.hedef_adet != null || blok.baslangic_saat || blok.aciklama)),
+  )
 
   useEffect(() => {
     if (!ogrenci.katalog_id) return
@@ -551,6 +555,21 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   }, [ogrenci.katalog_id])
 
   const gruplar = dersleriGrupla(dersler)
+
+  /* Düzenlemede görev bir ders satırına bağlı; grubu o satırdan buluyoruz.
+     Dersler yüklendikten sonra bir kez çalışır. */
+  useEffect(() => {
+    if (!duzenleme || grupKod || dersler.length === 0) return
+    const kendi = dersler.find((d) => d.id === blok.ders_id)
+    if (!kendi) return
+    const g = dersleriGrupla(dersler).find((x) => x.dersler.some((d) => d.id === kendi.id))
+    if (g) {
+      setGrupKod(g.kod)
+      setKapsamDersId(String(kendi.id))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [duzenleme, dersler])
+
   const grup = gruplar.find((g) => g.kod === grupKod) ?? null
   const grupDersIdleri = (grup?.dersler ?? []).map((d) => d.id)
 
@@ -608,11 +627,7 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       ? `${GOREV_TUR_ADI[tur]} — ${konu.ad}`
       : `${dersAdi} ${GOREV_TUR_ADI[tur].toLowerCase()}`
 
-    const { error } = await supabase.from('gorevler').insert({
-      ogrenci_id: ogrenci.id,
-      koc_id: ogrenci.koc_id,
-      tarih,
-      periyot: periyot ?? null,
+    const govde = {
       ders_id: Number(dersId),
       konu_id: konuId ? Number(konuId) : null,
       tur,
@@ -623,8 +638,18 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       kaynak_aralik: kaynakId && kaynakAralik.trim() ? kaynakAralik.trim() : null,
       baslangic_saat: basSaat || null,
       bitis_saat: bitSaat || null,
-      durum: 'bekliyor',
-    })
+    }
+
+    const { error } = duzenleme
+      ? await supabase.from('gorevler').update(govde).eq('id', blok.id)
+      : await supabase.from('gorevler').insert({
+          ...govde,
+          ogrenci_id: ogrenci.id,
+          koc_id: ogrenci.koc_id,
+          tarih,
+          periyot: periyot ?? null,
+          durum: 'bekliyor',
+        })
 
     setBekliyor(false)
     if (error) {
@@ -801,8 +826,13 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
       <div className="form-alt">
         <Uyari>{hata}</Uyari>
         <Dugme onClick={ekle} bekliyor={bekliyor}>
-          Ders ekle
+          {duzenleme ? 'Değişikliği kaydet' : 'Ders ekle'}
         </Dugme>
+        {onSil && (
+          <Dugme tur="ikincil" onClick={onSil}>
+            Dersi sil
+          </Dugme>
+        )}
       </div>
     </div>
   )
@@ -1163,65 +1193,6 @@ function Veliler({ ogrenci }) {
  *  Öğrenci bunları kendi panelinde görüyor, koç göremiyordu. */
 
 
-/** Mevcut bloğun notunu düzenler. Not, öğrencinin görev altında
- *  gördüğü tek serbest metin: "önce çıkmış sorular" gibi yönlendirmeler. */
-function BlokDuzenle({ blok, onSil, onDegisti }) {
-  const [not, setNot] = useState(blok.aciklama ?? '')
-  const [bekliyor, setBekliyor] = useState(false)
-  const [hata, setHata] = useState('')
-  const [kaydedildi, setKaydedildi] = useState(false)
-
-  async function kaydet() {
-    setBekliyor(true)
-    setHata('')
-    const { error } = await supabase
-      .from('gorevler')
-      .update({ aciklama: not.trim() || null })
-      .eq('id', blok.id)
-    setBekliyor(false)
-    if (error) {
-      setHata(hataMetni(error))
-      return
-    }
-    setKaydedildi(true)
-    onDegisti()
-  }
-
-  return (
-    <div className="form-kutu">
-      <div>
-        <span className="liste-ad">{blok.baslik}</span>
-        <span className="liste-alt">
-          {[blok.dersler?.ad, blok.konular?.ad, GOREV_TUR_ADI[blok.tur],
-            blok.hedef_adet ? `${blok.yapilan_adet}/${blok.hedef_adet}` : null]
-            .filter(Boolean).join(' · ')}
-        </span>
-      </div>
-
-      <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
-        <textarea
-          rows={3}
-          value={not}
-          onChange={(e) => {
-            setNot(e.target.value)
-            setKaydedildi(false)
-          }}
-          placeholder="Örn. Önce çıkmış soruları çöz."
-        />
-      </Alan>
-
-      <Uyari>{hata}</Uyari>
-      {kaydedildi && <Uyari tur="bilgi">Not kaydedildi.</Uyari>}
-
-      <div className="ikili">
-        <Dugme onClick={kaydet} bekliyor={bekliyor}>Notu kaydet</Dugme>
-        <Dugme tur="ikincil" onClick={onSil}>Bloğu sil</Dugme>
-      </div>
-    </div>
-  )
-}
-
-
 const GUN_ADI = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
 /** Rutin: saate bağlı olmayan, birden çok güne aynı anda yazılan görev.
@@ -1239,7 +1210,11 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
   /* Form sekiz alandı ve hepsi her seferinde açıktı; oysa sıradan bir
      görev Ders + Konu + Tür ile yazılıyor. Gerisi kapalı başlıyor,
      ihtiyaç duyan açıyor. */
-  const [ayrinti, setAyrinti] = useState(false)
+  /* Düzenlemede ayrıntılar açık başlıyor: doldurulmuş bir alanın kapalı
+     kutunun içinde saklanması koçu şaşırtır. */
+  const [ayrinti, setAyrinti] = useState(
+    Boolean(blok && (blok.kaynak_id || blok.hedef_adet != null || blok.baslangic_saat || blok.aciklama)),
+  )
 
   useEffect(() => {
     if (!ogrenci.katalog_id) return

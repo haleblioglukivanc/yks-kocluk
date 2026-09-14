@@ -129,7 +129,7 @@ export default function ProgramIzgarasi({
     const { data, error } = await supabase
       .from('gorevler')
       .select(
-        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, kaynak_aralik, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
+        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, ders_id, konu_id, kaynak_id, kaynak_aralik, baslangic_saat, bitis_saat, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
       )
       .eq('ogrenci_id', ogrenci.id)
       .gte('tarih', ilk)
