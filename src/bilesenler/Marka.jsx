@@ -1,9 +1,9 @@
 /**
  * Marka işareti — HK monogramı.
  *
- * H'nin sağ dikeyi aynı zamanda K'nin gövdesidir; K'nin kolları doğal
- * yönde sağa açılır, hiçbir harf ters çevrilmez. O ortak dikey amber
- * çizilir: markanın tek imza hattı. Turuncu başka hiçbir yere girmez.
+ * K'nin kolları sağa açılıp H'nin sol dikeyine değer; o ortak dikey amber
+ * çizilir, markanın tek imza hattı budur. Harfler ismin okunuş sırasında:
+ * Kıvanç Hoca. Turuncu başka hiçbir yere girmez.
  *
  * Tek yerde durur ki üst şerit, giriş ekranı ve favicon aynı çizimi
  * paylaşsın; birinde yapılan düzeltme hepsinde geçerli olsun.
@@ -17,9 +17,9 @@ export function MarkaIsareti({ yukseklik = 20, sinif = '' }) {
   return (
     <svg
       className={sinif ? `marka-isaret ${sinif}` : 'marka-isaret'}
-      viewBox="0 0 96 72"
+      viewBox="0 0 100 72"
       height={yukseklik}
-      width={(yukseklik * 96) / 72}
+      width={(yukseklik * 100) / 72}
       fill="none"
       aria-hidden="true"
       focusable="false"
@@ -31,9 +31,10 @@ export function MarkaIsareti({ yukseklik = 20, sinif = '' }) {
         strokeLinejoin="round"
       >
         <path d="M14 8V64" />
-        <path d="M14 36H50" />
-        <path d="M50 36L78 8" />
-        <path d="M50 36L80 64" />
+        <path d="M14 36L48 8" />
+        <path d="M14 36L48 64" />
+        <path d="M50 36H86" />
+        <path d="M86 8V64" />
       </g>
       <path
         className="marka-akt"
