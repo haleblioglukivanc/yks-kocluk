@@ -11,7 +11,6 @@ import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlik
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import { kullaniciOlustur, kullaniciSil } from '../lib/hesap.js'
-import Rozetlerim from './Rozetlerim.jsx'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
 
@@ -23,7 +22,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
   const [duzenle, setDuzenle] = useState(false)
-  const [ek, setEk] = useState(null)
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
@@ -70,7 +68,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         netDurumu={netDurumu}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
-        onEk={setEk}
       />
 
       <div className="sekme-govde" style={aksanStili()}>
@@ -93,14 +90,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
 
       {sekme === 'program' && (
         <>
-          <KimlikOlcumleri
-            ogrenci={ogrenci}
-            netDurumu={netDurumu}
-            seri={ek?.seri}
-            tamamlama={ek?.risk?.tamamlama_yuzdesi}
-            rozet={ek?.rozet}
-            onRozetler={() => setSekme('rozetler')}
-          />
+          <KimlikOlcumleri ogrenci={ogrenci} netDurumu={netDurumu} />
           <Program ogrenci={ogrenci} />
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
@@ -109,12 +99,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       )}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
-      {sekme === 'rozetler' && (
-        <>
-          <button className="metin-dugme geri" onClick={() => setSekme('program')}>← Program</button>
-          <Rozetlerim ogrenciId={ogrenci.id} />
-        </>
-      )}
       {/* Kayıt: idari her şey tek yerde. Kimlik bilgileri (telefon dâhil,
           müşteri kartı gibi), düzenleme formu, veli bağları, koç notları. */}
       {sekme === 'kayit' && (
@@ -446,7 +430,10 @@ function Program({ ogrenci }) {
   const [tazele, setTazele] = useState(0)
 
   return (
-    <Kart baslik="Haftalık program" altBaslik="Gün gün">
+    /* Eskiden ızgara bir "Haftalık program" kartının içindeydi: panel >
+       sekme gövdesi > kart > gün paneli > görev satırı, beş çerçeve iç
+       içe. Kart kaldırıldı; hafta şeridi ekranın kendisi. */
+    <section className="prg-bolum">
       {/* Form, dokunulan günün listesinin hemen altında açılıyor.
           Yerleşimi ortak bileşen yönetiyor; öğrenci paneli de aynı yeri kullanır. */}
       <ProgramIzgarasi
@@ -470,7 +457,7 @@ function Program({ ogrenci }) {
           ) : null
         }
       />
-    </Kart>
+    </section>
   )
 }
 
@@ -550,6 +537,10 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
   const [bitSaat, setBitSaat] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
+  /* Form sekiz alandı ve hepsi her seferinde açıktı; oysa sıradan bir
+     görev Ders + Konu + Tür ile yazılıyor. Gerisi kapalı başlıyor,
+     ihtiyaç duyan açıyor. */
+  const [ayrinti, setAyrinti] = useState(false)
 
   useEffect(() => {
     if (!ogrenci.katalog_id) return
@@ -731,55 +722,77 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
         </select>
       </Alan>
 
-      {/* Kaynak, tür ve konu seçildikten sonra soruluyor: motorun
-          sıralama yapabilmesi için ikisine de ihtiyacı var. */}
-      <KaynakSecici
-        ogrenciId={ogrenci.id}
-        dersId={dersId}
-        konuId={konuId}
-        secili={kaynakId}
-        onSec={(id) => {
-          setKaynakId(id)
-          if (!id) setKaynakAralik('')
-        }}
-        aralik={kaynakAralik}
-        onAralik={setKaynakAralik}
-      />
+      <button
+        type="button"
+        className="ayrinti-basi"
+        onClick={() => setAyrinti((a) => !a)}
+        aria-expanded={ayrinti}
+      >
+        <span className="ayrinti-ad">Ayrıntılar</span>
+        <span className="ayrinti-ozet">
+          {[
+            kaynakId ? 'kaynak' : null,
+            ADETLI_TURLER.has(tur) && hedef ? `${hedef} adet` : null,
+            basSaat || null,
+            aciklama.trim() ? 'not' : null,
+          ]
+            .filter(Boolean)
+            .join(' · ') || 'kaynak, adet, saat, not'}
+        </span>
+        <span className="ayrinti-ok" aria-hidden="true">{ayrinti ? '▾' : '▸'}</span>
+      </button>
 
-      {ADETLI_TURLER.has(tur) && (
-        <Alan etiket="Hedef adet">
-          <input
-            type="number"
-            inputMode="numeric"
-            min="1"
-            max="500"
-            value={hedef}
-            onChange={(e) => setHedef(e.target.value)}
-            placeholder="Örn. 30"
+      {ayrinti && <div className="ayrinti-govde">
+        {/* Kaynak, tür ve konu seçildikten sonra soruluyor: motorun
+            sıralama yapabilmesi için ikisine de ihtiyacı var. */}
+        <KaynakSecici
+          ogrenciId={ogrenci.id}
+          dersId={dersId}
+          konuId={konuId}
+          secili={kaynakId}
+          onSec={(id) => {
+            setKaynakId(id)
+            if (!id) setKaynakAralik('')
+          }}
+          aralik={kaynakAralik}
+          onAralik={setKaynakAralik}
+        />
+
+        {ADETLI_TURLER.has(tur) && (
+          <Alan etiket="Hedef adet">
+            <input
+              type="number"
+              inputMode="numeric"
+              min="1"
+              max="500"
+              value={hedef}
+              onChange={(e) => setHedef(e.target.value)}
+              placeholder="Örn. 30"
+            />
+          </Alan>
+        )}
+
+        {/* Saat verilirse gün blok düzenine geçer: görevler saate göre
+            dizilir ve öğrenci sırayı değiştiremez. Boş bırakılırsa hiçbir
+            şey değişmez. */}
+        <div className="alan-ikili">
+          <Alan etiket="Başlangıç saati" ipucu="İsteğe bağlı">
+            <input type="time" value={basSaat} onChange={(e) => setBasSaat(e.target.value)} />
+          </Alan>
+          <Alan etiket="Bitiş saati">
+            <input type="time" value={bitSaat} onChange={(e) => setBitSaat(e.target.value)} />
+          </Alan>
+        </div>
+
+        <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
+          <textarea
+            rows={2}
+            value={aciklama}
+            onChange={(e) => setAciklama(e.target.value)}
+            placeholder="Örn. Önce çıkmış soruları çöz, sonra deneme kitabına geç."
           />
         </Alan>
-      )}
-
-      {/* Saat verilirse gün blok düzenine geçer: görevler saate göre
-          dizilir ve öğrenci sırayı değiştiremez. Boş bırakılırsa hiçbir
-          şey değişmez. */}
-      <div className="alan-ikili">
-        <Alan etiket="Başlangıç saati" ipucu="İsteğe bağlı">
-          <input type="time" value={basSaat} onChange={(e) => setBasSaat(e.target.value)} />
-        </Alan>
-        <Alan etiket="Bitiş saati">
-          <input type="time" value={bitSaat} onChange={(e) => setBitSaat(e.target.value)} />
-        </Alan>
-      </div>
-
-      <Alan etiket="Not" ipucu="Öğrenci bu notu görevin altında görür">
-        <textarea
-          rows={2}
-          value={aciklama}
-          onChange={(e) => setAciklama(e.target.value)}
-          placeholder="Örn. Önce çıkmış soruları çöz, sonra deneme kitabına geç."
-        />
-      </Alan>
+      </div>}
 
       <Uyari>{hata}</Uyari>
 
@@ -1218,6 +1231,10 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
   const [secili, setSecili] = useState(() => gunler.map(() => true))
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
+  /* Form sekiz alandı ve hepsi her seferinde açıktı; oysa sıradan bir
+     görev Ders + Konu + Tür ile yazılıyor. Gerisi kapalı başlıyor,
+     ihtiyaç duyan açıyor. */
+  const [ayrinti, setAyrinti] = useState(false)
 
   useEffect(() => {
     if (!ogrenci.katalog_id) return

@@ -519,32 +519,32 @@ main {
 .prg-hafta-etiket { display: block; font-size: 0.625rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--soluk); }
 .prg-hafta-tarih { display: block; font-family: var(--mono); font-size: var(--punto-mini); font-weight: 500; margin-top: 0.1rem; }
 
-.prg-ozet { display: grid; grid-template-columns: 1fr auto; gap: 0.375rem 0.75rem; margin-bottom: 0.875rem; }
-.prg-ozet-etiket { font-size: var(--punto-mini); color: var(--soluk); }
+.prg-basi-sag { display: flex; align-items: center; gap: 0.75rem; flex: 0 0 auto; }
 .prg-ozet-sayi { font-family: var(--mono); font-weight: 600; font-size: var(--punto-kucuk); }
-.prg-cubuk { grid-column: 1 / -1; height: 5px; background: var(--kagit); border-radius: 3px; overflow: hidden; }
+.prg-cubuk { height: 5px; background: var(--kagit); border-radius: 3px; overflow: hidden; margin-bottom: 0.75rem; }
 .prg-cubuk div { height: 100%; background: var(--isaret); border-radius: 3px; transition: width 320ms ease; }
 
 /* ── Seçili günün planı ──────────────────────────────────────
    Saat kolonu kaldırıldı: koçluk saat bazlı değil, gün bazlı
    yürüyor. Gün şeridi (.hafta-serit) öğrenci panelinden geliyor,
    burada yalnızca altındaki gün paneli tanımlanıyor. */
+/* Program artık kart içinde değil; ekranın kendisi. */
+.prg-bolum { margin-top: 0.75rem; }
+
+/* Gün şeridi yukarı yapışıyor: gün başlığı kaldırıldığı için hangi
+   gündeyiz bilgisini kaydırma boyunca şerit taşıyor. Yapışma noktası
+   üst şeridin yüksekliği kadar aşağıda (--yapisma, JS ile ölçülüyor). */
+.hafta-serit--yapisik {
+  position: sticky; top: calc(var(--yapisma, 0px) + 4px); z-index: 12;
+  background: var(--yuzey-2);
+  box-shadow: 0 6px 14px -12px rgba(0, 0, 0, 0.45);
+}
+
 .prg-gun {
   margin-top: 0.875rem; overflow: hidden;
   background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: 14px;
 }
-.prg-gun-basi {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem;
-  padding: 0.7rem 0.85rem; background: var(--yuzey-2); border-bottom: 1px solid var(--cizgi);
-}
-.prg-gun-ad {
-  margin: 0; font-family: var(--display); font-weight: 700;
-  font-size: 1.5rem; line-height: 1.1; letter-spacing: -0.025em;
-}
-.prg-gun-tarih { display: block; font-size: var(--punto-mini); color: var(--grafit); margin-top: 0.15rem; }
-.prg-gun-sag { display: flex; align-items: center; gap: 0.5rem; flex: 0 0 auto; }
-.prg-gun-sayac { font-size: var(--punto-kucuk); color: var(--grafit); }
-.prg-gun-govde { padding: 0.15rem 0.85rem 0.85rem; }
+.prg-gun-govde { padding: 0.7rem 0.85rem 0.85rem; }
 /* Günün kendi ilerlemesi: haftalık çubuk hafta hakkında, bu gün hakkında. */
 .prg-gun-cubuk { height: 4px; background: var(--yuzey-2); border-radius: 99px; overflow: hidden; margin: 0.55rem 0 0.1rem; }
 .prg-gun-cubuk i { display: block; height: 100%; background: var(--isaret); border-radius: 99px; transition: width 320ms ease; }
@@ -553,14 +553,6 @@ main {
 /* Bugün: başlık bandı amber tona geçer. Amber geniş yüzey olmaz, bu
    yüzden yalnızca band ve kenar — gövde nötr kalıyor. */
 .prg-gun--bugun { border-color: var(--sicak-kenar); }
-.prg-gun--bugun .prg-gun-basi { background: var(--sicak-zemin); border-bottom-color: var(--sicak-kenar); }
-.prg-gun--bugun .prg-gun-ad,
-.prg-gun--bugun .prg-gun-tarih { color: var(--sicak-metin); }
-.prg-gun-bugun {
-  font-size: 0.7rem; font-weight: 700; letter-spacing: 0.02em;
-  color: var(--sicak-metin); border: 1px solid var(--sicak-kenar);
-  border-radius: 999px; padding: 0.1rem 0.5rem;
-}
 
 /* Gün listesindeki satır: öğrenci panelindeki .gorev-satir ile aynı
    tipografi, tek fark satırın tamamının dokunulabilir olması. */
@@ -575,7 +567,23 @@ main {
 .prg-gorev-ok { flex: 0 0 auto; color: var(--soluk); font-size: 1.1rem; line-height: 1; margin-top: 2px; }
 .prg-gorev-ekle { width: 100%; margin-top: 0.75rem; }
 
-.prg-ipucu { margin: 0.75rem 0 0; font-size: var(--punto-mini); line-height: 1.5; color: var(--soluk); }
+/* ── Görev formunda "Ayrıntılar" ──
+   Kaynak, adet, saat ve not kapalı başlar; başlıkta doldurulanların
+   özeti yazar, böylece açmadan da ne verildiği okunur. */
+.ayrinti-basi {
+  display: flex; align-items: center; gap: 0.5rem; width: 100%;
+  margin-top: 0.25rem; padding: 0.55rem 0;
+  background: none; border: 0; border-top: 1px solid var(--cizgi);
+  font: inherit; font-size: var(--punto-mini); color: var(--soluk);
+  text-align: left; cursor: pointer;
+}
+.ayrinti-ad { font-weight: 600; color: var(--murekkep); flex: 0 0 auto; }
+.ayrinti-ozet {
+  flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ayrinti-ok { flex: 0 0 auto; }
+.ayrinti-basi:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
+.ayrinti-govde { display: flex; flex-direction: column; gap: 0.625rem; }
 
 .prg-serbest { margin-top: 1.25rem; }
 .prg-serbest h4 { font-size: var(--punto-mini); font-weight: 600; margin: 0 0 0.5rem; }
@@ -1400,6 +1408,16 @@ body[data-tema='panel'] {
 /* Rutin ekleme */
 .rutin-baslik { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
 .rutin-baslik h4 { margin: 0; }
+/* Başlığın kendisi düğme: bölüm kapalı başlıyor. */
+.rutin-ac {
+  display: flex; align-items: center; gap: 0.5rem; flex: 1; min-width: 0;
+  padding: 0.35rem 0; background: none; border: 0;
+  font: inherit; color: inherit; text-align: left; cursor: pointer;
+}
+.rutin-ac .rutin-ok { color: var(--soluk); font-size: 0.8rem; }
+.rutin-ac .rutin-sayi { margin-left: auto; font-family: var(--mono); font-size: var(--punto-mini); color: var(--soluk); }
+.rutin-ac:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
+.kaynak-bos-satir { margin: 0.25rem 0 0.15rem; font-size: var(--punto-mini); color: var(--soluk); }
 .rutin-ekle {
   width: 36px; height: 36px; border-radius: 50%;
   border: 1px solid var(--sicak-kenar);
@@ -3235,6 +3253,14 @@ body[data-mod='gece'] .uygulama .kareli,
   letter-spacing: -0.03em; line-height: 1;
 }
 .kk-hero-ad { font-size: 0.85rem; color: rgba(255, 255, 255, 0.72); }
+/* Üç ölçüm kutusunun yerine geçen tek satır: seri + son net. */
+.kk-olcum-satir {
+  display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;
+  margin: 0.45rem 0 0; font-size: var(--punto-mini);
+  color: rgba(255, 255, 255, 0.72);
+}
+.kk-olcum-satir .kk-fark { font-style: normal; }
+
 .kk-uyari {
   display: flex; align-items: center; gap: 0.45rem;
   margin: 0.7rem 0 0; font-size: var(--punto-mini); font-weight: 600;
@@ -3254,17 +3280,10 @@ body[data-mod='gece'] .uygulama .kareli,
 .kk-goz { flex: 0 0 auto; }
 
 /* Ölçümler (Program sekmesinin tepesi) */
-.olcum-rozet {
-  display: flex; align-items: center; justify-content: space-between; width: 100%;
-  margin-top: 0.8rem; padding: 0.55rem 0.75rem;
-  background: var(--kagit); border: 1px solid var(--cizgi); border-radius: 10px;
-  color: inherit; font: inherit; font-size: var(--punto-mini); font-weight: 600; cursor: pointer;
-}
-.olcum-rozet svg { color: var(--soluk); }
 .kunye dd a { color: var(--serin); text-decoration: none; font-weight: 500; }
 .olcumler { padding-top: 0.9rem; }
+.olcumler .olcum-hedef:first-of-type { margin-top: 0; }
 .olcum-varis { margin: 0 0 0.7rem; font-size: var(--punto-mini); color: var(--soluk); }
-.olcumler .kk-kutular { margin-top: 0; }
 .olcum-hedef { margin-top: 0.9rem; }
 .olcum-hedef-satir {
   display: flex; justify-content: space-between; align-items: baseline;

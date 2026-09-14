@@ -61,7 +61,20 @@ export default function ProgramIzgarasi({
   // Doğrudan işaretlemek, koçun yazdığı notu ve hedefi görünmez kılıyordu.
   const [secilen, setSecilen] = useState(null)
   const [gunSecimi, setGunSecimi] = useState(null)
+  /* Tekrarlar kapalı başlıyor: haftada bir kurulan bir şey, her gün
+     bakılan bir şeyin önünde yer kaplamasın. */
+  const [tekrarAcik, setTekrarAcik] = useState(false)
+  /* Şeridin yapışacağı nokta üst şeridin altı; yüksekliği cihaza ve
+     güvenli alana göre değiştiği için ölçülüyor. */
+  const [tepe, setTepe] = useState(0)
   const acilirRef = useRef(null)
+
+  useEffect(() => {
+    const olc = () => setTepe(document.querySelector('.ust-serit')?.offsetHeight ?? 0)
+    olc()
+    window.addEventListener('resize', olc)
+    return () => window.removeEventListener('resize', olc)
+  }, [])
 
   const gunler = haftaGunleri(bas)
   const anahtarlar = gunler.map(gunAnahtari)
@@ -185,7 +198,10 @@ export default function ProgramIzgarasi({
             aria-label="Sonraki hafta"
           >→</button>
         </div>
-        <button className="metin-dugme" onClick={() => setBas(haftaBasi(new Date()))}>Bu hafta</button>
+        <div className="prg-basi-sag">
+          <span className="prg-ozet-sayi" title="Bu hafta tamamlanan iş">{biten}/{toplam}</span>
+          <button className="metin-dugme" onClick={() => setBas(haftaBasi(new Date()))}>Bu hafta</button>
+        </div>
       </div>
 
       <Uyari>{hata}</Uyari>
@@ -194,14 +210,19 @@ export default function ProgramIzgarasi({
         <Yukleniyor />
       ) : (
         <>
-          <div className="prg-ozet">
-            <span className="prg-ozet-etiket">Tamamlanan iş</span>
-            <span className="prg-ozet-sayi">{biten}/{toplam}</span>
-            <div className="prg-cubuk"><div style={{ width: `${oran}%` }} /></div>
-          </div>
+          {/* Haftalık ilerleme tek çizgi: "Tamamlanan iş 0/2" satırı
+              başlığa taşındı, burada yalnızca çubuk kaldı. */}
+          <div className="prg-cubuk"><div style={{ width: `${oran}%` }} /></div>
 
-          {/* Gün şeridi: öğrenci panelindeki şeritle aynı sınıflar */}
-          <div className="hafta-serit" role="tablist" aria-label="Haftanın günleri">
+          {/* Gün şeridi ekranın üstüne yapışıyor: gün başlığı kaldırıldığı
+              için hangi gündeyiz bilgisini kaydırırken de şerit taşıyor.
+              Yapışma noktası üst şeridin altı, yüksekliği ölçülerek. */}
+          <div
+            className="hafta-serit hafta-serit--yapisik"
+            style={{ '--yapisma': `${tepe}px` }}
+            role="tablist"
+            aria-label="Haftanın günleri"
+          >
             {anahtarlar.map((t, i) => {
               const s = sayim[t] ?? { toplam: 0, biten: 0 }
               const bugunMu = t === bugun
@@ -226,24 +247,11 @@ export default function ProgramIzgarasi({
             })}
           </div>
 
-          {/* Seçili günün planı. Bugünse başlık bandı amber tona geçer:
-              hangi günde olduğu ilk bakışta okunsun. */}
+          {/* Seçili günün planı. Gün başlığı kaldırıldı: şeritteki seçili
+              kutu zaten hangi gün olduğunu söylüyordu, altında ikinci kez
+              "Pazartesi 14 Eylül 0/2" yazmak aynı bilginin tekrarıydı.
+              Bugün olduğu kenar renginden okunuyor. */}
           <section className={`prg-gun${seciliGun === bugun ? ' prg-gun--bugun' : ''}`}>
-            <header className="prg-gun-basi">
-              <div>
-                <h4 className="prg-gun-ad">{gunAdi(seciliGun, { weekday: 'long' })}</h4>
-                <span className="prg-gun-tarih">
-                  {gunAdi(seciliGun, { day: 'numeric', month: 'long' })}
-                </span>
-              </div>
-              <div className="prg-gun-sag">
-                {seciliGun === bugun && <span className="prg-gun-bugun">bugün</span>}
-                {gunSayimi.toplam > 0 && (
-                  <span className="sayi prg-gun-sayac">{gunSayimi.biten}/{gunSayimi.toplam}</span>
-                )}
-              </div>
-            </header>
-
             <div className="prg-gun-govde">
             {gunSayimi.toplam > 0 && (
               <div className="prg-gun-cubuk">
@@ -252,9 +260,11 @@ export default function ProgramIzgarasi({
             )}
             {gunListesi.length === 0 ? (
               <p className="prg-gun-bos">
-                {duzenlenebilir
-                  ? 'Bu güne henüz iş yazılmadı.'
-                  : 'Bu gün boş — serbest çalışabilirsin.'}
+                {saltOkunur
+                  ? 'Bu gün boş. Önizlemede değişiklik yapılamaz.'
+                  : duzenlenebilir
+                    ? 'Bu güne henüz iş yazılmadı. Şeritten başka bir güne dokunabilir ya da aşağıdan iş ekleyebilirsin.'
+                    : 'Bu gün boş — serbest çalışabilirsin.'}
               </p>
             ) : (
               <ul className="liste gorev-liste">
@@ -306,22 +316,25 @@ export default function ProgramIzgarasi({
             </div>
           </section>
 
-          <p className="prg-ipucu">
-            {saltOkunur
-              ? 'Önizleme: işe dokunup ayrıntıyı görebilirsin, değişiklik yapılamaz.'
-              : duzenlenebilir
-                ? 'Bir güne dokun, o günün planı altta açılır. Yeşil işaretliler öğrencinin tamamladıklarıdır.'
-                : 'İşe dokun: ne çözeceğini ve koçunun notunu gösterir.'}
-          </p>
-
           {(rutinler.length > 0 || duzenlenebilir) && (
             <div className="prg-serbest">
               <div className="rutin-baslik">
-                <h4>Hafta boyu tekrarlar</h4>
+                <button
+                  className="rutin-ac"
+                  onClick={() => setTekrarAcik((a) => !a)}
+                  aria-expanded={tekrarAcik || rutinPaneli}
+                >
+                  <span className="rutin-ok" aria-hidden="true">{tekrarAcik || rutinPaneli ? '▾' : '▸'}</span>
+                  <h4>Hafta boyu tekrarlar</h4>
+                  <span className="rutin-sayi">{rutinler.length || '—'}</span>
+                </button>
                 {duzenlenebilir && (
                   <button
                     className="rutin-ekle"
-                    onClick={() => onRutinEkle?.(anahtarlar)}
+                    onClick={() => {
+                      setTekrarAcik(true)
+                      onRutinEkle?.(anahtarlar)
+                    }}
                     aria-label="Tekrar eden iş ekle"
                     title="Tekrar eden iş ekle"
                   >
@@ -329,11 +342,10 @@ export default function ProgramIzgarasi({
                   </button>
                 )}
               </div>
-              <ul>
+              <ul hidden={!tekrarAcik && !rutinPaneli}>
                 {rutinler.length === 0 && duzenlenebilir && (
                   <li className="rutin-bos">
                     Haftanın çoğu gününe yazılan işler burada tek satırda toplanır.
-                    Artıya dokunup ekleyin.
                   </li>
                 )}
                 {rutinler.map((r) => (

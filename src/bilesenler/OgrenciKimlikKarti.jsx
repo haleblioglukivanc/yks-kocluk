@@ -51,7 +51,7 @@ export default function OgrenciKimlikKarti({
   useEffect(() => {
     let iptal = false
     ;(async () => {
-      const [r, s, rz, v] = await Promise.all([
+      const [r, s, v] = await Promise.all([
         kocGorunumu
           ? supabase
               .from('ogrenci_risk')
@@ -64,11 +64,6 @@ export default function OgrenciKimlikKarti({
           .select('guncel_seri, son_aktif_gun')
           .eq('ogrenci_id', ogrenci.id)
           .maybeSingle(),
-        // Kısayolların yanındaki sayılar: basmadan da bilgi versinler.
-        supabase
-          .from('ogrenci_rozet')
-          .select('rozet_id', { count: 'exact', head: true })
-          .eq('ogrenci_id', ogrenci.id),
         kocGorunumu
           ? supabase
               .from('veli_ogrenci')
@@ -80,7 +75,6 @@ export default function OgrenciKimlikKarti({
         const yeni = {
           risk: r.data,
           seri: seriDuzelt(s.data),
-          rozet: rz.count ?? 0,
           veli: v.count ?? 0,
         }
         setEk(yeni)
@@ -130,13 +124,27 @@ export default function OgrenciKimlikKarti({
           )}
         </div>
 
-        {/* Tek sayı: haftalık hedef. Ölçümlerin gerisi Program sekmesinde. */}
+        {/* Tek sayı: haftalık hedef. Seri ve son net eskiden altta üç
+            kutuydu; aynı bilgiyi ikinci kez çizmek yerine tek satıra indi. */}
         <div className="kk-hero">
           <span className="kk-hero-sayi">{yuzde != null ? `%${yuzde}` : '—'}</span>
           <span className="kk-hero-ad">
             haftalık hedef{kalan > 0 ? ` · ${kalan} gün kaldı` : ' · haftanın son günü'}
           </span>
         </div>
+
+        <p className="kk-olcum-satir">
+          <span>{ek?.seri ?? 0} gün seri</span>
+          <span aria-hidden="true">·</span>
+          <span>
+            son net {gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
+            {netFarki != null && netFarki !== 0 && (
+              <i className={`kk-fark kk-fark--${netFarki > 0 ? 'artis' : 'dusus'}`}>
+                {netFarki > 0 ? '▲' : '▼'} {Math.abs(netFarki).toFixed(2)}
+              </i>
+            )}
+          </span>
+        </p>
 
         {kocGorunumu && aktif && uyariVar && (
           <p className="kk-uyari">
@@ -189,11 +197,17 @@ export default function OgrenciKimlikKarti({
 }
 
 /**
- * Kartın altındaki ölçümler: hedef üniversite, TYT/AYT hedef çubukları
- * ve üç kutu. Kimlik kartından ayrıldı; Program sekmesinin tepesinde
- * durur. Kartın üstünde "ne yapmalıyım", burada "nasıl gidiyor".
+ * Hedef bölümü: hedef üniversite/bölüm ve TYT/AYT hedef çubukları.
+ *
+ * Eskiden burada üç ölçüm kutusu (tamamlama, gün seri, son net) ve bir
+ * rozet satırı da vardı. Üçü de kimlik kartında zaten yazıyordu; aynı
+ * sayıyı ekranda iki kere çizmek Program sekmesinin tepesini şişiriyordu.
+ * Rozet satırı ayrıca ürün kararıyla çelişiyordu (rozet/puan sistemi
+ * YKS öğrencisi için reddedilmişti), o yüzden ekrandan tamamen kalktı.
+ *
+ * Hedef verilmemişse bölüm hiç çizilmiyor: boş kart yer kaplamaz.
  */
-export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama, rozet, onRozetler }) {
+export function KimlikOlcumleri({ ogrenci, netDurumu }) {
   const hedefler = [
     { ad: 'TYT', hedef: ogrenci.hedef_tyt_net, d: netDurumu?.tyt },
     { ad: 'AYT', hedef: ogrenci.hedef_ayt_net, d: netDurumu?.ayt },
@@ -215,48 +229,12 @@ export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama,
         kalan: son != null ? hedef - son : null,
       }
     })
-  const gosterilenNet =
-    netDurumu?.tyt?.son_net ?? netDurumu?.ayt?.son_net ?? null
+  const varis = [ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')
+  if (!varis && hedefler.length === 0) return null
 
   return (
     <section className="kart olcumler">
-      {ogrenci.hedef_universite || ogrenci.hedef_bolum ? (
-        <p className="olcum-varis">
-          {[ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')}
-        </p>
-      ) : null}
-
-      <div className="kk-kutular">
-        <Kutu
-          renk="var(--marka-yesil-acik)"
-          deger={tamamlama != null ? `%${tamamlama}` : '—'}
-          ad="Tamamlama"
-          cizim={<path d="M20 6 9 17l-5-5" />}
-        />
-        <Kutu
-          renk="var(--fosfor)"
-          deger={seri ?? '—'}
-          ad="Gün seri"
-          cizim={<path d="M12 3c1.5 3.5-1 5-1 7a3 3 0 0 0 6 0c0-1-.4-2-1-2.7 2.5 1.4 4 3.9 4 6.7a8 8 0 1 1-13.3-6C8.4 6.4 10.6 4.6 12 3Z" />}
-        />
-        <Kutu
-          renk="var(--dolgu)"
-          deger={gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
-          ad="Son net"
-          fark={netFarki}
-          cizim={<path d="m3 17 5-6 4 4 5-7 4 5" />}
-        />
-      </div>
-
-      {onRozetler && (
-        <button className="olcum-rozet" onClick={onRozetler}>
-          <span>{rozet != null ? `${rozet} rozet` : 'Rozetler'}</span>
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-               strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="m9 6 6 6-6 6" />
-          </svg>
-        </button>
-      )}
+      {varis && <p className="olcum-varis">{varis}</p>}
 
       {hedefler.map((h) => (
         <div className="olcum-hedef" key={h.ad}>
@@ -277,28 +255,5 @@ export function KimlikOlcumleri({ ogrenci, netDurumu, netFarki, seri, tamamlama,
         </div>
       ))}
     </section>
-  )
-}
-
-function Kutu({ renk, deger, ad, cizim, fark }) {
-  /* Bir önceki denemeye göre değişim. Sıfırsa yazmıyoruz: "±0.00"
-     bilgi vermeden yer kaplıyor. */
-  const yon = fark == null || fark === 0 ? null : fark > 0 ? 'artis' : 'dusus'
-  return (
-    <div className="kk-kutu">
-      <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke={renk}
-           strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-        {cizim}
-      </svg>
-      <span className="kk-kutu-deger">{deger}</span>
-      <span className="kk-kutu-ad">
-        {ad}
-        {yon && (
-          <span className={`kk-fark kk-fark--${yon}`}>
-            {yon === 'artis' ? '▲' : '▼'} {Math.abs(fark).toFixed(2)}
-          </span>
-        )}
-      </span>
-    </div>
   )
 }

@@ -91,16 +91,15 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     )
   }
 
-  if (liste.length === 0) {
+  /* Boş liste için koca bir kart çizilmiyordu diye değil, çiziliyordu
+     diye not: bir ekran boyu "Henüz kaynak yok" kartı yer kaplıyordu.
+     Koç tarafında bölüm zaten katlanır tek satır; boşken de tek satır. */
+  if (liste.length === 0 && ben) {
     return (
       <Kart baslik={baslik}>
         <Bos
           baslik="Henüz kaynak yok"
-          aciklama={
-            ben
-              ? 'Koçun bir göreve kitap iliştirdiğinde o kitap burada listelenir.'
-              : 'Göreve kaynak iliştirdiğinde kitap burada birikir.'
-          }
+          aciklama="Koçun bir göreve kitap iliştirdiğinde o kitap burada listelenir."
         />
       </Kart>
     )
@@ -149,10 +148,28 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
   }
 
   return (
-    <Kart
-      baslik={baslik}
-      altBaslik="Verdiğin görevlerden birikenler"
-    >
+    <section className="kart kaynak-kart">
+      <button
+        className="kaynak-basi"
+        aria-expanded={acik}
+        onClick={() => setAcik((a) => !a)}
+      >
+        <span className="kaynak-emoji" aria-hidden="true">📚</span>
+        <span className="kaynak-ad">
+          Öğrencinin kaynakları
+          <small>Verdiğin görevlerden birikenler</small>
+        </span>
+        <span className="kaynak-sayi">{gosterilen?.length ?? 0}</span>
+        <svg className={acik ? 'kaynak-ok kaynak-ok--acik' : 'kaynak-ok'} viewBox="0 0 24 24"
+             width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
+             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="m6 9 6 6 6-6" />
+        </svg>
+      </button>
+
+      {acik && (liste.length === 0 ? (
+        <p className="kaynak-bos-satir">Göreve kaynak iliştirdiğinde kitap burada birikir.</p>
+      ) : (
       <ul className="liste">
         {gosterilen.map((k) => {
           const alt = [
@@ -177,6 +194,7 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
           )
         })}
       </ul>
-    </Kart>
+      ))}
+    </section>
   )
 }
