@@ -2,6 +2,10 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "yks-kocluk",
   "compatibility_date": "2026-08-28",
+  // Yayın yalnızca khkocluk.com üzerinden. Bu satır olmadan her deploy
+  // workers.dev adresini yeniden açıyor; panelden kapatmak kalıcı olmuyor.
+  "workers_dev": false,
+  "preview_urls": false,
   "assets": {
     "directory": "./dist",
     "not_found_handling": "single-page-application"
