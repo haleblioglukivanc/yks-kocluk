@@ -117,6 +117,7 @@ input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1p
 .dugme:disabled { opacity: 0.55; cursor: default; }
 .dugme--birincil { background: var(--marka-gecis); color: #fff; }
 .dugme--ikincil { background: var(--kagit); color: var(--murekkep); border: 1px solid var(--cizgi); }
+.dugme--tehlike { background: var(--d-zemin); color: var(--d-metin); border: 1px solid var(--d-kenar); }
 
 .metin-dugme {
   background: none; border: 0; padding: 0.25rem;
@@ -4182,3 +4183,19 @@ body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04)
   color: var(--kizil-metin);
   cursor: pointer;
 }
+
+/* ── Tehlikeli bölge ───────────────────────────────────────────
+   Kayıt sekmesinin en altında duruyor: silme, bir sayfayı okuyup
+   bitirdikten sonra gelinen yer olmalı, ilk görülen şey değil. */
+.tehlike-kart { border-color: var(--d-kenar); }
+.tehlike-kart .dugme--tehlike { width: 100%; margin-top: 0.75rem; }
+.tehlike-not {
+  margin: 0; font-size: var(--punto-mini); color: var(--grafit); line-height: 1.55;
+}
+.tehlike-dokum {
+  background: var(--d-zemin); border-radius: 8px; padding: 0.75rem 0.875rem;
+  color: var(--d-metin); font-size: var(--punto-mini); line-height: 1.5;
+}
+.tehlike-dokum p { margin: 0 0 0.5rem; font-weight: 500; }
+.tehlike-dokum ul { margin: 0; padding-left: 1.1rem; }
+.tehlike-dokum li { margin-bottom: 0.25rem; }

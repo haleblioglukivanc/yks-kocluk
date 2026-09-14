@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import KapsamSecimi from '../bilesenler/KapsamSecimi.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
@@ -10,7 +10,7 @@ import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
-import { kullaniciOlustur } from '../lib/hesap.js'
+import { kullaniciOlustur, kullaniciSil } from '../lib/hesap.js'
 import Rozetlerim from './Rozetlerim.jsx'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
@@ -142,6 +142,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           </Kart>
           <Veliler ogrenci={ogrenci} />
           <Notlar ogrenci={ogrenci} />
+          <TehlikeliBolge ogrenci={ogrenci} onSilindi={onGeri} />
         </>
       )}
       </div>
@@ -322,6 +323,119 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
         Değişiklikleri kaydet
       </Dugme>
     </div>
+  )
+}
+
+/* ─────────────────────── Tehlikeli bölge ─────────────────────── */
+
+/* Pasife alma ile silme farklı işler: biri ayrılan öğrenciyi listeden
+   çıkarır ve verisini saklar, diğeri kaydı tamamen yok eder. İkisi aynı
+   forma konsaydı yanlışlıkla silme kaçınılmaz olurdu. Onay için ad
+   yazdırılıyor: "Emin misiniz?" tıklama refleksiyle geçiliyor, isim
+   yazmak geçmiyor. */
+function TehlikeliBolge({ ogrenci, onSilindi }) {
+  const [acik, setAcik] = useState(false)
+  const [sayim, setSayim] = useState(null)
+  const [yazilan, setYazilan] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  const ad = ogrenci.profiller?.ad_soyad ?? ''
+  const eslesti = yazilan.trim().toLocaleLowerCase('tr') === ad.trim().toLocaleLowerCase('tr')
+
+  /* Sayılar silmeden önce okunuyor: "142 görev gidecek" cümlesi,
+     "tüm verisi gidecek"ten çok daha anlaşılır bir uyarı. */
+  useEffect(() => {
+    if (!acik) return
+    let iptal = false
+    const say = (tablo) =>
+      supabase.from(tablo).select('id', { count: 'exact', head: true }).eq('ogrenci_id', ogrenci.id)
+    Promise.all([say('gorevler'), say('denemeler'), say('konu_ilerleme')]).then(([g, d, k]) => {
+      if (iptal) return
+      setSayim({ gorev: g.count ?? 0, deneme: d.count ?? 0, ilerleme: k.count ?? 0 })
+    })
+    return () => {
+      iptal = true
+    }
+  }, [acik, ogrenci.id])
+
+  async function sil() {
+    setHata('')
+    setBekliyor(true)
+    try {
+      await kullaniciSil(ogrenci.id)
+      onSilindi()
+    } catch (e) {
+      setHata(hataMetni(e))
+      setBekliyor(false)
+    }
+  }
+
+  function kapat() {
+    setAcik(false)
+    setYazilan('')
+    setSayim(null)
+    setHata('')
+  }
+
+  return (
+    <Kart baslik="Tehlikeli bölge" sinif="tehlike-kart">
+      <p className="tehlike-not">
+        Öğrenci koçluktan ayrıldıysa önce pasife almayı dene. Pasif öğrenci listede
+        soluk durur, verisi korunur. Silmek geri alınamaz.
+      </p>
+      <button className="dugme dugme--tehlike" onClick={() => setAcik(true)}>
+        Öğrenciyi kalıcı olarak sil
+      </button>
+
+      {acik && (
+        <AltSayfa
+          baslik={`${ad} kalıcı olarak silinsin mi?`}
+          onKapat={kapat}
+          dugmeler={
+            <>
+              <Dugme tur="ikincil" onClick={kapat}>
+                Vazgeç
+              </Dugme>
+              <button
+                className="dugme dugme--tehlike"
+                onClick={sil}
+                disabled={!eslesti || bekliyor}
+              >
+                {bekliyor ? 'Bir saniye…' : 'Sil'}
+              </button>
+            </>
+          }
+        >
+          <div className="form-kutu">
+            <div className="tehlike-dokum">
+              <p>Bunlar da silinecek:</p>
+              {sayim === null ? (
+                <Yukleniyor satir={2} />
+              ) : (
+                <ul>
+                  <li>{sayim.gorev} görev</li>
+                  <li>{sayim.deneme} deneme ve analizleri</li>
+                  <li>{sayim.ilerleme} konu ilerlemesi</li>
+                  <li>Giriş hesabı ve yalnızca bu öğrenciye bağlı veli kaydı</li>
+                </ul>
+              )}
+            </div>
+
+            <Alan etiket="Onaylamak için öğrencinin adını yaz" ipucu={ad}>
+              <input
+                value={yazilan}
+                onChange={(e) => setYazilan(e.target.value)}
+                placeholder={ad}
+                autoComplete="off"
+              />
+            </Alan>
+
+            <Uyari>{hata}</Uyari>
+          </div>
+        </AltSayfa>
+      )}
+    </Kart>
   )
 }
 

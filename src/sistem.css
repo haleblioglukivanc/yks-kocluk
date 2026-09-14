@@ -98,6 +98,13 @@
   --d: var(--sicak); --d-metin: var(--sicak-metin);
   --d-zemin: var(--sicak-zemin); --d-kenar: var(--sicak-kenar);
 }
+
+/* Geri alınamaz işlem. Kırmızı burada "acil" değil "dur" diyor; ikisi de
+   aynı durumu okuduğu için ayrı bir renk tanımlanmıyor. */
+.tehlike-kart, .dugme--tehlike {
+  --d: var(--kizil); --d-metin: var(--kizil-metin);
+  --d-zemin: var(--kizil-zemin); --d-kenar: var(--kizil-kenar);
+}
 .risk-bas--iyi, .uyari--bilgi, .konu-rozet--tamamlandi {
   --d: var(--isaret); --d-metin: var(--isaret-metin);
   --d-zemin: var(--isaret-zemin); --d-kenar: var(--cizgi);

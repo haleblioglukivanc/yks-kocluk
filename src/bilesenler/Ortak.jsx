@@ -3,10 +3,10 @@ import { createPortal } from 'react-dom'
    Bilgi gösteren yardımcı bloklar için; karar isteyen kartlar kaldırılmış kalır. */
 /* `kaldirilmis`: ekranın tek yükselmiş kâğıdı; karar isteyen ana kart.
    Bir ekranda birden fazla olmaz. */
-export function Kart({ baslik, altBaslik, children, eylem, duz = false, kaldirilmis = false }) {
-  const sinif = duz ? 'kart kart--duz' : kaldirilmis ? 'kart kart--kaldirilmis' : 'kart'
+export function Kart({ baslik, altBaslik, children, eylem, duz = false, kaldirilmis = false, sinif = '' }) {
+  const taban = duz ? 'kart kart--duz' : kaldirilmis ? 'kart kart--kaldirilmis' : 'kart'
   return (
-    <section className={sinif}>
+    <section className={sinif ? `${taban} ${sinif}` : taban}>
       {(baslik || eylem) && (
         <header className="kart-basi">
           <div>
