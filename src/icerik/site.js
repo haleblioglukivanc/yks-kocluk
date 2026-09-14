@@ -469,7 +469,7 @@ export const site = {
     // Sosyal hesaplar. Boş bırakılanlar sayfanın altında hiç görünmez;
     // hesap açıldığında buraya adresi yazmak yeterli, başka yer yok.
     youtube: 'https://youtube.com/@khkocluk',
-    instagram: '',
+    instagram: 'https://www.instagram.com/khkocluk',
     tiktok: '',
   },
 }
