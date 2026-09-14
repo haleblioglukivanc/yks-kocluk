@@ -151,41 +151,27 @@ export default function App() {
      boyuyor ve sağda beyaz bir bant kalıyordu. */
   const panelAcik = durum === 'hazir' && Boolean(profil)
 
-  /* Gündüz/gece. Kullanıcı bir kere seçerse seçimi kalır; seçmediyse
-     cihazın sistem tercihi geçerli. Tek yer body'ye yazıyor, CSS
-     tarafında da tek blok okuyor. */
-  const [mod, setMod] = useState(() => {
-    try {
-      const kayitli = localStorage.getItem('yks-mod')
-      if (kayitli === 'gunduz' || kayitli === 'gece') return kayitli
-    } catch { /* gizli sekmede localStorage kapalı olabilir */ }
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'gece' : 'gunduz'
-  })
-  useEffect(() => {
-    try { localStorage.setItem('yks-mod', mod) } catch { /* yok say */ }
-  }, [mod])
-
+  /* Gece modu kaldırıldı (14 Eylül 2026): tek tema var. Her UI değişikliği
+     iki temada birden doğrulanmak zorundaydı, pratikte doğrulanmıyordu ve
+     cihazı karanlıkta olan öğrenci test edilmemiş bir ekrana düşüyordu. */
   useEffect(() => {
     if (panelAcik) {
       document.body.dataset.tema = 'panel'
-      document.body.dataset.mod = mod
     } else {
       delete document.body.dataset.tema
-      delete document.body.dataset.mod
     }
     /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
        Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
     const etiket = document.querySelector('meta[name="theme-color"]')
-    /* Üst şerit her iki modda da koyu ama tonu farklı (tema.css --tepe-ust):
-       durum çubuğu onunla aynı renkte olsun ki tepe tek parça görünsün. */
-    const renk = !panelAcik ? '#ffffff' : mod === 'gece' ? '#202b3d' : '#2e3a52'
+    /* Üst şerit koyu (tema.css --tepe-ust): durum çubuğu onunla aynı
+       renkte olsun ki tepe tek parça görünsün. */
+    const renk = panelAcik ? '#2e3a52' : '#ffffff'
     if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
-      delete document.body.dataset.mod
       if (etiket) etiket.setAttribute('content', '#ffffff')
     }
-  }, [panelAcik, mod])
+  }, [panelAcik])
 
   /* Okunmamış mesaj sayısı. Rozet başlıkta durduğu için her ekranda
      görünür; bu yüzden hem gerçek zamanlı olay hem de yol değişimi ve
@@ -521,8 +507,6 @@ export default function App() {
         onKapat={() => setHesapAcik(false)}
         profil={profil}
         eposta={kullanici?.email}
-        mod={mod}
-        onMod={() => setMod((m) => (m === 'gece' ? 'gunduz' : 'gece'))}
         yonetimdeMi={yonetimdeMi}
         onSapka={(s) => git(s === 'yonetici' ? '/yonetim' : '/')}
         onCikis={async () => {

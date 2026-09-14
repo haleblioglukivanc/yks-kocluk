@@ -135,8 +135,7 @@
 [data-kat='3'] { background: var(--kagit);   border-color: var(--cizgi-2); }
 
 /* ── 4. BİLEŞENLER ─────────────────────────────────────────────
-   Hepsi yalnızca --d-* okur. Hiçbirinde marka rengi geçmez,
-   dolayısıyla gündüz/gece ayrımı bunlara ayrıca yazılmaz. */
+   Hepsi yalnızca --d-* okur; hiçbirinde marka rengi geçmez. */
 
 /* Rozet: küçük durum etiketi */
 .rozet,

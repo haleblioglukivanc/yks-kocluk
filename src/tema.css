@@ -155,9 +155,10 @@
   --marka-koyu-mavi:    var(--k-mavi);
 
   /* ── TEPE: ekranın koyu üst bloğu ─────────────────────────
-     Gündüz bir tık ılık ve açık lacivert: kâğıt üstünde şerit.
-     Gece derin mürekkep (index.css gece bloğu bunları k-* ile ezer).
-     Üst şerit, başlık ve tarayıcı durum çubuğu aynı tepe-ust'u kullanır. */
+     Bir tık ılık ve açık lacivert: kâğıt üstünde şerit. Üst şerit,
+     başlık ve tarayıcı durum çubuğu aynı tepe-ust'u kullanır.
+     k-* değerleri hâlâ gerekli: üst şerit, kimlik kartı ve odak bloğu
+     gibi her zaman koyu olan yüzeyler onları okuyor. */
   --tepe-ust: #2e3a52;
   --tepe-alt: #1d2638;
 }

@@ -5,7 +5,7 @@ import { Avatar } from './Fotograf.jsx'
  * Alttan açılan Hesap yaprağı.
  *
  * Üst barda dağınık duran düğmelerin yeni evi: kim olduğun, hangi
- * şapkayla baktığın (koç / yönetici), gece görünümü, çıkış. Sürüm notu
+ * şapkayla baktığın (koç / yönetici), mesajlar, çıkış. Sürüm notu
  * en altta küçücük; göz önünden gitti ama sorun ayıklarken hâlâ okunur.
  */
 const ROL_ADI = { koc: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli', yonetici: 'Yönetici' }
@@ -27,8 +27,6 @@ export default function HesapYapragi({
   onKapat,
   profil,
   eposta,
-  mod,
-  onMod,
   yonetimdeMi,
   onSapka,
   onCikis,
@@ -82,11 +80,6 @@ export default function HesapYapragi({
         )}
 
         <div className="hesap-menu">
-          <button type="button" className="hesap-satir" onClick={onMod} role="switch" aria-checked={mod === 'gece'}>
-            <svg {...ikon}><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>
-            <span>Gece görünümü</span>
-            <i className={mod === 'gece' ? 'anahtar anahtar--acik' : 'anahtar'} aria-hidden="true" />
-          </button>
           <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/mesajlar') }}>
             <svg {...ikon}><path d="M4 5h16v11H9l-5 4z" /></svg>
             <span>Mesajlar</span>

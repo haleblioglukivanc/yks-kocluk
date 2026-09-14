@@ -925,7 +925,7 @@ main {
 /* ============================================================
    Panel taban bileşenleri — KPI, görev satırı, ilerleme
    Tema renkleri buraya yazılmaz; hepsi tokendan gelir.
-   Gündüz/gece ayrımı dosyanın sonundaki tek blokta.
+   Tek tema: gece modu 14 Eylül 2026'da kaldırıldı.
    ============================================================ */
 
 /* KPI satırı */
@@ -1194,7 +1194,7 @@ body[data-tema='panel'] {
 }
 
 /* ============================================================
-   TEMA — gündüz kâğıt, gece mürekkep
+   TEMA
    Bütün renkler tema.css'ten gelir. Buradaki tek iş, hangi
    markanın hangi role oturduğunu söylemek.
 
@@ -3112,84 +3112,6 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .durtme-sonuc { margin: 0 0 0.7rem; font-size: 0.85rem; }
 
 /* ============================================================
-   GECE MODU
-   Tek token seti, iki değer kümesi. Gündüz kâğıt, gece mürekkep.
-   Öğrenci geceleri çalışıyor; bu ekran onun için.
-
-   Kırmızı ve yeşil gecede açılıyor: koyu zeminde koyu kırmızı
-   okunmuyordu (eski --marka-hata koyu kartta 3.16:1 kalıyordu).
-   Yeni değerler kartta 6.8 ve 7.9.
-   ============================================================ */
-
-body[data-mod='gece'] {
-  background-color: var(--k-kagit);
-  color: var(--k-murekkep);
-}
-
-body[data-mod='gece'] .uygulama,
-.uygulama--gece {
-  --tepe-ust: var(--k-yuzey-2);
-  --tepe-alt: var(--k-kagit);
-  --kagit:    var(--k-kagit);
-  --yuzey:    var(--k-yuzey);
-  --yuzey-2:  var(--k-yuzey-2);
-  --murekkep: var(--k-murekkep);
-  --grafit:   var(--k-grafit);
-  --soluk:    var(--k-soluk);
-  --cizgi:    var(--k-cizgi);
-  --cizgi-2:  var(--k-cizgi-2);
-
-  --serin:       var(--k-mavi);
-  --serin-metin: var(--k-mavi-metin);
-  --serin-zemin: var(--k-mavi-zemin);
-  --serin-kenar: var(--k-mavi-kenar);
-
-  --sicak:       var(--k-amber-cizim);
-  --sicak-metin: var(--k-amber-metin);
-  --sicak-zemin: var(--k-amber-zemin);
-  --sicak-kenar: var(--k-amber-kenar);
-
-  --kizil:       var(--k-kirmizi);
-  --kizil-metin: var(--k-kirmizi-metin);
-  --kizil-zemin: var(--k-kirmizi-zemin);
-  --kizil-kenar: var(--k-kirmizi-kenar);
-
-  --altin:       var(--k-amber);
-  --altin-metin: var(--k-amber-metin);
-  --altin-cizim: var(--k-amber-cizim);
-  --altin-zemin: var(--k-amber-zemin);
-
-  --isaret:       var(--k-yesil);
-  --isaret-metin: var(--k-yesil-metin);
-  --isaret-zemin: var(--k-yesil-zemin);
-  --isaret-kenar: var(--k-yesil-kenar);
-  --uyari:        var(--k-kirmizi-metin);
-  --dolgu:        var(--k-mavi);
-  --fosfor:       var(--k-amber-metin);
-
-  background: var(--kagit);
-  color: var(--murekkep);
-}
-
-/* Gecede birincil düğmenin üstündeki yazı koyu olmalı:
-   açık mavi zeminde beyaz yazı 2.1:1 kalıyor. */
-body[data-mod='gece'] .uygulama .dugme--birincil,
-.uygulama--gece .dugme--birincil { background: var(--serin); color: var(--k-kagit); }
-body[data-mod='gece'] .uygulama .balon--benden,
-.uygulama--gece .balon--benden   { background: var(--serin); color: var(--k-kagit); }
-
-/* Kart gölgesi koyuda kirli görünüyor, kenar yeter */
-body[data-mod='gece'] .uygulama .kart,
-.uygulama--gece .kart { box-shadow: none; }
-
-/* Kareli doku koyu zeminde gri bulut gibi duruyor */
-body[data-mod='gece'] .uygulama .kareli,
-.uygulama--gece .kareli { background-image: none; }
-
-/* Sistem tercihi App.jsx'te okunuyor: ilk açılışta cihazın moduna
-   düşüyor, kullanıcı bir kere seçince seçimi kalıcı oluyor. */
-
-/* ============================================================
    YÖNETİCİ PANELİ
    Kartların kendisi ortak (.kart, .kpi-*, .liste-*); buradaki
    tek iş, koç paneli ile ortak olmayan üç desen: şapka seçici,
@@ -3207,7 +3129,7 @@ body[data-mod='gece'] .uygulama .kareli,
 /* Şapka geçişi başlıkta: düğmenin varlığı yetkiyi, dolgusu takılı şapkayı
    söyler. Yönetici modunda üç sinyal birden: amber dolgulu düğme, alt
    satırdaki "Yönetici modu", başlığın altındaki ince amber çizgi.
-   --altin gece/gündüz kendini çevirir; --marka-amber eski isim, kullanılmadı. */
+   --marka-amber eski isim, kullanılmadı. */
 
 
 
@@ -3450,10 +3372,6 @@ body[data-mod='gece'] .uygulama .kareli,
 .analiz-eylemler { display: flex; gap: 0.5rem; }
 .analiz-eylemler .dugme { flex: 1; }
 .analiz-sonuc { margin: 0 0 0.75rem; padding: 0.6rem 0.75rem; border-radius: 8px; font-size: var(--punto-kucuk); background: var(--g-yesil-zemin); border: 1px solid var(--g-yesil-kenar); color: var(--g-yesil-metin); }
-.uygulama--gece .analiz-dilim--bilgi  { background: var(--k-kirmizi-zemin); border-color: var(--k-kirmizi-kenar); color: var(--k-kirmizi-metin); }
-.uygulama--gece .analiz-dilim--dikkat { background: var(--k-amber-zemin);   border-color: var(--k-amber-kenar);   color: var(--k-amber-metin); }
-.uygulama--gece .analiz-dilim--sure   { background: var(--k-mavi-zemin);    border-color: var(--k-mavi-kenar);    color: var(--k-mavi-metin); }
-.uygulama--gece .analiz-sonuc { background: var(--k-yesil-zemin); border-color: var(--k-yesil-kenar); color: var(--k-yesil-metin); }
 
 /* ---------- Telegram bağlantısı (koç, Rapor sekmesi) ---------- */
 /* Nadiren açılan bir ayar kartı: kendi bileşenlerini icat etmiyor,
@@ -3671,8 +3589,8 @@ body[data-mod='gece'] .uygulama .kareli,
 /* İnce tepe: koyu blok yalnızca Çizbi'yi ve başlığı taşır; ekranın ilk kartı
    iki bölgenin dikişine oturur (yarısı koyuda, yarısı açıkta). Dikişe oturan
    üç şey var: karar kartı (.kart), rapor kutusu (.dikis-kart) ve sekmeli
-   ekranlarda sekme çubuğu. Gündüz beyaz kart kendiliğinden öne çıkar; gece
-   kart gövdeden bir ton açık, ince amber kenar geceye özgü imza. */
+   ekranlarda sekme çubuğu. Beyaz kart koyu tepenin üstünde kendiliğinden
+   öne çıkıyor. */
 .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + :is(.kart, .dikis-kart) {
   position: relative; z-index: 2;
   margin-top: -3rem;
@@ -3687,11 +3605,6 @@ body[data-mod='gece'] .uygulama .kareli,
   border-radius: 14px;
   padding: 0.3rem;
   box-shadow: 0 12px 24px -14px rgba(14, 22, 38, 0.45);
-}
-body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + :is(.kart, .dikis-kart),
-body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde > .sekmeler:first-child {
-  border-color: rgba(232, 163, 23, 0.45);
-  box-shadow: 0 0 0 4px rgba(232, 163, 23, 0.06), 0 14px 28px -14px rgba(0, 0, 0, 0.8);
 }
 /* Dikiş kartı (rapor kutusu) kart gibi giyinir */
 .dikis-kart { border-radius: var(--r); padding: 0.9rem 1rem; min-width: 0; }
@@ -3764,17 +3677,6 @@ body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-g
 .hesap-satir span { flex: 1; }
 .hesap-satir em { font-style: normal; color: var(--soluk); }
 .hesap-satir--cikis, .hesap-satir--cikis svg { color: var(--kizil-metin); }
-.anahtar {
-  width: 2.6rem; height: 1.5rem; border-radius: 0.75rem;
-  background: var(--cizgi-2); position: relative; transition: background 150ms ease;
-}
-.anahtar::after {
-  content: ''; position: absolute; top: 3px; left: 3px;
-  width: 1.125rem; height: 1.125rem; border-radius: 50%; background: #fff;
-  transition: transform 150ms ease;
-}
-.anahtar--acik { background: var(--serin); }
-.anahtar--acik::after { transform: translateX(1.1rem); }
 .hesap-surum { margin: 0.9rem 0 0; text-align: center; font-family: var(--marka-mono); font-size: 0.7rem; color: var(--soluk); }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -3789,7 +3691,6 @@ body[data-mod='gece'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-g
   border: 0;
   box-shadow: 0 0 0 1px rgba(22, 32, 46, 0.05), 0 1px 2px rgba(22, 32, 46, 0.06);
 }
-body[data-mod='gece'] .uygulama .kart { box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05); }
 
 .uygulama .kart--duz { background: none; box-shadow: none; padding-inline: 0; }
 .uygulama .kart--duz .kart-basi h2 { font-size: var(--punto-kucuk); color: var(--soluk); }
@@ -3802,7 +3703,6 @@ body[data-mod='gece'] .uygulama .kart { box-shadow: 0 0 0 1px rgba(255, 255, 255
   box-shadow: 0 14px 30px -14px rgba(22, 32, 46, 0.35), 0 2px 6px rgba(22, 32, 46, 0.06);
   padding: 1.25rem;
 }
-body[data-mod='gece'] .uygulama .siradaki { box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06); }
 .uygulama .siradaki-etiket { color: var(--soluk); letter-spacing: 0; text-transform: none; font-size: var(--punto-mini); font-weight: 600; }
 
 /* Çizbi'nin cümlesi selam olmadan tek başına: biraz daha büyük */
@@ -3825,7 +3725,6 @@ body[data-mod='gece'] .uygulama .siradaki { box-shadow: 0 14px 30px -10px rgba(0
   box-shadow: 0 14px 30px -14px rgba(22, 32, 46, 0.35), 0 2px 6px rgba(22, 32, 46, 0.06);
   padding: 1.25rem;
 }
-body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.06); }
 .uygulama .kuyruk-tip { letter-spacing: 0; }
 .uygulama .kuyruk-tip[data-tip='risk'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
@@ -3933,7 +3832,6 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
   color: #eef2f9;
   box-shadow: 0 12px 28px -16px rgba(20, 28, 45, 0.75);
 }
-body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b3d 0%, #18212f 100%); }
 
 .siradaki-odak .siradaki-sira { color: #f5b841; }
 .siradaki-odak .siradaki-baslik { color: #ffffff; }
@@ -3992,7 +3890,6 @@ body[data-mod='gece'] .siradaki-odak { background: linear-gradient(160deg, #202b
 /* Haftanın sözü ve kitabı: kartın kendi zemini biraz koyulaştı, beyaz
    kartlar arasında ayrı bir şey olduğu anlaşılsın. */
 .uygulama .hi-kutu { background: var(--kagit); border-color: var(--cizgi-koyu, var(--cizgi)); }
-body[data-mod='gece'] .uygulama .hi-kutu { background: rgba(255, 255, 255, 0.04); }
 
 /* Hafta şeridi yanal kaydırılıyor: iki hafta yan yana duruyor, bir
    sayfa bir hafta. Sonraki haftanın kenarı görünür kalıyor ki devamı
