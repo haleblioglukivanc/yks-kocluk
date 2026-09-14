@@ -222,15 +222,33 @@
 
 .dugme, .cip, .alt-bag, .sekme, .gorev { min-height: 44px; }
 .dugme--ufak, .metin-dugme { min-height: 36px; }
+.ust-logo { min-height: 44px; }
 
 /* Küçük yuvarlak kontrol: görünen boyutu korur, hedefi büyütür.
    Ölçüsü ne olursa olsun ortalanmış 44px'lik alan bırakır. */
-.dokun-halka { position: relative; }
-.dokun-halka::after {
+.dokun-halka,
+.ust-ikon, .ust-geri, .ust-logo, .kk-geri, .ikon-dugme, .kurulum-kapat,
+.sil-dugme, .cozulen-sil, .ok-dugme, .kalem-kabarcik-kapat, .ob-basla, .ob-tamam,
+.metin-dugme, .dugme--ufak, .cip, .acil-secenek, .satir-genislet, .satir-eylem,
+.kaynak-ayrac--dugme, .suzgec-kaldir, .durtme-sablon, .t-belge-kapat, .t-belge-ok,
+.acil-dugme, .tur-cip { position: relative; }
+.dokun-halka::after,
+.ust-ikon::after, .ust-geri::after, .ust-logo::after, .kk-geri::after,
+.ikon-dugme::after, .kurulum-kapat::after, .sil-dugme::after, .cozulen-sil::after,
+.ok-dugme::after, .kalem-kabarcik-kapat::after, .ob-basla::after, .ob-tamam::after,
+.metin-dugme::after, .dugme--ufak::after, .cip::after, .acil-secenek::after,
+.satir-genislet::after, .satir-eylem::after, .kaynak-ayrac--dugme::after,
+.suzgec-kaldir::after, .durtme-sablon::after, .t-belge-kapat::after,
+.t-belge-ok::after, .acil-dugme::after, .tur-cip::after {
   content: ''; position: absolute; left: 50%; top: 50%;
-  width: 44px; height: 44px; transform: translate(-50%, -50%);
-  border-radius: 50%;
+  width: max(100%, 44px); height: max(100%, 44px);
+  transform: translate(-50%, -50%);
+  border-radius: inherit;
 }
+/* Görünen boyutu 44'ün altında kalan düğmelerin listesi yukarıda; yeni bir
+   küçük düğme eklenince buraya yazılır, JSX'e sınıf eklenmez. Halka
+   görünmezdir ama komşu düğmelerle çakışmasın diye küçük düğmeler
+   arasında en az 8px boşluk bırakılır. */
 
 /* ── 8. ODAK ───────────────────────────────────────────────────
    Klavye ve ekran okuyucu için tek görünür halka; her bileşene

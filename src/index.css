@@ -303,14 +303,14 @@ main {
   border-radius: var(--r-tam); padding: 1.0625rem; font-weight: 700; font-size: var(--punto-baslik);
   box-shadow: 0 12px 32px rgb(224 40 79 / 0.32);
 }
-.giris-kagit .dugme--birincil:hover { background: var(--giris-mercan-h); filter: none; }
+@media (hover: hover) { .giris-kagit .dugme--birincil:hover { background: var(--giris-mercan-h); filter: none; } }
 .giris-kagit .giris-not { color: var(--soluk); }
 .giris-kagit .giris-geri {
   position: relative; margin-top: 1.375rem;
   color: var(--beyaz); font-size: var(--punto-orta);
   text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--giris-turuncu-a); text-decoration-thickness: 2px;
 }
-.giris-kagit .giris-geri:hover { color: var(--giris-turuncu-a); }
+@media (hover: hover) { .giris-kagit .giris-geri:hover { color: var(--giris-turuncu-a); } }
 
 /* ═══════════ Öğrenci detay ═══════════ */
 
@@ -321,7 +321,7 @@ main {
   padding: 0.875rem 0; background: none; border: 0; border-bottom: 1px solid var(--cizgi);
   font: inherit; text-align: left; color: inherit; cursor: pointer;
 }
-.ogrenci-satir:hover { background: var(--kagit); }
+@media (hover: hover) { .ogrenci-satir:hover { background: var(--kagit); } }
 .ogrenci-satir > div { flex: 1; min-width: 0; }
 .ogrenci-satir--pasif { opacity: 0.55; }
 .ok { color: var(--soluk); font-size: var(--punto-buyuk); line-height: 1; flex-shrink: 0; }
@@ -344,7 +344,7 @@ main {
   width: 2.5rem; height: 2.5rem; border: 1px solid var(--cizgi); border-radius: var(--r-kart);
   background: var(--yuzey); cursor: pointer; font: inherit; color: var(--murekkep);
 }
-.ok-dugme:hover { background: var(--kagit); }
+@media (hover: hover) { .ok-dugme:hover { background: var(--kagit); } }
 
 .hafta { display: grid; gap: 0.25rem; }
 .gun { padding: 0.75rem 0; border-bottom: 1px solid var(--cizgi); }
@@ -372,7 +372,7 @@ main {
   background: none; border: 0; color: var(--soluk); font-size: var(--punto-baslik); line-height: 1;
   cursor: pointer; padding: 0 0.25rem; flex-shrink: 0;
 }
-.sil-dugme:hover { color: var(--uyari); }
+@media (hover: hover) { .sil-dugme:hover { color: var(--uyari); } }
 
 /* Deneme */
 
@@ -424,8 +424,7 @@ main {
   padding: 0.75rem 0; background: none; border: 0; border-bottom: 1px solid var(--cizgi);
   font: inherit; text-align: left; color: inherit; cursor: pointer;
 }
-.ders-satir .liste-ad { flex: 1; }
-.ders-satir:hover { background: var(--kagit); }
+.ders-satir .liste-ad { flex: 1; }@media (hover: hover) { .ders-satir:hover { background: var(--kagit); } }
 
 /* Ders grubu içinde kapsam başlığı (TYT / AYT). Grup tek kapsamlıysa
    hiç çizilmiyor; bu satır yalnızca aynı dersin iki yüzünü ayırmak için
@@ -538,7 +537,7 @@ main {
   font: inherit; color: inherit; text-align: left; cursor: pointer; min-height: 44px;
   border-radius: 0;
 }
-.prg-gorev:hover { background: var(--yuzey-2); }
+@media (hover: hover) { .prg-gorev:hover { background: var(--yuzey-2); } }
 .prg-gorev--acik { background: var(--yuzey-2); }
 /* Ders şeridi: satırın solunda pastel bir çizgi. Tam doygun renk
    marka diline girmesin diye zeminle karıştırılıyor. */
@@ -579,7 +578,7 @@ main {
   font: inherit; font-size: var(--punto-kucuk); color: var(--grafit);
   text-align: left; cursor: pointer;
 }
-.ayrinti-basi:hover { background: var(--kagit); }
+@media (hover: hover) { .ayrinti-basi:hover { background: var(--kagit); } }
 .ayrinti-ad { font-weight: 700; font-size: var(--punto-orta); color: var(--murekkep); flex: 0 0 auto; }
 .ayrinti-ok {
   flex: 0 0 auto; display: grid; place-items: center;
@@ -898,7 +897,8 @@ main {
   animation: kalem-salinim 5.5s ease-in-out infinite;
   transition: opacity 180ms ease;
 }
-.kalem-tetik:hover, .kalem-tetik:focus-visible { opacity: 1; }
+.kalem-tetik:focus-visible { opacity: 1; }
+@media (hover: hover) { .kalem-tetik:hover { opacity: 1; } }
 .kalem-tetik:active { transform: scale(0.94); }
 
 @keyframes kalem-salinim {
@@ -959,9 +959,8 @@ main {
    ============================================================ */
 
 .uygulama .prg-cubuk { background: var(--yuzey-2); }
-.uygulama .prg-gorev { border-bottom-color: var(--cizgi); }
-.uygulama .prg-gorev:hover,
-.uygulama .prg-gorev--acik { background: var(--yuzey-2); }
+.uygulama .prg-gorev { border-bottom-color: var(--cizgi); }.uygulama .prg-gorev--acik { background: var(--yuzey-2); }
+@media (hover: hover) { .uygulama .prg-gorev:hover { background: var(--yuzey-2); } }
 
 .uygulama .serbest { background: var(--yuzey-2); color: var(--murekkep); }
 .uygulama .serbest--bitti { background: var(--isaret-zemin); color: var(--isaret-metin); }
@@ -1240,7 +1239,7 @@ body[data-tema='panel'] {
   background: none; border: 0; border-radius: var(--r-orta);
   color: var(--serin); cursor: pointer;
 }
-.goz-dugme:hover { background: var(--serin-zemin); }
+@media (hover: hover) { .goz-dugme:hover { background: var(--serin-zemin); } }
 
 .gozuyle-serit {
   display: flex; flex-direction: column; gap: 0.15rem;
@@ -1610,7 +1609,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: rgba(255, 255, 255, 0.1); border: 0; border-radius: var(--r-kart);
   color: var(--beyaz); cursor: pointer;
 }
-.kk-geri:hover { background: rgba(255, 255, 255, 0.2); }
+@media (hover: hover) { .kk-geri:hover { background: rgba(255, 255, 255, 0.2); } }
 .kk-geri:focus-visible { outline: 2px solid var(--beyaz); outline-offset: 2px; }
 
 .kk-kimlik { flex: 1; min-width: 0; padding-top: 0.1rem; }
@@ -1639,7 +1638,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: rgba(255, 255, 255, 0.13); color: var(--beyaz);
   transition: background 0.15s ease;
 }
-.kk-ikon:hover { background: rgba(255, 255, 255, 0.22); }
+@media (hover: hover) { .kk-ikon:hover { background: rgba(255, 255, 255, 0.22); } }
 .kk-ikon--etkin { background: var(--marka-koyu-amber); color: var(--k-kagit); }
 .kk-ikon:focus-visible { outline: 2px solid var(--beyaz); outline-offset: 2px; }
 
@@ -1747,7 +1746,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   content: ''; position: absolute; left: 0; top: 0; bottom: 0;
   width: 3px; background: var(--serit, var(--cizgi));
 }
-.ogrenci-kutu:hover { border-color: var(--cizgi-2, var(--cizgi)); }
+@media (hover: hover) { .ogrenci-kutu:hover { border-color: var(--cizgi-2, var(--cizgi)); } }
 .ogrenci-kutu--pasif { opacity: 0.45; }
 
 .ok-orta { flex: 1; min-width: 0; }
@@ -1789,7 +1788,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: none; border: 0; border-radius: var(--r-orta);
   color: var(--soluk); cursor: pointer;
 }
-.satir-genislet:hover { color: var(--murekkep); background: var(--serin-zemin); }
+@media (hover: hover) { .satir-genislet:hover { color: var(--murekkep); background: var(--serin-zemin); } }
 
 /* Göz ikonu tek eylem olmaktan çıktı: vekalet üçüncü seçenek, ilk
    seçenek koçun en çok yaptığı iş olan mesaj. */
@@ -1800,7 +1799,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: var(--yuzey); color: var(--murekkep);
   border: 1px solid var(--cizgi); border-radius: var(--r-orta); cursor: pointer;
 }
-.ogr-eylem:hover { border-color: var(--cizgi-2, var(--cizgi)); }
+@media (hover: hover) { .ogr-eylem:hover { border-color: var(--cizgi-2, var(--cizgi)); } }
 .ogr-eylem--ana { background: var(--serin); border-color: var(--serin); color: var(--beyaz); }
 
 /* ═══════════ Gün nabzı özeti ═══════════ */
@@ -1899,7 +1898,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: rgba(255, 255, 255, 0.09); color: rgba(255, 255, 255, 0.88);
   font: inherit; transition: background 0.15s ease;
 }
-.kk-yol:hover { background: rgba(255, 255, 255, 0.16); }
+@media (hover: hover) { .kk-yol:hover { background: rgba(255, 255, 255, 0.16); } }
 .kk-yol:focus-visible { outline: 2px solid var(--beyaz); outline-offset: 2px; }
 .kk-yol svg { flex: 0 0 auto; }
 .kk-yol-sayi { font-family: var(--display); font-size: var(--punto-govde); font-weight: 700; line-height: 1; }
@@ -1922,13 +1921,12 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   animation: sayac-nabiz 2.4s ease-in-out infinite;
 }
 .kk-yol--canli .kk-yol-sayi { font-variant-numeric: tabular-nums; }
-.kk-yol--canli .kk-yol-ad { opacity: 0.78; }
-.kk-yol--canli:hover { background: var(--marka-koyu-amber); filter: brightness(1.06); }
+.kk-yol--canli .kk-yol-ad { opacity: 0.78; }@media (hover: hover) { .kk-yol--canli:hover { background: var(--marka-koyu-amber); filter: brightness(1.06); } }
 .kk-yol--durakli {
   background: rgba(255, 255, 255, 0.14); color: rgba(255, 255, 255, 0.9);
   animation: none;
 }
-.kk-yol--durakli:hover { background: rgba(255, 255, 255, 0.2); }
+@media (hover: hover) { .kk-yol--durakli:hover { background: rgba(255, 255, 255, 0.2); } }
 
 @keyframes sayac-nabiz {
   0%, 100% { box-shadow: 0 0 0 0 rgba(240, 176, 72, 0); }
@@ -2165,7 +2163,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   border: 1px solid var(--cizgi);
   font-weight: 600;
 }
-.uygulama .sekmeler--genis .sekme:hover { border-color: var(--sicak-kenar); }
+@media (hover: hover) { .uygulama .sekmeler--genis .sekme:hover { border-color: var(--sicak-kenar); } }
 
 /* ═══════════ Sekme aksanı ═══════════
    Renk sekmenin kendisine bağlı, ekrana değil: koç panelindeki "Konular"
@@ -2200,7 +2198,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   border: 1px solid var(--cizgi); border-radius: var(--r-kart);
   background: var(--yuzey); color: var(--grafit); cursor: pointer;
 }
-.satir-eylem:hover { color: var(--sicak); border-color: var(--sicak-kenar); }
+@media (hover: hover) { .satir-eylem:hover { color: var(--sicak); border-color: var(--sicak-kenar); } }
 .ogrenci-sarmal .ogrenci-satir { flex: 1; min-width: 0; }
 
 /* Plan eksiği koçun kendi açığı: risk renkleriyle karışmasın diye
@@ -2471,8 +2469,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: none; border: 0; text-align: left; cursor: pointer;
   color: inherit; font: inherit;
 }
-.hit-bas:hover { background: var(--kagit); }
-.uygulama .hit-bas:hover { background: var(--yuzey-2); }
+@media (hover: hover) { .hit-bas:hover { background: var(--kagit); } }@media (hover: hover) { .uygulama .hit-bas:hover { background: var(--yuzey-2); } }
 
 .hit-tarih {
   flex: none; width: 5.5rem;
@@ -2680,8 +2677,8 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   margin: 0; font-weight: 600; font-size: var(--punto-orta); line-height: 1.35;
   overflow-wrap: anywhere;
 }
-.kaynak-ad a { color: inherit; text-decoration: none; }
-.kaynak-ad a:hover, .kaynak-ad a:focus-visible { text-decoration: underline; }
+.kaynak-ad a { color: inherit; text-decoration: none; }.kaynak-ad a:focus-visible { text-decoration: underline; }
+@media (hover: hover) { .kaynak-ad a:hover { text-decoration: underline; } }
 .kaynak-alt { margin: 0.1875rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
 .kaynak-eylem { flex: 0 0 auto; }
 
@@ -2784,7 +2781,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   font: inherit; font-size: var(--punto-mini); color: var(--soluk);
   text-align: left; cursor: pointer;
 }
-.kaynak-ayrac--dugme:hover { color: var(--murekkep); }
+@media (hover: hover) { .kaynak-ayrac--dugme:hover { color: var(--murekkep); } }
 .kaynak-ayrac--dugme:focus-visible { outline: 2px solid var(--dolgu); outline-offset: 2px; }
 
 /* Kütüphane uzadığında ada göre arama. Altı kaynağın altında
@@ -2858,9 +2855,8 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   display: flex; align-items: baseline; gap: 0.375rem; flex-wrap: wrap;
   margin-top: 0.25rem; font-size: var(--punto-mini); color: var(--grafit);
 }
-.gorev-kaynak--bag { color: var(--dolgu); text-decoration: none; }
-.gorev-kaynak--bag:hover .gorev-kaynak-ad,
-.gorev-kaynak--bag:focus-visible .gorev-kaynak-ad { text-decoration: underline; }
+.gorev-kaynak--bag { color: var(--dolgu); text-decoration: none; }.gorev-kaynak--bag:focus-visible .gorev-kaynak-ad { text-decoration: underline; }
+@media (hover: hover) { .gorev-kaynak--bag:hover .gorev-kaynak-ad { text-decoration: underline; } }
 .gorev-kaynak-ad { font-weight: 500; overflow-wrap: anywhere; }
 /* Aralık ayrı bir bilgi: kitabın adıyla karışmasın diye nokta ile
    ayrılıp soluklaştırılıyor. */
@@ -2878,7 +2874,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: none; border: 1px solid var(--cizgi); border-radius: var(--r-tam);
   cursor: pointer;
 }
-.suzgec-kaldir:hover { border-color: var(--serin); }
+@media (hover: hover) { .suzgec-kaldir:hover { border-color: var(--serin); } }
 
 .durtme-serit {
   display: flex; align-items: center; gap: 0.5rem; width: 100%;
@@ -2887,7 +2883,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: none; border: 1px dashed var(--cizgi); border-radius: var(--r-kart);
   cursor: pointer;
 }
-.durtme-serit:hover { border-color: var(--serin); color: var(--murekkep); }
+@media (hover: hover) { .durtme-serit:hover { border-color: var(--serin); color: var(--murekkep); } }
 
 .durtme-kutu {
   padding: 0.9rem; margin-bottom: 0.9rem;
@@ -2903,7 +2899,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   color: var(--murekkep); background: var(--serin-zemin, transparent);
   border: 1px solid var(--cizgi); border-radius: var(--r-tam); cursor: pointer;
 }
-.durtme-sablon:hover { border-color: var(--serin); }
+@media (hover: hover) { .durtme-sablon:hover { border-color: var(--serin); } }
 .durtme-metin {
   width: 100%; padding: 0.6rem 0.7rem; font: inherit; font-size: var(--punto-govde);
   color: var(--murekkep); background: var(--yuzey-2);
@@ -2916,7 +2912,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   color: var(--murekkep); background: none;
   border: 1px solid var(--cizgi); border-radius: var(--r-tam); cursor: pointer;
 }
-.durtme-alici:hover { border-color: var(--marka-alev); color: var(--marka-alev); }
+@media (hover: hover) { .durtme-alici:hover { border-color: var(--marka-alev); color: var(--marka-alev); } }
 .durtme-alici span { color: var(--soluk); margin-left: 0.15rem; }
 .durtme-sonuc { margin: 0 0 0.7rem; font-size: var(--punto-kucuk); }
 
@@ -3016,7 +3012,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: var(--yuzey); color: var(--murekkep);
   border: 1px solid var(--cizgi); border-radius: var(--r-kart); cursor: pointer;
 }
-.ikon-dugme:hover { border-color: var(--cizgi-2, var(--cizgi)); }
+@media (hover: hover) { .ikon-dugme:hover { border-color: var(--cizgi-2, var(--cizgi)); } }
 .arama-kutu {
   display: flex; align-items: center; gap: 0.5rem;
   margin-bottom: 0.9rem; padding: 0 0.75rem;
@@ -3078,7 +3074,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: var(--marka-koyu-amber); color: var(--k-kagit);
   border: 0; border-radius: var(--r-kart); cursor: pointer;
 }
-.kk-ana-eylem:hover { filter: brightness(1.06); }
+@media (hover: hover) { .kk-ana-eylem:hover { filter: brightness(1.06); } }
 .kk-sade .kk-ikon { width: 40px; height: 40px; border-radius: var(--r-kart); }
 .kk-goz { flex: 0 0 auto; }
 
@@ -3127,8 +3123,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   padding: 0.5rem 0.15rem; border: 0; border-bottom: 1px solid var(--cizgi);
   background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
-.rehber-satir-sarmal:last-child .rehber-satir { border-bottom: 0; }
-.rehber-satir:hover { background: var(--kagit); }
+.rehber-satir-sarmal:last-child .rehber-satir { border-bottom: 0; }@media (hover: hover) { .rehber-satir:hover { background: var(--kagit); } }
 .rehber-satir--pasif { opacity: 0.5; }
 .rehber-nokta { width: 8px; height: 8px; border-radius: 50%; background: var(--nokta, var(--cizgi-2)); flex: 0 0 auto; }
 /* Liste satırındaki fotoğraf: iki satır metnin (isim + sebep) boyu kadar.
@@ -3155,7 +3150,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: var(--yuzey); color: var(--serin); font: inherit; font-size: var(--punto-etiket); font-weight: 600;
   cursor: pointer;
 }
-.rehber-toplu:hover { border-color: var(--serin); }
+@media (hover: hover) { .rehber-toplu:hover { border-color: var(--serin); } }
 .ogr-grup { margin-bottom: 0.9rem; }
 
 /* ---- Deneme analizi kuyruğu (koç · Bugün) --------------------------------
@@ -3360,7 +3355,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   font-size: var(--punto-mini); white-space: nowrap;
   -webkit-tap-highlight-color: transparent;
 }
-.ust-geri:hover { background: rgba(255, 255, 255, 0.14); }
+@media (hover: hover) { .ust-geri:hover { background: rgba(255, 255, 255, 0.14); } }
 @media (max-width: 22rem) { .ust-geri { padding: 0 0.5rem; } }
 .ust-ikon {
   position: relative;
@@ -3607,7 +3602,8 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   background: none; border: 0; padding: 0; margin: 0; font: inherit; color: inherit;
   cursor: pointer; text-align: left;
 }
-.sk-sec:hover .sk-ad, .sk-sec:focus-visible .sk-ad { color: var(--dolgu); }
+.sk-sec:focus-visible .sk-ad { color: var(--dolgu); }
+@media (hover: hover) { .sk-sec:hover .sk-ad { color: var(--dolgu); } }
 
 /* Odak bloğu — kartın içindeki "şu an yapılacak iş".
    Beyaz zeminde her şey aynı ağırlıktaydı; bu blok günün tek birincil
@@ -3662,7 +3658,8 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   content: "›"; flex: none; margin-left: 0.35rem;
   font-size: var(--punto-buyuk); line-height: 1; color: var(--grafit);
 }
-.sk-sec:hover::after, .sk-sec:focus-visible::after { color: var(--dolgu); }
+.sk-sec:focus-visible::after { color: var(--dolgu); }
+@media (hover: hover) { .sk-sec:hover::after { color: var(--dolgu); } }
 .siradaki-kalanlar { display: flex; flex-direction: column; gap: 0.25rem; }
 
 /* Ayraç, halka satırı ile işi ayırmak içindi; iş kendi zeminini alınca
