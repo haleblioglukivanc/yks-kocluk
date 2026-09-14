@@ -1,52 +1,35 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { KaynakSecimi } from './KaynakKarti.jsx'
 import { Alan, Yukleniyor } from './Ortak.jsx'
-import { SEVIYE_ADI } from '../lib/kaynak.js'
 import { KALEM_ADI } from './Kalem.jsx'
-import { KAPSAM_ADI } from '../lib/dersGruplari.js'
 
 /**
  * Göreve kaynak iliştirme.
  *
- * Önceki sürüm listeyi filtreliyordu: dersi veya konusu tutmayan kaynak
- * hiç görünmüyordu. Kütüphanede derse tek kaynak varsa koç tek satır
- * görüyor ve haklı olarak "kaynağı benim yerime seçmiş" diyordu.
+ * Önceki sürüm ders için üç öneri kartı açıyor, altına "tümü" düğmesi
+ * koyuyor, üstüne de sıralamanın gerekçesini yazıyordu. Kütüphane 240+
+ * kaynağa çıkınca bu bölüm görev formunun en kalabalık yeri oldu: koç
+ * her görev açışında ekranlar boyu kart geçiyordu.
  *
- * Artık filtre yok, sıralama var. Kütüphanenin tamamı adlarıyla burada;
- * öneri yalnızca hangisinin üste geleceğini söylüyor:
+ * Artık tek yol var: ara ve seç (Eylül 2026). Varsayılanda yalnızca
+ * arama kutusu duruyor, liste yazdıkça geliyor ve her kaynak tek satır
+ * — öğrenci tarafındaki kaynak listesiyle aynı sadelikte.
  *
- *  - FAZ: `konu_ilerleme` her öğrencide dolu, sıralamayı güvenle
- *    belirliyor. Konusu bitmemiş öğrencide denemeler geri plana düşüyor.
- *  - SEVİYE: net verisi çoğu öğrenci–ders çiftinde üç denemeden az.
- *    Yetersizse öneri yapılmıyor ve bu açıkça yazılıyor.
+ * Satırda kitap adının yanında yayınevi de var: kütüphanede "TYT Fizik
+ * Soru Bankası" adında üç ayrı kitap var, ayırt eden tek şey yayınevi.
  *
+ * Öneri sıralaması ve gerekçe cümleleri kaldırıldı; kartların sırasını
+ * açıklıyorlardı, sıra kalkınca açıklayacak bir şey kalmadı.
  * Seçim her zaman koçun: hiçbir kaynak baştan işaretli gelmiyor.
  */
-
-const DURUM_SOZU = {
-  baslanmadi: 'bu konuya henüz başlamamış',
-  calisiliyor: 'bu konuyu çalışıyor, henüz bitirmemiş',
-  tekrar_gerekli: 'bu konuyu tekrar etmesi gerekiyor',
-  tamamlandi: 'bu konuyu bitirmiş',
-}
-
-const DURUM_GEREKCE = {
-  baslanmadi: 'Anlatım ve fasikülleri öne aldım.',
-  calisiliyor: 'Soru bankası ve fasikülleri öne aldım.',
-  tekrar_gerekli: 'Anlatım ve fasikülleri öne aldım.',
-  tamamlandi: 'Deneme ve ölçme kaynaklarını öne aldım.',
-}
-
-const kapsamKisa = (k) =>
-  k === 'tyt_ayt' ? 'TYT + AYT' : (KAPSAM_ADI[k] ?? String(k ?? '').toUpperCase())
 
 /** Aramada Türkçe büyük/küçük harf farkı sonucu bozmasın. */
 const sadeles = (m) => (m ?? '').toLocaleLowerCase('tr-TR').trim()
 
+const SONUC_SINIRI = 25
+
 export default function KaynakSecici({
   ogrenciId,
-  ogrenciAdi,
   dersId,
   konuId,
   secili,
@@ -56,52 +39,40 @@ export default function KaynakSecici({
   onKutuphaneyeGit,
 }) {
   const [liste, setListe] = useState(null)
-  const [baglam, setBaglam] = useState(null)
   const [arama, setArama] = useState('')
-  const [tumDersi, setTumDersi] = useState(false)
 
   useEffect(() => {
     if (!ogrenciId || !dersId) {
       setListe(null)
-      setBaglam(null)
       return
     }
     let iptal = false
     setListe(null)
 
-    const konu = konuId ? Number(konuId) : null
-    Promise.all([
-      supabase.rpc('kaynak_onerileri', {
+    supabase
+      .rpc('kaynak_onerileri', {
         p_ogrenci: ogrenciId,
         p_ders_id: Number(dersId),
-        p_konu_id: konu,
-      }),
-      supabase.rpc('kaynak_baglami', {
-        p_ogrenci: ogrenciId,
-        p_ders_id: Number(dersId),
-        p_konu_id: konu,
-      }),
-    ]).then(([oneri, ctx]) => {
-      if (iptal) return
-      setListe(oneri.data ?? [])
-      setBaglam(ctx.data ?? null)
-    })
+        p_konu_id: konuId ? Number(konuId) : null,
+      })
+      .then(({ data }) => {
+        if (!iptal) setListe(data ?? [])
+      })
 
     return () => {
       iptal = true
     }
   }, [ogrenciId, dersId, konuId])
 
-  /* Ders değişince arama ve açık bölüm sıfırlanıyor: koç yeni derse
-     baktığında liste tepeden başlasın. */
+  /* Ders değişince arama sıfırlanıyor: koç yeni derse baktığında
+     eski aramanın sonuçlarıyla karşılaşmasın. */
   useEffect(() => {
-    setTumDersi(false)
     setArama('')
   }, [dersId])
 
   const suzulmus = useMemo(() => {
     const q = sadeles(arama)
-    if (!q) return liste ?? []
+    if (!q) return []
     return (liste ?? []).filter(
       (k) =>
         sadeles(k.ad).includes(q) ||
@@ -113,78 +84,55 @@ export default function KaynakSecici({
   if (!dersId) return null
   if (liste === null) return <Yukleniyor metin="Kaynaklara bakıyorum" satir={2} />
 
-  const ad = (ogrenciAdi ?? '').trim().split(/\s+/)[0] || 'Öğrenci'
-  const durum = baglam?.konu_durumu ?? 'baslanmadi'
-  const seviye = baglam?.seviye_onerisi ?? null
-
-  /* Kütüphane 240+ kaynağa çıktı. Hepsini alt alta dökmek görev formunu
-     ekranlar boyu uzatıyordu, o yüzden liste arama öncelikli: varsayılanda
-     yalnızca ilk üç öneri duruyor, gerisi arama kutusundan geliyor.
-
-     Üst bölüm hem dersi hem kapsamı tutanlar; TYT görevinde AYT kitabı
-     öneri sırasına karışmıyor ama arandığında yine bulunuyor. */
-  const dersinkiler = suzulmus.filter((k) => k.ilgili && k.kapsam_uyumu)
-  const dersAdi = (liste.find((k) => k.ilgili) ?? {}).ders_ad ?? 'Bu ders'
-  const dersKapsami = kapsamKisa((liste.find((k) => k.ilgili && k.kapsam_uyumu) ?? {}).kapsam)
-
   const araniyor = Boolean(arama.trim())
-  const ONERI_ADEDI = 3
-  const gosterilen = araniyor
-    ? suzulmus.slice(0, 25)
-    : tumDersi
-      ? dersinkiler
-      : dersinkiler.slice(0, ONERI_ADEDI)
 
-  const satir = (k) => (
-    <div key={k.id}>
-      <KaynakSecimi
-        kaynak={k}
-        secili={String(secili ?? '') === String(k.id)}
-        soluk={k.geri_planda && !k.konuya_bagli}
-        etiket={`${k.ders_ad} · ${kapsamKisa(k.kapsam)}`}
-        onSec={(secilen) => onSec(secilen.id === secili ? null : secilen.id)}
-      />
-      {String(secili ?? '') === String(k.id) && (
-        <div className="kaynak-aralik">
-          <Alan etiket="Aralık" ipucu="Öğrenci bu satırı görevin altında görecek">
-            <input
-              type="text"
-              maxLength={80}
-              value={aralik}
-              onChange={(e) => onAralik(e.target.value)}
-              placeholder="Örn. Sayfa 112-124"
-            />
-          </Alan>
-        </div>
-      )}
-    </div>
-  )
+  /* Arama temizlenince seçili kaynak da ekrandan kaybolmasın: koç
+     kitabı seçtikten sonra aralığı yazacak, satır orada durmalı. */
+  const seciliKaynak = secili
+    ? (liste.find((k) => String(k.id) === String(secili)) ?? null)
+    : null
+
+  const gosterilen = araniyor
+    ? suzulmus.slice(0, SONUC_SINIRI)
+    : seciliKaynak
+      ? [seciliKaynak]
+      : []
+
+  const satir = (k) => {
+    const isaretli = String(secili ?? '') === String(k.id)
+    return (
+      <div key={k.id}>
+        <label className="kaynak-satir">
+          <input
+            type="radio"
+            name="kaynak-secimi"
+            checked={isaretli}
+            onChange={() => onSec(isaretli ? null : k.id)}
+          />
+          <span className="kaynak-satir-isaret" aria-hidden="true" />
+          <span className="kaynak-satir-ad">{k.ad}</span>
+          {k.yayinevi && <span className="kaynak-satir-alt">{k.yayinevi}</span>}
+        </label>
+
+        {isaretli && (
+          <div className="kaynak-aralik">
+            <Alan etiket="Aralık" ipucu="Öğrenci bu satırı görevin altında görecek">
+              <input
+                type="text"
+                maxLength={80}
+                value={aralik}
+                onChange={(e) => onAralik(e.target.value)}
+                placeholder="Örn. Sayfa 112-124"
+              />
+            </Alan>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className="kaynak-secici">
-      {konuId && dersinkiler.length > 0 && !araniyor && (
-        <p className="kaynak-oneri">
-          <span className="kaynak-oneri-simge" aria-hidden="true">
-            ✏️
-          </span>
-          <span>
-            {ad} {DURUM_SOZU[durum]}. {DURUM_GEREKCE[durum]} Seçim senin.
-          </span>
-        </p>
-      )}
-
-      {dersinkiler.length > 0 && !araniyor &&
-        (seviye ? (
-          <p className="kaynak-oneri kaynak-oneri--sessiz">
-            Son denemelere göre <strong>{SEVIYE_ADI[seviye]}</strong> seviyesi uygun görünüyor.
-            İstersen başka bir seviye seç.
-          </p>
-        ) : (
-          <p className="kaynak-oneri kaynak-oneri--sessiz">
-            Seviye önerisi yok: {ad} için bu derste yeterli deneme kaydı bulunmuyor.
-          </p>
-        ))}
-
       <input
         type="search"
         className="kaynak-ara"
@@ -199,48 +147,22 @@ export default function KaynakSecici({
           Kütüphane boş. {KALEM_ADI} boş listeyi sevmiyor — bir kaynak eklersen buraya düşer.
         </p>
       ) : (
-        <div className="kaynak-liste">
-          <p className="kaynak-ayrac">
-            {araniyor
-              ? `${suzulmus.length} sonuç`
-              : dersinkiler.length === 0
-                ? 'Bu derse ait kaynak yok — yukarıdan ara'
-                : `${dersAdi}${dersKapsami ? ` · ${dersKapsami}` : ''} için öneriler`}
-          </p>
+        gosterilen.length > 0 && (
+          <div className="kaynak-liste">{gosterilen.map(satir)}</div>
+        )
+      )}
 
-          {gosterilen.map(satir)}
+      {araniyor && suzulmus.length === 0 && liste.length > 0 && (
+        <p className="kaynak-oneri kaynak-oneri--sessiz">
+          Aradığın adla eşleşen kaynak yok. Kütüphanede olmayan bir kitabı
+          aşağıdan ekleyebilirsin.
+        </p>
+      )}
 
-          {araniyor && suzulmus.length === 0 && (
-            <p className="kaynak-oneri kaynak-oneri--sessiz">
-              Aradığın adla eşleşen kaynak yok. Kütüphanede olmayan bir kitabı
-              aşağıdan ekleyebilirsin.
-            </p>
-          )}
-
-          {araniyor && suzulmus.length > 25 && (
-            <p className="kaynak-oneri kaynak-oneri--sessiz">
-              İlk 25 sonuç gösteriliyor; aramayı daraltırsan kalanlar da gelir.
-            </p>
-          )}
-
-          {/* Öneriler yetmediğinde dersin tamamı; arama sırasında gizli,
-              orada zaten kütüphanenin tamamında geziniliyor. */}
-          {!araniyor && dersinkiler.length > ONERI_ADEDI && (
-            <button
-              type="button"
-              className="kaynak-ayrac kaynak-ayrac--dugme"
-              onClick={() => setTumDersi((a) => !a)}
-              aria-expanded={tumDersi}
-            >
-              <span>
-                {tumDersi
-                  ? 'Yalnızca önerileri göster'
-                  : `${dersAdi} kaynaklarının tümü (${dersinkiler.length})`}
-              </span>
-              <span aria-hidden="true">{tumDersi ? '▾' : '▸'}</span>
-            </button>
-          )}
-        </div>
+      {araniyor && suzulmus.length > SONUC_SINIRI && (
+        <p className="kaynak-oneri kaynak-oneri--sessiz">
+          İlk {SONUC_SINIRI} sonuç gösteriliyor; aramayı daraltırsan kalanlar da gelir.
+        </p>
       )}
 
       {onKutuphaneyeGit && (

@@ -735,7 +735,6 @@ function GorevFormu({ ogrenci, tarih, periyot, onEklendi }) {
           sıralama yapabilmesi için ikisine de ihtiyacı var. */}
       <KaynakSecici
         ogrenciId={ogrenci.id}
-        ogrenciAdi={ogrenci.profiller?.ad_soyad}
         dersId={dersId}
         konuId={konuId}
         secili={kaynakId}
