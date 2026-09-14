@@ -161,6 +161,101 @@
   --marka-koyu-alev:    #ff8f4f;
   --marka-koyu-mavi:    var(--k-mavi);
 
+  /* ── ANLAM KATMANI ─────────────────────────────────────────
+     Bileşenler yalnız bu adları okur; g-* paletine doğrudan dokunmaz.
+     Eskiden index.css'te iki ayrı :root/.uygulama bloğunda tanımlıydı. */
+  --kagit:    var(--g-kagit);
+  --yuzey:    var(--g-yuzey);
+  --yuzey-2:  var(--g-yuzey-2);
+  --murekkep: var(--g-murekkep);
+  --grafit:   var(--g-grafit);
+  --soluk:    var(--g-soluk);
+  --cizgi:    var(--g-cizgi);
+  --cizgi-2:  var(--g-cizgi-2);
+  --beyaz:    #ffffff;        /* koyu yüzey üstündeki yazı; kâğıt değil */
+
+  /* serin = eylem (mavi) */
+  --serin:       var(--g-mavi);
+  --serin-metin: var(--g-mavi-metin);
+  --serin-zemin: var(--g-mavi-zemin);
+  --serin-kenar: var(--g-mavi-kenar);
+  /* sıcak = izle (amber). Dolgu değeri çizim tonu: nokta ve çubuk
+     beyaz kartta görünsün. Fosforlu vurgu --altin'i kullanır. */
+  --sicak:       var(--g-amber-cizim);
+  --sicak-metin: var(--g-amber-metin);
+  --sicak-zemin: var(--g-amber-zemin);
+  --sicak-kenar: var(--g-amber-kenar);
+  /* kızıl = acil (kırmızı) */
+  --kizil:       var(--g-kirmizi);
+  --kizil-metin: var(--g-kirmizi-metin);
+  --kizil-zemin: var(--g-kirmizi-zemin);
+  --kizil-kenar: var(--g-kirmizi-kenar);
+  /* altın = marka fosforu */
+  --altin:       var(--g-amber);
+  --altin-metin: var(--g-amber-metin);
+  --altin-cizim: var(--g-amber-cizim);
+  --altin-zemin: var(--g-amber-zemin);
+  --altin-uzeri: #1a0f06;     /* amber düğmenin üstündeki yazı */
+  /* işaret = iyi (yeşil) */
+  --isaret:       var(--g-yesil);
+  --isaret-metin: var(--g-yesil-metin);
+  --isaret-zemin: var(--g-yesil-zemin);
+  --isaret-kenar: var(--g-yesil-kenar);
+
+  /* Eski adlar; yeni kodda serin/sicak/kizil/altin kullanılır. */
+  --uyari:  var(--g-kirmizi-metin);
+  --dolgu:  var(--g-mavi);
+  --fosfor: var(--g-amber-metin);
+  --kare:   var(--g-cizgi);
+  --cizgi-kart: var(--g-cizgi);
+
+  --display: var(--marka-baslik);
+  --govde:   var(--marka-govde);
+  --mono:    var(--marka-mono);
+
+  /* ── KÖŞE ───────────────────────────────────────────────────
+     Yedi değer, sekizincisi yok. */
+  --r-ince:  3px;    /* çubuk ucu, ince kutu */
+  --r-kucuk: 6px;    /* rozet, küçük giriş */
+  --r-orta:  8px;    /* çip, uyarı, küçük kart */
+  --r:       10px;   /* düğme, alan */
+  --r-kart:  12px;   /* kart */
+  --r-buyuk: 16px;   /* yaprak, büyük kart */
+  --r-dev:   20px;   /* tepe/hero */
+  --r-tam:   999px;  /* hap */
+
+  /* ── KATMAN (z-index) ──────────────────────────────────────
+     Sıra anlam taşır; sayıyı değil adı kullan. */
+  --kat-yapisik: 12;   /* sayfa içi yapışan bölüm başlığı */
+  --kat-uyari:   20;   /* kurulum daveti */
+  --kat-tepe:    30;   /* üst şerit */
+  --kat-yaprak:  40;   /* alttan açılan yaprak, bildirim */
+  --kat-cizbi:   60;   /* köşedeki maskot */
+  --kat-perde:   100;  /* tam ekran kapatma perdesi */
+  --kat-kutlama: 110;  /* konfeti ve kutlama katmanı */
+
+  /* ── ODAK BLOĞU: her zaman koyu olan "şimdi bu" kartı ─────────
+     Tepe ile aynı aileden ama bir tık daha ılık; kendi metin tonları var. */
+  --odak-ust:     var(--tepe-ust);
+  --odak-alt:     #232d42;
+  --odak-metin:   #eef2f9;
+  --odak-metin-2: #b9c3d6;
+  --odak-metin-3: #cdd6e6;
+  --odak-amber:   #f5b841;
+  --odak-soluk:   var(--k-soluk);
+  --odak-yesil:   #9fd8b4;
+  --isaret-uzeri: #06231a;    /* açık yeşil dolgunun üstündeki yazı */
+
+  /* ── GİRİŞ EKRANI PALETİ ───────────────────────────────────
+     Yalnız /giris: tanıtım sayfasının lacivert/turuncu/mercan dili. */
+  --giris-lacivert:  #0b1230;
+  --giris-turuncu:   #f26a1b;
+  --giris-turuncu-a: #ff9a5c;
+  --giris-turuncu-m: #b5400a;
+  --giris-mercan:    #e0284f;
+  --giris-mercan-h:  #c2183d;
+  --giris-acik-mavi: #c9d6ff;
+
   /* ── TEPE: ekranın koyu üst bloğu ─────────────────────────
      Bir tık ılık ve açık lacivert: kâğıt üstünde şerit. Üst şerit,
      başlık ve tarayıcı durum çubuğu aynı tepe-ust'u kullanır.
