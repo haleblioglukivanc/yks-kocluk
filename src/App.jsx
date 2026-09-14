@@ -17,6 +17,7 @@ import Raporlar from './ekranlar/Raporlar.jsx'
 import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 import UstCubuk from './bilesenler/UstCubuk.jsx'
+import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
@@ -461,6 +462,8 @@ export default function App() {
           onHesap={() => setHesapAcik(true)}
         />
       </header>
+
+      <BaglantiSeridi />
 
       <main>
         <div className="panel">{icerik()}</div>

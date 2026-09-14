@@ -4034,3 +4034,15 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .tehlike-dokum p { margin: 0 0 0.5rem; font-weight: 500; }
 .tehlike-dokum ul { margin: 0; padding-left: 1.1rem; }
 .tehlike-dokum li { margin-bottom: 0.25rem; }
+
+/* ── Bağlantı şeridi ──────────────────────────────────────────
+   Üst şeridin altında, akışın içinde. Rengi durumdan alır: kopukken
+   izle (amber), geri gelince iyi (yeşil). Kırmızı değil: bağlantı
+   kopması acil değil, beklenen bir şey. */
+.baglanti-serit {
+  padding: 0.5rem 1rem;
+  background: var(--d-zemin); color: var(--d-metin);
+  border-bottom: 1px solid var(--d-kenar);
+  font-size: var(--punto-mini); font-weight: 600; line-height: 1.4;
+  text-align: center;
+}
