@@ -421,6 +421,13 @@ export default function Tanitim({ onGiris }) {
 
       <footer className="t-kap t-alt">
         <span>© {new Date().getFullYear()} {koc.ad}</span>
+        <span className="t-alt-sosyal">
+          {[['YouTube', iletisim.youtube], ['Instagram', iletisim.instagram], ['TikTok', iletisim.tiktok]]
+            .filter(([, adres]) => adres)
+            .map(([ad, adres]) => (
+              <a key={ad} href={adres} target="_blank" rel="noopener noreferrer">{ad}</a>
+            ))}
+        </span>
         <span>Bu sayfadaki öğrenci ve yazışma kurgudur.</span>
       </footer>
     </div>

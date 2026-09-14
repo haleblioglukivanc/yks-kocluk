@@ -466,6 +466,10 @@ export const site = {
     eposta: 'haleblioglukivanc@gmail.com',
     telefon: '',
     whatsapp: '',
+    // Sosyal hesaplar. Boş bırakılanlar sayfanın altında hiç görünmez;
+    // hesap açıldığında buraya adresi yazmak yeterli, başka yer yok.
+    youtube: 'https://youtube.com/@khkocluk',
     instagram: '',
+    tiktok: '',
   },
 }
