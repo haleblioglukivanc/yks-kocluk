@@ -3479,7 +3479,8 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .hesap-satir svg { color: var(--grafit); flex: 0 0 auto; }
 .hesap-satir span { flex: 1; }
 .hesap-satir em { font-style: normal; color: var(--soluk); }
-.hesap-satir--cikis, .hesap-satir--cikis svg { color: var(--kizil-metin); }
+/* Çıkış acil değil; kırmızı yalnız acile. Gri kalır, ikonu da. */
+.hesap-satir--cikis, .hesap-satir--cikis svg { color: var(--grafit); }
 .hesap-surum { margin: 0.9rem 0 0; text-align: center; font-family: var(--marka-mono); font-size: var(--punto-etiket); color: var(--soluk); }
 
 /* ═══════════════════════════════════════════════════════════════

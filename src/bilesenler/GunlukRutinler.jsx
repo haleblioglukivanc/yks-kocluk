@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Kart, Uyari } from './Ortak.jsx'
+import { Kart, Uyari, Bos } from './Ortak.jsx'
 import { gunEkle } from '../lib/tarih.js'
 
 /* Rutin, günlük görevden farklı bir şey: her hafta aynı satır, her gün bir
@@ -103,11 +103,12 @@ export default function GunlukRutinler({ ogrenciId, rutinler, haftaBasi, bugun, 
       <Uyari>{hata}</Uyari>
 
       {liste.length === 0 && !duzenle ? (
-        <p className="kart-alt">
-          {saltOkunur
+        <Bos
+          baslik="Henüz rutin yok"
+          aciklama={saltOkunur
             ? 'Öğrencinin tanımlı rutini yok.'
-            : 'Henüz rutin yok. “Düzenle”ye dokunup her gün tekrarlayacağın alışkanlıkları ekle.'}
-        </p>
+            : '“Düzenle”ye dokunup her gün tekrarlayacağın alışkanlıkları ekle.'}
+        />
       ) : (
         <div className="rutin-sarmal">
           <table className="rutin-izgara">

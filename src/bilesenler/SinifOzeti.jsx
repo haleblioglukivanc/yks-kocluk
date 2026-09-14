@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Kart } from './Ortak.jsx'
+import { Kart, Bos } from './Ortak.jsx'
 import RaporTepesi from './RaporTepesi.jsx'
 
 /**
@@ -29,7 +29,7 @@ export default function SinifOzeti() {
 
 function NetGrafigi({ veri }) {
   if (!veri || veri.length < 2) {
-    return <p className="kart-alt">Grafik için en az iki haftalık deneme verisi gerekiyor.</p>
+    return <Bos baslik="Henüz net grafiği yok" aciklama="En az iki haftalık deneme verisi birikince çizgi burada belirir." />
   }
 
   const G = 300
