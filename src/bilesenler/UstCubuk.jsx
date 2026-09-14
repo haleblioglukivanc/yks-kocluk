@@ -24,7 +24,7 @@ const ikon = {
   'aria-hidden': true,
 }
 
-export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, zilEtkin, hesapEtkin }) {
+export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, onGeri = null, zilEtkin, hesapEtkin }) {
   return (
     <div className="ust-cubuk">
       <button type="button" className="ust-logo" onClick={onLogo} aria-label="Ana ekran">
@@ -32,6 +32,16 @@ export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, zi
         <span className="ust-logo-ad">Kıvanç Hoca ile koçluk</span>
       </button>
       <div className="ust-ikonlar">
+        {/* Gözle bakarken koçun tek çıkış kapısı. Bant değil, köşede tek
+            satır: ekranın geri kalanı öğrencinin gördüğü ekran olarak kalsın. */}
+        {onGeri && (
+          <button type="button" className="ust-geri" onClick={onGeri}>
+            <svg {...ikon} width={15} height={15}>
+              <path d="M14 6 8.5 12l5.5 6" />
+            </svg>
+            Yönetime dön
+          </button>
+        )}
         <button
           type="button"
           className={zilEtkin ? 'ust-ikon ust-ikon--etkin' : 'ust-ikon'}

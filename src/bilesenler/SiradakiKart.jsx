@@ -146,7 +146,13 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                   <span className="sk-ad">
                     {g.baslik || [g.ders, g.konu].filter(Boolean).join(' · ')}
                   </span>
-                  <span className="sk-ders">{g.ders}</span>
+                  {/* Tiki koç attıysa öğrenci bunu bilmeli: kendi yapmadığı
+                      bir işin bitmiş görünmesi açıklanmadan bırakılmaz. */}
+                  {bitti && g.koc_isaretledi ? (
+                    <span className="sk-koc">Koçun işaretledi</span>
+                  ) : (
+                    <span className="sk-ders">{g.ders}</span>
+                  )}
                 </>
               ) : (
                 <button

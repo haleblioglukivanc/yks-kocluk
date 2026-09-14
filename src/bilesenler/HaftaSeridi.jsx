@@ -19,9 +19,12 @@ const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
 /* Izgaranın join'li satırını GunHedefleri'nin düz satırına çevirir;
    ogrenci_bugun_ozeti de aynı düz şekli veriyor. */
-function duzlestir(g) {
+/* Başka bir günün listesi de Bugün ile aynı kartı besliyor; koç damgası
+   iki kaynakta da aynı adla çıkmalı ki kart tek bir alan tanısın. */
+function duzlestir(g, ogrenciId) {
   return {
     ...g,
+    koc_isaretledi: Boolean(g.islem_yapan) && g.islem_yapan !== ogrenciId,
     ders: g.dersler?.ad ?? null,
     konu: g.konular?.ad ?? null,
     kaynak_ad: g.kaynaklar?.ad ?? null,
@@ -53,7 +56,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
     const { data, error } = await supabase
       .from('gorevler')
       .select(
-        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, kaynak_aralik, baslangic_saat, bitis_saat, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
+        'id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, islem_yapan, kaynak_aralik, baslangic_saat, bitis_saat, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)',
       )
       .eq('ogrenci_id', ogrenciId)
       .gte('tarih', basi)
@@ -67,7 +70,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
       return
     }
     setHata('')
-    setHafta((data ?? []).map(duzlestir))
+    setHafta((data ?? []).map((g) => duzlestir(g, ogrenciId)))
   }, [ogrenciId, basi])
 
   /* Bugünün listesi değişince haftalık sayılar da tazelensin. */

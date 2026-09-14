@@ -1351,17 +1351,6 @@ body[data-tema='panel'] {
 }
 .gozuyle-serit strong { font-size: var(--punto-kucuk); color: var(--serin-metin); }
 
-/* Vekalet bandı: koç öğrenci adına yazarken ekranın tepesinde kalır.
-   Rengi bilerek uyarı tonunda; koçun hangi bağlamda olduğundan bir an
-   bile şüphe etmemesi gerekiyor. */
-.gozuyle-serit--vekalet {
-  /* Üst şerit ~3.5rem: band onun altına yapışır, üstüne binmez. */
-  position: sticky; top: calc(env(safe-area-inset-top) + 3.4rem); z-index: 10;
-  background: var(--sicak-zemin);
-  border-color: var(--sicak-kenar);
-}
-.gozuyle-serit--vekalet strong { color: var(--sicak-metin); }
-.vekalet-cik { align-self: flex-start; padding: 0.35rem 0; color: var(--sicak-metin); }
 .geri-dugme { align-self: flex-start; padding: 0.5rem 0; }
 
 /* Öğrencinin bloğa dokununca gördüğü ayrıntı */
@@ -3501,7 +3490,22 @@ body[data-mod='gece'] .uygulama .kareli,
   white-space: nowrap;
   font-size: clamp(0.72rem, 3.1vw, 0.95rem);
 }
-.ust-ikonlar { display: flex; gap: 0.6rem; }
+.ust-ikonlar { display: flex; align-items: center; gap: 0.6rem; }
+
+/* Gözle bakarken koçun çıkış kapısı. Bant yerine tek satır: ekranın
+   kalanı öğrencinin gördüğü ekran olarak kalsın diye küçük tutuldu. */
+.ust-geri {
+  display: inline-flex; align-items: center; gap: 0.2rem;
+  height: 2.375rem; padding: 0 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--k-cizgi);
+  color: var(--k-murekkep); cursor: pointer;
+  font-size: var(--punto-mini); white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.ust-geri:hover { background: rgba(255, 255, 255, 0.14); }
+@media (max-width: 22rem) { .ust-geri { padding: 0 0.5rem; } }
 .ust-ikon {
   position: relative;
   width: 2.375rem; height: 2.375rem; padding: 0;
@@ -3749,6 +3753,15 @@ body[data-mod='gece'] .uygulama .kart--kaldirilmis { box-shadow: 0 14px 30px -10
 .sk-ad { flex: 1; min-width: 0; font-size: 0.9375rem; color: var(--murekkep); overflow-wrap: anywhere; }
 .sk-satir--bitti .sk-ad { text-decoration: line-through; color: var(--soluk); }
 .sk-ders { flex: none; font-size: var(--punto-mini); color: var(--soluk); }
+/* Tiki koçun attığı satırda dersin yerini bu etiket alır. Renk serin:
+   bir uyarı değil, bilgi — öğrencinin bir şeyi yanlış yaptığı anlamına
+   gelmiyor, sadece o tiki kimin attığını söylüyor. */
+.sk-koc {
+  flex: none; font-size: var(--punto-mini);
+  padding: 0.1rem 0.4rem; border-radius: 999px;
+  background: var(--serin-zemin); border: 1px solid var(--serin-kenar);
+  color: var(--serin-metin); white-space: nowrap;
+}
 
 /* Kaynaklar — kapalı açılan raf. Kitap listesi günün işini yapmak için
    gerekli değil; kapalıyken tek satır yer kaplıyor. */

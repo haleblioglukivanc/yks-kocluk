@@ -313,9 +313,19 @@ export default function App() {
   /* Panel ekranları Çizbi'yi başlıkta gösteriyor; köşedeki kopya orada
      fazlalık olurdu. Bir ekranda iki maskot olmaz. */
   const ogrenciId = yol.startsWith('/ogrenci/') ? yol.slice('/ogrenci/'.length) : null
-  const gozuyleId = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length) : null
-  /* Vekalette de öğrenci başlığı (dolayısıyla Çizbi) ekranda: köşedeki
-     kopyası orada da gizlenmeli, yoksa iki maskot olur. */
+  /* Göz: koç öğrencinin kendi arayüzüne girer. Yol öğrencininkiyle birebir
+     aynı üç parçaya ayrılıyor (/gozuyle/:id, .../yol, .../denemeler) ki
+     kabuk — alt çubuk, koyu tepe, Çizbi'nin yeri — öğrencide ne yapıyorsa
+     burada da aynısını yapsın. Panelin içinde ayrı bir sekme şeridi yok. */
+  const gozuyleParca = yol.startsWith('/gozuyle/') ? yol.slice('/gozuyle/'.length).split('/') : null
+  const gozuyleId = gozuyleParca?.[0] || null
+  const gozuyleSekme = gozuyleId
+    ? (OGRENCI_SEKME[`/${gozuyleParca[1] ?? ''}`] ?? 'bugun')
+    : null
+  const gozuyleYolu = (k) => {
+    const alt = SEKME_YOLU[k] ?? '/'
+    return `/gozuyle/${gozuyleId}${alt === '/' ? '' : alt}`
+  }
   /* Yonetim ekraninda Çizbi hic cikmiyor: orasi motivasyon degil isletme
      ekrani. Kosedeki kopya da Sistem kartinin ustune biniyordu. */
   /* Öğrencide Bugün başlıkta Çizbi taşır; Yol'da harita kendi
@@ -331,37 +341,49 @@ export default function App() {
     (anaEkranda && kocMu) ||
     (profil.rol === 'ogrenci' && (anaEkranda || yol === '/yol')) ||
     (profil.rol === 'veli' && anaEkranda) ||
-    Boolean(gozuyleId) ||
+    (Boolean(gozuyleId) && gozuyleSekme !== 'denemeler') ||
     yol === '/yonetim'
 
   /* Çizbi'nin köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
-  const ekranAdi = anaEkranda ? 'bugun' : yol === '/yol' ? 'konular' : yol.split('/')[1] || 'bugun'
+  const ekranAdi = gozuyleId
+    ? gozuyleSekme
+    : anaEkranda ? 'bugun' : yol === '/yol' ? 'konular' : yol.split('/')[1] || 'bugun'
 
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     (kocMu && yol === '/raporlar') ||
     (profil.rol === 'ogrenci' && yol === '/denemeler') ||
-    Boolean(gozuyleId)
+    (Boolean(gozuyleId) && gozuyleSekme !== 'konular')
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın
      sağ köşesi. Alt çubuk yalnızca ana bölümleri gezmek için. */
-  const baglantilar = kocMu
+  /* Üçüncü değer ikon anahtarı: gözle bakarken yollar /gozuyle/... olduğu
+     için ikon tablosunun anahtarıyla yol artık aynı şey değil. */
+  const baglantilar = gozuyleId
+    ? [
+        /* Öğrencinin çubuğunun aynısı. Koçun kendi sekmeleri burada
+           görünmez: gözle bakarken ekran baştan sona öğrencinin ekranı. */
+        [gozuyleYolu('bugun'), 'Bugün', '/'],
+        [gozuyleYolu('konular'), 'Yol', '/yol'],
+        [gozuyleYolu('denemeler'), 'Denemeler', '/denemeler'],
+      ]
+    : kocMu
     ? [
         /* Üç sekme: her gün girilen üç yer. Konular, Kaynaklar ve veli
            özetleri ikinci seviyede: Bugün'deki kısayollar ve Rapor > Araçlar. */
-        ['/', 'Bugün'],
-        ['/ogrenciler', 'Öğrenciler'],
-        ['/raporlar', 'Rapor'],
+        ['/', 'Bugün', '/'],
+        ['/ogrenciler', 'Öğrenciler', '/ogrenciler'],
+        ['/raporlar', 'Rapor', '/raporlar'],
       ]
     : profil.rol === 'ogrenci'
       ? [
-          ['/', 'Bugün'],
-          ['/yol', 'Yol'],
-          ['/denemeler', 'Denemeler'],
+          ['/', 'Bugün', '/'],
+          ['/yol', 'Yol', '/yol'],
+          ['/denemeler', 'Denemeler', '/denemeler'],
         ]
-      : [['/', 'Bu hafta']]
+      : [['/', 'Bu hafta', '/']]
 
   /* Tek sekmelik bir çubuk gezinme değil, süs olur. Velide alt çubuk
      hiç çizilmiyor; ekranı da o kadar uzatıyor. */
@@ -388,7 +410,9 @@ export default function App() {
           profil={profil}
           ogrenciId={gozuyleId}
           vekaleten
-          onCik={() => git('/ogrenciler')}
+          sekme={gozuyleSekme}
+          onSekme={(k) => git(gozuyleYolu(k))}
+          onGit={git}
         />
       )
     if (profil.rol === 'yonetici' && yol === '/yonetim')
@@ -445,7 +469,8 @@ export default function App() {
           rozet={bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
           zilEtkin={bildirimlerdeMi}
           hesapEtkin={hesapAcik}
-          onLogo={() => git('/')}
+          onGeri={gozuyleId ? () => git('/ogrenciler') : null}
+          onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
           onZil={() => git(bildirimlerdeMi ? '/' : '/bildirimler')}
           onHesap={() => setHesapAcik(true)}
         />
@@ -457,9 +482,10 @@ export default function App() {
 
       {gezinmeVar && (
       <nav className="alt-gezinme" aria-label="Ana gezinme">
-        {baglantilar.map(([hedef, ad]) => {
-          const etkin =
-            hedef === '/ogrenciler'
+        {baglantilar.map(([hedef, ad, ikonAnahtar]) => {
+          const etkin = gozuyleId
+            ? yol === hedef
+            : hedef === '/ogrenciler'
               ? yol === '/ogrenciler' ||
                 yol.startsWith('/ogrenci/') ||
                 yol.startsWith('/gozuyle/')
@@ -475,7 +501,7 @@ export default function App() {
             >
               <span className="alt-bag-ikon">
                 <svg {...ikonOzellik} width={22} height={22}>
-                  {GEZINME_IKONU[hedef]}
+                  {GEZINME_IKONU[ikonAnahtar ?? hedef]}
                 </svg>
               </span>
               <span className="alt-bag-ad">{ad}</span>

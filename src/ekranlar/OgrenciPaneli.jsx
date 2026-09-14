@@ -21,15 +21,11 @@ import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 
 
-/* Sekme iki türlü yönetilir: öğrenci kendi hesabında alt gezinmeden
-   gelir (App yolu sekmeye çevirir, `sekme`/`onSekme` verir); vekalette
-   koçun alt çubuğu kendi işine ait olduğu için sekmeler burada, panelin
-   içinde çizilir. İki yol da aynı gövdeyi kullanır. */
-const SEKMELER = [
-  ['bugun', 'Bugün'],
-  ['konular', 'Konular'],
-  ['denemeler', 'Denemeler'],
-]
+/* Sekme tek yoldan yönetilir: kabuktaki alt çubuk. Öğrenci kendi
+   hesabında da, koç gözle bakarken de yol sekmeye çevrilip `sekme` /
+   `onSekme` ile buraya geliyor. Panelin içinde ikinci bir sekme şeridi
+   yok edildi: kabukta yapılan her gezinme değişikliği iki tarafta
+   birden geçerli olsun diye tek gezinme bırakıldı. */
 
 /* Kural motoru eski sekme adlarıyla yönlendirebilir; hepsi bir yere gider. */
 /* Ben sekmesi kalktı: seri Yol'da, hedefe göre net Denemeler'de,
@@ -40,7 +36,6 @@ export default function OgrenciPaneli({
   profil,
   ogrenciId,
   vekaleten = false,
-  onCik,
   sekme: disSekme,
   onSekme: disOnSekme,
   onGit,
@@ -137,18 +132,6 @@ export default function OgrenciPaneli({
 
   return (
     <>
-      {vekaleten && (
-        <div className="gozuyle-serit gozuyle-serit--vekalet">
-          <strong>{kayit.profiller?.ad_soyad} adına işlem yapıyorsun</strong>
-          <span>
-            Yaptığın her şey öğrencinin verisine yazılır ve senin adınla kaydedilir.
-          </span>
-          <button className="metin-dugme vekalet-cik" onClick={onCik}>
-            Vekaletten çık
-          </button>
-        </div>
-      )}
-
       <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
       {sekme === 'bugun' && (
       <OgrenciBasligi
@@ -169,20 +152,6 @@ export default function OgrenciPaneli({
       )}
 
       <div className="sekme-govde" style={aksanStili()}>
-      {!kontrollu && (
-      <nav className="sekmeler sekmeler--genis">
-        {SEKMELER.map(([k, e]) => (
-          <button
-            key={k}
-            className={sekme === k ? 'sekme sekme--etkin' : 'sekme'}
-            onClick={() => setSekme(k)}
-          >
-            {e}
-          </button>
-        ))}
-      </nav>
-      )}
-
       {sekme === 'bugun' ? (
         <>
           <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
