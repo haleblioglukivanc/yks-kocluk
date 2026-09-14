@@ -24,7 +24,7 @@ o öğe ve içindeki her şey rengini oradan alır.
 ```
 
 Aynı işaretleme `data-durum="iyi"` ile yeşile döner. Tek satır CSS
-yazılmaz. Gece moduna geçince de kendiliğinden doğru tonu alır.
+yazılmaz.
 
 ### Beş durum
 
@@ -75,15 +75,57 @@ alt alta hizalansın diye. Büyük olacaksa `.sayi--buyuk` veya
 `.fosforlu` ekranın **tek** önemli sayısı içindir. İkincisini
 eklersen ikisi de sönük kalır.
 
-## Gündüz / gece
+## Tek tema
 
-`App.jsx` `body`'ye `data-mod` yazıyor; seçim `localStorage`'da kalıyor,
-seçim yoksa cihazın sistem tercihi geçerli.
+Gece modu 14 Eylül 2026'da kaldırıldı: her UI değişikliğinin iki temada
+doğrulanması gerekiyordu ve doğrulanmıyordu. `--k-*` koyu paleti duruyor;
+onu yalnız **her zaman koyu** olan yüzeyler okur: üst şerit, Bugün
+başlığı (`.hero-yuzey.ob`), odak bloğu, köşedeki Çizbi balonu. Bileşen
+yazarken `--k-*`'ya elle uzanılmaz; koyu yüzeyin içindeysen zaten oradan
+geliyordur.
 
-Yeni bileşen için gece modu **ayrıca yazılmaz**. `--d-*` ve yüzey
-tokenlarını kullandığın sürece iki modda da doğru çalışır. Eğer bir
-bileşen için gece kuralı yazmak zorunda kaldıysan, o bileşen bir yerde
-sabit renk kullanıyordur.
+## Punto
+
+`tema.css`'te dokuz token var, `index.css`'e rem/px punto yazılmaz:
+
+| Token | px | İşi |
+|---|---|---|
+| `--punto-sayi` | 32 | ekranın tek büyük rakamı (`.sayi--buyuk`) |
+| `--punto-dev` | 28 | ekran başlığı (Denemelerim, Giriş) |
+| `--punto-buyuk` | 22 | selam satırı, büyük kart başlığı |
+| `--punto-baslik` | 18 | Çizbi'nin cümlesi, kart başlığı |
+| `--punto-govde` | 16 | akan metin |
+| `--punto-orta` | 15 | sıkışık akan metin |
+| `--punto-kucuk` | 14 | ikincil satır |
+| `--punto-mini` | 13 | akan yazının alt sınırı |
+| `--punto-etiket` | 12 | **yalnız** büyük harfli/mono etiket ve rozet; cümle bu boyutta yazılmaz |
+
+## Çizbi'nin sesi
+
+Çizbi nerede konuşursa konuşsun aynı yüzle konuşur: Bricolage 700,
+`--punto-baslik`, beyaz, koyu zemin. Bunu tek kural verir
+(`.ob-mesaj, .kalem-kabarcik-metin`). Koç, öğrenci ve veli başlığı aynı
+iskeleti kullanır: selam + tarih / Çizbi (76px) + cümle / eylemler.
+Yeni bir yerde Çizbi konuşturulacaksa bu sınıflar kullanılır, yeni bir
+balon çizilmez.
+
+## Köşe ve katman
+
+Köşe yarıçapı sekiz token: `--r-ince` 3 · `--r-kucuk` 6 · `--r-orta` 8 ·
+`--r` 10 · `--r-kart` 12 · `--r-buyuk` 16 · `--r-dev` 20 · `--r-tam` hap.
+z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
+30 · `--kat-yaprak` 40 · `--kat-cizbi` 60 · `--kat-perde` 100 ·
+`--kat-kutlama` 110. `index.css`'e çıplak sayı yazılmaz.
+
+## Telefon
+
+- Dokunma hedefi 44px. Görünen boyutu küçük kalması gereken düğmeler
+  `sistem.css`'teki listeye eklenir; görünmez `::after` halkası hedefi
+  büyütür, JSX'e sınıf eklenmez.
+- `:hover` kuralı `@media (hover: hover)` içine yazılır; dışarıda kalan
+  hover telefonda dokunulan düğmeyi vurgulu bırakır.
+- Bağlantı kopunca `BaglantiSeridi` üst şeridin altına iner (amber);
+  gelince iki saniye yeşil onay. Kayıt kuyruğu yoktur.
 
 ## Kontrast eşiği
 
@@ -111,7 +153,7 @@ geçerli: kırmızı yalnızca ACİL demek, dekoratif çizgi olamaz.
 
 ## Dağıtım
 
-Tek canlı adres: `https://yks-kocluk.haleblioglukivanc.workers.dev`
+Tek canlı adres: `https://khkocluk.com` (www ile birlikte).
 
 Cloudflare Workers Builds repoya doğrudan bağlı. `main`'e push atınca
 Cloudflare kendisi derleyip yayınlar — GitHub Actions'ta dağıtım iş akışı
