@@ -1,17 +1,17 @@
 from PIL import Image, ImageDraw, ImageFont
 import os
 OUT = os.path.join(os.path.dirname(__file__), '..')
-INK, KOYU, AMBER = '#E8EDF7', '#0D1220', '#F5B23C'
+INK, KOYU, AMBER = '#E9EEF7', '#0F1520', '#FFC24A'
 
-SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 106 116" width="106" height="116" role="img" aria-label="KH monogram">
+SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 145 116" width="145" height="116" role="img" aria-label="KH monogram">
   <title>Kıvanç Hoca ile Eğitim Koçluğu — KH monogramı</title>
   <g fill="none" stroke-width="16" stroke-linecap="round">
     <path d="M8 0V100" stroke="{ink}"/>
-    <path d="M10.4 50L50 0" stroke="{ink}"/>
-    <path d="M10.4 50L50 100" stroke="{ink}"/>
-    <path d="M50 50H98" stroke="{ink}"/>
-    <path d="M98 0V100" stroke="{ink}"/>
-    <path d="M50 0V100" stroke="{amber}"/>
+    <path d="M10.4 50L72 0" stroke="{ink}"/>
+    <path d="M10.4 50L72 100" stroke="{ink}"/>
+    <path d="M72 50H137" stroke="{ink}"/>
+    <path d="M137 0V100" stroke="{ink}"/>
+    <path d="M72 0V100" stroke="{amber}"/>
   </g>
 </svg>
 """
@@ -29,18 +29,18 @@ def ciz(d, olc, ox, oy, ink, amber):
         for p in (a, b):
             d.ellipse([p[0]-r, p[1]-r, p[0]+r, p[1]+r], fill=renk)
     L((8, 0), (8, 100), ink)
-    L((10.4, 50), (50, 0), ink)
-    L((10.4, 50), (50, 100), ink)
-    L((50, 50), (98, 50), ink)
-    L((98, 0), (98, 100), ink)
-    L((50, 0), (50, 100), amber)
+    L((10.4, 50), (72, 0), ink)
+    L((10.4, 50), (72, 100), ink)
+    L((72, 50), (137, 50), ink)
+    L((137, 0), (137, 100), ink)
+    L((72, 0), (72, 100), amber)
 
 def png(path, ink, hedef_h=1024):
     s = hedef_h / 116 * 4
-    W, H = int(106 * s), int(116 * s)
+    W, H = int(145 * s), int(116 * s)
     img = Image.new('RGBA', (W, H), (0, 0, 0, 0))
     ciz(ImageDraw.Draw(img), s, 0, 8 * s, hx(ink) + (255,), hx(AMBER) + (255,))
-    img.resize((int(106 * hedef_h / 116), hedef_h), Image.LANCZOS).save(path)
+    img.resize((int(145 * hedef_h / 116), hedef_h), Image.LANCZOS).save(path)
 
 png(f'{OUT}/logo-kh.png', INK)
 png(f'{OUT}/logo-kh-acik-zemin.png', KOYU)
@@ -50,7 +50,7 @@ def profil(path, zemin, ink, boy=1080, h_oran=0.44):
     s = 3; P = boy * s
     img = Image.new('RGB', (P, P), hx(zemin))
     olc = boy * h_oran * s / 100
-    ciz(ImageDraw.Draw(img), olc, (P - 106 * olc) / 2, (P - 100 * olc) / 2, hx(ink), hx(AMBER))
+    ciz(ImageDraw.Draw(img), olc, (P - 145 * olc) / 2, (P - 100 * olc) / 2, hx(ink), hx(AMBER))
     img.resize((boy, boy), Image.LANCZOS).save(path)
 
 profil(f'{OUT}/profil-1080-koyu.png', KOYU, INK)
@@ -65,10 +65,10 @@ def kilit(path, ink):
     s = 3; h = 120 * s; olc = h / 100
     ad = 'Kıvanç Hoca ile Eğitim Koçluğu'
     f = bric(int(96 * s)); tw = f.getlength(ad); pad = 40 * s
-    W = int(106 * olc + pad + tw + 8); H = int(h + 40 * s)
+    W = int(145 * olc + pad + tw + 8); H = int(h + 40 * s)
     img = Image.new('RGBA', (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(img)
     ciz(d, olc, 0, (H - h) / 2, hx(ink) + (255,), hx(AMBER) + (255,))
-    d.text((106 * olc + pad, H / 2), ad, font=f, fill=hx(ink) + (255,), anchor='lm')
+    d.text((145 * olc + pad, H / 2), ad, font=f, fill=hx(ink) + (255,), anchor='lm')
     img.resize((W // s, H // s), Image.LANCZOS).save(path)
 
 kilit(f'{OUT}/logo-yatay.png', INK)
@@ -85,7 +85,7 @@ def filigran(path, ink, boy=150, h_oran=0.52, daire=None, golge=True):
     if daire:
         ImageDraw.Draw(img).ellipse([0, 0, P - 1, P - 1], fill=hx(daire) + (225,))
     olc = boy * h_oran * s / 100
-    ox, oy = (P - 106 * olc) / 2, (P - 100 * olc) / 2
+    ox, oy = (P - 145 * olc) / 2, (P - 100 * olc) / 2
     if golge and not daire:
         g = Image.new('RGBA', (P, P), (0, 0, 0, 0))
         ciz(ImageDraw.Draw(g), olc, ox, oy + 2 * s, (0, 0, 0, 190), (0, 0, 0, 190))

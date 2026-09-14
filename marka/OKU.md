@@ -5,8 +5,9 @@ Bir yerde marka işareti lazım olduğunda bu klasördeki dosya kullanılır; ye
 çizim yapılmaz.
 
 Bu klasör siteye dahil değildir (`public/` altında değil), derlemeye girmez.
-Sitenin kendi kullandığı işaret `src/bilesenler/Marka.jsx` içinde, ikonlar
-`public/` altındadır — ikisi de aşağıdaki aynı geometriyi kullanır.
+Ölçünün kaynağı uygulamadır: `src/bilesenler/Marka.jsx` ve `public/` altındaki
+ikonlar neyi çiziyorsa buradaki dosyalar onu izler, tersi değil. Oran ya da renk
+değişecekse önce uygulamada değişir, sonra `uret/` betikleri yeniden çalıştırılır.
 
 ---
 
@@ -42,12 +43,14 @@ imza hattı budur. Turuncu başka hiçbir yere girmez.
 Geometri (100 birim yükseklik, çizgi kalınlığı 16, uçlar yuvarlak):
 
 ```
-K gövde       x = 8,    y = 0 → 100
-K üst kol     (10.4, 50) → (50, 0)
-K alt kol     (10.4, 50) → (50, 100)
-H orta çizgi  y = 50,   x = 50 → 98
-H sağ bacak   x = 98,   y = 0 → 100
-Ortak dikey   x = 50,   y = 0 → 100     ← amber, en üstte çizilir
+K gövde       x = 8,     y = 0 → 100
+K üst kol     (10.4, 50) → (72, 0)
+K alt kol     (10.4, 50) → (72, 100)
+H orta çizgi  y = 50,    x = 72 → 137
+H sağ bacak   x = 137,   y = 0 → 100
+Ortak dikey   x = 72,    y = 0 → 100    ← amber, en üstte çizilir
+
+Toplam genişlik 145 birim (çizgi kalınlığı dahil), yükseklik 100.
 ```
 
 Ortak dikey **en son** çizilir; altındaki kol uçları ve orta çizginin başı onun
@@ -62,10 +65,10 @@ altında kalır, amber bant kesintisiz görünür.
 
 | | |
 | --- | --- |
-| Harfler (koyu zemin) | `#E8EDF7` |
-| Harfler (açık zemin) | `#0D1220` |
-| Ortak dikey — amber | `#F5B23C` |
-| Zemin | `#0D1220` |
+| Harfler (koyu zemin) | `#E9EEF7` |
+| Harfler (açık zemin) | `#0F1520` |
+| Ortak dikey — amber | `#FFC24A` |
+| Zemin | `#0F1520` |
 
 Başlıklar **Bricolage Grotesque** (700), alt satırlar **Karla**. İkisi de uygulamanın
 kullandığı aileler; font dosyaları `uret/fontlar/` altında (SIL Open Font License).

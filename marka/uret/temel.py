@@ -10,13 +10,13 @@ SX0, SY0 = (W - SAFE_W) // 2, (H - SAFE_H) // 2   # 507, 508
 SX1, SY1 = SX0 + SAFE_W, SY0 + SAFE_H             # 2053, 931
 CY = H // 2
 
-BG      = (13, 18, 32)
+BG      = (15, 21, 32)
 BG2     = (17, 24, 42)
-INK     = (232, 237, 247)
+INK     = (233, 238, 247)
 MUTED   = (139, 155, 184)
 FAINT   = (44, 56, 82)
-AMBER   = (245, 178, 60)
-AMBER_D = (196, 134, 34)
+AMBER   = (255, 194, 74)
+AMBER_D = (214, 154, 44)
 BLUE    = (74, 128, 240)
 
 BR = os.path.join(os.path.dirname(__file__), 'fontlar', 'Bricolage.ttf')
@@ -62,8 +62,8 @@ def monogram(d, x, y, h, amber=AMBER, ink=INK):
     w = h * 0.16
     top, bot = y, y + h
     sx = x + w / 2                    # K govdesi
-    mx = x + h * 0.50                 # ortak dikey (K kol ucu = H sol bacak)
-    rx = x + h * 0.98                 # H sag bacak
+    mx = x + h * 0.72                 # ortak dikey (K kol ucu = H sol bacak)
+    rx = x + h * 1.37                 # H sag bacak
     my = y + h * 0.5
     stroke(d, (sx, top), (sx, bot), int(w), ink)                # K govde
     stroke(d, (sx + w * 0.15, my), (mx, top), int(w), ink)      # K ust kol
