@@ -1,3 +1,4 @@
+import SekmeTepesi from '../bilesenler/SekmeTepesi.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -93,18 +94,19 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
     <div className="panel">
       <Uyari>{hata}</Uyari>
 
-      <Kart
+      <SekmeTepesi
         baslik="Öğrenciler"
         altBaslik={ogrenciler ? `${ogrenciler.length} öğrenci` : undefined}
         eylem={
-          <button className="ikon-dugme" onClick={() => setFormAcik(true)} aria-label="Öğrenci ekle" title="Öğrenci ekle">
+          <button className="ikon-dugme ikon-dugme--koyu" onClick={() => setFormAcik(true)} aria-label="Öğrenci ekle" title="Öğrenci ekle">
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
                  strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <path d="M12 5v14M5 12h14" />
             </svg>
           </button>
         }
-      >
+      />
+      <Kart>
         {formAcik && (
           <AltSayfa
             baslik="Öğrenci ekle"

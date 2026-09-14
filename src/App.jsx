@@ -339,9 +339,9 @@ export default function App() {
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
-    (kocMu && yol === '/raporlar') ||
-    (profil.rol === 'ogrenci' && yol === '/denemeler') ||
-    (Boolean(gozuyleId) && gozuyleSekme !== 'konular')
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler')) ||
+    (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
+    Boolean(gozuyleId)
 
   // Rolüne göre gezinme. Yol tanınmıyorsa kendi ana ekranına döner.
   /* Mesajlar artık alt çubukta değil: bildirim taşıyan tek yer başlığın

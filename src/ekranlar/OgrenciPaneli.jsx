@@ -14,6 +14,7 @@ import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import { Kart } from '../bilesenler/Ortak.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import RaporTepesi from '../bilesenler/RaporTepesi.jsx'
+import SekmeTepesi from '../bilesenler/SekmeTepesi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
@@ -204,6 +205,7 @@ export default function OgrenciPaneli({
         </>
       ) : sekme === 'konular' ? (
         <>
+          <SekmeTepesi baslik="Yol" altBaslik="Konu konu nerede olduğun" />
           <KonuHaritasi profilId={kayit.id} odakDers={odakDers} />
           {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />

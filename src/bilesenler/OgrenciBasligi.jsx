@@ -150,9 +150,13 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
 
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
-      <div className="ob-selam-satir">
-        <h1 className="ob-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
-        <p className="ob-tarih">{tarih}</p>
+      {/* Başlık satırı her sekmede aynı kalıp (SekmeTepesi ile aynı sınıflar):
+          büyük ad, altında gri tek satır. Bugün'de o satır tarih. */}
+      <div className="rt-satir">
+        <div>
+          <h1 className="rt-baslik">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
+          <p className="rt-alt">{tarih}</p>
+        </div>
       </div>
       <div className="ob-ust">
         <div className="ob-kalem">
