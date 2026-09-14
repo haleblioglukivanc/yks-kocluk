@@ -35,7 +35,7 @@ export default function Giris({ onGeri }) {
       <div className="giris-ust">
         <span className="giris-marka">
           <MarkaIsareti yukseklik={20} sinif="giris-marka-isaret" />
-          Kıvanç Haleblioğlu
+          Kıvanç Hoca
         </span>
         <span className="giris-marka-alt">YKS · LGS koçu</span>
       </div>

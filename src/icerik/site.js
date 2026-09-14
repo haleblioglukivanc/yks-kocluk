@@ -20,7 +20,7 @@
 
 export const site = {
   koc: {
-    ad: 'Kıvanç Haleblioğlu',
+    ad: 'Kıvanç Hoca',
     unvan: 'YKS ve LGS Koçu',
 
     // Sayfanın ilk cümlesi. {} içindeki kelimeye fosforlu vurgu gelir.

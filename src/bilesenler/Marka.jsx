@@ -8,7 +8,9 @@
  * Tek yerde durur ki üst şerit, giriş ekranı ve favicon aynı çizimi
  * paylaşsın; birinde yapılan düzeltme hepsinde geçerli olsun.
  *
- * Marka adı "HK" değildir. Adı "Kıvanç Haleblioğlu"; bu iki harf yalnızca
+ * Marka adı "HK" değildir. Adı "Kıvanç Hoca"; iki harf de oradan gelir
+ * (Hoca + Kıvanç). Soyadı halka açık yüzeylerde kullanılmaz; yalnızca
+ * sözleşme ve fatura gibi resmî yerlerde geçer. Bu iki harf yalnızca
  * ikondur ve daima ismin ya da bir başlığın yanında durur.
  */
 export function MarkaIsareti({ yukseklik = 20, sinif = '' }) {
