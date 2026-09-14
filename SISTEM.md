@@ -117,6 +117,15 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
 30 · `--kat-yaprak` 40 · `--kat-cizbi` 60 · `--kat-perde` 100 ·
 `--kat-kutlama` 110. `index.css`'e çıplak sayı yazılmaz.
 
+## Katman ve boşluk
+
+- **Bir ekranda en fazla iki katman:** yüzey (koyu tepe ya da kâğıt) ve
+  üstündeki kart. Kart içinde kenarlıklı ikinci bir kutu olmaz; kartın
+  içindeki gruplar boşluk ve başlıkla ayrılır. Hafta şeridi bu yüzden
+  kâğıt üstünde kapsız durur, odak bloğu tek başına karttır.
+- **Kartlar arası tek boşluk: 12px.** Ayrı ölçü gerekiyorsa önce sor:
+  bu gerçekten yeni bir ilişki mi, yoksa aynı boşluğun bir tonu mu?
+
 ## Telefon
 
 - Dokunma hedefi 44px. Görünen boyutu küçük kalması gereken düğmeler

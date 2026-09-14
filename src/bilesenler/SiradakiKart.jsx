@@ -293,7 +293,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
 
   return (
-    <section className="kart siradaki" aria-label="Bugünün hedefi">
+    <section className="siradaki" aria-label="Bugünün hedefi">
       {serit}
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
