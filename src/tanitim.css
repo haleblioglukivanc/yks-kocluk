@@ -233,6 +233,30 @@
 .t-soru h3 { font-weight: 700; font-size: 19px; letter-spacing: -.015em; line-height: 1.25; }
 .t-soru p { margin: 0; font-size: var(--punto-orta); line-height: 1.6; color: var(--g-grafit); text-wrap: pretty; }
 
+/* ── Kanallar bandı ───────────────────────────────────────────── */
+.t-kanal { background: var(--t-lacivert); color: #fff; padding: clamp(52px, 6.5cqw, 88px) 0; margin-top: clamp(56px, 7cqw, 104px); }
+.t-kanal-bas { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; margin-bottom: 28px; }
+.t-kanal-bas .t-baslik { font-size: clamp(28px, 3.4cqw, 44px); letter-spacing: -.035em; max-width: 18ch; }
+.t-kanal-giris { margin: 0; max-width: 38ch; font-size: 17px; line-height: 1.6; color: var(--t-acik-mavi); text-wrap: pretty; }
+.t-kanal-izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 14px; }
+.t-kanal-kart { display: flex; flex-direction: column; gap: 14px; padding: 22px; border-radius: 16px; background: var(--t-lacivert-2); border: 1px solid var(--t-lacivert-c); text-decoration: none; transition: border-color .15s, transform .15s, background .15s; }
+.tanitim a.t-kanal-kart { color: #fff; }
+.tanitim a.t-kanal-kart:hover { color: #fff; border-color: var(--t-turuncu); transform: translateY(-2px); background: #16244a; }
+.t-kanal-ust { display: flex; align-items: center; gap: 12px; }
+.t-kanal-ikon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; flex: none; }
+.t-kanal-ikon svg { width: 24px; height: 24px; display: block; }
+.t-kanal-ikon--youtube { background: #ff0033; color: #fff; }
+.t-kanal-ikon--instagram { background: linear-gradient(135deg, #feda75, #d62976 55%, #4f5bd5); color: #fff; }
+.t-kanal-ikon--tiktok { background: #111; color: #fff; border: 1px solid #333; }
+.t-kanal-ad { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.t-kanal-ad b { font-family: var(--marka-baslik); font-weight: 800; font-size: 17px; letter-spacing: -.01em; color: #fff; }
+.t-kanal-ad span { font-family: var(--marka-mono); font-size: 12.5px; color: var(--t-acik-mavi); }
+.t-kanal-ad .t-kanal-rozet { font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--k-soluk); }
+.t-kanal-metin { margin: 0; flex: 1; font-size: 14.5px; line-height: 1.6; color: var(--t-acik-mavi); text-wrap: pretty; }
+.t-kanal-eylem { display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 11px 16px; border-radius: 999px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.18); font-weight: 700; font-size: 14px; transition: background .15s, border-color .15s; }
+.tanitim a.t-kanal-kart:hover .t-kanal-eylem { background: var(--t-turuncu); border-color: var(--t-turuncu); }
+.t-kanal-kart--yakinda { opacity: .55; color: #fff; }
+
 /* ── Çağrı + alt ──────────────────────────────────────────────── */
 .t-cagri { padding-top: clamp(56px, 8cqw, 120px); padding-bottom: clamp(56px, 8cqw, 120px); display: flex; flex-wrap: wrap; gap: clamp(24px, 4cqw, 64px); align-items: flex-end; justify-content: space-between; }
 .t-cagri-metin { flex: 1 1 480px; min-width: 0; }

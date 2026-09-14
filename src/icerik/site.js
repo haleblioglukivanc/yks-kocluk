@@ -453,6 +453,22 @@ export const site = {
     ],
   },
 
+  // ── Kanallar ────────────────────────────────────────────────────
+  // Kartların adresleri aşağıdaki `iletisim` bloğundan gelir. Adresi boş
+  // olan platform hem burada "yakında" kartı, hem üst şeritte gizli olur.
+  kanallar: {
+    etiket: 'Kanallar',
+    baslik: 'Görüşmeden önce beni izleyin.',
+    aciklama:
+      'Her hafta program kurma, deneme okuma ve veli iletişimi üzerine kısa videolar ' +
+      'paylaşıyorum. Kayıt gerekmiyor, ücretsiz.',
+    metinler: {
+      youtube: 'Uzun anlatımlar: haftalık program kurulumu, deneme analizi, tercih dönemi.',
+      instagram: 'Kısa notlar ve günlük paylaşımlar; sorularınızı buradan da yazabilirsiniz.',
+      tiktok: 'Kısa video denemeleri. Hesap açıldığında bu kart kendiliğinden aktifleşir.',
+    },
+  },
+
   cagri: {
     baslik: 'Önce tanışalım',
     metin:

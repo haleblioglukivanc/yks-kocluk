@@ -201,8 +201,86 @@ function NetGrafigi({ netler }) {
   )
 }
 
+/* Kanal ikonları — tek yerde, hem kartlarda hem başka yerde kullanılabilir. */
+const KANAL_IKON = {
+  youtube: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M23 12s0-3.8-.5-5.6a2.9 2.9 0 0 0-2-2C18.7 4 12 4 12 4s-6.7 0-8.5.4a2.9 2.9 0 0 0-2 2C1 8.2 1 12 1 12s0 3.8.5 5.6a2.9 2.9 0 0 0 2 2C5.3 20 12 20 12 20s6.7 0 8.5-.4a2.9 2.9 0 0 0 2-2C23 15.8 23 12 23 12ZM9.8 15.4V8.6l5.9 3.4-5.9 3.4Z" />
+    </svg>
+  ),
+  instagram: (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
+      <rect x="3" y="3" width="18" height="18" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none" />
+    </svg>
+  ),
+  tiktok: (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path d="M16.5 2h-3v13.2a2.9 2.9 0 1 1-2.4-2.9V9.2a6 6 0 1 0 5.4 6V8.9a7 7 0 0 0 4.1 1.3V7.1a4.1 4.1 0 0 1-4.1-4.1V2Z" />
+    </svg>
+  ),
+}
+
+const KANALLAR = [
+  { anahtar: 'youtube', ad: 'YouTube', eylem: 'Kanala git' },
+  { anahtar: 'instagram', ad: 'Instagram', eylem: 'Takip et' },
+  { anahtar: 'tiktok', ad: 'TikTok', eylem: 'Takip et' },
+]
+
+/* Adres varsa tıklanabilir kart, yoksa soluk "yakında" kartı. Adresi
+   site.js → iletisim bloğuna yazmak yeterli; başka yere dokunmaya gerek yok. */
+function Kanallar({ kanallar, iletisim }) {
+  const kullanici = (adres) => {
+    const son = adres.replace(/\/+$/, '').split('/').pop()
+    return son.startsWith('@') ? son : '@' + son
+  }
+
+  return (
+    <section id="kanallar" className="t-kanal">
+      <div className="t-kap">
+        <div className="t-kanal-bas">
+          <div>
+            <p className="t-etiket t-etiket--acik"><i className="t-nokta" />{kanallar.etiket}</p>
+            <h2 className="t-baslik">{kanallar.baslik}</h2>
+          </div>
+          <p className="t-kanal-giris">{kanallar.aciklama}</p>
+        </div>
+
+        <div className="t-kanal-izgara">
+          {KANALLAR.map(({ anahtar, ad, eylem }) => {
+            const adres = iletisim[anahtar]
+            const metin = kanallar.metinler[anahtar]
+            const ic = (
+              <>
+                <span className="t-kanal-ust">
+                  <span className={`t-kanal-ikon t-kanal-ikon--${anahtar}`}>{KANAL_IKON[anahtar]}</span>
+                  <span className="t-kanal-ad">
+                    <b>{ad}</b>
+                    {adres
+                      ? <span>{kullanici(adres)}</span>
+                      : <span className="t-kanal-rozet">yakında</span>}
+                  </span>
+                </span>
+                <p className="t-kanal-metin">{metin}</p>
+                {adres && <span className="t-kanal-eylem">{eylem} →</span>}
+              </>
+            )
+
+            return adres ? (
+              <a key={anahtar} className="t-kanal-kart" href={adres} target="_blank" rel="noopener noreferrer">{ic}</a>
+            ) : (
+              <div key={anahtar} className="t-kanal-kart t-kanal-kart--yakinda">{ic}</div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 export default function Tanitim({ onGiris }) {
-  const { koc, sayilar, belgeler, kayan, vitrin, sorular, iletisim } = site
+  const { koc, sayilar, belgeler, kayan, vitrin, sorular, kanallar, iletisim } = site
   const netler = vitrin.maket.netler
   const eposta = `mailto:${iletisim.eposta}`
 
@@ -407,6 +485,8 @@ export default function Tanitim({ onGiris }) {
           ))}
         </div>
       </section>
+
+      <Kanallar kanallar={kanallar} iletisim={iletisim} />
 
       <section id="iletisim" className="t-kap t-cagri">
         <div className="t-cagri-metin">
