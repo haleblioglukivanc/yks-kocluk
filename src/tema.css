@@ -233,6 +233,8 @@
      Telefonda da aynı; küçültmek tutarsız görünür. */
   --golge-kart:   0 1px 2px rgba(20, 28, 45, .04), 0 8px 20px -12px rgba(20, 28, 45, .10);
   --golge-kalkik: 0 2px 4px rgba(20, 28, 45, .06), 0 16px 32px -16px rgba(20, 28, 45, .16);
+  /* açık/renkli zeminde maskotu ayırır: dar koyu kontur + yumuşak yer gölgesi */
+  --golge-cizbi:  drop-shadow(0 0 1px rgba(26, 31, 54, .75)) drop-shadow(0 3px 2px rgba(26, 31, 54, .5)) drop-shadow(0 10px 12px rgba(26, 31, 54, .35));
 
   /* ── DOKU ──────────────────────────────────────────────────
      Kâğıt zeminine %3 opaklıkta tek renkli gren. Yalnız body zemininde;

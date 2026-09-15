@@ -4371,6 +4371,7 @@ body[data-rol='koc'] .hero-yuzey.ob .rt-alt { color: rgba(26, 31, 54, .7); }
 body[data-rol='koc'] .hero-yuzey.ob .ob-kim { color: #8a4b00; }
 body[data-rol='koc'] .hero-yuzey.ob .ob-basla { background: var(--murekkep); color: #fff; }
 body[data-rol='koc'] .hero-yuzey.ob .ob-tamam { background: rgba(255, 255, 255, .55); color: var(--murekkep); }
+body[data-rol='koc'] .hero-yuzey.ob .ob-kalem svg { filter: var(--golge-cizbi); }
 body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir { animation: cizbi-gir 520ms cubic-bezier(.34, 1.56, .64, 1) both, hop 2.6s ease-in-out 600ms infinite; }
 @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 /* Sağdaki üç sayı: yalnız geniş ekranda (yerlesim.css açar). */
