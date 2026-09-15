@@ -108,7 +108,7 @@ export default function KocBasligi({ profil, ozet, onGit }) {
         {/* Masaüstünde sağda üç sayı: koç tepeye bakınca günün yükünü görür. */}
         {ozet && (
           <div className="ob-kpi" aria-label="Günün özeti">
-            <div><b><Sayan deger={riskli.length} /></b><small>öğrenci önce</small></div>
+            <div><b><Sayan deger={(ozet.riskliOgrenciler ?? []).length} /></b><small>öğrenci önce</small></div>
             <div><b><Sayan deger={ozet.bekleyenVeliOzeti ?? 0} /></b><small>veli özeti</small></div>
             <div><b><Sayan deger={ozet.buHaftaGirilenDeneme ?? 0} /></b><small>deneme bu hafta</small></div>
           </div>
