@@ -285,7 +285,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
       <Uyari>{hata}</Uyari>
 
       <div className="yol-harita" ref={haritaRef}>
-        <svg className="yol-cizgi" viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
+        <svg className={cizgi.soluk ? 'yol-cizgi yol-cizgi--hazir' : 'yol-cizgi'} viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
           <defs>
             <mask id="yol-maske" maskUnits="userSpaceOnUse" x="0" y="0" width={cizgi.w || 1} height={cizgi.h || 1}>
               <path d={cizgi.soluk} className="yol-maske-ciz" pathLength="1" />
