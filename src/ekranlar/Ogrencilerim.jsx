@@ -32,10 +32,21 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
   const [durtmeAcik, setDurtmeAcik] = useState(false)
 
   const yukle = useCallback(async () => {
+    /* Liste RLS'e bırakılmıştı; yönetici rolü bütün öğrencileri görebildiği
+       için Kıvanç'ın listesine başka koçun öğrencileri "İsimsiz / Veri yok"
+       olarak düşüyordu. Koç sekmesi her zaman kendi öğrencilerini gösterir;
+       bütün öğrenciler yönetim ekranının işi. */
+    const { data: oturum } = await supabase.auth.getUser()
+    const benimId = oturum?.user?.id
+    if (!benimId) {
+      setOgrenciler([])
+      return
+    }
     const [o, r, k] = await Promise.all([
       supabase
         .from('ogrenciler')
         .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)')
+        .eq('koc_id', benimId)
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('ogrenci_risk')
