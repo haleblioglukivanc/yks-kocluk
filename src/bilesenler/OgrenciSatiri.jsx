@@ -84,7 +84,7 @@ export function tekSebep(r) {
   return sebepCumlesi(r).split(' · ')[0]
 }
 
-export default function OgrenciSatiri({ ogrenci, risk, onAc }) {
+export default function OgrenciSatiri({ ogrenci, risk, onAc, secili = false }) {
   const aktif = ogrenci.aktif !== false
   const ad = ogrenci.profiller?.ad_soyad ?? ogrenci.ad_soyad ?? 'İsimsiz'
   const renk = aktif ? (RISK_RENK[risk?.risk_seviyesi] ?? 'var(--cizgi-2)') : 'var(--soluk)'
@@ -92,7 +92,8 @@ export default function OgrenciSatiri({ ogrenci, risk, onAc }) {
   return (
     <li className="rehber-satir-sarmal">
       <button
-        className={`rehber-satir${aktif ? '' : ' rehber-satir--pasif'}`}
+        className={`rehber-satir${aktif ? '' : ' rehber-satir--pasif'}${secili ? ' rehber-satir--secili' : ''}`}
+        aria-current={secili ? 'true' : undefined}
         style={{ '--nokta': renk }}
         onClick={() => onAc?.(ogrenci.id)}
       >

@@ -3371,7 +3371,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
    renk değil, gölge. Düğme zaten mavi. */
 /* Sıradaki: kap yok. Odak bloğu ekranın ilk kartı, kalanlar altında düz
    liste. Bir ekranda iki katman: yüzey ve üstündeki kart. */
-.uygulama .siradaki { background: none; box-shadow: none; padding: 0; border: 0; }
+.uygulama section.siradaki:not(.kart) { background: none; box-shadow: none; padding: 0; border: 0; }
 .uygulama .siradaki-etiket { color: var(--soluk); letter-spacing: 0; text-transform: none; font-size: var(--punto-mini); font-weight: 600; }
 /* Hafta şeridi: düz zeminde, seçili gün beyaz bir fişle yükselir */
 .uygulama .hafta-gun { border-color: transparent; }
@@ -3906,3 +3906,6 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .uygulama .siradaki .hafta-gun--secili.hafta-gun--bugun { border-color: var(--altin); }
 .siradaki .hafta-serit + .siradaki-odak, .siradaki .hafta-kaydirak + .siradaki-odak,
 .siradaki .uyari + .siradaki-odak { margin-top: 0.75rem; }
+
+/* Seçili öğrenci (geniş ekranda liste + detay) */
+.rehber-satir--secili { background: var(--serin-zemin); border-radius: var(--r); }

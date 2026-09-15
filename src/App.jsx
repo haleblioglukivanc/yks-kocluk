@@ -18,6 +18,7 @@ import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
 import UstCubuk from './bilesenler/UstCubuk.jsx'
 import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
+import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
@@ -141,6 +142,10 @@ const GEZINME_IKONU = {
 }
 
 export default function App() {
+  /* Geniş ekranda (≥64rem) koç iki sütun görür: solda akış, sağda liste ya
+     da seçilen öğrenci. Aynı bileşenler, yalnız yerleşim; dar ekranda tek
+     sütun ve ayrı ekranlar. Kanca koşulsuz, en üstte. */
+  const genis = useGenisEkran()
   const { durum, profil, kullanici, cikisYap } = useOturum()
   const [hesapAcik, setHesapAcik] = useState(false)
   const [bekleyenKarar, setBekleyenKarar] = useState(0)
@@ -339,7 +344,7 @@ export default function App() {
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler')) ||
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || (genis && Boolean(ogrenciId)))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
@@ -383,6 +388,30 @@ export default function App() {
     if (kocMu && yol === '/konular')
       return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
+    if (kocMu && genis && (yol === '/ogrenciler' || ogrenciId))
+      return (
+        <div className="iki-sutun">
+          <div className="sutun-yan">
+            <Ogrencilerim
+              onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
+              onGit={git}
+              seciliId={ogrenciId ?? null}
+            />
+          </div>
+          <div className="sutun-ana">
+            {ogrenciId ? (
+              <OgrenciDetay
+                ogrenciId={ogrenciId}
+                onGeri={() => git('/ogrenciler')}
+                onMesaj={() => git('/mesajlar')}
+                onGozuyle={(id) => git(`/gozuyle/${id}`)}
+              />
+            ) : (
+              <div className="sutun-bos">Listeden bir öğrenci seç.</div>
+            )}
+          </div>
+        </div>
+      )
     if (kocMu && yol === '/ogrenciler')
       return (
         <Ogrencilerim
@@ -420,6 +449,21 @@ export default function App() {
           onMesaj={() => git('/mesajlar')}
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
         />
+      )
+    if (kocMu && genis)
+      return (
+        <div className="iki-sutun">
+          <div className="sutun-ana">
+            <KocPaneli
+              profil={profil}
+              onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
+              onGit={git}
+            />
+          </div>
+          <div className="sutun-yan">
+            <Ogrencilerim onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
+          </div>
+        </div>
       )
     if (kocMu)
       return (

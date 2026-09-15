@@ -192,7 +192,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       ? calisan.baslik || [calisan.ders, calisan.konu].filter(Boolean).join(' · ')
       : 'Serbest çalışma'
     return (
-      <Kart baslik={baslik} altBaslik={`${durum.hedefDk} dk`}>
+      <Kart sinif="siradaki" baslik={baslik} altBaslik={`${durum.hedefDk} dk`}>
         {serit}
         <Halka durum={durum} />
         <div className="sayac-dugmeler">
@@ -215,6 +215,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   if (!bugunMu) {
     return (
       <Kart
+        sinif="siradaki"
         baslik={gunAdi}
         altBaslik={
           liste.length === 0
@@ -238,6 +239,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     const hepsiBitti = liste.length > 0
     return (
       <Kart
+        sinif="siradaki"
         baslik={hepsiBitti ? 'Bugünün hepsi bitti' : 'Bugün için plan yok'}
         altBaslik={hepsiBitti ? 'İstersen serbest çalış, sayaç sayar.' : 'Sayaçla serbest çalışabilirsin.'}
         eylem={
@@ -293,7 +295,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
 
   return (
-    <section className="siradaki" aria-label="Bugünün hedefi">
+    <section sinif="siradaki" aria-label="Bugünün hedefi">
       {serit}
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>

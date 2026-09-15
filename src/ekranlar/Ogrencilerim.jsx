@@ -21,7 +21,7 @@ function grubu(o) {
   return o.risk?.risk_seviyesi ?? 'izle'
 }
 
-export default function Ogrencilerim({ onOgrenciAc, onGit }) {
+export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
   const [kataloglar, setKataloglar] = useState([])
@@ -87,6 +87,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit }) {
       ogrenci={o}
       risk={o.risk}
       onAc={onOgrenciAc}
+      secili={o.id === seciliId}
     />
   )
 

@@ -132,7 +132,11 @@ Platform değil genişlik dinlenir. Üç kesme noktası, yalnız `src/yerlesim.c
 yazılır (medya sorgusu değişken okuyamaz): dar `< 40rem` telefon (alt çubuk),
 orta `40–64rem` tablet dikey (ortada toplanmış alt çubuk), geniş `≥ 64rem`
 masaüstü ve yatay tablet (sol koyu yan çubuk, üst şeritte yalnız zil/hesap,
-içerik sola yaslı 56rem, yapraklar ortadan pencere). `yerlesim.css` yalnız
+içerik sola yaslı 56rem, yapraklar ortadan pencere). Geniş ekranda koç iki
+sütun görür (`useGenisEkran`, `.iki-sutun`): Bugün'de solda karar kuyruğu,
+sağda öğrenci listesi; Öğrenciler'de solda liste, sağda seçilen öğrenci
+(listeden seç, yanda aç). Öğrencinin Bugün'ü genişte iki sütun: solda
+sıradaki, sağda günün geri kalanı. `yerlesim.css` yalnız
 kabuğu yerleştirir; renk, punto, bileşen oraya girmez. Her UI değişikliği üç
 genişlikte (390 / 820 / 1366) doğrulanır.
 
