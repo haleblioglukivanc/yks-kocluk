@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useGenisEkran } from '../lib/genislik.js'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import Sayan from '../bilesenler/Sayan.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
 import TelegramBaglanti from '../bilesenler/TelegramBaglanti.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
@@ -319,7 +320,7 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
               <div className='kpi-kart'>
                 <p className='kpi-etiket'>Görev tamamlama</p>
                 <p className='kpi-sayi'>
-                  {g.tamamlama_yuzdesi == null ? '—' : `%${g.tamamlama_yuzdesi}`}
+                  {g.tamamlama_yuzdesi == null ? '—' : <Sayan on="%" deger={g.tamamlama_yuzdesi} />}
                 </p>
                 <p
                   className={
@@ -331,14 +332,14 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
               </div>
               <div className='kpi-kart'>
                 <p className='kpi-etiket'>Öğrenci</p>
-                <p className='kpi-sayi'>{g.ogrenci_sayisi ?? 0}</p>
+                <p className='kpi-sayi'><Sayan deger={g.ogrenci_sayisi ?? 0} /></p>
                 <p className='kpi-alt'>
                   {ogrenciler.filter((o) => (o.dakika ?? 0) > 0).length} tanesi çalıştı
                 </p>
               </div>
               <div className='kpi-kart'>
                 <p className='kpi-etiket'>Deneme</p>
-                <p className='kpi-sayi'>{g.deneme_sayisi ?? 0}</p>
+                <p className='kpi-sayi'><Sayan deger={g.deneme_sayisi ?? 0} /></p>
                 <p className='kpi-alt'>bu dönemde girildi</p>
               </div>
             </div>

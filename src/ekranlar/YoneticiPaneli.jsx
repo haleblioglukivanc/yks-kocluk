@@ -1,3 +1,4 @@
+import Sayan from '../bilesenler/Sayan.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -65,7 +66,7 @@ function Nabiz({ n }) {
     <div className="kpi-satir">
       <div className="kpi-kart kpi-kart--serin">
         <p className="kpi-etiket">Aktif öğrenci</p>
-        <p className="kpi-sayi">{n.aktif_ogrenci}</p>
+        <p className="kpi-sayi"><Sayan deger={n.aktif_ogrenci} /></p>
         <p className={`kpi-alt ${n.yeni_ogrenci > 0 ? 'kpi-alt--iyi' : ''}`}>
           {n.yeni_ogrenci > 0 ? `bu hafta +${n.yeni_ogrenci}` : 'bu hafta yeni kayıt yok'}
         </p>
@@ -73,7 +74,7 @@ function Nabiz({ n }) {
 
       <div className={`kpi-kart ${n.kopan > 0 ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}>
         <p className="kpi-etiket">Sessiz öğrenci</p>
-        <p className="kpi-sayi">{n.kopan}</p>
+        <p className="kpi-sayi"><Sayan deger={n.kopan} /></p>
         <p className={`kpi-alt ${kopanFark > 0 ? 'kpi-alt--kotu' : 'kpi-alt--iyi'}`}>
           {n.kopan === 0 ? 'kimse 5 günü geçmedi' : '5 gün ve üzeri'}
         </p>
@@ -83,7 +84,7 @@ function Nabiz({ n }) {
         className={`kpi-kart ${hedefYuzde != null && hedefYuzde < 50 ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}
       >
         <p className="kpi-etiket">Haftalık hedefi tutturan</p>
-        <p className="kpi-sayi">{hedefYuzde == null ? '—' : `%${hedefYuzde}`}</p>
+        <p className="kpi-sayi">{hedefYuzde == null ? '—' : <Sayan on="%" deger={hedefYuzde} />}</p>
         <p className="kpi-alt">
           {n.hedefi_olan === 0
             ? 'hedef tanımlı öğrenci yok'
@@ -95,7 +96,7 @@ function Nabiz({ n }) {
         className={`kpi-kart ${ozetYuzde != null && ozetYuzde < 90 ? 'kpi-kart--sicak' : 'kpi-kart--serin'}`}
       >
         <p className="kpi-etiket">Veli özeti yayınlanan</p>
-        <p className="kpi-sayi">{ozetYuzde == null ? '—' : `%${ozetYuzde}`}</p>
+        <p className="kpi-sayi">{ozetYuzde == null ? '—' : <Sayan on="%" deger={ozetYuzde} />}</p>
         <p className={`kpi-alt ${ozetFark < 0 ? 'kpi-alt--kotu' : ozetFark > 0 ? 'kpi-alt--iyi' : ''}`}>
           {n.ozet_hazirlanan === 0
             ? 'bu haftanın taslakları henüz yok'

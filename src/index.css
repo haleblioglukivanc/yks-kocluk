@@ -4415,3 +4415,15 @@ body[data-rol='koc'] .rehber-satir { border-bottom: 0; border-radius: 14px; bord
 @media (prefers-reduced-motion: reduce) {
   .leke, .piril, body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir, body[data-rol='koc'] .uygulama .hero-yuzey.ob::after { animation: none !important; }
 }
+
+/* Koç KPI kartları: pastel zemin, sol üst renk noktası; sayı sayarak gelir. */
+body[data-rol='koc'] .uygulama .kpi-kart { border-radius: 18px; border: 0; box-shadow: var(--golge-kart); }
+body[data-rol='koc'] .uygulama .kpi-kart--serin { background: linear-gradient(160deg, #eef4ff, #ffffff 70%); }
+body[data-rol='koc'] .uygulama .kpi-kart--sicak { background: linear-gradient(160deg, #fff1d6, #ffffff 70%); }
+body[data-rol='koc'] .uygulama .kpi-kart--acil { background: linear-gradient(160deg, #ffe1e7, #ffffff 70%); }
+body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart { background: linear-gradient(160deg, var(--leke-nane), #ffffff 70%); }
+body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart:nth-child(2) { background: linear-gradient(160deg, var(--leke-gok), #ffffff 70%); }
+body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart:nth-child(3) { background: linear-gradient(160deg, var(--leke-leylak), #ffffff 70%); }
+body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart:nth-child(4) { background: linear-gradient(160deg, var(--leke-seftali), #ffffff 70%); }
+/* Koçta kimlik kartı ve sekme tepeleri mürekkep-mavi; amber imza kalır. */
+body[data-rol='koc'] .uygulama .kimlik-kart, body[data-rol='koc'] .uygulama .hero-yuzey.rt { background: linear-gradient(160deg, var(--koc-yan-ust), var(--koc-yan-alt)); }

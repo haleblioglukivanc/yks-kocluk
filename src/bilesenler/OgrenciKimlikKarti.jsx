@@ -1,3 +1,4 @@
+import Sayan from './Sayan.jsx'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
@@ -150,7 +151,7 @@ export default function OgrenciKimlikKarti({
 
         {/* Haftalık hedef, seri ve son net tek satırda. */}
         <p className="kk-durum">
-          <span className="kk-hero-sayi">{yuzde != null ? `%${yuzde}` : '—'}</span>
+          <span className="kk-hero-sayi">{yuzde != null ? <Sayan on="%" deger={yuzde} /> : '—'}</span>
           <span className="kk-hero-ad">
             haftalık hedef{kalan > 0 ? ` · ${kalan} gün` : ' · son gün'}
             {' · '}{ek?.seri ?? 0} gün seri
