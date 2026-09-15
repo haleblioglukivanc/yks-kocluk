@@ -246,3 +246,12 @@
   body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ob { margin-top: 0; padding: 1rem 1.5rem; }
   body[data-rol='koc'] .hero-yuzey.ob .ob-ust { align-items: center; }
 }
+
+@media (min-width: 64rem) {
+  /* Koç masaüstünde üst şerit yer kaplamaz: zil ve hesap sağ üstte yüzer,
+     "Merhaba" onlarla aynı satırda başlar (mokap). */
+  body[data-rol='koc'] .ust-serit { height: 0; overflow: visible; }
+  body[data-rol='koc'] .ust-serit .ust-cubuk { padding-top: 1rem; padding-bottom: 0; }
+  body[data-rol='koc'] .uygulama--koyu-tepe main:has(> .panel > .iki-sutun) { padding-top: 1.1rem; }
+  body[data-rol='koc'] .koc-selam { padding-right: 8rem; }
+}

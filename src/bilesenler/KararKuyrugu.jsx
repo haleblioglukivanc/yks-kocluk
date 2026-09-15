@@ -41,6 +41,25 @@ export default function KararKuyrugu({ onOgrenciAc }) {
   const [odakKey, setOdakKey] = useState(null)
   const [hata, setHata] = useState('')
 
+  /* Blok kartlarının bağlamında ders adı yok ("22:05 bloğu · Soru çözümü —
+     Cümlede Anlam"); konu adından dersi buluyoruz. Katalog küçük, bir kez
+     çekilir. */
+  const [konuDers, setKonuDers] = useState(null)
+  useEffect(() => {
+    supabase.from('konular').select('ad, dersler(ad)').then(({ data }) => {
+      const h = {}
+      for (const k of data ?? []) if (k.ad && k.dersler?.ad) h[k.ad.toLocaleLowerCase('tr-TR')] = k.dersler.ad
+      setKonuDers(h)
+    })
+  }, [])
+  const dersBul = useCallback((baglam) => {
+    const dogrudan = metindenDers(baglam)
+    if (dogrudan || !konuDers) return dogrudan
+    const k = String(baglam ?? '').toLocaleLowerCase('tr-TR')
+    const konu = Object.keys(konuDers).find((ad) => k.includes(ad))
+    return konu ? metindenDers(konuDers[konu]) : null
+  }, [konuDers])
+
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc('koc_karar_kuyrugu', { p_limit: 12 })
     if (error) {
@@ -148,7 +167,7 @@ export default function KararKuyrugu({ onOgrenciAc }) {
         />
       )}
 
-      <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} />
+      <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} dersBul={dersBul} />
       <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
     </>
   )
@@ -182,7 +201,7 @@ function SegmentSeridi({ sayilar, aktif, onSec }) {
    istendiğinde açılır; dokununca o karta atlanır. */
 const basHarf = (ad) => (ad ?? '').split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr-TR')
 
-function Sirada({ kartlar, onSec }) {
+function Sirada({ kartlar, onSec, dersBul = metindenDers }) {
   const [hepsi, setHepsi] = useState(false)
   if (kartlar.length === 0) return null
   const gosterilen = hepsi ? kartlar : kartlar.slice(0, 4)
@@ -201,12 +220,17 @@ function Sirada({ kartlar, onSec }) {
     >
       <ul className="sirada-liste">
         {gosterilen.map((k) => {
-          const ders = metindenDers(k.baglam)
+          const ders = dersBul(k.baglam)
           /* "22:05 bloğu · Soru çözümü — Cümlede Anlam": ilk parça zaman/tür
              bilgisiyse adın altına, kalanı sağda çip. Tek parçaysa hepsi çip. */
           const parcalar = String(k.baglam ?? '').split(' · ')
           const altSatir = parcalar.length > 1 && /bloğu|onayı|\d\d[:.]\d\d|deneme/i.test(parcalar[0]) ? parcalar[0] : null
-          const cip = altSatir ? parcalar.slice(1).join(' · ') : (k.baglam ?? '')
+          let cip = altSatir ? parcalar.slice(1).join(' · ') : (k.baglam ?? '')
+          /* Dersi bulunmuş ama çipte adı yoksa başa yazılır: "Türkçe · Cümlede Anlam". */
+          if (ders && !cip.toLocaleLowerCase('tr-TR').includes(ders.ad.toLocaleLowerCase('tr-TR'))) {
+            const konu = cip.split(' — ').pop()
+            cip = `${ders.ad} · ${konu}`
+          }
           return (
           <li key={anahtar(k)}>
             <button
