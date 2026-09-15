@@ -26,6 +26,27 @@ export function useYazarak(metin, hizMs = 22) {
   return gorunen
 }
 
+/* Sayı sayarak gelir (600ms, ease-out). Az-hareket tercihinde doğrudan. */
+export function useSayarak(hedef, sureMs = 600) {
+  const [deger, setDeger] = useState(azHareket() ? hedef : 0)
+  useEffect(() => {
+    if (hedef == null || Number.isNaN(hedef)) { setDeger(hedef); return }
+    if (azHareket()) { setDeger(hedef); return }
+    const bas = performance.now()
+    const ilk = 0
+    let id
+    const adim = (t) => {
+      const u = Math.min(1, (t - bas) / sureMs)
+      const e = 1 - Math.pow(1 - u, 3)
+      setDeger(ilk + (hedef - ilk) * e)
+      if (u < 1) id = requestAnimationFrame(adim)
+    }
+    id = requestAnimationFrame(adim)
+    return () => cancelAnimationFrame(id)
+  }, [hedef, sureMs])
+  return deger
+}
+
 /* Çizbi'ye kutlama sinyali: görev bitince başlıktaki Çizbi sallanır.
    Bileşenler birbirini tanımaz; pencere olayı yeter. */
 export const KUTLAMA_OLAYI = 'cizbi:kutla'

@@ -4317,3 +4317,23 @@ body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekm
 .uygulama .kart--kaldirilmis { animation: karar-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes karar-gir { from { opacity: 0; transform: translateY(14px); } }
 @media (prefers-reduced-motion: reduce) { .uygulama .kart--kaldirilmis { animation: none; } }
+
+/* ═══ Grafikler canlı gelir ═══
+   Çizgi kendini çizer (900ms), alan sonra belirir, son nokta patlar, etiket
+   geç gelir. Yay ve çubuklar boştan dolar. İlerleme anlatıyor; süs değil. */
+.grafik-cizgi { stroke-dasharray: 1; stroke-dashoffset: 1; animation: grafik-ciz 900ms ease-out forwards; }
+@keyframes grafik-ciz { to { stroke-dashoffset: 0; } }
+.grafik-alan { animation: belir 500ms ease-out 500ms both; }
+@keyframes belir { from { opacity: 0; } }
+.grafik-nokta { animation: belir 300ms ease-out 700ms both; }
+.grafik-nokta--son { transform-box: fill-box; transform-origin: center; animation: nokta-pat 500ms cubic-bezier(.34, 1.56, .64, 1) 850ms both; }
+@keyframes nokta-pat { from { opacity: 0; transform: scale(.2); } }
+.grafik-etiket--gec { animation: belir 300ms ease-out 1000ms both; }
+.yay-dolgu { animation: yay-dol 700ms ease-out; }
+@keyframes yay-dol { from { stroke-dashoffset: var(--yay); } }
+.hedef-dolgu, .rd-dolgu { animation: cubuk-dol-genis 600ms ease-out; }
+@keyframes cubuk-dol-genis { from { width: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .grafik-cizgi { animation: none; stroke-dashoffset: 0; }
+  .grafik-alan, .grafik-nokta, .grafik-nokta--son, .grafik-etiket--gec, .yay-dolgu, .hedef-dolgu, .rd-dolgu { animation: none; opacity: 1; }
+}

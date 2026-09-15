@@ -22,8 +22,8 @@ function Gosterge({ yuzde, deger, etiket }) {
               strokeWidth="10" strokeLinecap="round" />
         {oran > 0 && (
           <path d="M10 60 A50 50 0 0 1 110 60" fill="none" stroke="var(--marka-koyu-amber)"
-                strokeWidth="10" strokeLinecap="round"
-                strokeDasharray={YAY} strokeDashoffset={YAY * (1 - oran)} />
+                strokeWidth="10" strokeLinecap="round" className="yay-dolgu"
+                strokeDasharray={YAY} strokeDashoffset={YAY * (1 - oran)} style={{ '--yay': YAY }} />
         )}
       </svg>
       <strong className="rt-deger">{deger}</strong>

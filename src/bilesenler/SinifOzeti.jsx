@@ -60,12 +60,12 @@ function NetGrafigi({ veri }) {
           <stop offset="100%" stopColor={renk} stopOpacity="0.02" />
         </linearGradient>
       </defs>
-      <path d={alan} fill="url(#netDolgu)" />
-      <path d={cizgi} fill="none" stroke={renk} strokeWidth="2.5"
+      <path d={alan} fill="url(#netDolgu)" className="grafik-alan" />
+      <path d={cizgi} className="grafik-cizgi" pathLength="1" fill="none" stroke={renk} strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round" />
-      <circle cx={x(veri.length - 1)} cy={y(son)} r="4.5"
+      <circle className="grafik-nokta grafik-nokta--son" cx={x(veri.length - 1)} cy={y(son)} r="4.5"
               fill={renk} stroke="#ffffff" strokeWidth="2.5" />
-      <text className="grafik-etiket" x={x(veri.length - 1) - 8} y={Math.max(10, y(son) - 9)} textAnchor="end" fill={renk}>
+      <text className="grafik-etiket grafik-etiket--gec" x={x(veri.length - 1) - 8} y={Math.max(10, y(son) - 9)} textAnchor="end" fill={renk}>
         {son.toFixed(1)}
       </text>
     </svg>

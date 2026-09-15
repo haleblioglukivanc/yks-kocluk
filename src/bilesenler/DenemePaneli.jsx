@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Uyari, Yukleniyor } from './Ortak.jsx'
+import { useSayarak } from '../lib/canli.js'
 import DenemeFormu from './DenemeFormu.jsx'
 
 /* Form uzun sayfanın en altında açılıyor ve koç açtığını göremiyordu:
@@ -37,6 +38,12 @@ const DURUM_ETIKET = {
 
 /** Küçük gelişim çizgisi. Eksen yok: burada okunması gereken şey
  *  değerin kendisi değil, yönü. */
+/* Büyük sayı sayarak gelir; ekran okuyucu son değeri okur. */
+function SayanNet({ deger }) {
+  const d = useSayarak(Number(deger))
+  return <span aria-label={Number(deger).toFixed(2)}>{Number(d).toFixed(2)}</span>
+}
+
 function NetCizgisi({ seri }) {
   if (seri.length < 2) {
     return <Bos ruh="fikir" baslik="İkinci denemeyle çizgi başlar" aciklama="Bir deneme daha girince ilkiyle arasındaki yön burada görünür." />
@@ -64,8 +71,10 @@ function NetCizgisi({ seri }) {
       role="img"
       aria-label={`Net gelişim grafiği, son değer ${seri[seri.length - 1].net.toFixed(2)}`}
     >
-      <path d={alan} fill="var(--dolgu)" fillOpacity="0.08" />
+      <path d={alan} fill="var(--dolgu)" fillOpacity="0.08" className="grafik-alan" />
       <polyline
+        className="grafik-cizgi"
+        pathLength="1"
         points={noktalar.map((p) => p.join(',')).join(' ')}
         fill="none"
         stroke="var(--dolgu)"
@@ -76,6 +85,7 @@ function NetCizgisi({ seri }) {
       {noktalar.map((p, i) => (
         <circle
           key={i}
+          className={i === noktalar.length - 1 ? 'grafik-nokta grafik-nokta--son' : 'grafik-nokta'}
           cx={p[0]}
           cy={p[1]}
           r={i === noktalar.length - 1 ? 4 : 2.5}
@@ -85,7 +95,7 @@ function NetCizgisi({ seri }) {
         />
       ))}
       <text
-        className="grafik-etiket"
+        className="grafik-etiket grafik-etiket--gec"
         x={etiketSolda ? sonNokta[0] - 8 : sonNokta[0] + 8}
         y={Math.max(10, sonNokta[1] - 8)}
         textAnchor={etiketSolda ? 'end' : 'start'}
@@ -217,7 +227,7 @@ export default function DenemePaneli({
         <div className="net-ozet">
           <div>
             <span className="net-ozet-etiket">Son net</span>
-            <strong className="net-ozet-sayi">{son.net.toFixed(2)}</strong>
+            <strong className="net-ozet-sayi"><SayanNet deger={son.net} /></strong>
           </div>
           {fark !== null && (
             <span className={`net-fark${fark >= 0 ? ' net-fark--artis' : ' net-fark--dusus'}`}>

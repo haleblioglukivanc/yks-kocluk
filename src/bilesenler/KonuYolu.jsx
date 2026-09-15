@@ -233,6 +233,21 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
      için o durak çoğu zaman ekranın dışında kalıyordu. Yol yüklenince
      bulunduğu durak ortaya getiriliyor. Bir kez: sonraki tazelemelerde
      ekran kullanıcının altından kaymasın. */
+  /* Çizbi durak değiştirince zıplar: konum geçişi (0.5s) ile aynı anda. */
+  const oncekiKamil = useRef(null)
+  const [zipliyor, setZipliyor] = useState(false)
+  useEffect(() => {
+    const k = cizgi.kamil
+    if (!k) return
+    const o = oncekiKamil.current
+    oncekiKamil.current = k
+    if (o && (o.x !== k.x || o.y !== k.y)) {
+      setZipliyor(true)
+      const t = setTimeout(() => setZipliyor(false), 600)
+      return () => clearTimeout(t)
+    }
+  }, [cizgi.kamil])
+
   const kaydirildi = useRef(false)
   useEffect(() => {
     if (!yol || kaydirildi.current) return
@@ -262,12 +277,12 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
       <div className="yol-harita" ref={haritaRef}>
         <svg className="yol-cizgi" viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
           <path d={cizgi.soluk} className="yol-cizgi--soluk" />
-          <path d={cizgi.renkli} className="yol-cizgi--gecildi" />
+          <path d={cizgi.renkli} className="yol-cizgi--gecildi" pathLength="1" />
         </svg>
 
         {cizgi.kamil && (
           <div
-            className={`yol-kamil${cizgi.kamil.aynala ? ' yol-kamil--ayna' : ''}`}
+            className={`yol-kamil${cizgi.kamil.aynala ? ' yol-kamil--ayna' : ''}${zipliyor ? ' yol-kamil--zipla' : ''}`}
             style={{ left: cizgi.kamil.x, top: cizgi.kamil.y }}
             aria-hidden="true"
           >
