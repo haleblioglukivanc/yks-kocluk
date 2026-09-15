@@ -224,11 +224,13 @@ function Sirada({ kartlar, onSec, dersBul = metindenDers }) {
           /* "22:05 bloğu · Soru çözümü — Cümlede Anlam": ilk parça zaman/tür
              bilgisiyse adın altına, kalanı sağda çip. Tek parçaysa hepsi çip. */
           const parcalar = String(k.baglam ?? '').split(' · ')
-          const altSatir = parcalar.length > 1 && /bloğu|onayı|\d\d[:.]\d\d|deneme/i.test(parcalar[0]) ? parcalar[0] : null
-          let cip = altSatir ? parcalar.slice(1).join(' · ') : (k.baglam ?? '')
-          /* Dersi bulunmuş ama çipte adı yoksa başa yazılır: "Türkçe · Cümlede Anlam". */
-          if (ders && !cip.toLocaleLowerCase('tr-TR').includes(ders.ad.toLocaleLowerCase('tr-TR'))) {
-            const konu = cip.split(' — ').pop()
+          /* Zaman/tarih parçası adın altına: "22:05 bloğu", "08.09". Kalanı çip. */
+          const zamanMi = (p) => /bloğu|onayı|^\d\d[:.]\d\d/i.test(p)
+          const altSatir = parcalar.length > 1 ? (parcalar.find(zamanMi) ?? null) : null
+          let cip = parcalar.filter((p) => p !== altSatir).join(' · ') || (k.baglam ?? '')
+          /* Dersi bulunmuşsa çip "Ders · Konu" olur; tür ("Soru çözümü") düşer. */
+          if (ders) {
+            const konu = cip.split(' — ').pop().replace(new RegExp(`^${ders.ad}\\s*·\\s*`, 'i'), '')
             cip = `${ders.ad} · ${konu}`
           }
           return (
