@@ -3998,3 +3998,66 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 
 /* Seçili öğrenci (geniş ekranda liste + detay) */
 .rehber-satir--secili { background: var(--serin-zemin); border-radius: var(--r); }
+
+/* Mikro-etüt teklifi ve deneme sonrası anket */
+.mikro {
+  margin-top: 1.1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cizgi);
+}
+/* Teklif koyu odak bloğunun içinde duruyor: gri metin orada okunmuyordu. */
+.siradaki-odak .mikro { border-top-color: var(--k-cizgi-2); }
+.siradaki-odak .mikro-soru { color: var(--odak-metin); }
+.siradaki-odak .mikro-not { color: var(--odak-metin-2); }
+.mikro-soru {
+  margin: 0 0 0.7rem;
+  font-size: var(--punto-kucuk);
+  line-height: 1.5;
+}
+.mikro-basla { width: 100%; }
+.mikro-not {
+  margin: 0.55rem 0 0;
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+  line-height: 1.5;
+}
+.mikro-alt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 0.9rem;
+}
+.mikro-alt .dugme { flex: 1; }
+.anket-olcek { margin-top: 1rem; }
+.anket-soru {
+  margin: 0 0 0.4rem;
+  font-size: var(--punto-kucuk);
+}
+.anket-secenekler {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.3rem;
+}
+.anket-cip {
+  padding: 0.6rem 0;
+  border: 1px solid var(--cizgi);
+  border-radius: var(--r-orta);
+  background: var(--kagit);
+  font: inherit;
+  font-size: var(--punto-kucuk);
+  cursor: pointer;
+}
+.anket-cip--secili {
+  border-color: var(--marka-mavi);
+  background: var(--marka-mavi);
+  color: #fff;
+}
+.anket-uclar {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 0.3rem;
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+}
+/* Anket açıkken köşedeki Çizbi susar: balon formun üstüne düşüyordu. */
+body[data-anket] .kalem-kose { display: none; }

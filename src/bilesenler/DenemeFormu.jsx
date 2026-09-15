@@ -20,6 +20,9 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
   const [kayitli, setKayitli] = useState(null) // { id, dersler: [{id, ad, yanlis}] }
   const [konular, setKonular] = useState({}) // dersId -> [{id, ad}]
   const [isaret, setIsaret] = useState({}) // konuId -> adet
+  /* Anket yanlış işaretlemeden ÖNCE çıkıyor: deneme biter bitmez sorulursa
+     his taze, sonraya bırakılırsa hiç doldurulmuyor. */
+  const [anketGecti, setAnketGecti] = useState(false)
 
   useEffect(() => {
     if (!katalogId) return
@@ -149,6 +152,16 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
   /* Analiz taslağı (dağılım + öneriler) artık veritabanı tetikleyicisiyle
      sonuçlar ve hata konuları yazıldığı anda üretilir; tarayıcıdan çağrı yok.
      Bulgu metnini modele yazdırma işi 'analiz-bulgusu' cron'unda. */
+
+  if (kayitli && !anketGecti) {
+    return (
+      <AnketAdimi
+        denemeId={kayitli.id}
+        dersler={uygun}
+        onBitti={() => setAnketGecti(true)}
+      />
+    )
+  }
 
   if (kayitli) {
     const toplamIsaret = Object.values(isaret).reduce((t, n) => t + n, 0)
@@ -385,6 +398,117 @@ function KarneYukle({ ogrenciId, onOkundu }) {
         </Uyari>
       ) : null}
       <Uyari>{hata}</Uyari>
+    </div>
+  )
+}
+
+/* Deneme sonrası kısa anket. Üç ölçek ve bir ders seçimi — dört ölçek +
+   ders, deneme çıkışında yorgun bir öğrenci için uzun form oluyor ve uzun
+   form hiç doldurulmuyor. Enerji alanı veritabanında duruyor, gerekirse
+   eklenir.
+
+   Ruh haline ilişkin veri KVKK'da özel nitelikli. Üç kural: hiçbir soru
+   zorunlu değil, anket atlanabilir, ve bu cevaplar veliye giden haftalık
+   özete girmiyor. */
+
+const OLCEKLER = [
+  ['zaman', 'Süre yetti mi?', 'Hiç yetmedi', 'Rahat yetti'],
+  ['odak', 'Odaklanabildin mi?', 'Dağıldım', 'Tamamen'],
+  ['kaygi', 'Kaygın ne düzeydeydi?', 'Sakindim', 'Çok gergin'],
+]
+
+function AnketAdimi({ denemeId, dersler, onBitti }) {
+  /* Deneme kaydedilince Çizbi köşeden "hangi bölüm zorladı?" diye soruyor
+     ve balon tam bu formun üstüne düşüyordu. Anket açıkken köşedeki Çizbi
+     susuyor — zaten aynı soruyu daha iyi bir biçimde burada soruyoruz. */
+  useEffect(() => {
+    document.body.dataset.anket = '1'
+    return () => {
+      delete document.body.dataset.anket
+    }
+  }, [])
+
+  const [cevap, setCevap] = useState({})
+  const [ders, setDers] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  async function kaydet() {
+    const dolu = OLCEKLER.some(([k]) => cevap[k]) || ders
+    if (!dolu) {
+      onBitti()
+      return
+    }
+    setBekliyor(true)
+    setHata('')
+    const { error } = await supabase.from('deneme_anketi').upsert(
+      {
+        /* ogrenci_id gönderilmiyor: tetikleyici denemeden okuyor, böylece
+           istemci başkasının adına anket yazamıyor. */
+        deneme_id: denemeId,
+        zaman: cevap.zaman ?? null,
+        odak: cevap.odak ?? null,
+        kaygi: cevap.kaygi ?? null,
+        zorlanan_ders_id: ders ? Number(ders) : null,
+      },
+      { onConflict: 'deneme_id' },
+    )
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    onBitti()
+  }
+
+  return (
+    <div className="form-kutu">
+      <p className="hata-adim-baslik">Deneme kaydedildi. Nasıl geçti?</p>
+      <p className="kart-alt">
+        Üç soru, hepsi isteğe bağlı. Bu cevapları yalnızca koçun görür, velin görmez.
+      </p>
+
+      {OLCEKLER.map(([anahtar, soru, sol, sag]) => (
+        <div key={anahtar} className="anket-olcek">
+          <p className="anket-soru">{soru}</p>
+          <div className="anket-secenekler" role="group" aria-label={soru}>
+            {[1, 2, 3, 4, 5].map((n) => (
+              <button
+                key={n}
+                type="button"
+                className={cevap[anahtar] === n ? 'anket-cip anket-cip--secili' : 'anket-cip'}
+                aria-pressed={cevap[anahtar] === n}
+                onClick={() =>
+                  setCevap((o) => ({ ...o, [anahtar]: o[anahtar] === n ? undefined : n }))
+                }
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          <div className="anket-uclar">
+            <span>{sol}</span>
+            <span>{sag}</span>
+          </div>
+        </div>
+      ))}
+
+      <Alan etiket="En çok hangi derste zorlandın?">
+        <select value={ders} onChange={(e) => setDers(e.target.value)}>
+          <option value="">Seçme</option>
+          {dersler.map((d) => (
+            <option key={d.id} value={d.id}>{d.ad}</option>
+          ))}
+        </select>
+      </Alan>
+
+      <Uyari>{hata}</Uyari>
+      <div className="hata-adim-dugmeler">
+        <button type="button" className="metin-dugme" onClick={onBitti} disabled={bekliyor}>
+          Şimdi değil
+        </button>
+        <Dugme onClick={kaydet} bekliyor={bekliyor}>Kaydet ve yanlışlara geç</Dugme>
+      </div>
     </div>
   )
 }

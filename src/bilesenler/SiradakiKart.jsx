@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { dersGorunumu } from '../lib/dersGorunum.js'
 import { Kart, Uyari } from './Ortak.jsx'
@@ -63,6 +63,34 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const [ekDk, setEkDk] = useState(30)
   const [talepGitti, setTalepGitti] = useState(false)
   const [hata, setHata] = useState('')
+  /* Mikro-etüt: gün sıfır kapanmasın diye akşam çıkan beş dakikalık teklif.
+     Kalıcı bir "5 dk" düğmesi koymadık — her zaman duran beş dakika, kırk
+     beş dakikalık işin kaçış kapısına dönüşüyor. */
+  const [bugunDakika, setBugunDakika] = useState(null)
+  const [mikroKapali, setMikroKapali] = useState(false)
+
+  /* Bugün sayaç çalıştırılmış ama görev işaretlenmemiş olabilir; öyle bir
+     günü "hiç çalışılmadı" saymak haksızlık olur. Onun için oturumlara da
+     bakıyoruz. */
+  useEffect(() => {
+    if (!bugunMu || saltOkunur) {
+      setBugunDakika(0)
+      return undefined
+    }
+    let gecerli = true
+    const gunBasi = new Date()
+    gunBasi.setHours(0, 0, 0, 0)
+    supabase
+      .from('calisma_oturumlari')
+      .select('sure_dk')
+      .gte('baslangic', gunBasi.toISOString())
+      .then(({ data }) => {
+        if (gecerli) setBugunDakika((data ?? []).reduce((t, o) => t + (o.sure_dk ?? 0), 0))
+      })
+    return () => {
+      gecerli = false
+    }
+  }, [bugunMu, saltOkunur, gorevler])
 
   const tumu = gorevler ?? []
   /* Görüşme bir çalışma değil: sayacı, atlanması, tamamlanması yok. Günde
@@ -294,6 +322,15 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const baslik =
     sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
 
+  /* Teklif akşam saatinde, o gün hiçbir işaret yokken ve yapılacak iş
+     dururken çıkar. Sayaç çalışıyorsa zaten çalışılıyor demektir. */
+  const mikroTeklif =
+    bugunMu && !saltOkunur && !durum && !mikroKapali &&
+    bugunDakika === 0 &&
+    new Date().getHours() >= 19 &&
+    bekleyen.length > 0 &&
+    !liste.some((g) => g.durum === 'tamamlandi')
+
   return (
     <section sinif="siradaki" aria-label="Bugünün hedefi">
       {serit}
@@ -312,6 +349,25 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       <GorevKaynagi gorev={sira} />
       {sira.aciklama && <p className="siradaki-not">{sira.aciklama}</p>}
 
+      {mikroTeklif ? (
+        <div className="mikro">
+          <p className="mikro-soru">Bugün hiç işaret yok. Beş dakikan var mı?</p>
+          <button className="dugme dugme--birincil mikro-basla" onClick={() => sayac?.basla(5, sira.id)}>
+            Beş dakika başla
+          </button>
+          <p className="mikro-not">
+            Beş dakika sonunda durabilirsin, beş soru bile yeter. Gün sıfır kapanmasın.
+          </p>
+          <div className="mikro-alt">
+            <button className="dugme dugme--ikincil" onClick={() => setMikroKapali(true)}>
+              Tamamını yapacağım
+            </button>
+            <button className="metin-dugme" onClick={() => setMikroKapali(true)}>
+              Bugünlük bitti
+            </button>
+          </div>
+        </div>
+      ) : (
       <div className="siradaki-eylem">
         <button
           className="dugme dugme--birincil siradaki-basla"
@@ -332,6 +388,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           </button>
         ))}
       </div>
+      )}
       {/* Blok saati geçtiyse öğrencinin iki çıkışı var. İkisi de koçun
           önüne düşer; öğrenci kendi başına bloğu değiştiremez ama
           sessiz de kalmak zorunda değil. */}
