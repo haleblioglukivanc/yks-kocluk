@@ -3377,7 +3377,7 @@ body[data-tema='panel'] {
 .ust-ikon .ust-rozet { border-color: var(--tepe-ust); background: var(--g-kirmizi); }
 /* Bugün ekranı: koyu başlık şeritle birleşir, kenarlara taşar */
 .uygulama--koyu-tepe > main { padding-top: 0; }
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child {
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) {
   margin-inline: calc(-1 * clamp(1rem, 4vw, 1.75rem));
   margin-top: 0;
   border-radius: 0 0 24px 24px;
@@ -3390,15 +3390,15 @@ body[data-tema='panel'] {
    üç şey var: karar kartı (.kart), rapor kutusu (.dikis-kart) ve sekmeli
    ekranlarda sekme çubuğu. Beyaz kart koyu tepenin üstünde kendiliğinden
    öne çıkıyor. */
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + :is(.kart, .dikis-kart) {
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) + :is(.kart, .dikis-kart) {
   position: relative; z-index: 2;
   margin-top: -3rem;
   background: var(--yuzey);
   border: 1px solid var(--cizgi);
   box-shadow: 0 12px 24px -14px rgba(14, 22, 38, 0.45);
 }
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde:has(> .sekmeler:first-child) { position: relative; z-index: 2; margin-top: -3rem; }
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child + .sekme-govde > .sekmeler:first-child {
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) + .sekme-govde:has(> .sekmeler:first-child) { position: relative; z-index: 2; margin-top: -3rem; }
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) + .sekme-govde > .sekmeler:first-child {
   background: var(--yuzey);
   border: 1px solid var(--cizgi);
   border-radius: var(--r-buyuk);
@@ -4311,7 +4311,7 @@ body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
 .ob-acil-kose .acil-yazi { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .ob-acil-kose .acil { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; gap: 0; }
 .acil-yaprak--sayfa { margin: 0; padding: 0; border: 0; background: none; }
-body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .ob.hero-yuzey:first-child { padding-bottom: 1.25rem; }
+body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.ob:is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey), .koc-selam + .ob.hero-yuzey) { padding-bottom: 1.25rem; }
 /* Koç karar kartı: karar verilince yenisi 14px aşağıdan kayarak gelir (220ms).
    Kart anahtarla yeniden kurulduğu için tek satır yetiyor. */
 .uygulama .kart--kaldirilmis { animation: karar-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
@@ -4320,7 +4320,7 @@ body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekm
 
 /* Dikiş kartı yüklenirken de tepenin üstünde: '+' seçicisi araya giren
    uyarı/yükleniyor kardeşinde tutmuyor, tepenin halkası kartın üstüne biniyordu. */
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child ~ .kart { position: relative; z-index: 2; }
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) ~ .kart { position: relative; z-index: 2; }
 
 /* ═══ Grafikler canlı gelir ═══
    Çizgi kendini çizer (900ms), alan sonra belirir, son nokta patlar, etiket
@@ -4433,3 +4433,19 @@ body[data-rol='koc'] .uygulama .kimlik-kart, body[data-rol='koc'] .uygulama .her
 .sirada-satir[style*='--ders-renk'] .sirada-av { background: color-mix(in srgb, var(--ders-renk) 14%, var(--yuzey)); color: var(--ders-renk); }
 .sirada-satir[style*='--ders-renk'] .sirada-baglam { color: var(--ders-renk); font-weight: 600; }
 .sirada-satir[data-segment='acil'] .sirada-av { background: var(--kizil-zemin); color: var(--kizil-metin); }
+
+/* Koç selamı: telefonda gizli (kartın içindeki kalır), masaüstünde kartın üstünde. */
+.koc-selam { display: none; }
+.koc-selam-ad { font-family: var(--display); font-size: 28px; font-weight: 800; letter-spacing: -.03em; margin: 0; }
+.koc-selam-alt { margin: 2px 0 0; color: var(--soluk); font-size: var(--punto-kucuk); }
+/* Yan çubuk notu: en altta, Çizbi'nin koça küçük cümlesi. */
+.yan-not { display: none; margin-top: auto; background: rgba(255, 255, 255, .08); border-radius: 14px; padding: 12px; font-size: var(--punto-mini); color: rgba(255, 255, 255, .85); line-height: 1.4; align-items: center; gap: 10px; }
+.yan-not-cizbi { flex: none; display: block; width: 34px; }
+/* Sırada masaüstünde beyaz kart; bağlam dersin renginde çip. */
+body[data-rol='koc'] .uygulama .kart--duz:has(> .sirada-liste) { background: var(--yuzey); box-shadow: var(--golge-kart); padding: 1.125rem 1.25rem; border-radius: 20px; }
+body[data-rol='koc'] .uygulama .kart--duz:has(> .sirada-liste) .kart-basi h2 { font-size: var(--punto-kart); color: var(--murekkep); }
+body[data-rol='koc'] .uygulama .kart--duz:has(> .sirada-liste) .kart-alt { display: block; }
+body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { flex: 0 1 auto; margin-left: auto; padding: 3px 10px; border-radius: var(--r-tam); background: color-mix(in srgb, var(--ders-renk) 12%, var(--yuzey)); font-size: var(--punto-mini); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
+body[data-rol='koc'] .sirada-satir .sirada-ac { margin-left: 0.5rem; }
+/* Bugün girenler: saat mavi hap. */
+body[data-rol='koc'] .sirada-zaman { background: var(--serin-zemin); color: var(--serin-metin); border-radius: var(--r-tam); padding: 3px 9px; }

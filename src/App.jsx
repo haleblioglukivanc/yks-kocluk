@@ -1,3 +1,4 @@
+import { Kalem } from './bilesenler/Kalem.jsx'
 import { useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import { supabase } from './lib/supabase.js'
@@ -583,6 +584,12 @@ export default function App() {
             </button>
           )
         })}
+        {kocMu && genis && !gozuyleId && (
+          <div className="yan-not" aria-live="polite">
+            <span className="yan-not-cizbi" aria-hidden="true"><Kalem ruh="fikir" boyut={34} /></span>
+            <span>{bekleyenKarar > 0 ? `${bekleyenKarar} karar bekliyor. Bir bir gidelim.` : 'Kuyruk boş. Bugün rahat.'}</span>
+          </div>
+        )}
       </nav>
       )}
 

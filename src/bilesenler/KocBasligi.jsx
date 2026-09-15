@@ -95,6 +95,13 @@ export default function KocBasligi({ profil, ozet, onGit }) {
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
 
   return (
+    <>
+    {/* Masaüstünde selam kartın dışında sayfa başlığı; telefonda kartın
+        içinde kalır (CSS ikisinden birini gösterir). */}
+    <div className="koc-selam">
+      <h1 className="koc-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
+      <p className="koc-selam-alt">{tarih}{ozet ? ` · ${(ozet.riskliOgrenciler ?? []).length} öğrenci önce bakılacak` : ''}</p>
+    </div>
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve günün özeti`}>
       {/* Başlık satırı her sekmede aynı kalıp (SekmeTepesi ile aynı sınıflar):
           büyük ad, altında gri tek satır. Bugün'de o satır tarih. */}
@@ -143,5 +150,6 @@ export default function KocBasligi({ profil, ozet, onGit }) {
       </div>
 
     </section>
+    </>
   )
 }
