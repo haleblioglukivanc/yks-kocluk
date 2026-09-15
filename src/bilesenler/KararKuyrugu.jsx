@@ -1,3 +1,4 @@
+import { metindenDers } from '../lib/dersGorunum.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
@@ -199,11 +200,14 @@ function Sirada({ kartlar, onSec }) {
       }
     >
       <ul className="sirada-liste">
-        {gosterilen.map((k) => (
+        {gosterilen.map((k) => {
+          const ders = metindenDers(k.baglam)
+          return (
           <li key={anahtar(k)}>
             <button
               className="sirada-satir sirada-satir--dokun"
               data-segment={k.segment}
+              style={ders ? { '--ders-renk': ders.renk } : undefined}
               onClick={() => onSec(k)}
             >
               <span className="sirada-av" aria-hidden="true">{basHarf(k.ad)}</span>
@@ -212,7 +216,8 @@ function Sirada({ kartlar, onSec }) {
               <span className="sirada-ac" aria-hidden="true">Aç</span>
             </button>
           </li>
-        ))}
+          )
+        })}
       </ul>
     </Kart>
   )

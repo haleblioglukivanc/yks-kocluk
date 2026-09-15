@@ -4427,3 +4427,9 @@ body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart:nth-child(3) { background: l
 body[data-rol='koc'] .uygulama .rapor-kpi .kpi-kart:nth-child(4) { background: linear-gradient(160deg, var(--leke-seftali), #ffffff 70%); }
 /* Koçta kimlik kartı ve sekme tepeleri mürekkep-mavi; amber imza kalır. */
 body[data-rol='koc'] .uygulama .kimlik-kart, body[data-rol='koc'] .uygulama .hero-yuzey.rt { background: linear-gradient(160deg, var(--koc-yan-ust), var(--koc-yan-alt)); }
+
+/* Sırada satırı: dersi bilinen satır avatarı ve bağlamı dersin renginde;
+   segment rengi (acil/süreli) dersin önüne geçer. */
+.sirada-satir[style*='--ders-renk'] .sirada-av { background: color-mix(in srgb, var(--ders-renk) 14%, var(--yuzey)); color: var(--ders-renk); }
+.sirada-satir[style*='--ders-renk'] .sirada-baglam { color: var(--ders-renk); font-weight: 600; }
+.sirada-satir[data-segment='acil'] .sirada-av { background: var(--kizil-zemin); color: var(--kizil-metin); }

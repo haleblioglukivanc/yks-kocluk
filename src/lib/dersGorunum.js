@@ -61,3 +61,14 @@ export function dersGorunumu(ad) {
     ad: temiz,
   }
 }
+
+/* Serbest metinde ders adı arar ("Türkçe · Sözcükte Anlam", "17:40 bloğu ·
+   Fizik — Vektörler"). Karar kuyruğu satırlarının rengi buradan gelir;
+   bulunamazsa null döner, çağıran kendi rengine düşer. */
+const DERS_ADLARI = Object.keys(HARITA).sort((a, b) => b.length - a.length)
+export function metindenDers(metin) {
+  const k = (metin ?? '').toLocaleLowerCase('tr-TR')
+  if (!k) return null
+  const ad = DERS_ADLARI.find((d) => k.includes(d))
+  return ad ? dersGorunumu(ad) : null
+}
