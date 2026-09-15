@@ -1,6 +1,6 @@
 # Proje Durumu
 
-Son güncelleme: 29 Ağustos 2026
+Son güncelleme: 15 Eylül 2026 (görsel dil turu)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
@@ -127,6 +127,40 @@ karşılaştırmalı çubuk olarak görünür. Hedefi yalnızca koç girer.
 **Fotoğraflar** — `ogrenci-foto` kovası **gizli**. Öğrenciler reşit olmayabilir;
 fotoğraflar herkese açık adreste durmaz. Her görüntülemede bir saatlik imzalı
 bağlantı üretilir. Yalnızca öğrenci, koçu ve velisi görebilir.
+
+---
+
+## 15 Eylül 2026 — görsel dil turu (oturum raporu)
+
+Ayrıntı SISTEM.md'de ("Doku ve gölge", "Koçun dünyası", "İki rol, iki
+sıcaklık"). Özet:
+
+- **Kılavuz turu:** kâğıt dokusu, iki gölge tokenı, kart başlığı/sayı ritmi,
+  boş durumlarda Çizbi + davet, grafik dolgusu ve son değer etiketi, rozetler
+  cümle düzeninde, yan çubukta amber imza.
+- **Öğrencinin dünyası** (`body[data-rol='ogrenci']`): sıcak mürekkep tepe,
+  krem kâğıt, Çizbi sekerek girer + beyaz balon + yazılarak akan cümle, hafta
+  damgası, dersin renginde Sıradaki kartı, sayaç halkası ders renginde ve
+  yanında çalışan Çizbi, bitirme koreografisi (kart uçar, tik patlar). Yol'da
+  patika kendini çizer, Çizbi durak zıplar; Denemeler'de çizgi çizilir, sayı
+  sayar, yay/çubuk dolar. Acil görüşme sağ üst köşede, yaprağı alt sayfa.
+- **Koçun dünyası** (`body[data-rol='koc']`): mürekkep-mavi yan çubuk + karar
+  rozeti + Çizbi notu, şeftali tepe kartı (üç sayan sayı), geniş ekranda zemin
+  lekeleri ve pırıltı, karar kartında tip çizgisi, Sırada'da "Ders · Konu"
+  çipleri (konu kataloğundan ders bulunur), öğrenci satırları risk renginde,
+  Öğrenciler başlığı beyaz kart, KPI kartları pastel ve sayan.
+- **Düzeltilen hatalar:** Rapor'da devleşen net grafiği; `.ders-cip` sınıf
+  çakışması (Yol sekmeleri bozuluyordu); masaüstünde logo yan çubuğun altında
+  kalıyordu; karar sayısı 20'de kesiliyordu; koç tepesi bir ara çöktü (kapsam
+  dışı değişken), dakikalar içinde düzeltildi.
+
+### Açık kalanlar
+
+- Yol'da hiç konuya başlanmamış öğrencide "sıradaki durak" işareti yok
+  ("buradasın" nabzı yalnız çalışılan durakta yanar).
+- Öğrenciler listesinde satırın alt yazısına tıklamak detayı açmıyor.
+- Öğrenciler/öğrenci detayı ve Rapor'un "Raporlar" kartı yeni dile tam
+  çekilmedi; Kıvanç'ın geri bildirimiyle devam.
 
 ---
 
