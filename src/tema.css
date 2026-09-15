@@ -20,6 +20,7 @@
   --g-yuzey-2:  #f1f2ef;   /* kart içi girinti */
   --g-cizgi:    #e3e5e0;   /* ince kenar */
   --g-cizgi-2:  #cfd3cc;   /* belirgin kenar */
+  --g-cizgi-hafif: #eceeea; /* gölgeli kartın kenarı: gölge + koyu kenar birlikte ağır duruyordu */
 
   --g-murekkep: #16202e;   /* ana metin      · beyazda 16.4 */
   --g-grafit:   #48566b;   /* ikincil metin  · beyazda  7.5 */
@@ -129,10 +130,11 @@
      input'a odaklanınca sayfayı otomatik yakınlaştırmıyor.
      En küçük akan yazı 13px; 12px yalnız etiket/rozet. index.css'e
      rem/px punto yazılmaz, yalnız bu tokenlar. */
-  --punto-sayi:   2rem;        /* 32 — yalnız .sayi--buyuk gibi tek büyük rakam */
+  --punto-sayi:   2.125rem;    /* 34 — yalnız KPI, net, tutar gibi tek büyük rakam */
   --punto-dev:    1.75rem;     /* 28 — ekran başlığı (Denemelerim, Giriş) */
   --punto-buyuk:  1.375rem;    /* 22 — selam satırı, kart başlığı büyük */
-  --punto-baslik: 1.125rem;    /* 18 — Çizbi'nin cümlesi, kart başlığı */
+  --punto-baslik: 1.125rem;    /* 18 — Çizbi'nin cümlesi */
+  --punto-kart:   1.1875rem;   /* 19 — kart başlığı; gövdeden bir adım ayrılsın diye */
   --punto-govde:  1rem;        /* 16 */
   --punto-orta:   0.9375rem;   /* 15 */
   --punto-kucuk:  0.875rem;    /* 14 */
@@ -172,6 +174,7 @@
   --soluk:    var(--g-soluk);
   --cizgi:    var(--g-cizgi);
   --cizgi-2:  var(--g-cizgi-2);
+  --cizgi-hafif: var(--g-cizgi-hafif);
   --beyaz:    #ffffff;        /* koyu yüzey üstündeki yazı; kâğıt değil */
 
   /* serin = eylem (mavi) */
@@ -223,6 +226,18 @@
   --r-buyuk: 16px;   /* yaprak, büyük kart */
   --r-dev:   20px;   /* tepe/hero */
   --r-tam:   999px;  /* hap */
+
+  /* ── GÖLGE ─────────────────────────────────────────────────
+     Kartı kâğıttan ayıran şey renk değil gölge. İki kademe, nötr,
+     çok yumuşak: kart ve kaldırılmış kart (karar kartı). Üçüncüsü yok.
+     Telefonda da aynı; küçültmek tutarsız görünür. */
+  --golge-kart:   0 1px 2px rgba(20, 28, 45, .04), 0 8px 20px -12px rgba(20, 28, 45, .10);
+  --golge-kalkik: 0 2px 4px rgba(20, 28, 45, .06), 0 16px 32px -16px rgba(20, 28, 45, .16);
+
+  /* ── DOKU ──────────────────────────────────────────────────
+     Kâğıt zeminine %3 opaklıkta tek renkli gren. Yalnız body zemininde;
+     kart temiz kalır ki yazı okunsun. Ölçek üç genişlikte sabit. */
+  --doku-kagit: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .09 0 0 0 0 .13 0 0 0 0 .18 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23g)'/%3E%3C/svg%3E");
 
   /* ── KATMAN (z-index) ──────────────────────────────────────
      Sıra anlam taşır; sayıyı değil adı kullan. */

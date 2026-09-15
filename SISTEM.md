@@ -126,6 +126,19 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
 - **Kartlar arası tek boşluk: 12px.** Ayrı ölçü gerekiyorsa önce sor:
   bu gerçekten yeni bir ilişki mi, yoksa aynı boşluğun bir tonu mu?
 
+## Doku ve gölge
+
+- **Zemin dokulu, kart temiz.** `body` kâğıdı `--doku-kagit` grenini
+  taşır (%3–5, tek renk, 160px sabit ölçek). Kart yüzeyine doku girmez;
+  yazı orada okunuyor.
+- **Kartı ayıran renk değil gölge.** İki kademe var, üçüncüsü yok:
+  `--golge-kart` (her `.kart`) ve `--golge-kalkik` (`.kart--kaldirilmis`,
+  karar kartı). `.kart--duz` gölgesiz ve kenarsız, o bilerek kapsız.
+  Gölgeli kartın kenarı `--cizgi-hafif`; gölge + koyu kenar birlikte
+  ağır durur. Gölge telefonda küçültülmez.
+- Kart başlığı `--punto-kart` (19), büyük sayı `--punto-sayi` (34,
+  `tabular-nums`). İkisi de token; index.css'e punto yazılmaz.
+
 ## Genişlik
 
 Platform değil genişlik dinlenir. Üç kesme noktası, yalnız `src/yerlesim.css`'te

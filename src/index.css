@@ -131,7 +131,7 @@ main {
    sığmıyordu; alt satıra sarsınlar. */
 .kart-basi { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 0.5rem 1rem; margin-bottom: 0.875rem; }
 .kart-basi > *:first-child { flex: 1 1 12rem; min-width: 0; }
-.kart-alt { margin: 0.2rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
+.kart-alt { margin: 0.2rem 0 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
 .form-kutu {
   display: flex; flex-direction: column; gap: 0.75rem;
   padding: 1rem; margin-bottom: 1rem;
@@ -722,7 +722,7 @@ main {
   box-shadow: none;
 }
 .kart-basi h2 {
-  font-size: var(--punto-baslik);
+  font-size: var(--punto-kart);
   font-weight: 700;
   overflow-wrap: anywhere;
   font-family: var(--display);
@@ -1274,7 +1274,13 @@ body[data-tema='panel'] {
 }
 /* Zemin mat: radyal parlamalar kaldırıldı, mavi bir tık doygunluğu
    düşürüldü. Işık huzmesi ekranda parlıyordu, düz renk daha sakin. */
-body[data-tema='panel'] { background-color: var(--kagit); background-image: none; }
+body[data-tema='panel'] {
+  background-color: var(--kagit);
+  /* Kâğıt dokusu: düz zemin "yarım kalmış" okunuyordu. Kareli defter
+     motifi bilerek yok; ince gren, sabit ölçek. */
+  background-image: var(--doku-kagit);
+  background-size: 160px 160px;
+}
 /* Koyu sayfa açıkken gövde zemini de koyu — mobilde aşırı kaydırmada
    arkadan açık renk sızmasın diye. Tanitim ve Giris ekleyip kaldırıyor. */
 
@@ -3457,9 +3463,10 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
    ═══════════════════════════════════════════════════════════════ */
 
 .uygulama .kart {
-  border: 0;
-  box-shadow: 0 0 0 1px rgba(22, 32, 46, 0.05), 0 1px 2px rgba(22, 32, 46, 0.06);
+  border: 1px solid var(--cizgi-hafif);
+  box-shadow: var(--golge-kart);
 }
+.uygulama .kart--duz { border: 0; }
 .uygulama .kart--duz { background: none; box-shadow: none; padding-inline: 0; }
 .uygulama .kart--duz .kart-basi h2 { font-size: var(--punto-kucuk); color: var(--soluk); }
 .uygulama .kart--duz .kart-alt { display: none; }
@@ -3481,7 +3488,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 /* ═══ Koç Bugün: kaldırılmış karar kartı, düz "Sırada" ve "Bugün girenler" ═══ */
 .uygulama .kart--kaldirilmis {
   background: var(--yuzey);
-  box-shadow: 0 14px 30px -14px rgba(22, 32, 46, 0.35), 0 2px 6px rgba(22, 32, 46, 0.06);
+  box-shadow: var(--golge-kalkik);
   padding: 1.25rem;
 }
 .uygulama .kuyruk-tip { letter-spacing: 0; }
