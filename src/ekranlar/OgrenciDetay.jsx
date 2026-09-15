@@ -1224,14 +1224,9 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
   const [secili, setSecili] = useState(() => gunler.map(() => true))
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
-  /* Form sekiz alandı ve hepsi her seferinde açıktı; oysa sıradan bir
-     görev Ders + Konu + Tür ile yazılıyor. Gerisi kapalı başlıyor,
-     ihtiyaç duyan açıyor. */
-  /* Düzenlemede ayrıntılar açık başlıyor: doldurulmuş bir alanın kapalı
-     kutunun içinde saklanması koçu şaşırtır. */
-  const [ayrinti, setAyrinti] = useState(
-    Boolean(blok && (blok.kaynak_id || blok.hedef_adet != null || blok.baslangic_saat || blok.aciklama)),
-  )
+  /* Rutin konuya ve bloğa bağlı değil: düzenleme formundaki
+     "Ayrıntılar" katlanır kutusu buraya kopyalanmış ama burada
+     kullanılmıyordu ve tanımsız bir değişkene bakıp çöküyordu. */
 
   useEffect(() => {
     if (!ogrenci.katalog_id) return
