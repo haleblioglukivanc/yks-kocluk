@@ -194,3 +194,38 @@
     margin-top: 1rem; margin-inline: 0; border: 0;
   }
 }
+
+/* ── Koç masaüstü: tepe şeridi zemine karışır, Bugün'de şeftali kart iki
+   sütunun üstüne yayılır, sağ sütunun "Öğrenciler" başlığı beyaz kart olur.
+   (Bekir, 15 Eylül: "amber şerit sona kadar gelsin, yukarısı zemine uygun") */
+@media (min-width: 64rem) {
+  body[data-rol='koc'] .ust-serit { background: transparent; }
+  body[data-rol='koc'] .ust-serit .ust-ikon, body[data-rol='koc'] .ust-serit .ust-geri {
+    background: var(--yuzey); border-color: transparent; color: var(--murekkep); box-shadow: 0 2px 6px rgba(20, 28, 45, .08);
+  }
+  body[data-rol='koc'] .ust-serit .ust-ikon--etkin { background: var(--altin); color: var(--altin-uzeri); }
+  body[data-rol='koc'] .ust-serit .ust-ikon--hesap { background: var(--yuzey); }
+  body[data-rol='koc'] .uygulama--koyu-tepe main:has(> .panel > .iki-sutun) { padding-top: 0.25rem; }
+
+  /* Bugün: sol panelin çocukları doğrudan ızgaraya çıkar; tepe iki sütuna
+     yayılır, sağ sütun ikinci satırdan başlar. */
+  body[data-rol='koc'] .iki-sutun:has(> .sutun-ana:first-child) { grid-template-columns: minmax(0, 1fr) 22rem; grid-auto-flow: row; row-gap: 1rem; }
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child,
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel { display: contents; }
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel > * { grid-column: 1; margin-top: 0; }
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel > .hero-yuzey.ob { grid-column: 1 / -1; grid-row: 1; }
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child + .sutun-yan { grid-column: 2; grid-row: 2 / span 40; }
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ob:first-child { margin-top: 0.25rem; }
+
+  /* Sağ sütun başlığı: koyu dil değil, kartın beyaz başı. */
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child {
+    background: var(--yuzey); color: var(--murekkep); margin: 0; padding: 1.1rem 1.25rem 0.5rem;
+    border-radius: 20px 20px 0 0; box-shadow: var(--golge-kart);
+  }
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child::after { display: none; }
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .rt-alt { color: var(--soluk); }
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .ikon-dugme--koyu { background: var(--murekkep); border-color: var(--murekkep); color: #fff; }
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child + :is(.kart, .dikis-kart) {
+    margin: 0; border-radius: 0 0 20px 20px; border: 0; box-shadow: var(--golge-kart); animation: none;
+  }
+}
