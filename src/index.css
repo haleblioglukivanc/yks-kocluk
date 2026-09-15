@@ -151,7 +151,16 @@ main {
 .kod-sonuc { background: var(--yuzey); border: 1px dashed var(--dolgu); border-radius: var(--r-orta); padding: 0.875rem; text-align: center; }
 .kod-sonuc p { margin: 0 0 0.5rem; font-size: var(--punto-mini); color: var(--grafit); }
 .kod-sonuc strong { display: block; font-family: var(--mono); font-size: var(--punto-buyuk); letter-spacing: 0.1em; margin-bottom: 0.375rem; }
-.rozet { font-size: var(--punto-mini); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.45rem; border-radius: 4px; }
+.rozet {
+  display: inline-flex; align-items: center; gap: 0.35rem;
+  height: 20px; padding: 0 0.45rem; border-radius: 4px;
+  font-size: var(--punto-etiket); font-weight: 600; line-height: 1;
+  letter-spacing: 0; white-space: nowrap;
+}
+/* Durum rozetlerinde solda 6px nokta: renk körü için ikinci işaret. */
+.rozet--iyi::before, .rozet--izle::before, .rozet--uyari::before {
+  content: ''; width: 6px; height: 6px; border-radius: var(--r-tam); background: currentColor; flex: 0 0 auto;
+}
 .bos { padding: 1.5rem 0.5rem; text-align: center; }
 /* Maskot 48px'i geçmez; telefonda boş durum ekranın yarısını kaplamasın. */
 .bos-cizbi { display: flex; justify-content: center; margin-bottom: 0.5rem; }
@@ -2378,8 +2387,8 @@ body[data-tema='panel'] {
 .alt-bag, .dugme, .metin-dugme, .ogrenci-satir {
   -webkit-tap-highlight-color: transparent;
 }
-.dugme, .alt-bag { transition: transform 120ms ease, opacity 120ms ease; }
-.dugme:not(:disabled):active { transform: scale(0.97); }
+.dugme, .alt-bag { transition: transform 80ms ease, opacity 120ms ease; }
+.dugme:not(:disabled):active { transform: scale(0.98); }
 .alt-bag:active { transform: scale(0.96); }
 @media (prefers-reduced-motion: reduce) {
 
@@ -3476,7 +3485,12 @@ body[data-tema='panel'] {
 .uygulama .kart {
   border: 1px solid var(--cizgi-hafif);
   box-shadow: var(--golge-kart);
+  /* Kart girişi: 8px aşağıdan, 180ms. Kademeli değil; uzun liste
+     telefonda takılmasın diye hepsi aynı anda. */
+  animation: kart-gir 180ms ease-out;
 }
+@keyframes kart-gir { from { opacity: 0; transform: translateY(8px); } }
+@media (prefers-reduced-motion: reduce) { .uygulama .kart { animation: none; } }
 .uygulama .kart--duz { border: 0; }
 .uygulama .kart--duz { background: none; box-shadow: none; padding-inline: 0; }
 .uygulama .kart--duz .kart-basi h2 { font-size: var(--punto-kucuk); color: var(--soluk); }

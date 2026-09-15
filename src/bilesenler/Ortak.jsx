@@ -82,8 +82,13 @@ export function Yukleniyor({ metin = 'Geliyor', satir = 3, sade = false }) {
   )
 }
 
+/* Rozet cümle düzeninde yazılır ("Önce bunlar", "ÖNCE BUNLAR" değil).
+   Küçük yazılmış metnin ilk harfi burada büyütülür; ekranlar düzeltilmez. */
 export function Rozet({ children, ton = 'notr' }) {
-  return <span className={`rozet rozet--${ton}`}>{children}</span>
+  const metin = typeof children === 'string'
+    ? children.charAt(0).toLocaleUpperCase('tr-TR') + children.slice(1)
+    : children
+  return <span className={`rozet rozet--${ton}`}>{metin}</span>
 }
 
 /** Alt sayfa (bottom sheet). body'ye portal ile takılır: hangi kartın

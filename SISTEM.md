@@ -138,6 +138,16 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
   ağır durur. Gölge telefonda küçültülmez.
 - Kart başlığı `--punto-kart` (19), büyük sayı `--punto-sayi` (34,
   `tabular-nums`). İkisi de token; index.css'e punto yazılmaz.
+- **Hareket az ve amaçlı.** Yalnız beş yer: kart girişi (180ms, 8px
+  yukarı), karar kartı geçişi (220ms), sayaç halkası, çubuk dolgusu
+  (400ms), düğme basma (`scale(.98)`, 80ms). Kademeli (stagger) yok;
+  hepsi `prefers-reduced-motion` ile kapanır.
+- **Boş durum bir davet.** `Bos` bileşeni Çizbi'nin 48px hâlini ve
+  isteğe bağlı `eylem` düğmesini alır; metin suçlamaz ("Henüz X yok"
+  değil, "X girilince burada belirir"). Tek satırlık boşluklarda
+  `ruh={null}`. Grafik boşsa eksen çizilmez, `Bos` gösterilir.
+- **Rozet cümle düzeninde,** 20px sabit yükseklik; durum rozetlerinde
+  (yolunda/izle/acil) solda 6px nokta.
 
 ## Genişlik
 

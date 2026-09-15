@@ -40,6 +40,8 @@
     flex-direction: column; justify-content: flex-start; gap: 0.25rem;
     padding: 4.25rem 0.75rem 1rem;
     background: var(--tepe-ust); border-top: 0; border-right: 1px solid rgba(255, 255, 255, 0.08);
+    /* Sağ kenarda çok hafif iç gölge: yan çubuk kâğıdın altında kalır. */
+    box-shadow: inset -10px 0 14px -12px rgba(0, 0, 0, 0.35);
     view-transition-name: none;
   }
   .alt-bag {
@@ -49,14 +51,21 @@
     font-size: var(--punto-orta); color: rgba(255, 255, 255, 0.72); opacity: 1;
   }
   .alt-bag-ikon { width: auto; height: auto; }
-  .alt-bag--etkin { background: rgba(255, 255, 255, 0.12); color: var(--beyaz); }
+  .alt-bag { transition: background-color 140ms ease, transform 80ms ease; }
+  .alt-bag:hover { background: rgba(255, 255, 255, 0.06); }
+  /* Etkin bağlantı: solda 3px amber çizgi — marka imzası, büyük yüzey değil. */
+  .alt-bag--etkin, .alt-bag--etkin:hover {
+    background: rgba(255, 255, 255, 0.12); color: var(--beyaz);
+    box-shadow: inset 3px 0 0 var(--altin);
+  }
   .alt-bag--etkin .alt-bag-ikon { background: transparent; }
   .alt-rozet { position: static; margin-left: auto; }
   .alt-bag:active { transform: none; }
 
   /* Marka yan çubuğun tepesine geçer; üst şeritte yalnız zil ve hesap kalır. */
   .ust-cubuk { max-width: none; justify-content: flex-end; padding-inline: 2rem; }
-  .ust-logo { position: fixed; left: 1.25rem; top: 0.9rem; z-index: calc(var(--kat-tepe) + 1); }
+  .ust-logo { position: fixed; left: 1.25rem; top: 0.8rem; z-index: calc(var(--kat-tepe) + 1); }
+  .ust-logo .marka-isaret { height: 24px; width: auto; }
   .ust-logo-ad { font-size: var(--punto-orta); }
 
   /* İçerik sütunu: ortalanmaz, sola yaslanır. Tek sütunlu ekranlar 56rem'de
