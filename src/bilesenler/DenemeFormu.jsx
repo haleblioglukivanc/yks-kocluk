@@ -207,6 +207,31 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
 
   return (
     <div className="form-kutu">
+      <KarneYukle
+        ogrenciId={ogrenciId}
+        onOkundu={(c) => {
+          /* Model türü her seferinde okuyamıyor ve okuyamayınca "branş"
+             diyor; dokuz dersli bir karne branş denemesi olamaz. Tek ders
+             varsa branş bilgisine güveniliyor, yoksa formdaki seçim kalıyor. */
+          const dersSayisi = (c.dersler ?? []).length
+          if (c.tur === 'tyt' || c.tur === 'ayt' || (c.tur === 'brans' && dersSayisi === 1)) {
+            setTur(c.tur)
+          }
+          if (c.tarih) setTarih(c.tarih)
+          if (c.yayin) setYayin(c.yayin)
+          const yeni = {}
+          for (const d of c.dersler ?? []) {
+            if (!d.dersId) continue
+            yeni[d.dersId] = {
+              dogru: d.dogru ?? '',
+              yanlis: d.yanlis ?? '',
+              bos: d.bos ?? '',
+            }
+          }
+          setSonuc((o) => ({ ...o, ...yeni }))
+        }}
+      />
+
       <div className="ucul">
         <Alan etiket="Tarih">
           <input type="date" value={tarih} onChange={(e) => setTarih(e.target.value)} />
@@ -268,6 +293,98 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
       <Dugme onClick={kaydet} bekliyor={bekliyor} disabled={uygun.length === 0}>
         Denemeyi kaydet
       </Dugme>
+    </div>
+  )
+}
+
+/* Karne okuma. Model hiçbir şey kaydetmiyor: okuduğunu forma yazıyor, kaydı
+   yine insan yapıyor. Eşleşmeyen ders satırı sessizce düşmüyor, altta
+   "bunları bulamadım" diye gösteriliyor ki elle girilebilsin. */
+
+const UZANTI = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/heic': 'heic',
+  'application/pdf': 'pdf',
+}
+
+function KarneYukle({ ogrenciId, onOkundu }) {
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+  const [ozet, setOzet] = useState(null)
+
+  async function sec(e) {
+    const dosya = e.target.files?.[0]
+    e.target.value = ''
+    if (!dosya) return
+    const uzanti = UZANTI[dosya.type]
+    if (!uzanti) {
+      setHata('Yalnızca fotoğraf ya da PDF yükleyebilirsin.')
+      return
+    }
+    if (dosya.size > 10 * 1024 * 1024) {
+      setHata('Dosya 10 MB’tan büyük olmasın.')
+      return
+    }
+
+    setHata('')
+    setOzet(null)
+    setBekliyor(true)
+    try {
+      const yol = `${ogrenciId}/${Date.now()}.${uzanti}`
+      const { error: yHata } = await supabase.storage
+        .from('deneme-karne')
+        .upload(yol, dosya, { contentType: dosya.type })
+      if (yHata) throw yHata
+
+      const { data: satir, error: kHata } = await supabase
+        .from('karne_yuklemeleri')
+        .insert({ ogrenci_id: ogrenciId, dosya_yolu: yol, mime: dosya.type })
+        .select('id')
+        .single()
+      if (kHata) throw kHata
+
+      const { data, error: fHata } = await supabase.functions.invoke('karne-oku', {
+        body: { yukleme_id: satir.id },
+      })
+      if (fHata) throw fHata
+      if (data?.hata) throw new Error(data.hata)
+
+      const cikti = data?.cikti
+      const satirlar = cikti?.dersler ?? []
+      if (satirlar.length === 0) throw new Error('Karnede ders satırı bulunamadı.')
+
+      onOkundu(cikti)
+      setOzet({
+        bulunan: satirlar.filter((d) => d.dersId).length,
+        eslesmeyen: satirlar.filter((d) => !d.dersId).map((d) => d.karnedeki ?? d.ders),
+      })
+    } catch (e) {
+      setHata(hataMetni(e))
+    } finally {
+      setBekliyor(false)
+    }
+  }
+
+  return (
+    <div className="karne-yukle">
+      <label className="karne-dugme">
+        <input type="file" accept="image/*,application/pdf" onChange={sec} disabled={bekliyor} />
+        <span>{bekliyor ? 'Karne okunuyor…' : 'Karne yükle (fotoğraf ya da PDF)'}</span>
+      </label>
+      <p className="kart-alt">
+        Okuduğunu aşağıdaki forma yazar, kaydetmez. Sayıları kontrol edip sen kaydedersin.
+      </p>
+      {ozet ? (
+        <Uyari tur="bilgi">
+          {ozet.bulunan} ders okundu.
+          {ozet.eslesmeyen.length > 0
+            ? ` Şu satırları eşleştiremedim, elle gir: ${ozet.eslesmeyen.join(', ')}.`
+            : ''}
+        </Uyari>
+      ) : null}
+      <Uyari>{hata}</Uyari>
     </div>
   )
 }

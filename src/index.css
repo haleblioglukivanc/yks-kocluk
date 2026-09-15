@@ -3144,6 +3144,35 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   margin: 0.9rem 0 0;
   line-height: 1.55;
 }
+.karne-yukle {
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--cizgi);
+}
+.karne-dugme {
+  display: block;
+  padding: 0.8rem 1rem;
+  border: 1px dashed var(--cizgi);
+  border-radius: var(--r-orta);
+  background: var(--yuzey-2);
+  text-align: center;
+  font-size: var(--punto-kucuk);
+  cursor: pointer;
+}
+.karne-dugme:has(input:disabled) {
+  cursor: progress;
+  color: var(--soluk);
+}
+.karne-dugme input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+.karne-yukle .kart-alt {
+  margin: 0.4rem 0 0;
+}
 .plan-sayilar {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
