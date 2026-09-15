@@ -289,6 +289,26 @@
   --ogr-tepe-alt: #2a1f14;
   --ogr-yuzey-2:  #f1e9da;
   --ogr-cizgi:    #eadfcb;
+
+  /* ── KOÇ DÜNYASI ───────────────────────────────────────────
+     Koç bir araç kullanıyor ama araç neşeli olabilir: mürekkep-mavi yan
+     çubuk, şeftali→amber tepe şeridi, krem kâğıt ve zeminde pastel lekeler.
+     Bekir'in kararı (15 Eylül 2026): "finans arayüzü gibi durmasın". */
+  --koc-yan-ust:  #2c2f72;
+  --koc-yan-alt:  #1c1f4d;
+  --koc-tepe-ust: #ff9a5c;
+  --koc-tepe-orta:#ffbe4f;
+  --koc-tepe-alt: #ffd98a;
+  --koc-kagit:    #f6f2ea;
+  --leke-seftali: #ffd3a8;
+  --leke-gok:     #cbe6ff;
+  --leke-nane:    #d9f5e6;
+  --leke-leylak:  #e9dcff;
+}
+body[data-rol='koc'] {
+  --kagit: var(--koc-kagit);
+  --tepe-ust: var(--koc-yan-ust);
+  --tepe-alt: var(--koc-yan-alt);
 }
 body[data-rol='ogrenci'] {
   --kagit: var(--ogr-kagit);

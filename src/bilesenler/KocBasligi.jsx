@@ -1,3 +1,4 @@
+import { useSayarak } from '../lib/canli.js'
 import { useCallback, useEffect, useState } from 'react'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
@@ -54,6 +55,11 @@ function varsayilanSoz(ozet) {
   return { ruh: 'bekliyor', mesaj: 'Bugün dikkat isteyen bir şey görünmüyor.' }
 }
 
+function Sayan({ deger }) {
+  const d = useSayarak(Number(deger) || 0)
+  return <>{Math.round(d)}</>
+}
+
 export default function KocBasligi({ profil, ozet, onGit }) {
   /* Bekleyen özet / okunmamış kısayolları zile taşındı (Bildirimler). */
   const [olay, setOlay] = useState(null)
@@ -99,7 +105,15 @@ export default function KocBasligi({ profil, ozet, onGit }) {
         </div>
       </div>
       <div className="ob-ust">
-        <div className="ob-kalem" aria-hidden="true">
+        {/* Masaüstünde sağda üç sayı: koç tepeye bakınca günün yükünü görür. */}
+        {ozet && (
+          <div className="ob-kpi" aria-label="Günün özeti">
+            <div><b><Sayan deger={riskli.length} /></b><small>öğrenci önce</small></div>
+            <div><b><Sayan deger={ozet.bekleyenVeliOzeti ?? 0} /></b><small>veli özeti</small></div>
+            <div><b><Sayan deger={ozet.buHaftaGirilenDeneme ?? 0} /></b><small>deneme bu hafta</small></div>
+          </div>
+        )}
+        <div className="ob-kalem ob-kalem-gir" aria-hidden="true">
           <Kalem ruh={soz.ruh} boyut={76} />
         </div>
 

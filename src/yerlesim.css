@@ -39,7 +39,7 @@
     position: sticky; top: 0; align-self: start; height: 100dvh;
     flex-direction: column; justify-content: flex-start; gap: 0.25rem;
     padding: 4.25rem 0.75rem 1rem;
-    background: var(--tepe-ust); border-top: 0; border-right: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%); border-top: 0; border-right: 1px solid rgba(255, 255, 255, 0.08);
     /* Sağ kenarda çok hafif iç gölge: yan çubuk kâğıdın altında kalır. */
     box-shadow: inset -10px 0 14px -12px rgba(0, 0, 0, 0.35);
     view-transition-name: none;
@@ -175,4 +175,11 @@
 @media (min-width: 100rem) {
   main:has(.kaynak-liste) { max-width: 88rem; }
   .kaynak-liste { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+
+/* Koç masaüstü: zemin lekeleri ve tepedeki üç sayı yalnız geniş ekranda. */
+@media (min-width: 64rem) {
+  .zemin-lekeler { display: block; }
+  .ob-kpi { display: flex; }
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob:first-child { border-radius: 22px; margin-top: 1rem; margin-inline: 0; padding-bottom: 1.25rem; }
 }

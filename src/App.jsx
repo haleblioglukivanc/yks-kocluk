@@ -257,9 +257,10 @@ export default function App() {
   const ogrenciDunyasi = profil?.rol === 'ogrenci' || yol.startsWith('/gozuyle/')
   useEffect(() => {
     if (ogrenciDunyasi) document.body.dataset.rol = 'ogrenci'
+    else if (profil) document.body.dataset.rol = 'koc'
     else delete document.body.dataset.rol
     return () => { delete document.body.dataset.rol }
-  }, [ogrenciDunyasi])
+  }, [ogrenciDunyasi, Boolean(profil)])
 
   if (durum === 'yukleniyor') {
     return (
@@ -519,6 +520,15 @@ export default function App() {
         koyuTepe ? 'uygulama--koyu-tepe' : '',
       ].filter(Boolean).join(' ')}
     >
+      {/* Koç masaüstünde zemin: yavaş süzülen pastel lekeler ve birkaç
+          pırıltı. yerlesim.css yalnız geniş ekranda gösterir. */}
+      {!ogrenciDunyasi && (
+        <div className="zemin-lekeler" aria-hidden="true">
+          <i className="leke leke--1" /><i className="leke leke--2" /><i className="leke leke--3" /><i className="leke leke--4" />
+          <b className="piril" style={{ left: '38%', top: '9%' }} /><b className="piril piril--mavi" style={{ left: '86%', top: '34%' }} />
+          <b className="piril piril--mercan" style={{ left: '55%', top: '72%' }} /><b className="piril" style={{ left: '22%', top: '88%' }} />
+        </div>
+      )}
       {/* Tepe: koyu şerit. Bugün ekranlarında altındaki koyu başlıkla
           birleşir; diğer ekranlarda tek başına kalır. */}
       <header className="ust-serit">
@@ -565,6 +575,11 @@ export default function App() {
                 </svg>
               </span>
               <span className="alt-bag-ad">{ad}</span>
+              {/* Koç daha tıklamadan nerede iş olduğunu görsün: Bugün'ün
+                  yanında bekleyen karar sayısı. */}
+              {hedef === '/' && kocMu && !gozuyleId && bekleyenKarar > 0 && (
+                <span className="alt-bag-rozet">{bekleyenKarar}</span>
+              )}
             </button>
           )
         })}

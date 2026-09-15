@@ -179,6 +179,8 @@ function SegmentSeridi({ sayilar, aktif, onSec }) {
 
 /* Bekleyen kararlar tek satır halinde. Önce dört tanesi görünür, gerisi
    istendiğinde açılır; dokununca o karta atlanır. */
+const basHarf = (ad) => (ad ?? '').split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr-TR')
+
 function Sirada({ kartlar, onSec }) {
   const [hepsi, setHepsi] = useState(false)
   if (kartlar.length === 0) return null
@@ -187,6 +189,7 @@ function Sirada({ kartlar, onSec }) {
     <Kart
       duz
       baslik="Sırada"
+      altBaslik={`${kartlar.length} karar bekliyor`}
       eylem={
         kartlar.length > 4 ? (
           <button className="metin-dugme" onClick={() => setHepsi((a) => !a)} aria-expanded={hepsi}>
@@ -203,8 +206,10 @@ function Sirada({ kartlar, onSec }) {
               data-segment={k.segment}
               onClick={() => onSec(k)}
             >
+              <span className="sirada-av" aria-hidden="true">{basHarf(k.ad)}</span>
               <span className="sirada-ad">{k.ad}</span>
               <span className="sirada-baglam">{k.baglam}</span>
+              <span className="sirada-ac" aria-hidden="true">Aç</span>
             </button>
           </li>
         ))}
