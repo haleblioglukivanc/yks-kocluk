@@ -233,6 +233,7 @@
 @media (min-width: 64rem) {
   /* Logo yan çubuğun altında kalıyordu (aynı z-index, nav sonra geliyor). */
   .alt-gezinme { z-index: 29; }
+  .alt-bag-rozet { display: inline-block; }
   body[data-rol='koc'] .alt-gezinme { display: flex; }
   body[data-rol='koc'] .yan-not { display: flex; }
   /* Selam üstte, şeftali kart altında, ikisi de iki sütuna yayılır. */

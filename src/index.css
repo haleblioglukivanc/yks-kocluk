@@ -4380,7 +4380,7 @@ body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir { animation: cizbi-gir 520ms c
 .ob-kpi small { font-size: var(--punto-etiket); color: var(--grafit); font-weight: 600; }
 
 /* Yan çubuk rozeti */
-.alt-bag-rozet { margin-left: auto; background: var(--kizil); color: #fff; border-radius: var(--r-tam); padding: 1px 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; }
+.alt-bag-rozet { display: none; margin-left: auto; background: var(--kizil); color: #fff; border-radius: var(--r-tam); padding: 1px 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; }
 
 /* Karar kartı: tipine göre sol çizgi */
 body[data-rol='koc'] .uygulama .kart--kaldirilmis { border-left: 6px solid var(--cizgi-2); border-radius: 20px; }
