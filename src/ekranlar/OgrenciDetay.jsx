@@ -123,6 +123,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
               <Kunye ogrenci={ogrenci} />
             )}
           </Kart>
+          <Odemeler ogrenci={ogrenci} />
           <Veliler ogrenci={ogrenci} />
           <Notlar ogrenci={ogrenci} />
           <TehlikeliBolge ogrenci={ogrenci} onSilindi={onGeri} />
@@ -1368,5 +1369,170 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
         {secilenGunler.length} güne ekle
       </Dugme>
     </div>
+  )
+}
+
+/* Ödeme takibi. Ayrı bir muhasebe modülü kurulmadı: koç aylık tutarı ve ay
+   sayısını giriyor, sistem taksitleri yazıyor, geciken taksit karar
+   kuyruğuna düşüyor. Burası kaydın görüldüğü ve elle kapatıldığı yer. */
+
+const TAKSIT_ETIKET = {
+  odendi: 'Ödendi',
+  gecikti: 'Gecikti',
+  kismi: 'Kısmi',
+  bekliyor: 'Bekliyor',
+  iptal: 'İptal',
+}
+
+const tlYaz = (n) =>
+  new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(Number(n ?? 0))
+
+function Odemeler({ ogrenci }) {
+  const [ozet, setOzet] = useState(null)
+  const [formAcik, setFormAcik] = useState(false)
+  const [tutar, setTutar] = useState('')
+  const [ay, setAy] = useState('6')
+  const [vade, setVade] = useState(() => new Date().toLocaleDateString('sv-SE'))
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  const yukle = useCallback(async () => {
+    const { data, error } = await supabase.rpc('odeme_ozeti', { p_ogrenci: ogrenci.id })
+    if (error) setHata(hataMetni(error))
+    setOzet(data ?? {})
+  }, [ogrenci.id])
+
+  useEffect(() => {
+    yukle()
+  }, [yukle])
+
+  async function kur() {
+    setHata('')
+    setBekliyor(true)
+    const { error } = await supabase.rpc('sozlesme_kur', {
+      p_ogrenci: ogrenci.id,
+      p_baslik: 'Koçluk',
+      p_ilk_vade: vade,
+      p_ay_sayisi: Number(ay),
+      p_aylik_tutar: Number(tutar),
+    })
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    setFormAcik(false)
+    setTutar('')
+    await yukle()
+  }
+
+  async function tahsil(id) {
+    const { error } = await supabase.rpc('taksit_tahsil', { p_taksit_id: id })
+    if (error) setHata(hataMetni(error))
+    else yukle()
+  }
+
+  const taksitler = ozet?.taksitler ?? []
+
+  return (
+    <Kart
+      baslik="Ödeme"
+      altBaslik="Geciken taksit karar kuyruğuna düşer"
+      eylem={
+        <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
+          {formAcik ? 'Kapat' : 'Ödeme planı kur'}
+        </Dugme>
+      }
+    >
+      {formAcik && (
+        <div className="form-kutu">
+          <div className="ucul">
+            <Alan etiket="Aylık tutar">
+              <input
+                type="number"
+                min="0"
+                inputMode="numeric"
+                value={tutar}
+                onChange={(e) => setTutar(e.target.value)}
+                placeholder="2500"
+              />
+            </Alan>
+            <Alan etiket="Kaç ay">
+              <input
+                type="number"
+                min="1"
+                max="24"
+                inputMode="numeric"
+                value={ay}
+                onChange={(e) => setAy(e.target.value)}
+              />
+            </Alan>
+            <Alan etiket="İlk vade">
+              <input type="date" value={vade} onChange={(e) => setVade(e.target.value)} />
+            </Alan>
+          </div>
+          {tutar && ay ? (
+            <p className="kart-alt">
+              Toplam {tlYaz(Number(tutar) * Number(ay))} TL · {ay} taksit
+            </p>
+          ) : null}
+          <Uyari>{hata}</Uyari>
+          <Dugme onClick={kur} bekliyor={bekliyor} disabled={!tutar || !ay}>
+            Planı kur
+          </Dugme>
+        </div>
+      )}
+
+      {!formAcik && <Uyari>{hata}</Uyari>}
+
+      {ozet === null ? (
+        <Yukleniyor />
+      ) : taksitler.length === 0 ? (
+        <Bos
+          baslik="Ödeme planı yok"
+          aciklama="Aylık tutarı ve ay sayısını girersen taksitleri sistem yazar."
+        />
+      ) : (
+        <>
+          <div className="odeme-sayilar">
+            <span className="odeme-sayi">
+              <strong>{tlYaz(ozet.odenen)}</strong>tahsil edilen
+            </span>
+            <span className="odeme-sayi">
+              <strong>{tlYaz(Number(ozet.toplam ?? 0) - Number(ozet.odenen ?? 0))}</strong>kalan
+            </span>
+          </div>
+          {Number(ozet.geciken ?? 0) > 0 ? (
+            <p className="odeme-gecikme">
+              {tlYaz(ozet.geciken)} TL geciken · {ozet.gecikenAdet} taksit
+            </p>
+          ) : null}
+          <ul className="liste">
+            {taksitler.map((t) => (
+              <li key={t.id} className="liste-satir">
+                <div>
+                  <span className="liste-ad">
+                    {new Date(`${t.vade}T00:00:00`).toLocaleDateString('tr-TR', {
+                      day: 'numeric',
+                      month: 'long',
+                    })}{' '}
+                    · {tlYaz(t.tutar)} TL
+                  </span>
+                  <span className="liste-alt" data-odeme={t.durum}>
+                    {TAKSIT_ETIKET[t.durum] ?? t.durum}
+                    {t.durum === 'kismi' ? ` · ${tlYaz(t.kalan)} TL kaldı` : ''}
+                  </span>
+                </div>
+                {t.durum === 'odendi' || t.durum === 'iptal' ? null : (
+                  <button className="metin-dugme" onClick={() => tahsil(t.id)}>
+                    Tahsil ettim
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </Kart>
   )
 }

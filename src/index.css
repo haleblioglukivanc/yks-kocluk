@@ -3480,6 +3480,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .uygulama .kuyruk-tip[data-tip='risk'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
 .uygulama .kuyruk-tip[data-tip='plan'],
+.uygulama .kuyruk-tip[data-tip='odeme'],
 .uygulama .kuyruk-tip[data-tip='konu'],
 .uygulama .kuyruk-tip[data-tip='analiz'] { background: var(--sicak-zemin); color: var(--sicak-metin); }
 /* Tebrik yolunda demek: yeşil. Kuyrukta tek olumlu kart bu. */
@@ -4061,3 +4062,33 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 }
 /* Anket açıkken köşedeki Çizbi susar: balon formun üstüne düşüyordu. */
 body[data-anket] .kalem-kose { display: none; }
+
+/* Ödeme bölümü */
+.odeme-sayilar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+.odeme-sayi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--yuzey-2);
+  border-radius: var(--r-orta);
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+}
+.odeme-sayi strong {
+  font-size: 1.15rem;
+  font-weight: 500;
+  color: var(--grafit);
+}
+.odeme-gecikme {
+  margin: 0 0 0.6rem;
+  font-size: var(--punto-mini);
+  color: var(--g-amber-metin);
+}
+.liste-alt[data-odeme='gecikti'] { color: var(--g-amber-metin); }
+.liste-alt[data-odeme='odendi'] { color: var(--g-yesil-metin); }

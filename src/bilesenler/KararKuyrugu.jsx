@@ -19,6 +19,7 @@ const TIP_ETIKET = {
   konu: 'Konu onayı',
   analiz: 'Deneme analizi',
   plan: 'Haftalık plan',
+  odeme: 'Ödeme',
   veli_ozet: 'Veli özeti',
   hedef: 'Hedef ayarı',
   tebrik: 'Tebrik',
