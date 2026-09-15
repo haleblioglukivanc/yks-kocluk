@@ -98,7 +98,7 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     return (
       <Kart baslik={baslik}>
         <Bos
-          baslik="Henüz kaynak yok"
+          baslik="Kaynakların burada toplanacak"
           aciklama="Koçun bir göreve kitap iliştirdiğinde o kitap burada listelenir."
         />
       </Kart>

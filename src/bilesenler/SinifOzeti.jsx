@@ -29,7 +29,7 @@ export default function SinifOzeti() {
 
 function NetGrafigi({ veri }) {
   if (!veri || veri.length < 2) {
-    return <Bos baslik="Henüz net grafiği yok" aciklama="En az iki haftalık deneme verisi birikince çizgi burada belirir." />
+    return <Bos ruh="dusunuyor" baslik="Sınıf eğrisi burada belirecek" aciklama="İki haftalık deneme verisi birikince çizgi kendiliğinden çizilir." />
   }
 
   const G = 300
@@ -65,6 +65,9 @@ function NetGrafigi({ veri }) {
             strokeLinecap="round" strokeLinejoin="round" />
       <circle cx={x(veri.length - 1)} cy={y(son)} r="4.5"
               fill={renk} stroke="#ffffff" strokeWidth="2.5" />
+      <text className="grafik-etiket" x={x(veri.length - 1) - 8} y={Math.max(10, y(son) - 9)} textAnchor="end" fill={renk}>
+        {son.toFixed(1)}
+      </text>
     </svg>
   )
 }

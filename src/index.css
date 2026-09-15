@@ -153,6 +153,10 @@ main {
 .kod-sonuc strong { display: block; font-family: var(--mono); font-size: var(--punto-buyuk); letter-spacing: 0.1em; margin-bottom: 0.375rem; }
 .rozet { font-size: var(--punto-mini); text-transform: uppercase; letter-spacing: 0.06em; padding: 0.2rem 0.45rem; border-radius: 4px; }
 .bos { padding: 1.5rem 0.5rem; text-align: center; }
+/* Maskot 48px'i geçmez; telefonda boş durum ekranın yarısını kaplamasın. */
+.bos-cizbi { display: flex; justify-content: center; margin-bottom: 0.5rem; }
+.bos-cizbi svg { width: 48px; height: 48px; }
+.bos-eylem { margin-top: 0.875rem; display: flex; justify-content: center; }
 .bos-baslik { margin: 0; font-weight: 500; }
 .bos-aciklama { margin: 0.375rem auto 0; max-width: 24rem; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.55; }
 .yukleniyor { color: var(--soluk); font-size: var(--punto-kucuk); padding: 1.25rem 0; text-align: center; }
@@ -1509,6 +1513,13 @@ body[data-tema='panel'] {
 .rapor-tarih input { flex: 1; min-width: 0; }
 .rapor-tire { color: var(--soluk); }
 .rapor-grafik { margin-top: 1rem; }
+/* Grafik etiketi: son değer, mono, küçük. SVG içinde punto viewBox'a
+   göre ölçeklendiği için px yazılır; bu tek istisna. */
+.grafik-etiket { font-family: var(--mono); font-size: 11px; font-weight: 600; fill: var(--dolgu); font-variant-numeric: tabular-nums; }
+/* Çubuklar tabandan dolar: 400ms, ease-out. Kademeli değil, hepsi birden. */
+.cubuk-dolgu { transform-origin: bottom; transform-box: fill-box; animation: cubuk-dol 400ms ease-out; }
+@keyframes cubuk-dol { from { transform: scaleY(0); } }
+@media (prefers-reduced-motion: reduce) { .cubuk-dolgu { animation: none; } }
 .rapor-grafik .net-grafik { height: 72px; }
 .rapor-grafik-etiket {
   display: flex; margin-top: 4px;
@@ -4153,7 +4164,8 @@ body[data-anket] .kalem-kose { display: none; }
 .rd-satir:last-child { margin-bottom: 0; }
 .rd-ad { width: 6.5rem; flex: none; font-size: var(--punto-mini); color: var(--grafit); }
 .rd-ray { flex: 1; height: 8px; border-radius: 4px; background: var(--yuzey-2); overflow: hidden; }
-.rd-dolgu { display: block; height: 100%; border-radius: 4px; }
+.rd-dolgu { display: block; height: 100%; border-radius: 4px; transition: width 400ms ease-out; }
+@media (prefers-reduced-motion: reduce) { .rd-dolgu { transition: none; } }
 .rd-sayi { font-family: var(--mono); font-size: var(--punto-mini); width: 1.8rem; text-align: right; color: var(--grafit); }
 .rd-yukari { color: var(--g-yesil-metin); }
 .rd-asagi { color: var(--kizil-metin); }

@@ -39,7 +39,7 @@ const DURUM_ETIKET = {
  *  değerin kendisi değil, yönü. */
 function NetCizgisi({ seri }) {
   if (seri.length < 2) {
-    return <p className="kart-alt">Grafik için en az iki deneme gerekiyor.</p>
+    return <Bos ruh="fikir" baslik="İkinci denemeyle çizgi başlar" aciklama="Bir deneme daha girince ilkiyle arasındaki yön burada görünür." />
   }
   const G = 380
   const Y = 90
@@ -51,6 +51,11 @@ function NetCizgisi({ seri }) {
   const x = (i) => kenar + (i * (G - kenar * 2)) / (seri.length - 1)
   const y = (v) => Y - kenar - ((v - enAz) / aralik) * (Y - kenar * 3)
   const noktalar = seri.map((s, i) => [x(i), y(s.net)])
+  const sonNokta = noktalar[noktalar.length - 1]
+  const sonNet = seri[seri.length - 1].net
+  const alan = `M${noktalar.map((p) => p.join(' ')).join(' L')} L${sonNokta[0]} ${Y} L${noktalar[0][0]} ${Y} Z`
+  // Etiket sağa taşmasın: son nokta sağ kenara yakınsa sola yazılır.
+  const etiketSolda = sonNokta[0] > G - 44
 
   return (
     <svg
@@ -59,6 +64,7 @@ function NetCizgisi({ seri }) {
       role="img"
       aria-label={`Net gelişim grafiği, son değer ${seri[seri.length - 1].net.toFixed(2)}`}
     >
+      <path d={alan} fill="var(--dolgu)" fillOpacity="0.08" />
       <polyline
         points={noktalar.map((p) => p.join(',')).join(' ')}
         fill="none"
@@ -78,6 +84,14 @@ function NetCizgisi({ seri }) {
           strokeWidth="1.6"
         />
       ))}
+      <text
+        className="grafik-etiket"
+        x={etiketSolda ? sonNokta[0] - 8 : sonNokta[0] + 8}
+        y={Math.max(10, sonNokta[1] - 8)}
+        textAnchor={etiketSolda ? 'end' : 'start'}
+      >
+        {sonNet.toFixed(1)}
+      </text>
     </svg>
   )
 }
@@ -157,12 +171,14 @@ export default function DenemePaneli({
           </div>
         ) : (
           <Bos
-            baslik="Henüz deneme yok"
+            ruh="fikir"
+            baslik="Net çizgin burada başlayacak"
             aciklama={
               duzenlenebilir
-                ? 'İlk denemeni ekleyince net çizgin burada başlar. Nereden başladığın önemli değil, yön önemli.'
+                ? 'İlk denemeni ekleyince çizgi başlar. Nereden başladığın önemli değil, yön önemli.'
                 : 'Deneme girildiğinde net gelişimi burada görünecek.'
             }
+            eylem={duzenlenebilir ? <Dugme onClick={() => setFormAcik(true)}>İlk denemeyi ekle</Dugme> : null}
           />
         )}
       </Kart>
@@ -219,7 +235,7 @@ export default function DenemePaneli({
         }`}
       >
         {son.dersler.length === 0 ? (
-          <Bos baslik="Ders ders sonuç yok" aciklama="Bu denemede sadece toplam net var. Bir dahakine ders ders girersen hangi taraf zorlamış görürüz." />
+          <Bos ruh={null} baslik="Ders ders sonuç yok" aciklama="Bu denemede sadece toplam net var. Bir dahakine ders ders girersen hangi taraf zorlamış görürüz." />
         ) : (
           <>
             <div className="net-kutular">

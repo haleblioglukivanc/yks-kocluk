@@ -64,6 +64,16 @@ const TIP_YAZI = {
 /** Günlük çalışmayı tek bakışta gösteren minik sütun grafiği. */
 function GunlukGrafik({ gunler }) {
   if (!gunler?.length) return null
+  // Hiç çalışma yoksa boş eksen çizilmez: boş grafik "bozuk" okunuyor.
+  if (!gunler.some((g) => g.dakika > 0)) {
+    return (
+      <Bos
+        ruh="dusunuyor"
+        baslik="Çalışma grafiği burada belirecek"
+        aciklama="Öğrenciler sayaç başlatınca günlük süreler bu kartta çubuk olur."
+      />
+    )
+  }
   const enYuksek = Math.max(...gunler.map((g) => g.dakika), 1)
   const genislik = 300
   const yukseklik = 72
@@ -80,17 +90,19 @@ function GunlukGrafik({ gunler }) {
         role='img'
         aria-label='Günlere göre toplam çalışma süresi'
       >
+        <line x1='0' y1={yukseklik - 0.5} x2={genislik} y2={yukseklik - 0.5} stroke='var(--cizgi)' strokeWidth='1' />
         {gunler.map((g, i) => {
           const h = Math.round((g.dakika / enYuksek) * (yukseklik - 4))
           return (
             <rect
               key={g.tarih}
+              className='cubuk-dolgu'
               x={i * (sutun + bosluk)}
               y={yukseklik - h}
               width={sutun}
               height={Math.max(h, g.dakika > 0 ? 2 : 1)}
-              rx='1'
-              fill={g.dakika > 0 ? 'var(--dolgu)' : 'var(--kare, #e3e8f0)'}
+              rx={g.dakika > 0 ? 3 : 1}
+              fill={g.dakika > 0 ? 'var(--dolgu)' : 'var(--cizgi)'}
             />
           )
         })}

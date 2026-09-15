@@ -163,7 +163,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
 
             {bulunan ? (
               bulunan.length === 0 ? (
-                <Bos baslik="Eşleşen öğrenci yok" />
+                <Bos ruh={null} baslik="Eşleşen öğrenci yok" />
               ) : (
                 <ul className="liste liste--rehber">{bulunan.map(satirCiz)}</ul>
               )

@@ -1,4 +1,5 @@
 import { createPortal } from 'react-dom'
+import { Kalem } from './Kalem'
 /* `duz`: kenarı ve zemini olmayan, kâğıda doğrudan yazılmış kart.
    Bilgi gösteren yardımcı bloklar için; karar isteyen kartlar kaldırılmış kalır. */
 /* `kaldirilmis`: ekranın tek yükselmiş kâğıdı; karar isteyen ana kart.
@@ -44,11 +45,20 @@ export function Uyari({ tur = 'hata', children }) {
   return <p className={`uyari uyari--${tur}`}>{children}</p>
 }
 
-export function Bos({ baslik, aciklama, children }) {
+/* Boş durum bir davet: Çizbi'nin küçük bir hâli, suçlamayan tek cümle,
+   mümkünse bir eylem. Metin "Henüz X yok" demez, "X girilince burada
+   belirir" der. ruh={null} ile maskot kapatılır (tek satırlık boşluklar). */
+export function Bos({ baslik, aciklama, ruh = 'bekliyor', eylem, children }) {
   return (
     <div className="bos">
+      {ruh && (
+        <div className="bos-cizbi" aria-hidden="true">
+          <Kalem ruh={ruh} boyut={48} />
+        </div>
+      )}
       <p className="bos-baslik">{baslik}</p>
       {aciklama && <p className="bos-aciklama">{aciklama}</p>}
+      {eylem && <div className="bos-eylem">{eylem}</div>}
       {children}
     </div>
   )
