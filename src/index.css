@@ -4316,3 +4316,8 @@ body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
   box-shadow: var(--golge-kalkik);
 }
 body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .ob.hero-yuzey:first-child { padding-bottom: 1.25rem; }
+/* Koç karar kartı: karar verilince yenisi 14px aşağıdan kayarak gelir (220ms).
+   Kart anahtarla yeniden kurulduğu için tek satır yetiyor. */
+.uygulama .kart--kaldirilmis { animation: karar-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes karar-gir { from { opacity: 0; transform: translateY(14px); } }
+@media (prefers-reduced-motion: reduce) { .uygulama .kart--kaldirilmis { animation: none; } }
