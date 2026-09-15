@@ -4387,7 +4387,10 @@ body[data-rol='koc'] .uygulama .kart--kaldirilmis { border-left: 6px solid var(-
 body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='risk']) { border-left-color: var(--kizil); }
 body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='gorusme']) { border-left-color: var(--serin); }
 body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='plan']) { border-left-color: var(--altin); }
-body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='onay']) { border-left-color: var(--isaret); }
+body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='konu']) { border-left-color: var(--isaret); }
+body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='blok']) { border-left-color: var(--sicak); }
+body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='analiz']) { border-left-color: var(--dolgu); }
+body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='veli_ozet']) { border-left-color: var(--altin); }
 
 /* Sırada: gerçek kuyruk satırları */
 body[data-rol='koc'] .sirada-liste { gap: 4px; }
@@ -4401,7 +4404,9 @@ body[data-rol='koc'] .sirada-satir { padding: 0.6rem 0.75rem; border-radius: 14p
 .sirada-satir[data-segment='acil'] .sirada-av { background: var(--kizil-zemin); color: var(--kizil-metin); }
 .sirada-satir[data-segment='pencere'] .sirada-av { background: var(--sicak-zemin); color: var(--sicak-metin); }
 .sirada-satir[data-segment='bugun'] .sirada-av { background: var(--serin-zemin); color: var(--serin-metin); }
-.sirada-ac { flex: none; border: 1px solid var(--cizgi-2); border-radius: var(--r-tam); padding: 4px 12px; font-size: var(--punto-mini); font-weight: 700; opacity: 0; transition: opacity 120ms; }
+.sirada-baglam { flex: 1; min-width: 0; }
+body[data-rol='koc'] .sirada-ad { flex: 0 0 auto; }
+.sirada-ac { flex: none; margin-left: auto; border: 1px solid var(--cizgi-2); border-radius: var(--r-tam); padding: 4px 12px; font-size: var(--punto-mini); font-weight: 700; opacity: 0; transition: opacity 120ms; }
 
 /* Öğrenci satırları: risk rengi şerit + hafif zemin */
 body[data-rol='koc'] .rehber-satir { border-bottom: 0; border-radius: 14px; border-left: 4px solid var(--nokta, var(--cizgi-2)); padding: 0.55rem 0.6rem; margin-bottom: 4px; background: color-mix(in srgb, var(--nokta, var(--cizgi-2)) 7%, var(--yuzey)); transition: transform 120ms ease; }
