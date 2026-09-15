@@ -1,7 +1,21 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Uyari, Yukleniyor } from './Ortak.jsx'
 import DenemeFormu from './DenemeFormu.jsx'
+
+/* Form uzun sayfanın en altında açılıyor ve koç açtığını göremiyordu:
+   açılınca forma kaydırılıyor. */
+function useFormaKaydir(acik) {
+  const ref = useRef(null)
+  useEffect(() => {
+    if (!acik) return
+    const t = setTimeout(() => {
+      ref.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 60)
+    return () => clearTimeout(t)
+  }, [acik])
+  return ref
+}
 
 /* Deneme sekmesi. Öğrenci panelinde ve koçun "öğrenci gözüyle" ekranında
    aynı dosyadan çiziliyor; ikisi de salt okunur, denemeyi koç giriyor.
@@ -77,6 +91,7 @@ export default function DenemePaneli({
   const [tur, setTur] = useState(null)
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
+  const formRef = useFormaKaydir(formAcik)
   const [acikHata, setAcikHata] = useState(null)
 
   const yukle = useCallback(async () => {
@@ -130,6 +145,7 @@ export default function DenemePaneli({
       >
         <Uyari>{hata}</Uyari>
         {formAcik ? (
+          <div ref={formRef} className="deneme-form-kap">
           <DenemeFormu
             ogrenciId={ogrenciId}
             katalogId={katalogId}
@@ -138,6 +154,7 @@ export default function DenemePaneli({
               yukle()
             }}
           />
+          </div>
         ) : (
           <Bos
             baslik="Henüz deneme yok"
@@ -267,14 +284,16 @@ export default function DenemePaneli({
         <Uyari>{hata}</Uyari>
 
         {formAcik && (
-          <DenemeFormu
-            ogrenciId={ogrenciId}
-            katalogId={katalogId}
-            onEklendi={() => {
-              setFormAcik(false)
-              yukle()
-            }}
-          />
+          <div ref={formRef} className="deneme-form-kap">
+            <DenemeFormu
+              ogrenciId={ogrenciId}
+              katalogId={katalogId}
+              onEklendi={() => {
+                setFormAcik(false)
+                yukle()
+              }}
+            />
+          </div>
         )}
 
         <ul className="liste">

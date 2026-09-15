@@ -3150,15 +3150,23 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   border-bottom: 1px solid var(--cizgi);
 }
 .karne-dugme {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 48px;
   padding: 0.8rem 1rem;
-  border: 1px dashed var(--cizgi);
+  border: 1px solid var(--marka-mavi);
   border-radius: var(--r-orta);
-  background: var(--yuzey-2);
+  background: var(--serin-zemin);
+  color: var(--marka-mavi);
   text-align: center;
   font-size: var(--punto-kucuk);
+  font-weight: 500;
   cursor: pointer;
 }
+.karne-dugme:active { transform: scale(0.99); }
+.karne-dugme svg { flex: none; }
 .karne-dugme:has(input:disabled) {
   cursor: progress;
   color: var(--soluk);
@@ -4092,3 +4100,5 @@ body[data-anket] .kalem-kose { display: none; }
 }
 .liste-alt[data-odeme='gecikti'] { color: var(--g-amber-metin); }
 .liste-alt[data-odeme='odendi'] { color: var(--g-yesil-metin); }
+/* Form açılınca kaydırılıyor; yapışkan üst şerit düğmeyi örtmesin. */
+.deneme-form-kap { scroll-margin-top: 7rem; }

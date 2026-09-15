@@ -384,10 +384,16 @@ function KarneYukle({ ogrenciId, onOkundu }) {
     <div className="karne-yukle">
       <label className="karne-dugme">
         <input type="file" accept="image/*,application/pdf" onChange={sec} disabled={bekliyor} />
-        <span>{bekliyor ? 'Karne okunuyor…' : 'Karne yükle (fotoğraf ya da PDF)'}</span>
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor"
+             strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+          <path d="M3 8.5A1.5 1.5 0 0 1 4.5 7h2L8 5h8l1.5 2h2A1.5 1.5 0 0 1 21 8.5v9A1.5 1.5 0 0 1 19.5 19h-15A1.5 1.5 0 0 1 3 17.5z" />
+          <circle cx="12" cy="13" r="3.2" />
+        </svg>
+        <span>{bekliyor ? 'Karne okunuyor…' : 'Karnenin fotoğrafını yükle'}</span>
       </label>
       <p className="kart-alt">
-        Okuduğunu aşağıdaki forma yazar, kaydetmez. Sayıları kontrol edip sen kaydedersin.
+        Ders ders doğru, yanlış ve boş sayılarını aşağıdaki forma yazar; kaydetmez.
+        Sayıları kontrol edip sen kaydedersin.
       </p>
       {ozet ? (
         <Uyari tur="bilgi">
