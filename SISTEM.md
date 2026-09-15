@@ -143,7 +143,10 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
   (380ms), cümle yazılarak akar (22ms/harf), biten güne damga (420ms,
   7 öğe 70ms kademeli — tek istisna), görev bitince kart uçar + tik
   patlar (240ms + 700ms), sıradaki kart gelir (220ms), sayaç halkası
-  dersin rengiyle dolar, dokunuş `scale(.98)`. Koç tarafı bunlardan
+  dersin rengiyle dolar, dokunuş `scale(.98)`. Yol'da patika kendini
+  çizer (1.1s) ve Çizbi durak değiştirince zıplar; grafiklerde çizgi
+  kendini çizer (`.grafik-cizgi`, 900ms), son nokta patlar, büyük sayı
+  sayarak gelir (`useSayarak`), yay ve çubuklar boştan dolar. Koç tarafı bunlardan
   yalnız kart girişi ve düğme basmayı alır; Bugün sade kalır. Hepsi
   `prefers-reduced-motion` ile kapanır.
 - **İki rol, iki sıcaklık.** Koç lacivert (araç), öğrenci sıcak
