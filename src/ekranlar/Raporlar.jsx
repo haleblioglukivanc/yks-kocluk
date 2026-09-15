@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
+import { useGenisEkran } from '../lib/genislik.js'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
@@ -107,7 +108,40 @@ function GunlukGrafik({ gunler }) {
   )
 }
 
+const RISK_ADI = { acil: 'Önce bunlar', izle: 'İzle', iyi: 'Yolunda', pasif: 'Pasif' }
+const RISK_TONU = { acil: 'uyari', izle: 'izle', iyi: 'iyi', pasif: 'notr' }
+
+/* Risk dağılımı: üç sayı, üç çubuk. Sınıfın hangi üçte biri nerede —
+   listeyi tek tek okumadan görünsün. */
+function RiskDagilimi({ riskler, toplam }) {
+  const say = { iyi: 0, izle: 0, acil: 0 }
+  for (const r of Object.values(riskler)) {
+    if (r.risk_seviyesi in say) say[r.risk_seviyesi] += 1
+  }
+  const en = Math.max(say.iyi, say.izle, say.acil, 1)
+  const satir = [
+    ['Yolunda', say.iyi, 'var(--isaret-metin)'],
+    ['İzle', say.izle, 'var(--marka-amber)'],
+    ['Önce bunlar', say.acil, 'var(--marka-alev)'],
+  ]
+  return (
+    <Kart baslik='Risk dağılımı' altBaslik={`${toplam} aktif öğrenci`}>
+      {satir.map(([ad, n, renk]) => (
+        <div key={ad} className='rd-satir'>
+          <span className='rd-ad'>{ad}</span>
+          <span className='rd-ray'>
+            <span className='rd-dolgu' style={{ width: `${(n / en) * 100}%`, background: renk }} />
+          </span>
+          <span className='rd-sayi'>{n}</span>
+        </div>
+      ))}
+    </Kart>
+  )
+}
+
 export default function Raporlar({ onOgrenciAc, onGit }) {
+  const genis = useGenisEkran()
+  const [riskler, setRiskler] = useState({})
   const [aralik, setAralik] = useState('hafta')
   const [[bas, bit], setTarih] = useState(() => aralikHesapla('hafta'))
   const [veri, setVeri] = useState(null)
@@ -118,6 +152,11 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
 
   const yukle = useCallback(async () => {
     setVeri(null)
+    supabase
+      .from('ogrenci_risk')
+      .select('ogrenci_id, risk_seviyesi, gecikmis_gorev, net_farki, tamamlama_yuzdesi')
+      .then(({ data: r }) => setRiskler(Object.fromEntries((r ?? []).map((x) => [x.ogrenci_id, x]))))
+
     const { data, error } = await supabase.rpc('rapor_ozeti', {
       p_baslangic: bas,
       p_bitis: bit,
@@ -297,11 +336,57 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
         )}
       </Kart>
 
-      <Kart baslik='Öğrenci dağılımı' altBaslik='Çalışma süresine göre sıralı'>
+      <RiskDagilimi riskler={riskler} toplam={g.ogrenci_sayisi ?? Object.keys(riskler).length} />
+
+      <Kart
+        baslik='Öğrenciler'
+        altBaslik={genis ? 'Satıra dokun, öğrenciye git' : 'Çalışma süresine göre sıralı'}
+      >
         {veri === null ? (
           <Yukleniyor />
         ) : ogrenciler.length === 0 ? (
           <Bos baslik='Aktif öğrenci yok' />
+        ) : genis ? (
+          /* Geniş ekranda tablo: on iki öğrencinin haftası tek bakışta.
+             Telefonda tablo okunmuyor, orada çubuklu liste kalıyor. */
+          <div className='yk-tablo-kap'>
+            <table className='yk-tablo'>
+              <thead>
+                <tr>
+                  <th>Öğrenci</th><th>Çalışma</th><th>Tamamlama</th>
+                  <th>Son net</th><th>Değişim</th><th>Gecikmiş</th><th>Durum</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ogrenciler.map((o) => {
+                  const r = riskler[o.ogrenci_id] ?? {}
+                  const fark = r.net_farki == null ? null : Number(r.net_farki)
+                  return (
+                    <tr
+                      key={o.ogrenci_id}
+                      tabIndex={0}
+                      onClick={() => onOgrenciAc?.(o.ogrenci_id)}
+                      onKeyDown={(e) => e.key === 'Enter' && onOgrenciAc?.(o.ogrenci_id)}
+                    >
+                      <td>{o.ad_soyad}</td>
+                      <td className='yk-sayi'>{saatDakika(o.dakika ?? 0)}</td>
+                      <td className='yk-sayi'>{o.yuzde == null ? '—' : `%${o.yuzde}`}</td>
+                      <td className='yk-sayi'>{o.son_net == null ? '—' : o.son_net}</td>
+                      <td className={`yk-sayi${fark ? (fark > 0 ? ' rd-yukari' : ' rd-asagi') : ''}`}>
+                        {fark == null || fark === 0 ? '—' : `${fark > 0 ? '▲' : '▼'} ${Math.abs(fark).toFixed(2)}`}
+                      </td>
+                      <td className='yk-sayi'>{r.gecikmis_gorev ?? 0}</td>
+                      <td>
+                        <Rozet ton={RISK_TONU[r.risk_seviyesi] ?? 'notr'}>
+                          {RISK_ADI[r.risk_seviyesi] ?? '—'}
+                        </Rozet>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
         ) : (
           <ul className='liste'>
             {ogrenciler.map((o) => {

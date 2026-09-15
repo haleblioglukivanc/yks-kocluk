@@ -4140,3 +4140,13 @@ body[data-anket] .kalem-kose { display: none; }
 .yk-tablo tbody tr:last-child td { border-bottom: 0; }
 .yk-sayi { font-family: var(--mono); }
 .yk-sonuk { color: var(--soluk); }
+
+/* Risk dağılımı çubukları */
+.rd-satir { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.rd-satir:last-child { margin-bottom: 0; }
+.rd-ad { width: 6.5rem; flex: none; font-size: var(--punto-mini); color: var(--grafit); }
+.rd-ray { flex: 1; height: 8px; border-radius: 4px; background: var(--yuzey-2); overflow: hidden; }
+.rd-dolgu { display: block; height: 100%; border-radius: 4px; }
+.rd-sayi { font-family: var(--mono); font-size: var(--punto-mini); width: 1.8rem; text-align: right; color: var(--grafit); }
+.rd-yukari { color: var(--g-yesil-metin); }
+.rd-asagi { color: var(--kizil-metin); }
