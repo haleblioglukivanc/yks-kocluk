@@ -70,5 +70,7 @@ export function metindenDers(metin) {
   const k = (metin ?? '').toLocaleLowerCase('tr-TR')
   if (!k) return null
   const ad = DERS_ADLARI.find((d) => k.includes(d))
-  return ad ? dersGorunumu(ad) : null
+  if (!ad) return null
+  const bas = ad.split(' ').map((p) => (p === 've' ? p : p.charAt(0).toLocaleUpperCase('tr-TR') + p.slice(1))).join(' ')
+  return { ...dersGorunumu(ad), ad: bas }
 }
