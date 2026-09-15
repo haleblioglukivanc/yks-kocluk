@@ -3144,6 +3144,65 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
   margin: 0.9rem 0 0;
   line-height: 1.55;
 }
+.plan-sayilar {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin-top: 0.9rem;
+}
+.plan-sayi {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.55rem 0.7rem;
+  background: var(--yuzey-2);
+  border-radius: var(--r-orta);
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+}
+.plan-sayi strong {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--grafit);
+}
+.plan-gunler {
+  list-style: none;
+  margin: 0.75rem 0 0;
+  padding: 0;
+}
+.plan-gun {
+  display: flex;
+  gap: 0.7rem;
+  padding: 0.55rem 0;
+  border-top: 1px solid var(--cizgi);
+}
+.plan-gun-ad {
+  flex: none;
+  width: 2.2rem;
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+}
+.plan-gun-isler {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+.plan-is {
+  font-size: var(--punto-mini);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+.plan-gecikme {
+  margin-left: 0.35rem;
+  font-style: normal;
+  font-size: var(--punto-mini);
+  color: var(--g-amber-metin);
+}
+.plan-bos {
+  font-size: var(--punto-mini);
+  color: var(--soluk);
+}
 .kuyruk-mesaj {
   margin: 0.75rem 0 0;
   padding: 0.7rem 0.85rem;
@@ -3391,6 +3450,7 @@ body[data-tema='panel'] { background-color: var(--kagit); background-image: none
 .uygulama .kuyruk-tip { letter-spacing: 0; }
 .uygulama .kuyruk-tip[data-tip='risk'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
+.uygulama .kuyruk-tip[data-tip='plan'],
 .uygulama .kuyruk-tip[data-tip='konu'],
 .uygulama .kuyruk-tip[data-tip='analiz'] { background: var(--sicak-zemin); color: var(--sicak-metin); }
 /* Tebrik yolunda demek: yeşil. Kuyrukta tek olumlu kart bu. */

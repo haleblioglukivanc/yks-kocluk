@@ -18,6 +18,7 @@ const TIP_ETIKET = {
   blok: 'Blok',
   konu: 'Konu onayı',
   analiz: 'Deneme analizi',
+  plan: 'Haftalık plan',
   veli_ozet: 'Veli özeti',
   hedef: 'Hedef ayarı',
   tebrik: 'Tebrik',
@@ -121,6 +122,14 @@ export default function KararKuyrugu({ onOgrenciAc }) {
 
       {odak.tip === 'gorusme' ? (
         <GorusmeKarti
+          key={anahtar(odak)}
+          kart={odak}
+          onOgrenciAc={onOgrenciAc}
+          onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
+          onHata={setHata}
+        />
+      ) : odak.tip === 'plan' ? (
+        <PlanKarti
           key={anahtar(odak)}
           kart={odak}
           onOgrenciAc={onOgrenciAc}
@@ -477,6 +486,109 @@ function GorusmeSeridi() {
         </ul>
       ) : null}
     </div>
+  )
+}
+
+/* ══ Haftalık plan taslağı ══
+   Cuma akşamından itibaren, gelecek haftası boş olan öğrenci için çıkar.
+   Yedi gün birden görünür: koç haftayı bir bütün olarak okur, ders dağılımı
+   ancak böyle değerlendirilir. "Düzenle" ayrı bir modül açmaz — planı kurup
+   mevcut program ızgarasına götürür, düzenleme orada yapılır. */
+
+const GUN_KISA = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
+
+function PlanKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+  const [bekliyor, setBekliyor] = useState(false)
+  const a = kart.aksiyonlar ?? {}
+  const taslak = kart.ek ?? {}
+  const gunler = taslak.gunler ?? []
+  const ozet = taslak.ozet ?? {}
+
+  async function karar(k) {
+    setBekliyor(true)
+    onHata('')
+    const { data, error } = await supabase.rpc('koc_karar_ver', {
+      p_tip: kart.tip,
+      p_kaynak_id: kart.kaynak_id,
+      p_karar: k,
+      p_metin: null,
+      p_secili: [],
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    onBitti(k !== 'ertele')
+    if (data?.izgara) onOgrenciAc?.(kart.ogrenci_id)
+  }
+
+  return (
+    <Kart kaldirilmis>
+      <div className="kuyruk-ust">
+        <span className="kuyruk-tip" data-tip={kart.tip}>{TIP_ETIKET.plan}</span>
+      </div>
+
+      <button className="kuyruk-kimlik" onClick={() => onOgrenciAc?.(kart.ogrenci_id)} title="Öğrenciyi aç">
+        <Avatar yol={kart.fotograf_yolu} ad={kart.ad} boyut="kucuk" />
+        <span>
+          <span className="liste-ad">{kart.ad}</span>
+          <span className="liste-alt">{kart.baglam}</span>
+        </span>
+      </button>
+
+      <div className="plan-sayilar">
+        <span className="plan-sayi">
+          <strong>{ozet.tekrar ?? 0}</strong>tekrar
+        </span>
+        <span className="plan-sayi">
+          <strong>{ozet.yeni ?? 0}</strong>yeni konu
+        </span>
+      </div>
+
+      <p className="kuyruk-oneri">{kart.oneri}</p>
+
+      <ul className="plan-gunler">
+        {gunler.map((g) => {
+          const isler = g.gorevler ?? []
+          return (
+            <li key={g.tarih} className="plan-gun">
+              <span className="plan-gun-ad">
+                {GUN_KISA[new Date(`${g.tarih}T00:00:00`).getDay()]}
+              </span>
+              <span className="plan-gun-isler">
+                {isler.length === 0 ? (
+                  <span className="plan-bos">Boş gün</span>
+                ) : (
+                  isler.map((i, n) => (
+                    <span key={n} className="plan-is">
+                      {i.ders} · {i.baslik}
+                      {i.gerekce?.includes('gecikmiş') ? (
+                        <em className="plan-gecikme">{i.gerekce}</em>
+                      ) : null}
+                    </span>
+                  ))
+                )}
+              </span>
+            </li>
+          )
+        })}
+      </ul>
+
+      <div className="kuyruk-dugmeler">
+        <Dugme bekliyor={bekliyor} onClick={() => karar('onay')}>
+          {a.onay ?? 'Planı kur'} · {ozet.toplam ?? 0} görev
+        </Dugme>
+        <div className="kuyruk-alt-dugmeler">
+          <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => karar('izgara')}>
+            {a.orta ?? 'Düzenle'}
+          </button>
+          <button className="dugme dugme--ikincil" disabled={bekliyor} onClick={() => karar('ertele')}>
+            {a.ertele ?? 'Ertele'}
+          </button>
+        </div>
+      </div>
+    </Kart>
   )
 }
 
