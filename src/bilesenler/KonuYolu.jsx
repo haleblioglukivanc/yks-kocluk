@@ -127,16 +127,26 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
         const r = el.getBoundingClientRect()
         return { x: r.left - h.left + r.width / 2, y: r.top - h.top + r.height / 2, d, i }
       }).filter(Boolean)
-      let soluk = ''
+      /* Tek kesintisiz alt yol: her parçaya ayrı M yazılınca kesik deseni
+         her parçada baştan başlıyor ve "kendini çizme" animasyonu bütün
+         parçaları aynı anda açıyordu. Soluk patika baştan sona tek çizgi;
+         yeşil olan üstüne biner, o da yalnız gerektiğinde M açar. */
+      let soluk = pts.length ? `M${pts[0].x} ${pts[0].y} ` : ''
       let renkli = ''
+      let renkliAcik = false
       for (let i = 0; i < pts.length - 1; i++) {
         const a = pts[i]
         const b = pts[i + 1]
         const my = (a.y + b.y) / 2
-        const seg = `M${a.x} ${a.y} C${a.x} ${my} ${b.x} ${my} ${b.x} ${b.y} `
+        const egri = `C${a.x} ${my} ${b.x} ${my} ${b.x} ${b.y} `
+        soluk += egri
         const gecildi = a.d.yol === 'onayli' && ['onayli', 'bekliyor', 'simdi', 'tekrar'].includes(b.d.yol)
-        if (gecildi) renkli += seg
-        else soluk += seg
+        if (gecildi) {
+          if (!renkliAcik) { renkli += `M${a.x} ${a.y} `; renkliAcik = true }
+          renkli += egri
+        } else {
+          renkliAcik = false
+        }
       }
       const k = simdiki ? pts.find((p) => p.d.id === simdiki.id) : null
       /* Durak sağ yarıdaysa Çizbi soluna geçer ve sağı gösterir (aynalanır);
