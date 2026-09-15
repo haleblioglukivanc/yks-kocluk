@@ -8,7 +8,9 @@ import { Avatar } from './Fotograf.jsx'
  * Bugün uygulamaya girip bir şey yapan öğrenciler, en yeniden eskiye.
  * Sayı ya da çubuk yok; kim ve ne zaman.
  */
-export default function BugunCalisanlar({ onOgrenciAc }) {
+/* duz: kuyruk boşken ana sütunda kapsız duruyor; sağ sütunda ise
+   yanındaki öğrenci listesiyle aynı beyaz kabı alması gerekiyor. */
+export default function BugunCalisanlar({ onOgrenciAc, duz = true }) {
   const [liste, setListe] = useState(null)
 
   useEffect(() => {
@@ -36,7 +38,7 @@ export default function BugunCalisanlar({ onOgrenciAc }) {
   if (!liste || liste.length === 0) return null
 
   return (
-    <Kart duz baslik="Bugün girenler" eylem={<span className="kart-alt">{liste.length} öğrenci</span>}>
+    <Kart duz={duz} baslik="Bugün girenler" eylem={<span className="kart-alt">{liste.length} öğrenci</span>}>
       <ul className="sirada-liste">
         {liste.map((o) => (
           <li key={o.ogrenci_id}>

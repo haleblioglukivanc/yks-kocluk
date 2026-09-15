@@ -121,3 +121,25 @@
   .kart { padding: 1rem 1.1rem; }
   .ogrenci-satir, .hesap-satir, .bildirim { padding-block: 0.6rem; }
 }
+
+/* ── Çok geniş ekran ─────────────────────────────────────────────────
+   1600px üstünde iki sütunlu koç ekranı 80rem'de kesiliyor ve sağda
+   400 piksele yakın boşluk kalıyordu. Sütun sola yaslı kalmaya devam
+   ediyor; yalnızca yer varken genişliyor. */
+@media (min-width: 100rem) {
+  main:has(> .panel > .iki-sutun) { max-width: 96rem; }
+  .iki-sutun { grid-template-columns: minmax(0, 1fr) 26rem; }
+  .iki-sutun:has(> .sutun-yan:first-child) { grid-template-columns: 26rem minmax(0, 1fr); }
+  .iki-sutun > .sutun-yan:first-child { width: 26rem; }
+}
+
+/* Geniş ekranda "Sırada" satırları ad solda, bağlam en sağda kalıyor ve
+   aradaki boşluk satırı ikiye bölüyordu. Ad kendi genişliğinde durur,
+   bağlam hemen yanına gelir. */
+@media (min-width: 64rem) {
+  .iki-sutun .sirada-ad { flex: 0 1 auto; max-width: 16rem; }
+  .iki-sutun .sirada-baglam { flex: 0 1 auto; text-align: left; }
+  /* Karar düğmeleri sütunun tamamına yayılınca "Onayla" 800 piksellik bir
+     şerit oluyordu; eylemler metnin altında kendi genişliğinde durur. */
+  .iki-sutun .kuyruk-dugmeler { max-width: 32rem; }
+}

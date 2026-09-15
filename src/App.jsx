@@ -16,6 +16,7 @@ import KonuOncelik from './ekranlar/KonuOncelik.jsx'
 import Raporlar from './ekranlar/Raporlar.jsx'
 import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
+import BugunCalisanlar from './bilesenler/BugunCalisanlar.jsx'
 import UstCubuk from './bilesenler/UstCubuk.jsx'
 import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
@@ -462,6 +463,9 @@ export default function App() {
           </div>
           <div className="sutun-yan">
             <Ogrencilerim onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
+            {/* Liste bitince sağ sütun bomboş kalıyordu: kim bugün girdi,
+                kim çalışıyor sorusu oraya oturuyor. */}
+            <BugunCalisanlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} duz={false} />
           </div>
         </div>
       )
