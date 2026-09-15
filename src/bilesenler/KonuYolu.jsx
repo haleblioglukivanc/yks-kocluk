@@ -276,7 +276,12 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
 
       <div className="yol-harita" ref={haritaRef}>
         <svg className="yol-cizgi" viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
-          <path d={cizgi.soluk} className="yol-cizgi--soluk" />
+          <defs>
+            <mask id="yol-maske" maskUnits="userSpaceOnUse" x="0" y="0" width={cizgi.w || 1} height={cizgi.h || 1}>
+              <path d={cizgi.soluk} className="yol-maske-ciz" pathLength="1" />
+            </mask>
+          </defs>
+          <path d={cizgi.soluk} className="yol-cizgi--soluk" mask="url(#yol-maske)" />
           <path d={cizgi.renkli} className="yol-cizgi--gecildi" pathLength="1" />
         </svg>
 

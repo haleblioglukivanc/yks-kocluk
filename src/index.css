@@ -4256,12 +4256,12 @@ body[data-rol='ogrenci'] .siradaki-odak .gorev-kaynak,
 body[data-rol='ogrenci'] .siradaki-odak .gorev-kaynak * { color: var(--grafit); }
 body[data-rol='ogrenci'] .siradaki-odak .dugme--ikincil { background: var(--yuzey); border-color: var(--cizgi-2); color: var(--murekkep); }
 body[data-rol='ogrenci'] .siradaki-odak .siradaki-ikincil .metin-dugme { color: var(--serin-metin); }
-.ders-cip {
+.sira-ders-cip {
   display: inline-block; margin-bottom: 0.35rem; padding: 0.15rem 0.6rem; border-radius: var(--r-tam);
   font-size: var(--punto-etiket); font-weight: 700; line-height: 1.5;
   color: var(--ders-renk); background: color-mix(in srgb, var(--ders-renk) 12%, var(--yuzey));
 }
-.siradaki-odak .ders-cip + .siradaki-sira { display: none; }
+.siradaki-odak .sira-ders-cip + .siradaki-sira { display: none; }
 /* Kart girişi ve uçuşu */
 .siradaki-odak--gir { animation: kart-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
 .siradaki-odak--ucus { transition: transform 240ms cubic-bezier(.4, 0, 1, 1), opacity 240ms; transform: translateX(120%) rotate(6deg); opacity: 0; }
@@ -4317,6 +4317,10 @@ body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekm
 .uygulama .kart--kaldirilmis { animation: karar-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
 @keyframes karar-gir { from { opacity: 0; transform: translateY(14px); } }
 @media (prefers-reduced-motion: reduce) { .uygulama .kart--kaldirilmis { animation: none; } }
+
+/* Dikiş kartı yüklenirken de tepenin üstünde: '+' seçicisi araya giren
+   uyarı/yükleniyor kardeşinde tutmuyor, tepenin halkası kartın üstüne biniyordu. */
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey:first-child ~ .kart { position: relative; z-index: 2; }
 
 /* ═══ Grafikler canlı gelir ═══
    Çizgi kendini çizer (900ms), alan sonra belirir, son nokta patlar, etiket

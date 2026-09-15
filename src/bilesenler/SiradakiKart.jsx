@@ -372,7 +372,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           ))}
         </span>
       )}
-      {sira.ders && <span className="ders-cip">{[sira.ders, sira.konu].filter(Boolean).join(' · ')}</span>}
+      {sira.ders && <span className="sira-ders-cip">{[sira.ders, sira.konu].filter(Boolean).join(' · ')}</span>}
       <p className="siradaki-sira">
         {sira.baslangic_saat
           ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''}`
