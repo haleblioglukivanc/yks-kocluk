@@ -143,3 +143,27 @@
      şerit oluyordu; eylemler metnin altında kendi genişliğinde durur. */
   .iki-sutun .kuyruk-dugmeler { max-width: 32rem; }
 }
+
+/* ── Tek sütunlu ekranlar geniş ekranda ───────────────────────────────
+   Bugün ve Öğrenciler iki sütuna açılıyor ama Rapor, Kaynaklar,
+   Bildirimler ve Mesajlar 56rem'de kalıyordu: 1920'de ekranın %42'si
+   boş duruyordu. Metin genişliği kaygısı burada geçerli değil, çünkü
+   bu ekranlar akan yazı değil kart ve liste. */
+@media (min-width: 80rem) {
+  main:has(.kaynak-liste),
+  main:has(.rapor-kpi),
+  main:has(.bildirim-liste),
+  main:has(.yazisma) { max-width: 76rem; }
+
+  /* Kaynak havuzu tek sütunda 29.000 piksel uzunluğundaydı. */
+  .kaynak-liste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.5rem; }
+
+  /* Dört ölçüm iki sütunda durunca aradaki boşluk sayıları birbirinden
+     kopardı; geniş ekranda dördü bir satırda. */
+  .rapor-kpi { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+}
+
+@media (min-width: 100rem) {
+  main:has(.kaynak-liste) { max-width: 88rem; }
+  .kaynak-liste { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
