@@ -10,7 +10,7 @@ import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
-import { kullaniciOlustur, kullaniciSil } from '../lib/hesap.js'
+import { kullaniciSil } from '../lib/hesap.js'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
 
@@ -1046,21 +1046,41 @@ const ILISKI = [
 
 /** Veli hesabı açar ve öğrenciye bağlar. Hesap açma service_role
  *  gerektirdiği için Edge Function üzerinden yapılır. */
+/* Veli paneli yok — karar bu: veliler uygulamaya da e-postaya da bakmıyor,
+   yalnızca gelen mesaja bakıyor. O yüzden velinin hesabı değil, telefonu ve
+   KVKK onayı tutuluyor. Onay kanıtlanabilir olmalı: ne zaman, hangi metinle,
+   hangi yolla alındığı kaydediliyor. */
+
+/* +905321112233 okunmuyor; listede 0532 111 22 33 gösteriliyor. */
+const telYaz = (t) =>
+  /^\+90\d{10}$/.test(t ?? '')
+    ? `0${t.slice(3, 6)} ${t.slice(6, 9)} ${t.slice(9, 11)} ${t.slice(11)}`
+    : (t ?? '')
+
+const IZIN_KANALI = [
+  ['sozlesme', 'Koçluk sözleşmesinde'],
+  ['kagit', 'Islak imzalı form'],
+  ['koc_beyani', 'Sözlü — koç beyanı'],
+]
+
 function Veliler({ ogrenci }) {
   const [liste, setListe] = useState(null)
   const [formAcik, setFormAcik] = useState(false)
   const [adSoyad, setAdSoyad] = useState('')
-  const [eposta, setEposta] = useState('')
+  const [telefon, setTelefon] = useState('')
   const [iliski, setIliski] = useState('anne')
+  const [izin, setIzin] = useState(true)
+  const [kanal, setKanal] = useState('sozlesme')
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
-  const [sonuc, setSonuc] = useState(null)
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase
-      .from('veli_ogrenci')
-      .select('veli_id, iliski, profiller!veli_ogrenci_veli_id_fkey(ad_soyad)')
+      .from('veliler')
+      .select('id, ad_soyad, telefon, iliski, sms_izni, izin_zamani, izin_kanali')
       .eq('ogrenci_id', ogrenci.id)
+      .eq('aktif', true)
+      .order('id')
     if (error) setHata(hataMetni(error))
     setListe(data ?? [])
   }, [ogrenci.id])
@@ -1072,31 +1092,30 @@ function Veliler({ ogrenci }) {
   async function ekle() {
     setHata('')
     setBekliyor(true)
-    try {
-      const d = await kullaniciOlustur({
-        rol: 'veli',
-        ad_soyad: adSoyad.trim(),
-        eposta: eposta.trim(),
-        ogrenci_id: ogrenci.id,
-        iliski,
-      })
-      setSonuc(d)
-      setAdSoyad('')
-      setEposta('')
-      await yukle()
-    } catch (e) {
-      setHata(hataMetni(e))
-    } finally {
-      setBekliyor(false)
+    const { error } = await supabase.rpc('veli_kaydet', {
+      p_ogrenci: ogrenci.id,
+      p_ad: adSoyad.trim(),
+      p_telefon: telefon.trim(),
+      p_iliski: iliski,
+      p_sms_izni: izin,
+      p_izin_kanali: izin ? kanal : null,
+      p_izin_metni: izin
+        ? 'Haftalık koçluk bilgilendirmesinin SMS ile gönderilmesine onay — sürüm 2026-09'
+        : null,
+    })
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
     }
+    setAdSoyad('')
+    setTelefon('')
+    setFormAcik(false)
+    await yukle()
   }
 
-  async function bagiKaldir(veliId) {
-    const { error } = await supabase
-      .from('veli_ogrenci')
-      .delete()
-      .eq('ogrenci_id', ogrenci.id)
-      .eq('veli_id', veliId)
+  async function cikar(id) {
+    const { error } = await supabase.from('veliler').update({ aktif: false }).eq('id', id)
     if (error) setHata(hataMetni(error))
     else yukle()
   }
@@ -1104,47 +1123,26 @@ function Veliler({ ogrenci }) {
   return (
     <Kart
       baslik="Veli"
-      altBaslik="Veli yalnızca senin yayınladığın haftalık özeti görür"
+      altBaslik="Veliye yalnızca senin onayladığın haftalık özet SMS olarak gider"
       eylem={
-        <Dugme tur="ikincil" onClick={() => { setFormAcik((v) => !v); setSonuc(null) }}>
+        <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
           {formAcik ? 'Kapat' : 'Veli ekle'}
         </Dugme>
       }
     >
-      {formAcik && (sonuc ? (
-        <div className="form-kutu">
-          <div className="kod-sonuc">
-            <p>
-              <strong className="satir-ad">{sonuc.ad_soyad}</strong> için veli hesabı açıldı.
-              Bilgileri veliye iletin.
-            </p>
-            <div className="sifre-kutu">
-              <span className="sifre-etiket">E-posta</span>
-              <code>{sonuc.eposta}</code>
-              <span className="sifre-etiket">Geçici şifre</span>
-              <code className="sifre">{sonuc.gecici_sifre}</code>
-            </div>
-            <button
-              className="metin-dugme"
-              onClick={() =>
-                navigator.clipboard?.writeText(
-                  `E-posta: ${sonuc.eposta}\nGeçici şifre: ${sonuc.gecici_sifre}`,
-                )
-              }
-            >
-              Kopyala
-            </button>
-            <p className="uyari-not">Bu şifre bir daha gösterilmez.</p>
-          </div>
-          <Dugme tur="ikincil" onClick={() => setSonuc(null)}>Bir veli daha ekle</Dugme>
-        </div>
-      ) : (
+      {formAcik && (
         <div className="form-kutu">
           <Alan etiket="Ad soyad">
             <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} placeholder="Örn. Ayşe Yılmaz" />
           </Alan>
-          <Alan etiket="E-posta" ipucu="Veli bu adresle giriş yapacak">
-            <input type="email" value={eposta} onChange={(e) => setEposta(e.target.value)} placeholder="veli@eposta.com" />
+          <Alan etiket="Cep telefonu" ipucu="Özet bu numaraya gider">
+            <input
+              type="tel"
+              inputMode="tel"
+              value={telefon}
+              onChange={(e) => setTelefon(e.target.value)}
+              placeholder="0532 000 00 00"
+            />
           </Alan>
           <Alan etiket="Yakınlık">
             <select value={iliski} onChange={(e) => setIliski(e.target.value)}>
@@ -1153,10 +1151,25 @@ function Veliler({ ogrenci }) {
               ))}
             </select>
           </Alan>
+          <label className="oteleme">
+            <input type="checkbox" checked={izin} onChange={() => setIzin((v) => !v)} />
+            <span>Veli, haftalık özetin SMS ile gönderilmesine onay verdi</span>
+          </label>
+          {izin ? (
+            <Alan etiket="Onay nasıl alındı" ipucu="KVKK gereği kayda geçer">
+              <select value={kanal} onChange={(e) => setKanal(e.target.value)}>
+                {IZIN_KANALI.map(([k, ad]) => (
+                  <option key={k} value={k}>{ad}</option>
+                ))}
+              </select>
+            </Alan>
+          ) : (
+            <p className="kart-alt">Onay yoksa bu numaraya hiçbir mesaj gitmez.</p>
+          )}
           <Uyari>{hata}</Uyari>
-          <Dugme onClick={ekle} bekliyor={bekliyor}>Hesabı oluştur</Dugme>
+          <Dugme onClick={ekle} bekliyor={bekliyor}>Veliyi kaydet</Dugme>
         </div>
-      ))}
+      )}
 
       {!formAcik && <Uyari>{hata}</Uyari>}
 
@@ -1164,20 +1177,23 @@ function Veliler({ ogrenci }) {
         <Yukleniyor />
       ) : liste.length === 0 ? (
         <Bos
-          baslik="Bağlı veli yok"
-          aciklama="Veli eklerseniz haftalık özetleri onaylayarak paylaşabilirsiniz."
+          baslik="Kayıtlı veli yok"
+          aciklama="Veli eklersen haftalık özeti onaylayıp SMS ile gönderebilirsin."
         />
       ) : (
         <ul className="liste">
           {liste.map((v) => (
-            <li key={v.veli_id} className="liste-satir">
+            <li key={v.id} className="liste-satir">
               <div>
-                <span className="liste-ad">{v.profiller?.ad_soyad ?? 'İsimsiz'}</span>
+                <span className="liste-ad">{v.ad_soyad}</span>
                 <span className="liste-alt">
-                  {ILISKI.find(([k]) => k === v.iliski)?.[1] ?? v.iliski}
+                  {ILISKI.find(([k]) => k === v.iliski)?.[1] ?? v.iliski} · {telYaz(v.telefon)}
+                  {v.sms_izni
+                    ? ` · onaylı ${new Date(v.izin_zamani).toLocaleDateString('tr-TR')}`
+                    : ' · onay yok'}
                 </span>
               </div>
-              <button className="metin-dugme" onClick={() => bagiKaldir(v.veli_id)}>Bağı kaldır</button>
+              <button className="metin-dugme" onClick={() => cikar(v.id)}>Çıkar</button>
             </li>
           ))}
         </ul>
