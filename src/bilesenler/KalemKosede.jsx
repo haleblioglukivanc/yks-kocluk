@@ -10,7 +10,7 @@ import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
  * Sözü yoksa ekranda hiç yok; boşta bekleyen düğme kalktı.
  */
 
-const KOC_ROLLERI = ['koc', 'yonetici']
+const KOC_ROLLERI = ['koc']
 
 export default function KalemKosede({ profil, ekran = 'bugun' }) {
   const ekrandaMaskotVar = useMaskotDevrildiMi()

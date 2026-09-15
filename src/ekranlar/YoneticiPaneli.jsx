@@ -438,7 +438,7 @@ function KocEkle({ liste, onEklendi }) {
             <div>
               <span className="liste-ad">{k.ad_soyad}</span>
               <span className="liste-alt">
-                {k.rol === 'yonetici' ? 'Yönetici · koçluk da yapıyor' : 'Koç'} ·{' '}
+                {k.yonetici ? 'Koç · yönetici' : 'Koç'} ·{' '}
                 {k.ogrenci_sayisi} öğrenci
               </span>
             </div>

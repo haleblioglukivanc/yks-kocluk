@@ -40,7 +40,7 @@ export default function HesapYapragi({
   }, [acik, onKapat])
 
   if (!acik) return null
-  const yonetici = profil?.rol === 'yonetici'
+  const yonetici = profil?.yonetici === true
 
   return (
     <div className="yaprak-arka" onClick={onKapat}>

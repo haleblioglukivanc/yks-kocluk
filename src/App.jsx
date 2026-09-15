@@ -110,6 +110,13 @@ const GEZINME_IKONU = {
       <path d="M16 4.13a3.5 3.5 0 0 1 0 6.74" />
     </>
   ),
+  /* Yönetim: yalnızca geniş ekranda ve yalnızca yöneticide görünür. */
+  '/yonetim': (
+    <>
+      <path d="M12 3.5 4.5 6.8v5c0 4.2 3 7.6 7.5 8.7 4.5-1.1 7.5-4.5 7.5-8.7v-5z" />
+      <path d="m9.2 12.2 2 2 3.6-3.9" />
+    </>
+  ),
   '/konular': (
     <>
       <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H9l1.6 2H18a1.5 1.5 0 0 1 1.5 1.5V9" />
@@ -231,7 +238,7 @@ export default function App() {
 
   /* Zildeki sayı: okunmamış mesaj + koçta karar kuyruğu. Bildirimler
      ekranındaki listeyle aynı kaynaklar; sayı ile liste birbirini tutar. */
-  const kocRol = profil?.rol === 'koc' || profil?.rol === 'yonetici'
+  const kocRol = profil?.rol === 'koc'
   useEffect(() => {
     if (!kullaniciId || !kocRol) {
       setBekleyenKarar(0)
@@ -301,7 +308,10 @@ export default function App() {
     )
   }
 
-  const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
+  /* Rol ne olduğun, yöneticilik ayrı bir yetki: bir koç aynı zamanda
+     yönetici olabilir, koç olmayan biri de yalnızca yönetici olabilir. */
+  const kocMu = profil.rol === 'koc'
+  const yoneticiMi = profil.yonetici === true
 
   /* Panel ekranları Çizbi'yi başlıkta gösteriyor; köşedeki kopya orada
      fazlalık olurdu. Bir ekranda iki maskot olmaz. */
@@ -329,7 +339,7 @@ export default function App() {
   const TANINAN = ['/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
-  const yonetimdeMi = profil.rol === 'yonetici' && yol === '/yonetim'
+  const yonetimdeMi = yoneticiMi && yol === '/yonetim'
   const basliktaKalemVar =
     (anaEkranda && kocMu) ||
     (profil.rol === 'ogrenci' && (anaEkranda || yol === '/yol')) ||
@@ -369,6 +379,9 @@ export default function App() {
         ['/', 'Bugün', '/'],
         ['/ogrenciler', 'Öğrenciler', '/ogrenciler'],
         ['/raporlar', 'Rapor', '/raporlar'],
+        /* Yönetim yalnızca geniş ekranda: telefonda dördüncü sekme çubuğu
+           ağırlaştırır ve yönetim işi zaten masa başı işi. */
+        ...(yoneticiMi && genis ? [['/yonetim', 'Yönetim', '/yonetim']] : []),
       ]
     : profil.rol === 'ogrenci'
       ? [
@@ -432,7 +445,7 @@ export default function App() {
           onGit={git}
         />
       )
-    if (profil.rol === 'yonetici' && yol === '/yonetim')
+    if (yoneticiMi && yol === '/yonetim')
       return (
         <YoneticiPaneli
           profil={profil}

@@ -40,7 +40,7 @@ const IKON = {
 
 export default function Bildirimler({ profil, onGit }) {
   const [liste, setListe] = useState(null)
-  const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
+  const kocMu = profil.rol === 'koc'
 
   useEffect(() => {
     let iptal = false

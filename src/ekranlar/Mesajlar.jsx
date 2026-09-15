@@ -129,7 +129,7 @@ export default function Mesajlar({ profil }) {
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
 
-  const kocMu = profil.rol === 'koc' || profil.rol === 'yonetici'
+  const kocMu = profil.rol === 'koc'
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc('mesaj_kutum')
