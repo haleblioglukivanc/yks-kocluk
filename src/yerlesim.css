@@ -181,5 +181,16 @@
 @media (min-width: 64rem) {
   .zemin-lekeler { display: block; }
   .ob-kpi { display: flex; }
-  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob:first-child { border-radius: 22px; margin-top: 1rem; margin-inline: 0; padding-bottom: 1.25rem; }
+  /* Koç tepesi masaüstünde şeritten sarkan dil değil, kendi başına
+     şeftali bir kart: üstten de boşluklu, dört köşesi yuvarlak, altındaki
+     karar kartı dikişe oturmaz. */
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ob:first-child,
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob:first-child {
+    border-radius: 22px; margin: 1rem 0 0; padding: 1rem 1.5rem 1.15rem;
+    background: linear-gradient(120deg, var(--koc-tepe-ust) 0%, var(--koc-tepe-orta) 55%, var(--koc-tepe-alt) 100%);
+  }
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ob:first-child + :is(.kart, .dikis-kart),
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ob:first-child + :is(.kart, .dikis-kart) {
+    margin-top: 1rem; margin-inline: 0; border: 0;
+  }
 }

@@ -4391,6 +4391,7 @@ body[data-rol='koc'] .uygulama .kart--kaldirilmis:has(.kuyruk-tip[data-tip='onay
 
 /* Sırada: gerçek kuyruk satırları */
 body[data-rol='koc'] .sirada-liste { gap: 4px; }
+body[data-rol='koc'] .sirada-satir[data-segment] { border-left: 0; padding-left: 0.75rem; }
 body[data-rol='koc'] .sirada-satir { padding: 0.6rem 0.75rem; border-radius: 14px; gap: 0.75rem; transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease; }
 @media (hover: hover) {
   body[data-rol='koc'] .sirada-satir:hover { background: var(--yuzey); transform: translateY(-1px); box-shadow: 0 8px 20px -12px rgba(20, 28, 45, .3); }
