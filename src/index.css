@@ -835,6 +835,10 @@ main {
 .kpi-alt--iyi { color: var(--isaret); }
 .kpi-alt--kotu { color: var(--uyari); }
 .net-grafik { width: 100%; height: auto; display: block; }
+/* Masaüstünde kartın tamamına yayılınca 1300px genişlik × 560px yükseklik
+   bir grafik oluyordu. Yükseklik telefonda 120, masaüstünde 180'i geçmez;
+   oran korunur, kart genişse grafik ortada durur. */
+.uygulama .net-grafik { max-height: clamp(120px, 22vw, 180px); margin-inline: auto; }
 /* Öğrenci: bugünün görevleri */
 .kimlik-seri { margin: 0.4rem 0 0; font-size: var(--punto-mini); color: var(--fosfor); }
 .gorev {
