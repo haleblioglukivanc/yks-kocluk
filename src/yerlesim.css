@@ -226,6 +226,6 @@
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .rt-alt { color: var(--soluk); }
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .ikon-dugme--koyu { background: var(--murekkep); border-color: var(--murekkep); color: #fff; }
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child + :is(.kart, .dikis-kart) {
-    margin: 0; border-radius: 0 0 20px 20px; border: 0; box-shadow: var(--golge-kart); animation: none;
+    margin: -1rem 0 0; border-radius: 0 0 20px 20px; border: 0; box-shadow: var(--golge-kart); animation: none;
   }
 }
