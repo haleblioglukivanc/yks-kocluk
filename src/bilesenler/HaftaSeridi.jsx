@@ -115,6 +115,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
               const say = sayim[t] ?? { toplam: 0, biten: 0 }
               const bugunMu = t === bugun
               const gecmis = t < bugun
+              const tam = say.toplam > 0 && say.biten === say.toplam
               return (
                 <button
                   key={t}
@@ -128,6 +129,10 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
                   <span className="hafta-gun-sayi" aria-label={`${say.biten}/${say.toplam} iş`}>
                     {say.toplam === 0 ? '—' : `${say.biten}/${say.toplam}`}
                   </span>
+                  {/* Günün bütün işleri bitti: damga. Yedi öğe, 70ms kademe. */}
+                  {tam && (
+                    <span className="hafta-damga" style={{ animationDelay: `${i * 70}ms` }} aria-hidden="true">✓</span>
+                  )}
                 </button>
               )
             })}

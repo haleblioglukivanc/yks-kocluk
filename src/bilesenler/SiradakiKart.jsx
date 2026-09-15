@@ -5,6 +5,8 @@ import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
 import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
+import { Kalem } from './Kalem.jsx'
+import { cizbiKutlasin, azHareket } from '../lib/canli.js'
 
 /* '10:00:00' -> '10:00' */
 const saatKisa = (t) => (t ? String(t).slice(0, 5) : '')
@@ -33,13 +35,18 @@ function Halka({ durum }) {
       <svg viewBox="0 0 120 120" width="150" height="150" role="img"
            aria-label={`Kalan süre ${bicimle(kalan)}`}>
         <circle cx="60" cy="60" r="52" fill="none" stroke="var(--cizgi)" strokeWidth="8" />
-        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--marka-amber)" strokeWidth="8"
+        <circle cx="60" cy="60" r="52" fill="none" stroke="var(--ders-renk, var(--marka-amber))" strokeWidth="8"
                 strokeLinecap="round" strokeDasharray={C}
                 strokeDashoffset={C * (1 - oran)} transform="rotate(-90 60 60)" />
         <text x="60" y="67" textAnchor="middle" fontSize="23" fill="currentColor">
           {bicimle(kalan)}
         </text>
       </svg>
+      {/* Halkanın yanında çalışan Çizbi: sayaç yalnız sayı değil, biri
+          seninle çalışıyor hissi. Gövdesi yıpranma ile kısalıyor. */}
+      <span className={durum.calisiyor ? 'sayac-cizbi sayac-cizbi--calisiyor' : 'sayac-cizbi'} aria-hidden="true">
+        <Kalem ruh={durum.calisiyor ? 'bilendi' : 'uyku'} boyut={44} />
+      </span>
     </div>
   )
 }
@@ -68,6 +75,10 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
      beş dakikalık işin kaçış kapısına dönüşüyor. */
   const [bugunDakika, setBugunDakika] = useState(null)
   const [mikroKapali, setMikroKapali] = useState(false)
+  /* Bitirme koreografisi: kart sağa uçar, tik patlar, sıradaki kart
+     gelir. Veri yazımı uçuşun sonuna denk gelir ki liste boşluk atlamasın. */
+  const [ucan, setUcan] = useState(null)
+  const [tik, setTik] = useState(0)
 
   /* Bugün sayaç çalıştırılmış ama görev işaretlenmemiş olabilir; öyle bir
      günü "hiç çalışılmadı" saymak haksızlık olur. Onun için oturumlara da
@@ -128,6 +139,16 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   }
 
   const tamamla = (g) => durumYaz(g, true)
+  async function tamamlaKutla(g) {
+    if (saltOkunur) return
+    if (azHareket()) { await durumYaz(g, true); return }
+    setUcan(g.id)
+    setTik((n) => n + 1)
+    cizbiKutlasin()
+    await new Promise((r) => setTimeout(r, 240))
+    await durumYaz(g, true)
+    setUcan(null)
+  }
 
   async function talepGonder(gorevId, tur) {
     const { error } = await supabase.rpc('blok_talebi_ac', {
@@ -222,7 +243,9 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     return (
       <Kart sinif="siradaki" baslik={baslik} altBaslik={`${durum.hedefDk} dk`}>
         {serit}
-        <Halka durum={durum} />
+        <div style={calisan?.ders ? { '--ders-renk': dersGorunumu(calisan.ders).renk } : undefined}>
+          <Halka durum={durum} />
+        </div>
         <div className="sayac-dugmeler">
           {durum.calisiyor ? (
             <button className="dugme dugme--ikincil" onClick={sayac.duraklat}>Duraklat</button>
@@ -336,7 +359,20 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       {serit}
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
-      <div className="siradaki-odak">
+      <div
+        key={sira.id}
+        className={`siradaki-odak${ucan === sira.id ? ' siradaki-odak--ucus' : ' siradaki-odak--gir'}`}
+        style={{ '--ders-renk': dersGorunumu(sira.ders).renk }}
+      >
+      {tik > 0 && (
+        <span key={tik} className="bitti-tik" aria-hidden="true">
+          ✓
+          {Array.from({ length: 12 }, (_, i) => (
+            <i key={i} style={{ '--a': `${i * 30}deg`, '--r': `${56 + (i % 3) * 22}px` }} />
+          ))}
+        </span>
+      )}
+      {sira.ders && <span className="ders-cip">{[sira.ders, sira.konu].filter(Boolean).join(' · ')}</span>}
       <p className="siradaki-sira">
         {sira.baslangic_saat
           ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''}`
@@ -344,7 +380,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       </p>
       <h2 className="siradaki-baslik">{baslik}</h2>
       {(etiket || tur) && (
-        <p className="siradaki-alt">{[etiket, tur].filter(Boolean).join(' · ')}</p>
+        <p className="siradaki-alt">{(sira.ders ? [tur] : [etiket, tur]).filter(Boolean).join(' · ')}</p>
       )}
       <GorevKaynagi gorev={sira} />
       {sira.aciklama && <p className="siradaki-not">{sira.aciklama}</p>}
@@ -450,7 +486,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       {talepGitti && <p className="blok-talep-bilgi">Koçuna iletildi.</p>}
 
       <div className="siradaki-ikincil">
-        <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamla(sira)}>
+        <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamlaKutla(sira)}>
           ✓ Tamamla
         </button>
         {/* Atla saatli günde de açık: sıra artık kilitli değil. */}

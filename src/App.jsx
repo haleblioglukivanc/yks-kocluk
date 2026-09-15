@@ -251,6 +251,16 @@ export default function App() {
     return () => { iptal = true }
   }, [kullaniciId, kocRol, yol])
 
+  /* Öğrencinin dünyası sıcak: tema.css body[data-rol] ile paleti değiştirir.
+     Koç vekaleten (/gozuyle/) girince de aynı ekranı görür. Erken
+     dönüşlerin üstünde duruyor; hook sırası bozulmasın. */
+  const ogrenciDunyasi = profil?.rol === 'ogrenci' || yol.startsWith('/gozuyle/')
+  useEffect(() => {
+    if (ogrenciDunyasi) document.body.dataset.rol = 'ogrenci'
+    else delete document.body.dataset.rol
+    return () => { delete document.body.dataset.rol }
+  }, [ogrenciDunyasi])
+
   if (durum === 'yukleniyor') {
     return (
       <div className="giris-sayfa">

@@ -1,3 +1,4 @@
+import { useYazarak, useCizbiKutlama } from '../lib/canli.js'
 import { useCallback, useEffect, useState } from 'react'
 import AcilGorusme from './AcilGorusme.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
@@ -148,6 +149,10 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
 
+  const metin = kocKonusuyor || hazir ? soz.mesaj : ''
+  const yazilan = useYazarak(metin)
+  const sallaniyor = useCizbiKutlama()
+
   return (
     <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
       {/* Başlık satırı her sekmede aynı kalıp (SekmeTepesi ile aynı sınıflar):
@@ -160,15 +165,15 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
       </div>
       <div className="ob-ust">
         <div className="ob-kalem">
-          <span aria-hidden="true">
+          <span aria-hidden="true" className={sallaniyor ? 'ob-kalem-gir ob-kalem-salla' : 'ob-kalem-gir'}>
             <Kalem ruh={soz.ruh} boyut={76} yipranma={ozet?.yipranma ?? 0} />
           </span>
         </div>
 
-        <div className="ob-soz">
+        <div className={metin ? 'ob-soz ob-soz--dolu' : 'ob-soz'}>
           {kocKonusuyor && <p className="ob-kim">Koçundan</p>}
-          <p className="ob-mesaj" role="status" aria-live="polite">
-            {kocKonusuyor || hazir ? soz.mesaj : ''}
+          <p className="ob-mesaj" role="status" aria-live="polite" aria-label={metin}>
+            {yazilan}
           </p>
 
           {/* Genel Başla düğmesi kalktı: sıradaki iş hemen alttaki kartta ve

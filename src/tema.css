@@ -278,4 +278,26 @@
      gibi her zaman koyu olan yüzeyler onları okuyor. */
   --tepe-ust: #2e3a52;
   --tepe-alt: #1d2638;
+
+  /* ── ÖĞRENCİ SICAKLIĞI ─────────────────────────────────────
+     İki rol, iki sıcaklık: koç lacivert kalır (araç), öğrencinin
+     dünyası sıcak mürekkep ve krem kâğıt — Çizbi'nin turuncusu bunun
+     üstünde yanıyor. body[data-rol='ogrenci'] bu değerleri anlam
+     katmanına yazar; bileşenler yine --kagit / --tepe-ust okur. */
+  --ogr-kagit:    #f7f0e3;
+  --ogr-tepe-ust: #3a2a1a;
+  --ogr-tepe-alt: #2a1f14;
+  --ogr-yuzey-2:  #f1e9da;
+  --ogr-cizgi:    #eadfcb;
+}
+body[data-rol='ogrenci'] {
+  --kagit: var(--ogr-kagit);
+  --yuzey-2: var(--ogr-yuzey-2);
+  --cizgi: var(--ogr-cizgi);
+  --cizgi-hafif: #f0e8da;
+  --tepe-ust: var(--ogr-tepe-ust);
+  --tepe-alt: var(--ogr-tepe-alt);
+  --marka-kart-gecis: linear-gradient(180deg, var(--ogr-tepe-ust) 0%, var(--ogr-tepe-alt) 100%);
+  --golge-kart:   0 2px 4px rgba(60, 40, 10, .05), 0 16px 32px -16px rgba(60, 40, 10, .18);
+  --golge-kalkik: 0 2px 4px rgba(60, 40, 10, .06), 0 18px 34px -16px rgba(60, 40, 10, .22);
 }

@@ -4187,3 +4187,120 @@ body[data-anket] .kalem-kose { display: none; }
 .rd-sayi { font-family: var(--mono); font-size: var(--punto-mini); width: 1.8rem; text-align: right; color: var(--grafit); }
 .rd-yukari { color: var(--g-yesil-metin); }
 .rd-asagi { color: var(--kizil-metin); }
+
+/* ═══════════════════════════════════════════════════════════════
+   ÖĞRENCİNİN DÜNYASI — sıcaklık ve hareket (15 Eylül 2026)
+   Palet body[data-rol='ogrenci'] ile tema.css'ten gelir; burada yalnız
+   yerleşim ve hareket var. Kural: hareket geri bildirim ya da ilerleme
+   anlatır. Hepsi prefers-reduced-motion ile kapanır (dosyanın sonu).
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Kâğıt dokusu krem zeminde daha sıcak: gren kalır, ayrıca seyrek nokta. */
+body[data-rol='ogrenci'] .uygulama .dugme { border-radius: var(--r-tam); }
+body[data-rol='ogrenci'] .uygulama .kart { border-radius: var(--r-buyuk); }
+
+/* Tepe zemini: halka çok yavaş süzülür, ekran ölü durmaz. */
+body[data-rol='ogrenci'] .hero-yuzey::after { animation: suzul 14s ease-in-out infinite alternate; }
+@keyframes suzul { to { transform: translate(-18px, 14px); } }
+
+/* Çizbi soldan sekerek gelir; görev bitince sallanır. */
+.ob-kalem-gir { display: block; transform-origin: bottom center; animation: cizbi-gir 520ms cubic-bezier(.34, 1.56, .64, 1) both; }
+@keyframes cizbi-gir {
+  0%   { opacity: 0; transform: translateX(-40px) scale(.9); }
+  60%  { opacity: 1; transform: translateX(4px) scale(1.06, .94); }
+  100% { opacity: 1; transform: none; }
+}
+.ob-kalem-salla { animation: cizbi-salla 900ms ease-in-out; }
+@keyframes cizbi-salla { 20% { transform: rotate(-8deg); } 50% { transform: rotate(7deg); } 80% { transform: rotate(-4deg); } }
+
+/* Öğrencide Çizbi'nin cümlesi balonda: beyaz, sol-alt köşesi sivri, "pop"
+   ile açılır. Koç tarafı koyu zemin + beyaz cümle olarak kalır. */
+body[data-rol='ogrenci'] .ob-soz {
+  background: var(--yuzey); color: var(--murekkep);
+  border-radius: 18px 18px 18px 4px; padding: 0.7rem 0.85rem;
+  transform-origin: left bottom; animation: balon-gir 380ms cubic-bezier(.34, 1.56, .64, 1) both;
+  animation-delay: 380ms;
+}
+@keyframes balon-gir { from { opacity: 0; transform: scale(.7); } to { opacity: 1; transform: none; } }
+body[data-rol='ogrenci'] .ob-mesaj { color: var(--murekkep); }
+body[data-rol='ogrenci'] .ob-kim { color: var(--altin-metin); }
+body[data-rol='ogrenci'] .ob-basla { background: var(--altin); color: var(--altin-uzeri); }
+body[data-rol='ogrenci'] .ob-tamam { background: var(--yuzey-2); color: var(--grafit); }
+
+/* Hafta şeridi: biten güne damga vurulur, bugün amber halkayla nefes alır. */
+.hafta-gun { position: relative; }
+.hafta-damga {
+  position: absolute; right: -4px; top: -6px; width: 18px; height: 18px; border-radius: var(--r-tam);
+  background: var(--isaret); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+  animation: damga 420ms cubic-bezier(.34, 1.56, .64, 1) both;
+}
+@keyframes damga { from { opacity: 0; transform: scale(1.8) rotate(-25deg); } to { opacity: 1; transform: none; } }
+body[data-rol='ogrenci'] .hafta-gun--bugun::after {
+  content: ''; position: absolute; inset: -3px; border-radius: inherit; border: 2px solid var(--altin);
+  opacity: 0; pointer-events: none; animation: nabiz 2.4s ease-in-out infinite;
+}
+@keyframes nabiz { 50% { opacity: .75; } }
+
+/* Sıradaki: öğrencide koyu blok değil, dersin renginde çerçeveli beyaz kart.
+   Renk süs değil, ders kimliği — Yol ve program ızgarasıyla aynı kaynak. */
+body[data-rol='ogrenci'] .siradaki-odak {
+  position: relative; background: var(--yuzey); color: var(--murekkep);
+  border: 2px solid var(--ders-renk, var(--cizgi-2)); border-radius: 22px;
+  box-shadow: var(--golge-kalkik);
+}
+body[data-rol='ogrenci'] .siradaki-odak .siradaki-sira { color: var(--soluk); }
+body[data-rol='ogrenci'] .siradaki-odak .siradaki-baslik { color: var(--murekkep); font-size: var(--punto-buyuk); font-weight: 800; letter-spacing: -0.02em; }
+body[data-rol='ogrenci'] .siradaki-odak .siradaki-alt,
+body[data-rol='ogrenci'] .siradaki-odak .siradaki-not { color: var(--soluk); }
+body[data-rol='ogrenci'] .siradaki-odak .gorev-kaynak,
+body[data-rol='ogrenci'] .siradaki-odak .gorev-kaynak * { color: var(--grafit); }
+body[data-rol='ogrenci'] .siradaki-odak .dugme--ikincil { background: var(--yuzey); border-color: var(--cizgi-2); color: var(--murekkep); }
+body[data-rol='ogrenci'] .siradaki-odak .siradaki-ikincil .metin-dugme { color: var(--serin-metin); }
+.ders-cip {
+  display: inline-block; margin-bottom: 0.35rem; padding: 0.15rem 0.6rem; border-radius: var(--r-tam);
+  font-size: var(--punto-etiket); font-weight: 700; line-height: 1.5;
+  color: var(--ders-renk); background: color-mix(in srgb, var(--ders-renk) 12%, var(--yuzey));
+}
+.siradaki-odak .ders-cip + .siradaki-sira { display: none; }
+/* Kart girişi ve uçuşu */
+.siradaki-odak--gir { animation: kart-gir 220ms cubic-bezier(.2, .8, .2, 1) both; }
+.siradaki-odak--ucus { transition: transform 240ms cubic-bezier(.4, 0, 1, 1), opacity 240ms; transform: translateX(120%) rotate(6deg); opacity: 0; }
+/* Yeşil tik patlar, kırpıntı saçılır; kartın üstünde, dokunulmaz. */
+.bitti-tik {
+  position: absolute; left: 50%; top: 50%; width: 64px; height: 64px; margin: -32px 0 0 -32px; z-index: 3;
+  border-radius: var(--r-tam); background: var(--isaret); color: #fff; font-size: 32px; line-height: 64px; text-align: center;
+  pointer-events: none; animation: tik-patla 700ms cubic-bezier(.34, 1.56, .64, 1) both;
+}
+@keyframes tik-patla { 0% { opacity: 0; transform: scale(.3); } 35% { opacity: 1; transform: scale(1.15); } 70% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.4); } }
+.bitti-tik i {
+  position: absolute; left: 28px; top: 28px; width: 8px; height: 8px; border-radius: 2px;
+  background: var(--altin); animation: kirpinti 700ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.bitti-tik i:nth-child(3n) { background: var(--serin); }
+.bitti-tik i:nth-child(3n+1) { background: var(--isaret); }
+.bitti-tik i:nth-child(4n) { background: #e0284f; }
+@keyframes kirpinti {
+  from { opacity: 1; transform: rotate(var(--a)) translateY(0); }
+  to   { opacity: 0; transform: rotate(var(--a)) translateY(calc(-1 * var(--r))) rotate(180deg); }
+}
+/* Günün geri kalanı: dersin açık tonunda satırlar, dokununca ezilir. */
+body[data-rol='ogrenci'] .siradaki-kalanlar { border-top: 0; padding-top: 0.5rem; }
+body[data-rol='ogrenci'] .sk-satir {
+  padding: 0.6rem 0.75rem; margin-bottom: 6px; border-radius: 14px;
+  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 10%, var(--yuzey));
+  transition: transform 80ms ease;
+}
+body[data-rol='ogrenci'] .sk-satir:active { transform: scale(.98); }
+body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
+/* Sayaç: halkanın yanında çalışan Çizbi */
+.sayac-halka { align-items: center; gap: 0.75rem; }
+.sayac-cizbi { display: block; transform-origin: bottom center; }
+.sayac-cizbi--calisiyor { animation: calis 1.1s ease-in-out infinite alternate; }
+@keyframes calis { to { transform: rotate(6deg) translateY(-2px); } }
+
+@media (prefers-reduced-motion: reduce) {
+  body[data-rol='ogrenci'] .hero-yuzey::after, .ob-kalem-gir, .ob-kalem-salla, body[data-rol='ogrenci'] .ob-soz,
+  .hafta-damga, body[data-rol='ogrenci'] .hafta-gun--bugun::after, .siradaki-odak--gir, .bitti-tik, .bitti-tik i,
+  .sayac-cizbi--calisiyor { animation: none !important; opacity: 1; }
+  .siradaki-odak--ucus { transition: none; }
+}
