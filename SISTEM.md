@@ -138,10 +138,19 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
   ağır durur. Gölge telefonda küçültülmez.
 - Kart başlığı `--punto-kart` (19), büyük sayı `--punto-sayi` (34,
   `tabular-nums`). İkisi de token; index.css'e punto yazılmaz.
-- **Hareket az ve amaçlı.** Yalnız beş yer: kart girişi (180ms, 8px
-  yukarı), karar kartı geçişi (220ms), sayaç halkası, çubuk dolgusu
-  (400ms), düğme basma (`scale(.98)`, 80ms). Kademeli (stagger) yok;
-  hepsi `prefers-reduced-motion` ile kapanır.
+- **Hareket geri bildirim ya da ilerleme anlatır.** Amaçsız hareket
+  yok, ama her eylemin bir cevabı var: Çizbi girişi (520ms), balon pop
+  (380ms), cümle yazılarak akar (22ms/harf), biten güne damga (420ms,
+  7 öğe 70ms kademeli — tek istisna), görev bitince kart uçar + tik
+  patlar (240ms + 700ms), sıradaki kart gelir (220ms), sayaç halkası
+  dersin rengiyle dolar, dokunuş `scale(.98)`. Koç tarafı bunlardan
+  yalnız kart girişi ve düğme basmayı alır; Bugün sade kalır. Hepsi
+  `prefers-reduced-motion` ile kapanır.
+- **İki rol, iki sıcaklık.** Koç lacivert (araç), öğrenci sıcak
+  mürekkep + krem kâğıt (`body[data-rol='ogrenci']`, tema.css).
+  Öğrencide Çizbi'nin cümlesi beyaz balonda, Sıradaki kartı dersin
+  renginde çerçeveli beyaz kart, görev satırları dersin açık tonunda —
+  renk süs değil, ders kimliği (`dersGorunumu`).
 - **Boş durum bir davet.** `Bos` bileşeni Çizbi'nin 48px hâlini ve
   isteğe bağlı `eylem` düğmesini alır; metin suçlamaz ("Henüz X yok"
   değil, "X girilince burada belirir"). Tek satırlık boşluklarda
