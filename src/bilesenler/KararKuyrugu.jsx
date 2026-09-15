@@ -202,6 +202,11 @@ function Sirada({ kartlar, onSec }) {
       <ul className="sirada-liste">
         {gosterilen.map((k) => {
           const ders = metindenDers(k.baglam)
+          /* "22:05 bloğu · Soru çözümü — Cümlede Anlam": ilk parça zaman/tür
+             bilgisiyse adın altına, kalanı sağda çip. Tek parçaysa hepsi çip. */
+          const parcalar = String(k.baglam ?? '').split(' · ')
+          const altSatir = parcalar.length > 1 && /bloğu|onayı|\d\d[:.]\d\d|deneme/i.test(parcalar[0]) ? parcalar[0] : null
+          const cip = altSatir ? parcalar.slice(1).join(' · ') : (k.baglam ?? '')
           return (
           <li key={anahtar(k)}>
             <button
@@ -211,8 +216,8 @@ function Sirada({ kartlar, onSec }) {
               onClick={() => onSec(k)}
             >
               <span className="sirada-av" aria-hidden="true">{basHarf(k.ad)}</span>
-              <span className="sirada-ad">{k.ad}</span>
-              <span className="sirada-baglam">{k.baglam}</span>
+              <span className="sirada-ad">{k.ad}{altSatir && <small className="sirada-alt">{altSatir}</small>}</span>
+              {cip && <span className="sirada-baglam">{cip}</span>}
               <span className="sirada-ac" aria-hidden="true">Aç</span>
             </button>
           </li>

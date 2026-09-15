@@ -246,7 +246,7 @@ export default function App() {
       return
     }
     let iptal = false
-    supabase.rpc('koc_karar_kuyrugu', { p_limit: 20 }).then(({ data }) => {
+    supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 }).then(({ data }) => {
       if (!iptal) setBekleyenKarar((data ?? []).length)
     })
     return () => { iptal = true }

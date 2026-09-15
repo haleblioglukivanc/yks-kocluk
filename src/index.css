@@ -4449,3 +4449,8 @@ body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { flex: 
 body[data-rol='koc'] .sirada-satir .sirada-ac { margin-left: 0.5rem; }
 /* Bugün girenler: saat mavi hap. */
 body[data-rol='koc'] .sirada-zaman { background: var(--serin-zemin); color: var(--serin-metin); border-radius: var(--r-tam); padding: 3px 9px; }
+
+/* Sırada: bağlam her satırda çip (dersi bilinmeyen gri), zaman adın altında. */
+body[data-rol='koc'] .sirada-satir .sirada-baglam { flex: 0 1 auto; margin-left: auto; padding: 3px 10px; border-radius: var(--r-tam); background: var(--yuzey-2); color: var(--grafit); font-size: var(--punto-mini); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 55%; }
+body[data-rol='koc'] .sirada-satir .sirada-ad { display: flex; flex-direction: column; line-height: 1.25; }
+.sirada-alt { font-size: var(--punto-mini); color: var(--soluk); font-weight: 400; }
