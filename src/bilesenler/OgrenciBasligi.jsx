@@ -162,6 +162,11 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
           <h1 className="rt-baslik">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
           <p className="rt-alt">{tarih}</p>
         </div>
+        {/* Acil görüşme sağ üst köşede: satır olarak altta durunca tepe
+            bir ekran boyu uzuyordu. Vekalette görünür ama salt okunur. */}
+        <div className="ob-acil-kose">
+          <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
+        </div>
       </div>
       <div className="ob-ust">
         <div className="ob-kalem">
@@ -213,9 +218,6 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
       {/* Acil görüşme: Çizbi'nin cümlesinden sonra gelen eylem satırı.
           Vekalette de görünür — koç öğrencinin gördüğü ekranın aynısını
           görmeli — ama orada yalnızca okunur. */}
-      <div className="ob-eylem-satir">
-        <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
-      </div>
 
       {sayacDurumu && (
         <div className="kk-kisayol kk-kisayol--sade">

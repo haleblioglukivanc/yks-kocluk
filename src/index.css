@@ -4230,8 +4230,8 @@ body[data-rol='ogrenci'] .ob-tamam { background: var(--yuzey-2); color: var(--gr
 /* Hafta şeridi: biten güne damga vurulur, bugün amber halkayla nefes alır. */
 .hafta-gun { position: relative; }
 .hafta-damga {
-  position: absolute; right: -4px; top: -6px; width: 18px; height: 18px; border-radius: var(--r-tam);
-  background: var(--isaret); color: #fff; font-size: 11px; font-weight: 700; line-height: 18px; text-align: center;
+  position: absolute; right: 3px; top: 3px; width: 16px; height: 16px; border-radius: var(--r-tam);
+  background: var(--isaret); color: #fff; font-size: 10px; font-weight: 700; line-height: 16px; text-align: center;
   animation: damga 420ms cubic-bezier(.34, 1.56, .64, 1) both;
 }
 @keyframes damga { from { opacity: 0; transform: scale(1.8) rotate(-25deg); } to { opacity: 1; transform: none; } }
@@ -4304,3 +4304,15 @@ body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
   .sayac-cizbi--calisiyor { animation: none !important; opacity: 1; }
   .siradaki-odak--ucus { transition: none; }
 }
+
+/* Acil görüşme köşede: yalnız ikon, yazı yaprakta. Tepe böylece Çizbi ve
+   balonla bitiyor; altındaki boş alan gitti. */
+.ob-acil-kose { flex: none; position: relative; }
+.ob-acil-kose .acil-yazi { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ob-acil-kose .acil { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; gap: 0; }
+.ob-acil-kose .acil-yaprak {
+  position: absolute; right: 0; top: calc(100% + 0.5rem); margin: 0;
+  width: min(20rem, calc(100vw - 2rem)); z-index: var(--kat-yaprak);
+  box-shadow: var(--golge-kalkik);
+}
+body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .ob.hero-yuzey:first-child { padding-bottom: 1.25rem; }
