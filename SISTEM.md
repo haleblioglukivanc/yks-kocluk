@@ -149,7 +149,15 @@ z-index adla verilir: `--kat-yapisik` 12 · `--kat-uyari` 20 · `--kat-tepe`
   sayarak gelir (`useSayarak`), yay ve çubuklar boştan dolar. Koç tarafı bunlardan
   yalnız kart girişi ve düğme basmayı alır; Bugün sade kalır. Hepsi
   `prefers-reduced-motion` ile kapanır.
-- **İki rol, iki sıcaklık.** Koç lacivert (araç), öğrenci sıcak
+- **Koçun dünyası da renkli (15 Eylül, Bekir'in kararı: "finans arayüzü
+  gibi durmasın").** `body[data-rol='koc']`: mürekkep-mavi yan çubuk
+  degrade ve Bugün'de bekleyen karar rozeti; Bugün tepesi şeftali→amber
+  kart, üstünde zıplayan Çizbi ve sayarak gelen üç sayı; geniş ekranda
+  zeminde dört pastel leke + pırıltı (`.zemin-lekeler`, telefonda yok);
+  karar kartı tipine göre sol çizgi; Sırada satırları avatar + hover'da
+  "Aç"; öğrenci satırları risk renginde şerit; KPI kartları pastel ve
+  sayan (`Sayan` bileşeni). Konfeti, damga, uçan kart koça yine gitmez.
+- **İki rol, iki sıcaklık.** Koç mürekkep-mavi + şeftali (araç ama neşeli), öğrenci sıcak
   mürekkep + krem kâğıt (`body[data-rol='ogrenci']`, tema.css).
   Öğrencide Çizbi'nin cümlesi beyaz balonda, Sıradaki kartı dersin
   renginde çerçeveli beyaz kart, görev satırları dersin açık tonunda —
