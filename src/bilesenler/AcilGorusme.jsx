@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Uyari } from './Ortak.jsx'
+import { AltSayfa, Uyari } from './Ortak.jsx'
 
 /**
  * Öğrencinin acil görüşme hakkı.
@@ -107,10 +107,15 @@ export default function AcilGorusme({ ogrenciId = null, saltOkunur = false }) {
         <span className="acil-yazi">Acil konuşmam lazım</span>
       </button>
 
+      {/* Yaprak alt sayfa olarak açılır: düğme artık tepenin köşesinde ve
+          tepe overflow:hidden; sayfa içi kutu orada kırpılırdı. */}
       {acik ? (
-        <div className="acil-yaprak">
-          <strong>Ne zaman konuşalım?</strong>
-          <p>Sebep yazmak zorunda değilsin. Günü ve saati koçun belirleyecek.</p>
+        <AltSayfa
+          baslik="Ne zaman konuşalım?"
+          altBaslik="Sebep yazmak zorunda değilsin. Günü ve saati koçun belirleyecek."
+          onKapat={() => setAcik(false)}
+        >
+        <div className="acil-yaprak acil-yaprak--sayfa">
 
           {hata ? <Uyari>{hata}</Uyari> : null}
           {saltOkunur ? (
@@ -167,6 +172,7 @@ export default function AcilGorusme({ ogrenciId = null, saltOkunur = false }) {
             </button>
           </div>
         </div>
+        </AltSayfa>
       ) : null}
     </>
   )

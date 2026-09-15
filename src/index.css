@@ -4310,11 +4310,7 @@ body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
 .ob-acil-kose { flex: none; position: relative; }
 .ob-acil-kose .acil-yazi { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .ob-acil-kose .acil { min-height: 44px; min-width: 44px; padding: 0; justify-content: center; gap: 0; }
-.ob-acil-kose .acil-yaprak {
-  position: absolute; right: 0; top: calc(100% + 0.5rem); margin: 0;
-  width: min(20rem, calc(100vw - 2rem)); z-index: var(--kat-yaprak);
-  box-shadow: var(--golge-kalkik);
-}
+.acil-yaprak--sayfa { margin: 0; padding: 0; border: 0; background: none; }
 body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .ob.hero-yuzey:first-child { padding-bottom: 1.25rem; }
 /* Koç karar kartı: karar verilince yenisi 14px aşağıdan kayarak gelir (220ms).
    Kart anahtarla yeniden kurulduğu için tek satır yetiyor. */
