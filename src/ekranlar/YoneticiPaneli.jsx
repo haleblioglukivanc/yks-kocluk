@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase } from '../lib/supabase.js'
+import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
@@ -108,7 +108,44 @@ function Nabiz({ n }) {
   )
 }
 
-function Koclar({ liste }) {
+/* Yöneticilik rolün değil, ayrı bir yetki: anahtar açılıp kapanıyor.
+   Son yöneticiyi kapatmayı veritabanı engelliyor; buradaki hata mesajı
+   oradan geliyor. */
+function YoneticiAnahtari({ koc, onDegisti, onHata }) {
+  const [bekliyor, setBekliyor] = useState(false)
+
+  async function cevir() {
+    setBekliyor(true)
+    onHata('')
+    const { error } = await supabase.rpc('yonetici_yetkisi', {
+      p_kisi: koc.koc_id,
+      p_ac: !koc.yonetici,
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    onDegisti()
+  }
+
+  return (
+    <button
+      type="button"
+      className={koc.yonetici ? 'yk-anahtar yk-anahtar--acik' : 'yk-anahtar'}
+      onClick={cevir}
+      disabled={bekliyor}
+      aria-pressed={koc.yonetici}
+      title={koc.yonetici ? 'Yöneticilik açık' : 'Yöneticilik kapalı'}
+    >
+      <span className="yk-anahtar-kutu" aria-hidden="true" />
+      <span>{koc.yonetici ? 'Yönetici' : 'Koç'}</span>
+    </button>
+  )
+}
+
+function Koclar({ liste, onDegisti }) {
+  const [hata, setHata] = useState('')
   if (!liste?.length) {
     return (
       <Kart baslik="Koçlar" altBaslik="Öğrenciye ne kadar hızlı dönülüyor">
@@ -119,6 +156,7 @@ function Koclar({ liste }) {
 
   return (
     <Kart baslik="Koçlar" altBaslik="Öğrenciye ne kadar hızlı dönülüyor">
+      <Uyari>{hata}</Uyari>
       <ul className="liste">
         {liste.map((k) => {
           const uyari = kocUyarisi(k)
@@ -127,6 +165,7 @@ function Koclar({ liste }) {
             <li key={k.koc_id} className="yk-koc">
               <span className="liste-ad">{k.ad_soyad}</span>
               <span className="yk-yuk">{k.ogrenci_sayisi} öğrenci</span>
+              <YoneticiAnahtari koc={k} onDegisti={onDegisti} onHata={setHata} />
               <div className="yk-olcum">
                 <span>
                   Bekleyen onay<b>{k.bekleyen_onay}</b>
@@ -517,20 +556,94 @@ function Ayarlar({ onGit }) {
   )
 }
 
+/* Bütün öğrenciler tek tabloda. Koç ekranındaki liste kendi öğrencileriyle
+   sınırlı; burası kurumun tamamı, koç filtresiyle. */
+const RISK_ADI = { acil: 'Önce bunlar', izle: 'İzle', iyi: 'Yolunda', pasif: 'Pasif' }
+
+function Ogrenciler({ liste, onOgrenciAc }) {
+  const [koc, setKoc] = useState('')
+  if (!liste?.length) {
+    return (
+      <Kart baslik="Öğrenciler" altBaslik="Kurumun tamamı">
+        <Bos baslik="Kayıtlı öğrenci yok" />
+      </Kart>
+    )
+  }
+  const koclar = [...new Set(liste.map((o) => o.koc))].sort()
+  const suzulmus = koc ? liste.filter((o) => o.koc === koc) : liste
+
+  return (
+    <Kart
+      baslik="Öğrenciler"
+      altBaslik={`${suzulmus.length} öğrenci · satıra dokun, öğrenciye git`}
+      eylem={
+        koclar.length > 1 ? (
+          <select value={koc} onChange={(e) => setKoc(e.target.value)} aria-label="Koça göre süz">
+            <option value="">Tüm koçlar</option>
+            {koclar.map((k) => (
+              <option key={k} value={k}>{k}</option>
+            ))}
+          </select>
+        ) : null
+      }
+    >
+      <div className="yk-tablo-kap">
+        <table className="yk-tablo">
+          <thead>
+            <tr>
+              <th>Öğrenci</th><th>Koç</th><th>Tamamlama</th><th>Son net</th>
+              <th>Gecikmiş</th><th>Ödeme</th><th>Durum</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suzulmus.map((o) => (
+              <tr key={o.ogrenciId} onClick={() => onOgrenciAc?.(o.ogrenciId)} tabIndex={0}
+                  onKeyDown={(e) => e.key === 'Enter' && onOgrenciAc?.(o.ogrenciId)}>
+                <td>{o.ad}</td>
+                <td className="yk-sonuk">{o.koc}</td>
+                <td className="yk-sayi">{o.tamamlama == null ? '—' : `%${o.tamamlama}`}</td>
+                <td className="yk-sayi">{o.sonNet == null ? '—' : Number(o.sonNet).toFixed(2)}</td>
+                <td className="yk-sayi">{o.gecikmis ?? 0}</td>
+                <td className="yk-sayi">
+                  {Number(o.gecikenTutar) > 0
+                    ? `${new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(o.gecikenTutar)} ₺`
+                    : '—'}
+                </td>
+                <td><Rozet ton={o.risk === 'acil' ? 'uyari' : o.risk === 'izle' ? 'izle' : 'iyi'}>
+                  {RISK_ADI[o.risk] ?? o.risk}
+                </Rozet></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Kart>
+  )
+}
+
+const SEKMELER = [
+  ['koclar', 'Koçlar'],
+  ['ogrenciler', 'Öğrenciler'],
+  ['tahsilat', 'Tahsilat'],
+  ['sistem', 'Sistem'],
+]
+
 export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
+  const [sekme, setSekme] = useState('koclar')
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState(null)
 
   const yukle = useCallback(async () => {
-    const [nabiz, koclar, risk, sistem, vekalet, tahsilat] = await Promise.all([
+    const [nabiz, koclar, risk, sistem, vekalet, tahsilat, ogrenciler] = await Promise.all([
       supabase.rpc('yonetici_nabzi'),
       supabase.rpc('yonetici_koc_performansi'),
       supabase.rpc('yonetici_risk_listesi', { p_limit: 5 }),
       supabase.rpc('yonetici_sistem_durumu'),
       supabase.rpc('yonetici_vekalet_kayitlari', { p_limit: 8 }),
       supabase.rpc('yonetici_tahsilat_ozeti'),
+      supabase.rpc('yonetici_ogrenci_listesi'),
     ])
-    const ilkHata = [nabiz, koclar, risk, sistem, vekalet, tahsilat].find((c) => c.error)
+    const ilkHata = [nabiz, koclar, risk, sistem, vekalet, tahsilat, ogrenciler].find((c) => c.error)
     if (ilkHata) {
       setHata(ilkHata.error.message)
       return
@@ -542,6 +655,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
       sistem: sistem.data,
       vekalet: vekalet.data,
       tahsilat: tahsilat.data,
+      ogrenciler: ogrenciler.data,
     })
   }, [])
 
@@ -575,18 +689,47 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
       {veri && (
         <>
           <Nabiz n={veri.nabiz} />
-          <Koclar liste={veri.koclar} />
-          <Risk liste={veri.risk} onOgrenciAc={onOgrenciAc} />
-          <Tahsilat t={veri.tahsilat} onOgrenciAc={onOgrenciAc} />
-          <Sistem s={veri.sistem} />
-          <Vekalet liste={veri.vekalet} />
 
-          {/* Haftalik Ilham takvimi icerik kuratorlugu: koc gorunen hali
-              okuyor, 12 haftalik plani yonetici kuruyor. */}
-          <HaftalikTakvim />
+          {/* Tek uzun sayfaydı; dokuz kart alt alta diziliyordu. Yönetim
+              ayda bir açılan yoğun bir ekran, sekme onu okunur kılıyor. */}
+          <nav className="sekmeler sekmeler--genis" aria-label="Yönetim bölümleri">
+            {SEKMELER.map(([k, ad]) => (
+              <button
+                key={k}
+                className={sekme === k ? 'sekme sekme--etkin' : 'sekme'}
+                onClick={() => setSekme(k)}
+              >
+                {ad}
+              </button>
+            ))}
+          </nav>
 
-          <KocEkle liste={veri.koclar} onEklendi={yukle} />
-          <Ayarlar onGit={onGit} />
+          {sekme === 'koclar' && (
+            <>
+              <Koclar liste={veri.koclar} onDegisti={yukle} />
+              <KocEkle liste={veri.koclar} onEklendi={yukle} />
+            </>
+          )}
+
+          {sekme === 'ogrenciler' && (
+            <>
+              <Ogrenciler liste={veri.ogrenciler} onOgrenciAc={onOgrenciAc} />
+              <Risk liste={veri.risk} onOgrenciAc={onOgrenciAc} />
+            </>
+          )}
+
+          {sekme === 'tahsilat' && <Tahsilat t={veri.tahsilat} onOgrenciAc={onOgrenciAc} />}
+
+          {sekme === 'sistem' && (
+            <>
+              <Sistem s={veri.sistem} />
+              <Vekalet liste={veri.vekalet} />
+              {/* Haftalik Ilham takvimi icerik kuratorlugu: koc gorunen hali
+                  okuyor, 12 haftalik plani yonetici kuruyor. */}
+              <HaftalikTakvim />
+              <Ayarlar onGit={onGit} />
+            </>
+          )}
         </>
       )}
     </>
