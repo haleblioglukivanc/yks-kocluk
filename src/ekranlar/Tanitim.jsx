@@ -13,6 +13,95 @@ const VIDEOLAR = [
   { src: '/video/koc.mp4',     konum: '70% center' }, // masa: eller sağda
 ]
 
+/* ── Hareket ─────────────────────────────────────────────────────
+   Her hareket bölüm ekrana ilk girdiğinde bir kez oynar. "Hareketi azalt"
+   açıksa ya da tarayıcı gözcüyü bilmiyorsa hiçbir şey gizlenmez, sayılar
+   son değerinde durur. Gizli başlangıç durumları CSS'te yalnız .t-hareket
+   altında tanımlı; bu sınıf yoksa sayfa hareketsiz ama eksiksiz görünür. */
+const hareketVar = () => typeof window !== 'undefined'
+  && !!window.requestAnimationFrame
+  && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+
+/* Öğenin üst kenarı ekranın alt %92'sine girince fn bir kez çalışır.
+   Kesişim gözcüsü yerine kaydırma konumuna bakılır: hızlı parmak
+   kaydırmasında ekranı hiç "görmeden" geçilen öğe de açılır (Safari). */
+function gozle(el, fn, pay = 0.92) {
+  let bitti = false, bekliyor = false
+  const bak = () => {
+    bekliyor = false
+    if (bitti || !el.isConnected) return
+    if (el.getBoundingClientRect().top < window.innerHeight * pay) { bitti = true; birak(); fn() }
+  }
+  const tetik = () => { if (!bekliyor) { bekliyor = true; requestAnimationFrame(bak) } }
+  const birak = () => { window.removeEventListener('scroll', tetik); window.removeEventListener('resize', tetik) }
+  window.addEventListener('scroll', tetik, { passive: true })
+  window.addEventListener('resize', tetik)
+  tetik()
+  return () => { bitti = true; birak() }
+}
+
+/* Görünür olunca .t-canli ekler. [data-canli] işaretliler ve BELIR listesi. */
+const BELIR = '.t-bolum .t-etiket, .t-bolum .t-baslik, .t-bolum .t-alt-metin, .t-bolum-bas-not, .t-adim, .t-soru, .t-portre, .t-kim-metin, .t-hafta-bolum .t-etiket, .t-giris-metin, .t-hafta-bas, .t-ozet, .t-koyu-metin > *, .t-ilke, .t-sohbet-yuva, .t-kanal-bas, .t-kanal-kart, .t-cagri-metin, .t-cagri-eylem'
+function useCanlandir(kok, acik) {
+  useEffect(() => {
+    const el = kok.current
+    if (!el || !acik) return
+    const hedefler = new Set(el.querySelectorAll('[data-canli]'))
+    el.querySelectorAll(BELIR).forEach((b) => {
+      b.classList.add('t-belir')
+      // Kardeşler sırayla gelsin (en fazla 4 adım)
+      const sira = Array.prototype.indexOf.call(b.parentElement.children, b)
+      b.style.transitionDelay = `${Math.min(sira, 4) * 70}ms`
+      hedefler.add(b)
+    })
+    const birak = [...hedefler].map((h) => gozle(h, () => h.classList.add('t-canli')))
+    return () => birak.forEach((f) => f())
+  }, [kok, acik])
+}
+
+/* "3.450", "84,5", "13/17", "+3,25", "92%" → içindeki sayılar 0'dan sayar.
+   Son değer görünmez biçimde yerini tutar; genişlik oynamaz, ekran okuyucu
+   yalnız son değeri okur. */
+const bicimle = (orijinal, deger) => {
+  const ondalik = orijinal.includes(',') ? orijinal.split(',')[1].length : 0
+  const [tam, kus] = deger.toFixed(ondalik).split('.')
+  const gruplu = orijinal.includes('.') ? tam.replace(/\B(?=(\d{3})+(?!\d))/g, '.') : tam
+  return kus ? `${gruplu},${kus}` : gruplu
+}
+function Sayac({ deger, sure = 1300, gecikme = 0 }) {
+  const metin = String(deger)
+  const ref = useRef(null)
+  const [k, setK] = useState(() => (hareketVar() ? 0 : 1))
+  useEffect(() => {
+    const el = ref.current
+    if (!el || k === 1) return
+    let raf, zaman
+    const birak = gozle(el, () => {
+      zaman = setTimeout(() => {
+        const t0 = performance.now()
+        const adim = (t) => {
+          const x = Math.min(1, (t - t0) / sure)
+          setK(x === 1 ? 1 : 1 - Math.pow(1 - x, 3))
+          if (x < 1) raf = requestAnimationFrame(adim)
+        }
+        raf = requestAnimationFrame(adim)
+      }, gecikme)
+    }, 0.85)
+    return () => { birak(); cancelAnimationFrame(raf); clearTimeout(zaman) }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  const akan = k === 1 ? metin : metin.replace(/\d+(?:[.,]\d+)*/g, (s) => {
+    const hedef = parseFloat(s.replace(/\./g, '').replace(',', '.'))
+    const ondalik = s.includes(',') ? s.split(',')[1].length : 0
+    return bicimle(s, ondalik ? hedef * k : Math.floor(hedef * k))
+  })
+  return (
+    <span ref={ref} className="t-sayac">
+      <span className="t-sayac-son">{metin}</span>
+      <span className="t-sayac-akan" aria-hidden="true">{akan}</span>
+    </span>
+  )
+}
+
 function Gunler() {
   const kap = useRef(null)
   const [aktif, setAktif] = useState(0)
@@ -188,14 +277,15 @@ function NetGrafigi({ netler }) {
           <text x="0" y={y(v) + 4} className="t-grafik-yazi">{v}</text>
         </g>
       ))}
-      <polyline points={noktalar.map((p) => `${p.cx},${p.cy}`).join(' ')} className="t-grafik-cizgi" />
-      {noktalar.map((p) => (
-        <g key={p.ay}>
+      <polyline points={noktalar.map((p) => `${p.cx},${p.cy}`).join(' ')} className="t-grafik-cizgi" pathLength="1" />
+      {noktalar.map((p, i) => (
+        <g key={p.ay} className="t-grafik-durak" style={{ '--i': i / (noktalar.length - 1) }}>
           <circle cx={p.cx} cy={p.cy} r="5" className="t-grafik-nokta" />
           <text x={p.cx} y={p.cy - 14} className="t-grafik-deger" textAnchor="middle">{p.net}</text>
           <text x={p.cx} y="252" className="t-grafik-yazi" textAnchor="middle">{p.ay}</text>
         </g>
       ))}
+      <circle cx={son.cx} cy={son.cy} r="7" className="t-grafik-nabiz" />
       <circle cx={son.cx} cy={son.cy} r="7" className="t-grafik-son" />
     </svg>
   )
@@ -342,8 +432,12 @@ export default function Tanitim({ onGiris, onRandevu }) {
     if (a < enKucuk) { enKucuk = a; enKotu = netler[i] }
   }
 
+  const kok = useRef(null)
+  const [hareket] = useState(hareketVar)
+  useCanlandir(kok, hareket)
+
   return (
-    <div className="tanitim" id="tepe">
+    <div className={'tanitim' + (hareket ? ' t-hareket' : '')} id="tepe" ref={kok}>
       <header className="t-ust">
         <div className="t-kap t-ust-ic">
           <div className="t-marka">
@@ -371,11 +465,11 @@ export default function Tanitim({ onGiris, onRandevu }) {
               <a href="/randevu" onClick={randevu} className="t-dugme t-dugme--ana t-dugme--buyuk">Tanışma görüşmesi ayarla</a>
             </div>
             <a href="#hafta" className="t-hafta-onizleme" aria-label="Örnek haftayı oku">
-              <span className="t-mini-hafta" aria-hidden="true">
-                {gunler.map((g) => (
+              <span className="t-mini-hafta" aria-hidden="true" data-canli="">
+                {gunler.map((g, gi) => (
                   <span key={g.ad}>
                     <b>{g.kisa}</b>
-                    {g.gorevler.filter((t) => t.durum !== 'bos').map((t, i) => <u key={i} className={'t-mini-' + t.durum} />)}
+                    {g.gorevler.filter((t) => t.durum !== 'bos').map((t, i) => <u key={i} className={'t-mini-' + t.durum} style={{ '--g': gi, '--s': i }} />)}
                   </span>
                 ))}
               </span>
@@ -385,10 +479,10 @@ export default function Tanitim({ onGiris, onRandevu }) {
               </span>
             </a>
           </div>
-          <div className="t-sayilar">
+          <div className="t-sayilar" data-canli="">
             {sayilar.map((s) => (
               <div key={s.birim} className="t-sayi">
-                <span className="t-sayi-deger">{s.sayi}<span className="t-sayi-arti">+</span></span>
+                <span className="t-sayi-deger"><Sayac deger={s.sayi} gecikme={300} /><span className="t-sayi-arti">+</span></span>
                 <span className="t-sayi-birim">{s.birim}</span>
               </div>
             ))}
@@ -399,7 +493,12 @@ export default function Tanitim({ onGiris, onRandevu }) {
       <div className="t-ders-serit">
         <div className="t-kap t-ders-serit-ic">
           <span className="t-ders-serit-baslik">Takip edilen dersler</span>
-          {kayan.dersler.map((d) => <span key={d}>{d}</span>)}
+          <div className="t-ders-kayan">
+            <div className="t-ders-iz">
+              {kayan.dersler.map((d) => <span key={d}>{d}</span>)}
+              {kayan.dersler.map((d) => <span key={'2' + d} aria-hidden="true" className="t-ders-kopya">{d}</span>)}
+            </div>
+          </div>
         </div>
       </div>
 
@@ -422,9 +521,9 @@ export default function Tanitim({ onGiris, onRandevu }) {
         <Gunler />
 
         <div className="t-ozet">
-          <div><span className="t-ozet-sayi">{ozet.toplam}</span><span className="t-ozet-not">iş planlandı</span></div>
-          <div><span className="t-ozet-sayi">{ozet.oran}%</span><span className="t-ozet-not">tamamlandı — okulda sınav haftası olmasına rağmen</span></div>
-          <div><span className="t-ozet-sayi t-ozet-sayi--vurgu">+3,25</span><span className="t-ozet-not">net, cumartesi denemesinde</span></div>
+          <div><span className="t-ozet-sayi"><Sayac deger={ozet.toplam} /></span><span className="t-ozet-not">iş planlandı</span></div>
+          <div><span className="t-ozet-sayi"><Sayac deger={`${ozet.oran}%`} /></span><span className="t-ozet-not">tamamlandı — okulda sınav haftası olmasına rağmen</span></div>
+          <div><span className="t-ozet-sayi t-ozet-sayi--vurgu"><Sayac deger="+3,25" /></span><span className="t-ozet-not">net, cumartesi denemesinde</span></div>
           <div><span className="t-ozet-sayi">1</span><span className="t-ozet-not">müdahale — çarşamba gecesi, aşağıda</span></div>
         </div>
       </section>
@@ -462,11 +561,11 @@ export default function Tanitim({ onGiris, onRandevu }) {
           <h2 className="t-baslik">Haftalar birikir.</h2>
           <p className="t-alt-metin">Yukarıdaki gibi 26 hafta. Netin sıçraması yok; sadece düşmeyen bir çizgi var. Denemede sıçrama arayan aile hayal kırıklığı yaşar, düşmeyen çizgi arayan aile üniversiteye gider.</p>
         </div>
-        <div className="t-grafik-yuva">
+        <div className="t-grafik-yuva" data-canli="">
           <NetGrafigi netler={netler} />
           <div className="t-grafik-alt">
             <span>TYT net · aylık ortalama</span>
-            <span className="t-grafik-fark">+{netler[netler.length - 1].net - netler[0].net} net / 6 ay</span>
+            <span className="t-grafik-fark"><Sayac deger={`+${netler[netler.length - 1].net - netler[0].net}`} gecikme={1500} /> net / 6 ay</span>
             <span>en kötü ay: {enKotu.ay} (düşüş yok)</span>
           </div>
         </div>
@@ -478,12 +577,12 @@ export default function Tanitim({ onGiris, onRandevu }) {
           <h2 className="t-baslik">Pazar akşamı size gelen özet.</h2>
           <p className="t-alt-metin">Yandaki kart velinin gördüğü her şey. Günlük liste yok, mesajlar yok. "Bugün ne yaptın?" sorusunu sormanız gerekmesin diye var; sorunuz olursa muhatabınız benim, çocuğunuz değil.</p>
         </div>
-        <div className="t-veli-kart">
+        <div className="t-veli-kart" data-canli="">
           <div className="t-veli-bas"><span>Haftalık özet</span><span>{ogrenci.hafta}</span></div>
           <div className="t-veli-izgara">
-            <div><span className="t-veli-sayi">{ozet.bitti}/{ozet.toplam}</span><span>iş tamamlandı</span></div>
-            <div><span className="t-veli-sayi">84,5</span><span>TYT net (önceki 81,25)</span></div>
-            <div><span className="t-veli-sayi">6/7</span><span>gün çalışıldı</span></div>
+            <div><span className="t-veli-sayi"><Sayac deger={`${ozet.bitti}/${ozet.toplam}`} /></span><span>iş tamamlandı</span></div>
+            <div><span className="t-veli-sayi"><Sayac deger="84,5" /></span><span>TYT net (önceki 81,25)</span></div>
+            <div><span className="t-veli-sayi"><Sayac deger="6/7" /></span><span>gün çalışıldı</span></div>
             <div><span className="t-veli-sayi">1</span><span>plan değişikliği</span></div>
           </div>
           <div className="t-veli-notu"><b>Koçun veliye notu</b>Sınav haftasında bir gün düştü, planı hafiflettim; cumartesi netine yansımadı. Gelecek hafta manyetizma ağırlıklı. Elif'e "aferin" deyin, "daha çok çalış" demeyin — çalıştı.</div>

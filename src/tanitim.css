@@ -99,6 +99,18 @@
 .t-ders-serit-ic { padding-top: 16px; padding-bottom: 16px; display: flex; gap: clamp(20px, 3cqw, 44px); overflow-x: auto; scrollbar-width: none; white-space: nowrap; font-family: var(--marka-mono); font-size: var(--punto-mini); letter-spacing: .08em; text-transform: uppercase; align-items: center; }
 .t-ders-serit-ic::-webkit-scrollbar { display: none; }
 .t-ders-serit-ic > span { flex: none; }
+/* Ders listesi: hareket varsa sonsuz kayan bant (liste iki kez yazılı,
+   yarı yola gelince başa sarar); yoksa elle kaydırılan satır. */
+.t-ders-kayan { flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.t-ders-kayan::-webkit-scrollbar { display: none; }
+.t-ders-iz { display: flex; width: max-content; }
+.t-ders-iz > span { flex: none; padding-right: clamp(20px, 3cqw, 44px); }
+.t-ders-kopya { display: none; }
+.t-hareket .t-ders-kayan { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 90%, transparent); mask-image: linear-gradient(90deg, transparent, #000 6%, #000 90%, transparent); }
+.t-hareket .t-ders-kopya { display: inline; }
+.t-hareket .t-ders-iz { animation: t-kay 48s linear infinite; }
+.t-hareket .t-ders-serit:hover .t-ders-iz { animation-play-state: paused; }
+@keyframes t-kay { to { transform: translateX(-50%); } }
 .t-ders-serit-baslik { color: var(--t-turuncu-a); }
 
 /* ── Ortak etiket / başlık ────────────────────────────────────── */
@@ -291,6 +303,46 @@
   .t-wa-yuzen--acik { opacity: 1; transform: none; pointer-events: auto; }
   .tanitim a.t-wa-yuzen:hover { color: #fff; background: var(--t-wa-h); }
 }
+
+/* ── Hareket (yalnız .t-hareket altında; bkz. Tanitim.jsx) ───────── */
+.t-sayac { display: inline-grid; font-variant-numeric: tabular-nums; }
+.t-sayac > span { grid-area: 1 / 1; }
+.t-sayac-son { color: transparent; }
+.t-sayac-akan { justify-self: end; }
+
+/* Bölüm girişleri: hafifçe yukarı kayarak belirir */
+.t-hareket .t-belir { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .7s cubic-bezier(.2, .7, .2, 1); }
+.t-hareket .t-belir.t-canli { opacity: 1; transform: none; }
+
+/* Sayılar: "+" sayma bitince yerine oturur */
+.t-hareket .t-sayi-arti { display: inline-block; opacity: 0; transform: scale(.3); }
+.t-hareket .t-sayilar.t-canli .t-sayi-arti { animation: t-pit .45s cubic-bezier(.3, 1.6, .5, 1) 1.55s forwards; }
+@keyframes t-pit { to { opacity: 1; transform: none; } }
+
+/* Mini hafta: Pazartesi'den Pazar'a dolar, kaçan işler en son */
+.t-hareket .t-mini-hafta u { opacity: 0; transform: scale(.2); }
+.t-hareket .t-mini-hafta.t-canli u { animation: t-kutu .35s cubic-bezier(.3, 1.5, .5, 1) forwards; animation-delay: calc(400ms + var(--g) * 140ms + var(--s) * 70ms); }
+.t-hareket .t-mini-hafta.t-canli u.t-mini-kaldi { animation-delay: calc(1500ms + var(--g) * 120ms); }
+@keyframes t-kutu { to { opacity: 1; transform: none; } }
+
+/* Net grafiği: çizgi kalemle çizilir, noktalar sırayla, son nokta nabız atar */
+.t-hareket .t-grafik-cizgi { stroke-dasharray: 1; stroke-dashoffset: 1; }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-cizgi { animation: t-ciz 1.6s cubic-bezier(.45, 0, .3, 1) .2s forwards; }
+@keyframes t-ciz { to { stroke-dashoffset: 0; } }
+.t-hareket .t-grafik-durak .t-grafik-nokta, .t-hareket .t-grafik-durak .t-grafik-deger, .t-hareket .t-grafik-son { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-nokta { animation: t-kutu .3s ease-out forwards; animation-delay: calc(200ms + var(--i) * 1500ms); }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-deger { animation: t-yukari .4s ease-out forwards; animation-delay: calc(300ms + var(--i) * 1500ms); }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-son { animation: t-kutu .35s cubic-bezier(.3, 1.6, .5, 1) 1.75s forwards; }
+@keyframes t-yukari { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.t-grafik-nabiz { fill: var(--t-turuncu); opacity: 0; transform-box: fill-box; transform-origin: center; pointer-events: none; }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-nabiz { animation: t-nabiz 1.4s ease-out 2.1s 3; }
+@keyframes t-nabiz { from { opacity: .55; transform: scale(1); } to { opacity: 0; transform: scale(3.2); } }
+.t-hareket .t-grafik-fark { opacity: 0; }
+.t-hareket .t-grafik-yuva.t-canli .t-grafik-fark { animation: t-yukari .4s ease-out 1.5s forwards; }
+
+/* Veli kartı: sayılar sayar, not ardından gelir */
+.t-hareket .t-veli-notu { opacity: 0; transform: translateY(10px); }
+.t-hareket .t-veli-kart.t-canli .t-veli-notu { animation: t-yukari .6s ease-out 1.3s forwards; }
 
 @media (prefers-reduced-motion: reduce) {
   .tanitim * { transition: none !important; animation: none !important; }
