@@ -97,6 +97,11 @@ export default function KararKuyrugu({ onOgrenciAc }) {
     setBitenler((b) => [...b, anahtar(kart)])
     setOdakKey(null)
     if (sayildi) setVerilen((v) => v + 1)
+    /* Onaylanan veli özeti aynı sayfadaki "Veliye iletilecek" kutusuna düşer.
+       İki bileşen kardeş; ortak durum kurmak yerine tek yönlü haber yeter. */
+    if (sayildi && kart?.tip === 'veli_ozet') {
+      window.dispatchEvent(new CustomEvent('veli-mesaji-eklendi'))
+    }
   }
 
   if (kartlar === null) return <Yukleniyor metin="Kararlar geliyor" satir={4} />

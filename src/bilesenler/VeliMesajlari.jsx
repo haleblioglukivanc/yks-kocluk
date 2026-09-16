@@ -133,6 +133,10 @@ export default function VeliMesajlari() {
 
   useEffect(() => {
     yukle()
+    /* Karar kuyruğu bir özeti onayladığında kutu kendini tazeler; yoksa
+       satır ancak sayfa yenilenince görünüyordu. */
+    window.addEventListener('veli-mesaji-eklendi', yukle)
+    return () => window.removeEventListener('veli-mesaji-eklendi', yukle)
   }, [yukle])
 
   /* İyimser güncelleme: damga tek alan, hata olursa listeyi tazeliyoruz. */

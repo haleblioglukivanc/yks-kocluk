@@ -256,3 +256,21 @@ geçersiz girdide RLS politikası içinde hata fırlatması.
   iki numaraya başarılı sınama). Koçun kendi bildirimleri için hazır duruyor.
 - Sırada: bekleyen mesaj için Bugün rozeti ve Telegram bildirimi; üç gün
   bekleyen mesajın kırmızıya dönmesi arayüzde var, bildirimi yok.
+
+### 16 Eylül 2026 — veli özeti akışında üç düzeltme
+
+1. **Sessiz kayıp (asıl kusur).** `private.veli_ozeti_yayinlaninca`, `koc_yorumu`
+   10 karakterden kısaysa hiçbir şey yapmadan çıkıyor. Ekrandaki özet metni
+   saklı değil, `koc_karar_kuyrugu` içinde anlık üretiliyor; metin kaydedilmeden
+   yayınlanan bir özet ne SMS kuyruğuna ne veli e-postasına düşüyordu — yalnız
+   "yayınlandı" damgası vuruluyordu. `koc_karar_ver` artık metin gelmediğinde
+   ekranda gösterilen taslağın aynısını üretip kaydediyor.
+2. **Kuyruk limiti.** Veli özeti 'hafta' segmentinde olduğu için sıranın sonuna
+   düşüyor, 12'lik pencere tebrik/analizle dolunca hiç görünmüyordu. Haftalık
+   plan taslağının muafiyeti veli özetine de verildi.
+3. **Etiket ve tazeleme.** Düğme "Gönder" diyordu ama mesaj gitmiyor, kutuya
+   düşüyor: "Onayla, iletime hazırla" oldu. Onaydan sonra kutu kendini
+   tazeliyor (`veli-mesaji-eklendi` olayı) — önce sayfa yenilemek gerekiyordu.
+
+Ayrıca taslak metnindeki ek hatası düzeldi: "hedefinin %36'ini" → "%36 kadarını"
+(doğru ek sayının okunuşuna göre değişiyor, ek istemeyen kalıba geçildi).
