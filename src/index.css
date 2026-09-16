@@ -4513,3 +4513,6 @@ body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { backgr
 .dugme--whatsapp:hover:not(:disabled) { filter: brightness(0.96); }
 
 .vm-ipucu { margin: 0.875rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--cizgi); font-size: var(--punto-mini); color: var(--soluk); }
+
+/* Sıradan seçilen kart üst şeridin altına girmesin: kaydırma orada dursun. */
+.kart--kaldirilmis { scroll-margin-top: calc(env(safe-area-inset-top) + 4.5rem); }

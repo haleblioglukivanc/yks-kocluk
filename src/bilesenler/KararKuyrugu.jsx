@@ -77,6 +77,17 @@ export default function KararKuyrugu({ onOgrenciAc }) {
     yukle()
   }, [yukle])
 
+  /* Sıradan bir kalem seçildiğinde kart yukarıda değişiyor ama telefonda
+     ekran dışında kaldığı için hiçbir şey olmamış gibi görünüyordu. Açılan
+     karta götür. Ekranda tek kaldırılmış kart olur (Ortak.jsx'teki kural),
+     o yüzden hedef tekil. */
+  useEffect(() => {
+    if (!odakKey) return
+    document
+      .querySelector('.kart--kaldirilmis')
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }, [odakKey])
+
   const kalanlar = useMemo(
     () => (kartlar ?? []).filter((k) => !bitenler.includes(anahtar(k))),
     [kartlar, bitenler],
