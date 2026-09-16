@@ -15,7 +15,7 @@
  * gruplamayı kullanmalı. Buradaki bir düzeltme üçüne birden yansır.
  */
 
-export const KAPSAM_ADI = {
+const KAPSAM_ADI = {
   tyt: 'TYT',
   ayt: 'AYT',
   ydt: 'YDT',

@@ -42,10 +42,6 @@ export const GOREV_TUR_KISA = {
 /** Hedef adedi sorulan türler (30 soru, 20 sayfa…). */
 export const ADETLI_TURLER = new Set(['soru_cozumu', 'okuma', 'tekrar'])
 
-export function gorevTuruAdi(tur, sozluk = GOREV_TUR_ADI) {
-  return sozluk[tur] ?? tur
-}
-
 /* ── Görev durumları ───────────────────────────────────────────
    Dört durum var ve üçü ekranda birbirinden ayrılmalı. Renk
    sistem katmanından gelir: satıra data-durum verilir, nokta ve

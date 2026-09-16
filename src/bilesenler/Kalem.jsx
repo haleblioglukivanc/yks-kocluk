@@ -3,12 +3,6 @@ import { useEffect, useState } from 'react'
 // Çizbi — YKS koçluk platformunun maskotu (v2: mavi silgi, iri gözler).
 export const KALEM_ADI = 'Çizbi';
 
-export const RUHLAR = [
-  'bekliyor', 'dusunuyor', 'sevinc', 'sasirdi',
-  'uyku', 'endise', 'fikir', 'kutlama',
-  'isaret', 'anlatiyor', 'bilendi',
-];
-
 const RENK = {
   silgi: '#378ADD',
   silgiGolge: '#185FA5',

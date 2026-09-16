@@ -48,4 +48,3 @@ export function MarkaIsareti({ yukseklik = 20, sinif = '' }) {
   )
 }
 
-export default MarkaIsareti

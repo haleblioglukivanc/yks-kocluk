@@ -22,7 +22,7 @@ const BICIM_IKONU = {
   basili: '📕',
 }
 
-export function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
+function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
   const eskimis = baglantiEskimis(kaynak)
   const adres = kaynakAdresi(kaynak)
 
@@ -72,21 +72,6 @@ export function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
 
       {eylem && <div className="kaynak-eylem">{eylem}</div>}
     </article>
-  )
-}
-
-export function KaynakSecimi({ kaynak, secili, onSec, soluk, etiket }) {
-  return (
-    <label className="kaynak-secim">
-      <input
-        type="radio"
-        name="kaynak-secimi"
-        checked={secili}
-        onChange={() => onSec(kaynak)}
-      />
-      <span className="kaynak-isaret" aria-hidden="true" />
-      <KaynakKarti kaynak={kaynak} soluk={soluk} etiket={etiket} />
-    </label>
   )
 }
 

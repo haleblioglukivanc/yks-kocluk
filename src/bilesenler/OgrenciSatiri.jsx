@@ -48,39 +48,10 @@ function tonu(r) {
   return 'notr'
 }
 
-export function sonDurum(r) {
-  if (!r) return 'Veri yok'
-  if (r.hic_baslamadi || r.gun_gecti == null) return 'yeni'
-  if (r.gun_gecti === 0) return 'bugün'
-  if (r.gun_gecti === 1) return 'dün'
-  return `${r.gun_gecti} gün`
-}
-
-/** Son 7 günün günlük tamamlama oranı. Tek yüzde "ne kadar" der,
- *  bu şerit "ne zaman" der: hangi gün çalıştı, ne zaman bıraktı. */
-export function Nabiz({ dizi, ad }) {
-  const g = Array.isArray(dizi) && dizi.length === 7 ? dizi : [0, 0, 0, 0, 0, 0, 0]
-  const gunAdi = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
-  const bugun = new Date().getDay()
-  const etiket = g
-    .map((v, i) => `${gunAdi[(bugun - 6 + i + 7) % 7]} %${v}`)
-    .join(', ')
-
-  return (
-    <span className="nabiz" role="img" aria-label={`${ad} son 7 gün: ${etiket}`}>
-      {g.map((v, i) => (
-        <span key={i} className={`nabiz-gun${i === 6 ? ' nabiz-gun--bugun' : ''}`}>
-          <i style={{ height: `${Math.max(v, 0)}%` }} />
-        </span>
-      ))}
-    </span>
-  )
-}
-
 /** Liste bir rehber: renk noktası + küçük fotoğraf + isim + tek satırda
  *  tek sebep. Sayı yok, çubuk yok; onlar detay kartında. Cümlenin ikinci
  *  parçası da detayda; burada yalnız en keskini. */
-export function tekSebep(r) {
+function tekSebep(r) {
   return sebepCumlesi(r).split(' · ')[0]
 }
 

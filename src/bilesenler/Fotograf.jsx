@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase.js'
 const KOVA = 'ogrenci-foto'
 
 /** Gizli kovadaki fotoğraf için imzalı bağlantı üretir. */
-export function useFotograf(yol) {
+function useFotograf(yol) {
   const [adres, setAdres] = useState(null)
 
   useEffect(() => {

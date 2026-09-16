@@ -49,7 +49,7 @@ export function useSayarak(hedef, sureMs = 600) {
 
 /* Çizbi'ye kutlama sinyali: görev bitince başlıktaki Çizbi sallanır.
    Bileşenler birbirini tanımaz; pencere olayı yeter. */
-export const KUTLAMA_OLAYI = 'cizbi:kutla'
+const KUTLAMA_OLAYI = 'cizbi:kutla'
 export function cizbiKutlasin() {
   window.dispatchEvent(new Event(KUTLAMA_OLAYI))
 }

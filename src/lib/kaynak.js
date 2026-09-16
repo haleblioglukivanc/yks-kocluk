@@ -37,18 +37,6 @@ export const SEVIYE_IPUCU = {
   3: 'Tavanı zorlayanlar için',
 }
 
-export const BICIM_ADI = {
-  dosya: 'Dosya',
-  baglanti: 'Bağlantı',
-  basili: 'Basılı kitap',
-}
-
-export const TELIF_ADI = {
-  kendi: 'Kendi içeriğim',
-  resmi: 'Resmî kaynak',
-  dis: 'Dış bağlantı',
-}
-
 /** Bağlantı kaç aydır kontrol edilmediyse uyarı gösterilir. */
 const CURUME_AYI = 6
 

@@ -24,7 +24,7 @@ export const SAYAC_SURELERI = [25, 45, 50]
 
 /** Görev türüne göre varsayılan sayaç süresi. Sıradaki kartı ve Çizbi'nin
     Başla düğmesi aynı tabloyu kullanır; iki yerde iki farklı süre olmasın. */
-export const VARSAYILAN_DK = {
+const VARSAYILAN_DK = {
   konu_anlatimi: 45,
   soru_cozumu: 45,
   tekrar: 25,

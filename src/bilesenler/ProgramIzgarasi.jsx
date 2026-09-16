@@ -11,12 +11,12 @@ import {
 import { yerelGun, haftaBasi as haftaBasiHesapla } from '../lib/tarih.js'
 import { dersGorunumu } from '../lib/dersGorunum.js'
 
-export const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
+const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
 /* Gün metni ve hafta başı tek yerde: lib/tarih.js. Buradaki adlar
    DenemeFormu ve OgrenciDetay'da kullanıldığı için korunuyor. */
 export const gunAnahtari = yerelGun
-export const haftaBasi = haftaBasiHesapla
+const haftaBasi = haftaBasiHesapla
 
 /** Açık panelin kimliği. Değişince panel görünür alana kaydırılır. */
 const acikTarihAnahtari = (acikSecim, secilen) => {
@@ -38,7 +38,7 @@ const haftaAdi = (blok) => {
   return `${bas.toLocaleDateString('tr-TR', ayAyni ? { day: 'numeric' } : bicim)} – ${son.toLocaleDateString('tr-TR', bicim)}`
 }
 
-export function haftaGunleri(bas) {
+function haftaGunleri(bas) {
   return Array.from({ length: 7 }, (_, i) => {
     const t = new Date(bas)
     t.setDate(bas.getDate() + i)
