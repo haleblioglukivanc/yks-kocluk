@@ -21,20 +21,33 @@
 import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import { createClient } from 'jsr:@supabase/supabase-js@2.49.4'
 
-const BASLIKLAR = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Content-Type': 'application/json',
+// CORS: yalniz uygulamanin kendi adresleri (ve yerel gelistirme). Tarayici
+// disindan cagri zaten jeton + rol kontroluyle korunuyor; bu, baska bir
+// sitenin oturumu olan kullanici adina istek atmasini da kapatir.
+const IZINLI_KOKENLER = new Set([
+  'https://khkocluk.com',
+  'https://www.khkocluk.com',
+  'http://localhost:5173',
+])
+
+function basliklar(req: Request) {
+  const koken = req.headers.get('Origin') ?? ''
+  return {
+    'Access-Control-Allow-Origin': IZINLI_KOKENLER.has(koken) ? koken : 'https://khkocluk.com',
+    'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Content-Type': 'application/json',
+    Vary: 'Origin',
+  }
 }
 
 const KOVA = 'ogrenci-foto'
 
-function cevap(govde: unknown, kod = 200) {
-  return new Response(JSON.stringify(govde), { status: kod, headers: BASLIKLAR })
-}
-
 Deno.serve(async (req: Request) => {
+  const BASLIKLAR = basliklar(req)
+  const cevap = (govde: unknown, kod = 200) =>
+    new Response(JSON.stringify(govde), { status: kod, headers: BASLIKLAR })
+
   if (req.method === 'OPTIONS') return new Response('ok', { headers: BASLIKLAR })
   if (req.method !== 'POST') return cevap({ hata: 'Yalnizca POST.' }, 405)
 
