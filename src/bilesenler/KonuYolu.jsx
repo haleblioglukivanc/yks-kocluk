@@ -90,7 +90,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const [ruh, setRuh] = useState('anlatiyor')
   const [patlayan, setPatlayan] = useState(null)
   const haritaRef = useRef(null)
-  const [cizgi, setCizgi] = useState({ soluk: '', renkli: '', kamil: null, w: 0, h: 0 })
+  const [cizgi, setCizgi] = useState({ soluk: '', renkli: '', cizbi: null, w: 0, h: 0 })
 
   /* Haritada Çizbi zaten var: köşedeki kopyası bu ekranda görünmesin. */
   useEffect(() => maskotuDevral(), [])
@@ -157,7 +157,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
         renkli,
         w: h.width,
         h: h.height,
-        kamil: k ? { x: k.x + (solda ? -70 : 34), y: k.y - 52, aynala: solda } : null,
+        cizbi: k ? { x: k.x + (solda ? -70 : 34), y: k.y - 52, aynala: solda } : null,
       })
     }
     olc()
@@ -244,19 +244,19 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
      bulunduğu durak ortaya getiriliyor. Bir kez: sonraki tazelemelerde
      ekran kullanıcının altından kaymasın. */
   /* Çizbi durak değiştirince zıplar: konum geçişi (0.5s) ile aynı anda. */
-  const oncekiKamil = useRef(null)
+  const oncekiCizbi = useRef(null)
   const [zipliyor, setZipliyor] = useState(false)
   useEffect(() => {
-    const k = cizgi.kamil
+    const k = cizgi.cizbi
     if (!k) return
-    const o = oncekiKamil.current
-    oncekiKamil.current = k
+    const o = oncekiCizbi.current
+    oncekiCizbi.current = k
     if (o && (o.x !== k.x || o.y !== k.y)) {
       setZipliyor(true)
       const t = setTimeout(() => setZipliyor(false), 600)
       return () => clearTimeout(t)
     }
-  }, [cizgi.kamil])
+  }, [cizgi.cizbi])
 
   const kaydirildi = useRef(false)
   useEffect(() => {
@@ -290,10 +290,10 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
           <path d={cizgi.renkli} className="yol-cizgi--gecildi" pathLength="1" />
         </svg>
 
-        {cizgi.kamil && (
+        {cizgi.cizbi && (
           <div
-            className={`yol-kamil${cizgi.kamil.aynala ? ' yol-kamil--ayna' : ''}${zipliyor ? ' yol-kamil--zipla' : ''}`}
-            style={{ left: cizgi.kamil.x, top: cizgi.kamil.y }}
+            className={`yol-cizbi${cizgi.cizbi.aynala ? ' yol-cizbi--ayna' : ''}${zipliyor ? ' yol-cizbi--zipla' : ''}`}
+            style={{ left: cizgi.cizbi.x, top: cizgi.cizbi.y }}
             aria-hidden="true"
           >
             {/* Haritadaki Çizbi durağı gösterir; konuşan Çizbi balondaki. */}
@@ -336,7 +336,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
       </div>
 
       <div className="yol-balon">
-        <div className="yol-balon-kamil">
+        <div className="yol-balon-cizbi">
           <Kalem ruh={ruh === 'isaret' ? 'anlatiyor' : ruh} boyut={40} />
         </div>
         <p><span className="yol-balon-ad">{KALEM_ADI}</span>{soz(rol, balon.durak, balon.bolge, balon.olay)}</p>
