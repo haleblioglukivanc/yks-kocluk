@@ -1,0 +1,13 @@
+{
+  "name": "denetim",
+  "private": true,
+  "type": "module",
+  "description": "YKS Koçluk makine taraması (Tur 0) — çalıştır: bash denetim/tara.sh",
+  "devDependencies": {
+    "@axe-core/playwright": "^4.10.1",
+    "@supabase/supabase-js": "^2.45.0",
+    "knip": "^5.30.0",
+    "lighthouse": "^12.2.0",
+    "playwright": "^1.47.0"
+  }
+}

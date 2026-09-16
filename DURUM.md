@@ -1,9 +1,24 @@
 # Proje Durumu
 
-Son güncelleme: 15 Eylül 2026 (görsel dil turu)
+Son güncelleme: 16 Eylül 2026 (Tur 0 makine denetimi)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
+
+---
+
+## 16 Eylül 2026 — Tur 0 makine denetimi
+
+Proje geneli kalite/tutarlılık denetimi başladı. Yöntem: makine okur, model yargılar.
+`bash denetim/tara.sh` tüm taramayı yeniden üretir ve `DENETIM.md`'yi yazar
+(build/knip/audit, token kaçakları, kalıntılar, canlı RLS matrisi + RPC sondası,
+Supabase advisors, Playwright 390/820/1366 Chromium + 390 WebKit, axe, dokunma
+hedefleri, Lighthouse). Ham çıktılar ve görüntüler depoya girmez.
+
+Sonuç: 109 bulgu — 3 kritik (`v_kaynak_konu` SECURITY DEFINER görünüm anon'a açık;
+`ogrenci_gorusme_hakki` RPC'si null `auth.uid()` ile ziyaretçiye yanıt veriyor),
+58 önemli, 48 hijyen. Sıradaki: Tur 1 (hijyen, mekanik) ve Tur 2 (kritik/önemli, yargı);
+ikisi de DENETIM.md'den başlar.
 
 ---
 
