@@ -217,3 +217,18 @@ gerçek kullanıcı bağlamıyla test et → test verisini temizle → derle →
 Bu yöntem yol boyunca birkaç gerçek hata yakaladı; en önemlileri yönetici
 rolünün yabancı anahtar kısıtını ihlal etmesi ve fotoğraf yolu çözümleyicisinin
 geçersiz girdide RLS politikası içinde hata fırlatması.
+
+## 16 Eylül 2026 — Tanışma başvuru formu
+
+- `/randevu` sayfası (`src/ekranlar/Randevu.jsx`, `src/randevu.css`). Tanıtımdaki
+  "Tanışma görüşmesi ayarla/iste" düğmeleri buraya gidiyor; e-posta adresi siteden kalktı
+  (yalnızca formun aydınlatma metninde duruyor).
+- Veritabanı: `public.basvurular` (alanı `hizmet`: bugün hep `kocluk`, ileride `danismanlik`).
+  Ziyaretçi tabloya erişemez, yalnızca `public.basvuru_gonder(jsonb)` RPC'si ile ekler
+  (doğrulama, tuzak alan, aynı numaraya 24 saatte tek bildirim, saatte 20 başvuru freni).
+  Okuma/güncelleme yalnızca `private.basvuru_ayari.alici_id` (Kıvanç) için.
+- Bildirim: `private.basvuru_bildir` tetikleyicisi → Telegram (`private.telegram_gonder`)
+  + `mail_kuyrugu` (`rapor_tipi = 'basvuru'`, şablon `rapor-mail` v11 içinde).
+- **Açık sorun:** Telegram bot token'ı 401 Unauthorized dönüyor (Vault: `telegram_bot_token`).
+  Telegram bildirimlerinin hiçbiri gitmiyor; token yenilenmeli.
+- Sırada: koç panelinde Başvurular listesi (önce mokap), WhatsApp Business karşılama mesajı.

@@ -1,0 +1,52 @@
+/* ═══ Tanışma başvuru formu (/randevu). Tanıtımın renk ve düğmelerini kullanır. ═══ */
+.basvuru-sayfa { min-height: 100vh; min-height: 100dvh; }
+.r-marka { text-decoration: none; color: inherit; }
+.tanitim a.r-marka:hover { color: inherit; }
+.r-kap { max-width: 560px; padding-top: clamp(28px, 6cqw, 64px); padding-bottom: 64px; }
+
+.r-form h1, .r-bitti h1 { font-weight: 800; font-size: clamp(34px, 5cqw, 52px); line-height: 1; letter-spacing: -.04em; }
+.r-ust-etiket { margin: 0 0 10px; font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--t-turuncu-m); text-transform: uppercase; letter-spacing: .08em; }
+.r-giris { margin: 14px 0 28px; color: var(--g-grafit); font-size: var(--punto-orta); line-height: 1.5; text-wrap: pretty; }
+
+.r-alan { display: grid; gap: 7px; margin: 0 0 18px; padding: 0; border: 0; min-width: 0; }
+.r-alan > span, .r-alan > legend { font-weight: 600; font-size: var(--punto-kucuk); color: var(--g-murekkep); padding: 0; margin-bottom: 7px; }
+.r-alan > span { margin-bottom: 0; }
+.r-alan small { font-weight: 400; color: var(--g-soluk); }
+.r-alan input, .r-alan select, .r-alan textarea {
+  font: inherit; font-size: 16px; color: var(--g-murekkep); background: var(--g-yuzey);
+  border: 1px solid var(--g-cizgi-2); border-radius: 12px; padding: 12px 14px; min-height: 48px; width: 100%; box-sizing: border-box;
+}
+.r-alan textarea { resize: vertical; min-height: 90px; line-height: 1.5; }
+.r-alan input:focus-visible, .r-alan select:focus-visible, .r-alan textarea:focus-visible, .r-cip:focus-visible, .r-onay input:focus-visible {
+  outline: 3px solid var(--t-turuncu); outline-offset: 1px; border-color: var(--g-murekkep);
+}
+.r-alan [aria-invalid="true"] { border-color: var(--t-kalan); }
+
+.r-cipler { display: flex; flex-wrap: wrap; gap: 8px; }
+.r-cipler--esit > * { flex: 1 1 0; }
+.r-cip { font: inherit; font-size: var(--punto-kucuk); font-weight: 600; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--g-cizgi-2); background: var(--g-yuzey); color: var(--g-murekkep); cursor: pointer; transition: background .15s, border-color .15s; }
+.r-cip:hover { border-color: var(--g-murekkep); }
+.r-cip--secili, .r-cip--secili:hover { background: var(--t-lacivert); border-color: var(--t-lacivert); color: #fff; }
+
+.r-ikili { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.r-onay { display: flex; gap: 10px; align-items: flex-start; font-size: var(--punto-kucuk); color: var(--g-grafit); line-height: 1.45; cursor: pointer; margin-top: 4px; }
+.r-onay input { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--t-lacivert); }
+.r-aydinlatma { margin: 10px 0 0 30px; font-size: var(--punto-mini); color: var(--g-soluk); }
+.r-aydinlatma summary { cursor: pointer; color: var(--g-murekkep); text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
+.r-aydinlatma p { margin: 8px 0 0; line-height: 1.55; }
+
+.r-not { margin: 18px 0 0; padding: 10px 14px; border-radius: 12px; background: var(--t-turuncu-z); color: var(--t-turuncu-m); font-size: var(--punto-kucuk); font-weight: 600; }
+.r-hata { display: block; font-style: normal; font-size: var(--punto-mini); color: var(--t-kalan-m); }
+.r-hata--genel { margin: 16px 0 0; font-size: var(--punto-kucuk); }
+.r-gonder { width: 100%; margin-top: 22px; }
+.r-gonder:disabled { opacity: .7; cursor: progress; }
+.r-tuzak { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+
+.r-bitti { text-align: center; padding-top: clamp(24px, 8cqw, 80px); }
+.r-bitti-ikon { display: inline-flex; width: 60px; height: 60px; border-radius: 50%; align-items: center; justify-content: center; background: var(--t-turuncu-z); color: var(--t-turuncu-m); margin-bottom: 18px; }
+.r-bitti h1:focus { outline: none; }
+.r-bitti p { margin: 14px auto 28px; max-width: 36ch; color: var(--g-grafit); font-size: var(--punto-orta); line-height: 1.5; text-wrap: pretty; }
+.r-bitti-eylem { display: grid; gap: 14px; justify-items: center; }
+.r-bitti-eylem .t-dugme { white-space: normal; text-align: center; }
+.r-geri { color: var(--g-murekkep); font-size: var(--punto-kucuk); }

@@ -5,6 +5,7 @@ import { supabase } from './lib/supabase.js'
 import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
+import Randevu from './ekranlar/Randevu.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
@@ -273,11 +274,9 @@ export default function App() {
 
   // Giriş yapılmamış: tanıtım veya giriş
   if (durum === 'cikis') {
-    return yol === '/giris' ? (
-      <Giris onGeri={() => git('/')} />
-    ) : (
-      <Tanitim onGiris={() => git('/giris')} />
-    )
+    if (yol === '/giris') return <Giris onGeri={() => git('/')} />
+    if (yol === '/randevu') return <Randevu onGeri={() => git('/')} />
+    return <Tanitim onGiris={() => git('/giris')} onRandevu={() => git('/randevu')} />
   }
 
   if (!profil) {

@@ -324,10 +324,11 @@ function YuzenWhatsapp({ adres }) {
   )
 }
 
-export default function Tanitim({ onGiris }) {
+export default function Tanitim({ onGiris, onRandevu }) {
   const { koc, sayilar, belgeler, kayan, vitrin, sorular, kanallar, iletisim } = site
   const netler = vitrin.maket.netler
-  const eposta = `mailto:${iletisim.eposta}`
+  // Form sayfası uygulamanın içinde; tam sayfa yenilemeden aç
+  const randevu = (e) => { e.preventDefault(); onRandevu?.() }
   const whatsapp = whatsappAdresi(iletisim)
 
   const hepsi = gunler.flatMap((g) => g.gorevler).filter((t) => t.durum !== 'bos')
@@ -367,7 +368,7 @@ export default function Tanitim({ onGiris }) {
             <p className="t-kahraman-vaat">Haftalık program, konu takibi ve deneme analizi tek sistemde.</p>
             <p className="t-kahraman-alt">{koc.altVaat}</p>
             <div className="t-kahraman-eylem">
-              <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--buyuk">Tanışma görüşmesi ayarla</a>
+              <a href="/randevu" onClick={randevu} className="t-dugme t-dugme--ana t-dugme--buyuk">Tanışma görüşmesi ayarla</a>
             </div>
             <a href="#hafta" className="t-hafta-onizleme" aria-label="Örnek haftayı oku">
               <span className="t-mini-hafta" aria-hidden="true">
@@ -545,8 +546,7 @@ export default function Tanitim({ onGiris }) {
               <WhatsappIkon /> WhatsApp'tan yazın
             </a>
           )}
-          <a href={eposta} className={`t-dugme ${whatsapp ? 't-dugme--acik-cizgi' : 't-dugme--ana'}`}>Tanışma görüşmesi iste</a>
-          <a href={eposta} className="t-cagri-eposta">{iletisim.eposta}</a>
+          <a href="/randevu" onClick={randevu} className={`t-dugme ${whatsapp ? 't-dugme--acik-cizgi' : 't-dugme--ana'}`}>Tanışma görüşmesi iste</a>
         </div>
       </section>
 
