@@ -82,7 +82,8 @@ const kalinti = {
   workersDev: tara([...srcDosyalar, path.join(KOK, 'index.html'), path.join(KOK, 'wrangler.jsonc')], /workers\.dev/),
   eskiAlanAdi: tara([...srcDosyalar, path.join(KOK, 'index.html')], /kivanchaleb?lioglu\.com/),
   consoleLog: tara(srcDosyalar, /console\.(log|debug)\(/),
-  todo: tara([...srcDosyalar, ...fnDosyalar], /\b(TODO|FIXME|XXX|HACK)\b/),
+  /* XXX telefon maskesini (05XX XXX XX XX) yakalamasın: yalnız yorum işareti olarak sayılır */
+  todo: tara([...srcDosyalar, ...fnDosyalar], /\b(TODO|FIXME|HACK)\b|\bXXX\b(?!\s+XX)/),
   localhost: tara(srcDosyalar, /localhost|127\.0\.0\.1/),
   debugger: tara(srcDosyalar, /^\s*debugger/),
 }
