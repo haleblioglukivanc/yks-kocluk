@@ -1,7 +1,23 @@
 # sms-gonder
 
-`sms_kuyrugu` tablosunu boşaltır. İki dakikada bir `sms-kuyrugu-bosalt`
-cron'u tarafından dürtülür; kuyruk boşsa istek atılmaz.
+`sms_kuyrugu` tablosunu boşaltır.
+
+> **Şu an uykuda.** `sms-kuyrugu-bosalt` cron'u 16 Eylül 2026'da kaldırıldı:
+> elimizdeki onaylı gönderici başlığı başka bir firmanın (FIRATILTSM) ve
+> veli, tanımadığı bir başlıktan gelen mesajı anlamıyor. Başlıklar firma
+> unvanı/marka ile eşleşmek zorunda olduğundan "bilgi" gibi genel bir başlık
+> da alınamıyor. Kuyruk artık koç panelindeki "Veliye iletilecek" kutusunda
+> görünüyor; koç kendi telefonundan WhatsApp ile iletiyor
+> (`koc_veli_mesajlari`, `koc_veli_mesaji_isaretle`).
+>
+> Kendi başlığımız onaylanınca fonksiyon olduğu gibi çalışır; cron'u geri
+> kurmak yeter:
+>
+> ```sql
+> select cron.schedule('sms-kuyrugu-bosalt', '*/2 * * * *', $$ select private.sms_gondericiyi_durt() $$);
+> ```
+>
+> Kurulum sınaması (aşağıdaki `sinama` çağrısı) her zaman çalışır.
 
 ## Sağlayıcı: İleti Merkezi
 

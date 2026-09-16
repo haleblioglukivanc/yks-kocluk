@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import KocBasligi from '../bilesenler/KocBasligi.jsx'
+import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 
 /** Koçun günlük durum ekranı — yap katmanı. Öğrenci listesi ayrı sekmede;
  *  burası "bugün kime dokunmalıyım" sorusuna cevap verir: risk radarı ve
@@ -24,6 +25,8 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
     <div className="panel">
       <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
       <KararKuyrugu onOgrenciAc={onOgrenciAc} />
+      {/* Onaylanan veli özetleri buraya düşer; koç kendi telefonundan iletir. */}
+      <VeliMesajlari />
     </div>
   )
 }

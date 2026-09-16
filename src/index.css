@@ -4456,3 +4456,60 @@ body[data-rol='koc'] .sirada-satir .sirada-baglam { flex: 0 1 auto; margin-left:
 body[data-rol='koc'] .sirada-satir .sirada-ad { display: flex; flex-direction: column; line-height: 1.25; }
 .sirada-alt { font-size: var(--punto-mini); color: var(--soluk); font-weight: 400; }
 body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { background: color-mix(in srgb, var(--ders-renk) 12%, var(--yuzey)); color: var(--ders-renk); }
+
+/* ── Veliye iletilecek mesajlar ─────────────────────────────────────
+   Koç panosunda, karar kuyruğunun altında. Mesaj otomatik gitmiyor;
+   koç kendi telefonundan iletiyor (gerekçe VeliMesajlari.jsx başında).
+   Kart kenarı altın: veli özeti kartlarıyla aynı aile. */
+.kart--veli-mesaj { border-left: 3px solid var(--altin); }
+
+.vm-sayac {
+  flex-shrink: 0; display: inline-flex; align-items: center; gap: 0.35rem;
+  padding: 0.25rem 0.55rem; border-radius: var(--r-tam);
+  background: var(--sicak-zemin); border: 1px solid var(--sicak-kenar);
+  color: var(--sicak-metin); font-size: var(--punto-etiket); font-weight: 600;
+}
+.vm-sayac span { font-family: var(--mono); }
+
+.vm-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.625rem; }
+.vm-satir { border: 1px solid var(--cizgi); border-radius: var(--r-kart); }
+.vm-satir[data-durum='gonderildi'] { opacity: 0.62; }
+/* Üç gündür bekleyen mesaj: unutulmuş sayılır. */
+.vm-satir[data-gec='1'] { border-color: var(--kizil-kenar); }
+
+.vm-bas { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.8rem 0.875rem 0.5rem; }
+.vm-harf {
+  flex: 0 0 34px; height: 34px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--serin-zemin); color: var(--serin-metin);
+  font-size: var(--punto-mini); font-weight: 700;
+}
+.vm-kim { flex: 1; min-width: 0; }
+.vm-ad { display: block; font-weight: 600; font-size: var(--punto-orta); }
+.vm-alt { display: block; font-size: var(--punto-mini); color: var(--soluk); }
+.vm-tel { font-family: var(--mono); }
+
+.vm-durum { flex-shrink: 0; font-size: var(--punto-etiket); font-weight: 600; padding: 0.2rem 0.45rem; border-radius: 6px; }
+.vm-durum--bekliyor { background: var(--sicak-zemin); color: var(--sicak-metin); border: 1px solid var(--sicak-kenar); }
+.vm-durum--iletildi { background: var(--isaret-zemin); color: var(--isaret-metin); border: 1px solid var(--isaret-kenar); }
+
+.vm-metin {
+  margin: 0 0.875rem 0.75rem; padding: 0.7rem 0.8rem;
+  background: var(--yuzey-2); border-radius: var(--r-orta);
+  font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.5;
+  white-space: pre-wrap; overflow-wrap: anywhere;
+}
+.vm-metin--kisa { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+.vm-eylem { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; padding: 0 0.875rem 0.8rem; }
+.vm-eylem .dugme { min-height: 38px; padding: 0.45rem 0.8rem; font-size: var(--punto-orta); display: inline-flex; align-items: center; gap: 0.4rem; }
+.vm-ac { margin-left: auto; }
+.vm-simge { width: 16px; height: 16px; flex-shrink: 0; }
+
+/* WhatsApp markasının yeşili. Panelin anlam katmanına karışmasın diye
+   ayrı token: burada yeşil "yolunda" demiyor, "WhatsApp" diyor.
+   Yazı koyu; beyaz bu tonda okunmuyor (1.9:1). */
+.dugme--whatsapp { background: #25d366; color: #04291d; font-weight: 600; }
+.dugme--whatsapp:hover:not(:disabled) { filter: brightness(0.96); }
+
+.vm-ipucu { margin: 0.875rem 0 0; padding-top: 0.75rem; border-top: 1px solid var(--cizgi); font-size: var(--punto-mini); color: var(--soluk); }

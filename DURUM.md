@@ -232,3 +232,27 @@ geçersiz girdide RLS politikası içinde hata fırlatması.
 - **Açık sorun:** Telegram bot token'ı 401 Unauthorized dönüyor (Vault: `telegram_bot_token`).
   Telegram bildirimlerinin hiçbiri gitmiyor; token yenilenmeli.
 - Sırada: koç panelinde Başvurular listesi (önce mokap), WhatsApp Business karşılama mesajı.
+
+## 16 Eylül 2026 — Veli mesajları elden iletime döndü
+
+- **Karar:** veliye giden haftalık özet otomatik SMS ile gitmiyor. Elimizdeki
+  onaylı gönderici başlığı başka bir firmanın (`FIRATILTSM`); veli tanımadığı
+  bir başlıktan gelen mesajı anlamıyor ve başkasının markasıyla mesaj atmak
+  doğru değil. Başlıklar firma unvanı/marka ile eşleşmek zorunda olduğundan
+  "bilgi" gibi genel bir başlık da alınamıyor.
+- **Yeni akış:** koç karar kuyruğunda özeti onaylar → tetikleyici `sms_kuyrugu`'na
+  satır atar (değişmedi) → satır koç panelindeki **Veliye iletilecek** kutusunda
+  görünür → koç `wa.me` bağlantısıyla kendi WhatsApp'ından gönderir → satır
+  "İletildi" damgalanır (`saglayici_id = 'elden'`).
+- `sms-kuyrugu-bosalt` cron'u kaldırıldı. `sms-gonder` fonksiyonu duruyor ve
+  çalışır durumda; geri açma komutu README'sinde.
+- Yeni: `public.koc_veli_mesajlari()` (RLS'e güvenir, bekleyenler üstte,
+  iletilenler 24 saat listede kalır) ve `public.koc_veli_mesaji_isaretle(id, iletildi)`
+  (definer; öğrenci sahipliğini elle doğrular, geri alınabilir).
+- Arayüz: `src/bilesenler/VeliMesajlari.jsx`, stiller `index.css` sonunda.
+  WhatsApp yeşili (`#25d366`) yalnız bu düğmede; panelin "yeşil = yolunda"
+  anlam katmanına karışmıyor.
+- İleti Merkezi kurulumu tamamlandı ve çalışıyor (API izni, 2FA, üç secret,
+  iki numaraya başarılı sınama). Koçun kendi bildirimleri için hazır duruyor.
+- Sırada: bekleyen mesaj için Bugün rozeti ve Telegram bildirimi; üç gün
+  bekleyen mesajın kırmızıya dönmesi arayüzde var, bildirimi yok.
