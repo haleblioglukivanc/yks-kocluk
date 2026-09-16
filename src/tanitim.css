@@ -270,6 +270,28 @@
 .t-alt-sosyal a { color: inherit; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 1px; }
 .t-alt-sosyal a:hover { color: var(--t-turuncu-m); }
 
+/* ── WhatsApp ─────────────────────────────────────────────────────
+   Yeşil burada "yolunda" anlamı taşımıyor; WhatsApp'ın tanınan rengi.
+   Tanıtım sayfasına özgü, uygulamaya taşınmaz. */
+.tanitim { --t-wa: #1f8f4e; --t-wa-h: #17773f; }
+.t-dugme--wa { gap: 10px; background: var(--t-wa); color: #fff; }
+.t-dugme--wa:hover { background: var(--t-wa-h); color: #fff; }
+.t-dugme--acik-cizgi { background: transparent; border: 1px solid var(--g-cizgi-2); color: var(--g-murekkep); }
+.t-dugme--acik-cizgi:hover { border-color: var(--g-murekkep); color: var(--g-murekkep); }
+.t-wa-yuzen { display: none; }
+@media (max-width: 63.99rem) {
+  .t-wa-yuzen {
+    position: fixed; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom)); z-index: 50;
+    display: inline-flex; align-items: center; gap: 8px; min-height: 48px; padding: 0 18px 0 14px;
+    border-radius: 999px; background: var(--t-wa); color: #fff; font-weight: 700; font-size: var(--punto-kucuk);
+    text-decoration: none; box-shadow: 0 10px 28px rgba(15, 60, 35, .32);
+    opacity: 0; transform: translateY(12px) scale(.96); pointer-events: none;
+    transition: opacity .2s, transform .2s;
+  }
+  .t-wa-yuzen--acik { opacity: 1; transform: none; pointer-events: auto; }
+  .tanitim a.t-wa-yuzen:hover { color: #fff; background: var(--t-wa-h); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .tanitim * { transition: none !important; animation: none !important; }
 }

@@ -481,7 +481,9 @@ export const site = {
     // Boş bırakılan satır sayfada görünmez.
     eposta: 'haleblioglukivanc@gmail.com',
     telefon: '',
-    whatsapp: '',
+    // Başında 0 ile ya da 90 ile yazılabilir; boşluk serbest.
+    whatsapp: '0505 501 34 17',
+    whatsappMesaj: 'Merhaba Kıvanç Hoca, siteden ulaşıyorum. Koçluk hakkında bilgi almak istiyorum.',
     // Sosyal hesaplar. Boş bırakılanlar sayfanın altında hiç görünmez;
     // hesap açıldığında buraya adresi yazmak yeterli, başka yer yok.
     youtube: 'https://youtube.com/@khkocluk',
