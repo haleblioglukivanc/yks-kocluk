@@ -60,7 +60,19 @@ const pxKacak = tara(
   { disla: /^\s*\/\*|0px|1px|2px|border|outline|box-shadow|transform|stroke|blur|inset|--/ },
 )
 const kesmeNoktasi = tara(cssDosyalar.filter((d) => !d.endsWith('yerlesim.css')), /@media\s*\((min|max)-width/)
-const important = tara(cssDosyalar, /!important/)
+/* !important: prefers-reduced-motion blokları hariç — orada hareketi her
+   özgüllükte kesmek için bilinçli (erişilebilirlik deyimi). */
+const important = []
+for (const d of cssDosyalar) {
+  const satirlar = oku(d).split('\n')
+  let derinlik = 0, hareketBloku = -1
+  satirlar.forEach((s, i) => {
+    if (hareketBloku < 0 && /@media[^{]*prefers-reduced-motion/.test(s)) hareketBloku = derinlik
+    if (/!important/.test(s) && hareketBloku < 0) important.push({ dosya: goreli(d), satir: i + 1, metin: s.trim().slice(0, 110) })
+    derinlik += (s.match(/\{/g) ?? []).length - (s.match(/\}/g) ?? []).length
+    if (hareketBloku >= 0 && derinlik <= hareketBloku) hareketBloku = -1
+  })
+}
 
 /* Tekrarlı seçici: aynı seçici birden fazla dosyada tanımlanmış */
 const seciciHarita = {}

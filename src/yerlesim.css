@@ -239,7 +239,7 @@
   /* Selam üstte, şeftali kart altında, ikisi de iki sütuna yayılır. */
   body[data-rol='koc'] .koc-selam { display: block; }
   body[data-rol='koc'] .hero-yuzey.ob .rt-satir { display: none; }
-  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel > .koc-selam { grid-column: 1 / -1; grid-row: 1; margin-top: 0 !important; }
+  body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel > .koc-selam { grid-column: 1 / -1; grid-row: 1; margin-top: 0; }
   body[data-rol='koc'] .uygulama--koyu-tepe main > .panel > .iki-sutun { margin-top: 0; }
   body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child > .panel > .hero-yuzey.ob { grid-row: 2; }
   body[data-rol='koc'] .iki-sutun > .sutun-ana:first-child + .sutun-yan { grid-row: 3 / span 40; }

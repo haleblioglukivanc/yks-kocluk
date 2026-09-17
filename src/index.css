@@ -81,7 +81,6 @@ input[type='time'], input[type='date'] {
   min-width: 0; text-align: left;
 }
 input:focus, select:focus { outline: 2px solid var(--dolgu); outline-offset: -1px; border-color: transparent; }
-.kod-girisi { font-family: var(--mono); font-size: var(--punto-buyuk) !important; letter-spacing: 0.12em; text-align: center; text-transform: uppercase; }
 .onay { display: flex; gap: 0.625rem; align-items: flex-start; font-size: var(--punto-kucuk); cursor: pointer; }
 .onay input { margin-top: 0.15rem; width: auto; }
 .onay em { display: block; font-style: normal; font-size: var(--punto-mini); color: var(--soluk); margin-top: 0.2rem; line-height: 1.45; }
@@ -1395,11 +1394,12 @@ body[data-tema='panel'] {
 }
 .rutin-izgara th.rutin-bugun { color: var(--dolgu); font-weight: 700; }
 .rutin-izgara td { text-align: center; padding: 3px 0; }
-.rutin-ad {
+/* td.rutin-ad: .rutin-izgara td'nin ortalama ve dolgusunu özgüllükle yener */
+.rutin-ad, .rutin-izgara td.rutin-ad {
   font-size: var(--punto-orta);
   font-weight: 600;
-  text-align: left !important;
-  padding-right: 8px !important;
+  text-align: left;
+  padding-right: 8px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
