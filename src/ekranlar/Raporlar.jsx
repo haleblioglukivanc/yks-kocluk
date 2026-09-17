@@ -4,6 +4,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import Sayan from '../bilesenler/Sayan.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
+import { gunEkle, haftaBasi, yerelIso } from '../lib/hafta.js'
 import TelegramBaglanti from '../bilesenler/TelegramBaglanti.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
@@ -12,23 +13,6 @@ import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
    hesap yapılmıyor ki rapor ile mail birbirini tutsun. */
 
 const GUN_KISA = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
-
-function yerelIso(d) {
-  const t = new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-  return t.toISOString().slice(0, 10)
-}
-
-function gunEkle(iso, n) {
-  const d = new Date(`${iso}T00:00:00`)
-  d.setDate(d.getDate() + n)
-  return yerelIso(d)
-}
-
-/** Haftanın pazartesisi. Türkiye'de hafta pazartesi başlıyor. */
-function haftaBasi(d) {
-  const k = (d.getDay() + 6) % 7
-  return gunEkle(yerelIso(d), -k)
-}
 
 const ARALIKLAR = [
   ['bugun', 'Bugün'],
@@ -127,6 +111,14 @@ const RISK_TONU = { acil: 'uyari', izle: 'izle', iyi: 'iyi', pasif: 'notr' }
 /* Risk dağılımı: üç sayı, üç çubuk. Sınıfın hangi üçte biri nerede —
    listeyi tek tek okumadan görünsün. */
 function RiskDagilimi({ riskler, toplam }) {
+  /* riskler null = sorgu sürüyor. Sıfır göstermek "öğrenci yok" diye okunuyordu. */
+  if (riskler == null || toplam == null) {
+    return (
+      <Kart baslik='Risk dağılımı' altBaslik='Sayılıyor…'>
+        <Yukleniyor satir={3} />
+      </Kart>
+    )
+  }
   const say = { iyi: 0, izle: 0, acil: 0 }
   for (const r of Object.values(riskler)) {
     if (r.risk_seviyesi in say) say[r.risk_seviyesi] += 1
@@ -154,7 +146,7 @@ function RiskDagilimi({ riskler, toplam }) {
 
 export default function Raporlar({ onOgrenciAc, onGit }) {
   const genis = useGenisEkran()
-  const [riskler, setRiskler] = useState({})
+  const [riskler, setRiskler] = useState(null)
   const [aralik, setAralik] = useState('hafta')
   const [[bas, bit], setTarih] = useState(() => aralikHesapla('hafta'))
   const [veri, setVeri] = useState(null)
@@ -349,7 +341,10 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
         )}
       </Kart>
 
-      <RiskDagilimi riskler={riskler} toplam={g.ogrenci_sayisi ?? Object.keys(riskler).length} />
+      <RiskDagilimi
+        riskler={riskler}
+        toplam={veri === null || riskler === null ? null : g.ogrenci_sayisi ?? Object.keys(riskler).length}
+      />
 
       <Kart
         baslik='Öğrenciler'
@@ -372,7 +367,7 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
               </thead>
               <tbody>
                 {ogrenciler.map((o) => {
-                  const r = riskler[o.ogrenci_id] ?? {}
+                  const r = riskler?.[o.ogrenci_id] ?? {}
                   const fark = r.net_farki == null ? null : Number(r.net_farki)
                   return (
                     <tr

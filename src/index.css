@@ -834,6 +834,8 @@ main {
 .kpi-alt--iyi { color: var(--isaret); }
 .kpi-alt--kotu { color: var(--uyari); }
 .net-grafik { width: 100%; height: auto; display: block; }
+/* Sınıf ortalaması kartının gövdesi: iskelet, boş durum ve grafik aynı yeri kaplar. */
+.net-yer { min-height: 11rem; display: flex; flex-direction: column; justify-content: center; }
 /* Masaüstünde kartın tamamına yayılınca 1300px genişlik × 560px yükseklik
    bir grafik oluyordu. Yükseklik telefonda 120, masaüstünde 180'i geçmez;
    oran korunur, kart genişse grafik ortada durur. */
@@ -2091,6 +2093,8 @@ body[data-tema='panel'] {
 }
 .rt-durum--iyi { background: var(--isaret-zemin); color: var(--isaret-metin); }
 .rt-durum--dikkat { background: var(--sicak-zemin); color: var(--sicak-metin); }
+/* Yüklenirken rozetin yeri tutulur; kart dolunca yüksekliği değişmesin. */
+.rt-durum--bekliyor { background: var(--cizgi); min-width: 4.5rem; }
 .rt-gosterge { position: relative; flex: 0 0 auto; width: 120px; height: 66px; }
 .rt-gosterge svg { display: block; }
 .rt-deger {
