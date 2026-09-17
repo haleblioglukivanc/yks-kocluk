@@ -53,7 +53,16 @@ const temaDisiCss = cssDosyalar.filter((d) => !d.endsWith('tema.css'))
 const hexKacak = tara(temaDisiCss, /#[0-9a-fA-F]{3,8}\b/, { disla: /^\s*\/\*|url\(/ })
 const rgbKacak = tara(temaDisiCss, /\b(rgba?|hsla?)\(/, { disla: /^\s*\/\*/ })
 const jsxRenk = tara(jsxDosyalar, /(#[0-9a-fA-F]{6}\b|\brgba?\()/, { disla: /^\s*(\/\/|\/\*|\*)|href=|id=|#\{|aria-|kalem|marka/ })
-const inlineStyle = tara(jsxDosyalar, /style=\{\{/)
+/* Inline style: yalnız tamamen sabit değerli olanlar kaçaktır (CSS'e taşınabilir).
+   Çalışma anında hesaplanan değerler (yüzde, konum, --ders-renk gibi değişkenler)
+   React'te stil nesnesiyle verilir; onlar sayılmaz. */
+const sabitStil = (satir) => {
+  const ic = satir.match(/style=\{\{([^}]*)\}\}/)
+  if (!ic) return false
+  const ciftler = ic[1].split(',').map((c) => c.trim()).filter(Boolean)
+  return ciftler.length > 0 && ciftler.every((c) => /^['"]?[-\w]+['"]?\s*:\s*('[^'$]*'|"[^"$]*"|-?[\d.]+)$/.test(c))
+}
+const inlineStyle = tara(jsxDosyalar, /style=\{\{/).filter((b) => sabitStil(oku(path.join(KOK, b.dosya)).split('\n')[b.satir - 1]))
 const pxKacak = tara(
   temaDisiCss.filter((d) => !d.endsWith('yerlesim.css')),
   /\b\d+px\b/,

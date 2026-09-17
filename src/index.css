@@ -553,6 +553,8 @@ main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.ayrinti-ok svg { transform: none; transition: transform 160ms ease; }
+.ayrinti-ok--acik svg { transform: rotate(180deg); }
 .ayrinti-ok {
   flex: 0 0 auto;
   display: grid;
@@ -4366,6 +4368,7 @@ body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekm
 .piril { position: absolute; width: 10px; height: 10px; color: var(--altin); animation: piril 3s ease-in-out infinite; }
 .piril::before { content: ''; position: absolute; inset: 0; background: currentColor; clip-path: polygon(50% 0, 60% 40%, 100% 50%, 60% 60%, 50% 100%, 40% 60%, 0 50%, 40% 40%); }
 .piril--mavi { color: #6fa8ff; animation-delay: 1s; } .piril--mercan { color: #ff7e5f; animation-delay: 2s; }
+.piril--1 { left: 38%; top: 9%; } .piril--2 { left: 86%; top: 34%; } .piril--3 { left: 55%; top: 72%; } .piril--4 { left: 22%; top: 88%; }
 @keyframes piril { 0%, 100% { opacity: .15; transform: scale(.6) rotate(0); } 50% { opacity: .9; transform: scale(1.1) rotate(25deg); } }
 body[data-rol='koc'] .uygulama { position: relative; z-index: 1; }
 
