@@ -2903,7 +2903,7 @@ body[data-tema='panel'] {
    tanımlanınca risk radarı, haftalık takvim ve raporlar da
    aynı anda düzeliyor.
    ------------------------------------------------------------ */
-.rozet--notr { background: var(--yuzey-2); color: var(--grafit); border: 1px solid var(--cizgi); }
+.rozet--notr { --durum-esle: notr; background: var(--yuzey-2); color: var(--grafit); border: 1px solid var(--cizgi); }
 .rozet--iyi { background: var(--isaret-zemin); color: var(--isaret-metin); border: 1px solid var(--isaret-kenar); }
 .rozet--uyari { background: var(--kizil-zemin); color: var(--kizil-metin); border: 1px solid var(--kizil-kenar); }
 .rozet--izle { background: var(--sicak-zemin); color: var(--sicak-metin); border: 1px solid var(--sicak-kenar); }
@@ -3333,7 +3333,7 @@ body[data-tema='panel'] {
   padding: 0.55rem clamp(1rem, 4vw, 1.75rem);
 }
 .ust-logo {
-  display: inline-flex; align-items: center; gap: 0.5rem;
+  display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px;
   background: none; border: 0; padding: 0.25rem 0; cursor: pointer;
   font: 700 var(--punto-orta) var(--display); letter-spacing: -0.01em;
   color: var(--k-murekkep);

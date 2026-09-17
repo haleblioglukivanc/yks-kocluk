@@ -84,14 +84,26 @@ for (const d of cssDosyalar) {
   })
 }
 
-/* Tekrarlı seçici: aynı seçici birden fazla dosyada tanımlanmış */
+/* Tekrarlı seçici: aynı seçici, aynı bağlamda (üst düzey ya da aynı @media),
+   birden fazla dosyada. Çok satırlı seçici listeleri bütün okunur; farklı
+   @media içindeki aynı seçici tekrar değildir — kesme noktası ezmeleri
+   kural gereği yerlesim.css'te durur. */
 const seciciHarita = {}
 for (const d of cssDosyalar) {
   const metin = oku(d).replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const es of metin.matchAll(/(^|\n)\s*([^@{}\n][^{}\n]*?)\s*\{/g)) {
-    const secici = es[2].trim().replace(/\s+/g, ' ')
-    if (!secici || secici.startsWith(':root') || secici.startsWith('from') || secici.startsWith('to') || /^\d/.test(secici)) continue
-    ;(seciciHarita[secici] ??= new Set()).add(goreli(d))
+  const yigin = []
+  let bas = 0
+  for (let i = 0; i < metin.length; i++) {
+    const c = metin[i]
+    if (c === '{') {
+      const secici = metin.slice(bas, i).trim().replace(/\s+/g, ' ')
+      const baglam = yigin.filter((x) => x.startsWith('@')).join(' ')
+      yigin.push(secici)
+      bas = i + 1
+      if (!secici || secici.startsWith('@') || secici.startsWith(':root') || /^(from|to|\d)/.test(secici) || /keyframes/.test(baglam)) continue
+      ;(seciciHarita[(baglam ? baglam + ' ' : '') + secici] ??= new Set()).add(goreli(d))
+    } else if (c === '}') { yigin.pop(); bas = i + 1 }
+    else if (c === ';') bas = i + 1
   }
 }
 const tekrarliSecici = Object.entries(seciciHarita)
