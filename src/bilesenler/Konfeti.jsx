@@ -4,7 +4,11 @@ import { useEffect, useRef } from 'react'
    Renkler marka paletinden alınır; hareketi kısıtlayan kullanıcıda hiç
    çizilmez, kutlama kartı yine görünür. */
 
-const RENKLER = ['#ffb454', '#ff7a45', '#6d9aff', '#2fa36b', '#ffc94a', '#e87ba4']
+/* Tuval CSS değişkeni anlamaz: tema.css'teki --konfeti-* değerleri çizimden önce okunur. */
+const renkleriOku = () => {
+  const stil = getComputedStyle(document.documentElement)
+  return [1, 2, 3, 4, 5, 6].map((i) => stil.getPropertyValue(`--konfeti-${i}`).trim())
+}
 
 export default function Konfeti({ yogunluk = 2, sure = 2600, bitince }) {
   const tuval = useRef(null)
@@ -34,6 +38,7 @@ export default function Konfeti({ yogunluk = 2, sure = 2600, bitince }) {
     const taban = yogunluk >= 3 ? 140 : 85
     const adet = G < 420 ? Math.round(taban * 0.7) : taban
 
+    const RENKLER = renkleriOku()
     const parcalar = Array.from({ length: adet }, () => ({
       x: G / 2 + (Math.random() - 0.5) * G * 0.5,
       y: Y * 0.42 + (Math.random() - 0.5) * 60,

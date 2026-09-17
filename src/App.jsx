@@ -181,11 +181,12 @@ export default function App() {
     const etiket = document.querySelector('meta[name="theme-color"]')
     /* Üst şerit koyu (tema.css --tepe-ust): durum çubuğu onunla aynı
        renkte olsun ki tepe tek parça görünsün. */
-    const renk = panelAcik ? '#2e3a52' : '#ffffff'
+    const token = (ad) => getComputedStyle(document.documentElement).getPropertyValue(ad).trim()
+    const renk = token(panelAcik ? '--durum-cubugu-panel' : '--durum-cubugu')
     if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
-      if (etiket) etiket.setAttribute('content', '#ffffff')
+      if (etiket) etiket.setAttribute('content', token('--durum-cubugu'))
     }
   }, [panelAcik])
 

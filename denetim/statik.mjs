@@ -52,7 +52,8 @@ const sayPerDosya = (b) => {
 const temaDisiCss = cssDosyalar.filter((d) => !d.endsWith('tema.css'))
 const hexKacak = tara(temaDisiCss, /#[0-9a-fA-F]{3,8}\b/, { disla: /^\s*\/\*|url\(/ })
 const rgbKacak = tara(temaDisiCss, /\b(rgba?|hsla?)\(/, { disla: /^\s*\/\*/ })
-const jsxRenk = tara(jsxDosyalar, /(#[0-9a-fA-F]{6}\b|\brgba?\()/, { disla: /^\s*(\/\/|\/\*|\*)|href=|id=|#\{|aria-|kalem|marka/ })
+/* Kalem.jsx: Çizbi'nin çizimi — izin verilen tek illüstrasyon, kendi paletiyle (satır içi 'kalem' dışlaması dosyayı kaçırıyordu) */
+const jsxRenk = tara(jsxDosyalar.filter((d) => !d.endsWith('Kalem.jsx')), /(#[0-9a-fA-F]{6}\b|\brgba?\()/, { disla: /^\s*(\/\/|\/\*|\*)|href=|id=|#\{|aria-|kalem|marka/ })
 /* Inline style: yalnız tamamen sabit değerli olanlar kaçaktır (CSS'e taşınabilir).
    Çalışma anında hesaplanan değerler (yüzde, konum, --ders-renk gibi değişkenler)
    React'te stil nesnesiyle verilir; onlar sayılmaz. */

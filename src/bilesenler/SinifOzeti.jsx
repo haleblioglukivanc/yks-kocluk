@@ -48,7 +48,7 @@ function NetGrafigi({ veri }) {
   const alan = `${cizgi} L${x(veri.length - 1)} ${Y} L${x(0)} ${Y} Z`
   const son = Number(veri[veri.length - 1].ort)
   // Yükselen eğri mavi, düşen eğri turuncu: renk yönü de anlatsın
-  const renk = son >= Number(veri[0].ort) ? '#1f63c4' : '#e2571f'
+  const renk = son >= Number(veri[0].ort) ? 'var(--grafik-yukselen)' : 'var(--grafik-dusen)'
 
   return (
     <svg
@@ -59,16 +59,16 @@ function NetGrafigi({ veri }) {
     >
       <defs>
         <linearGradient id="netDolgu" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={renk} stopOpacity="0.32" />
-          <stop offset="100%" stopColor={renk} stopOpacity="0.02" />
+          <stop offset="0%" style={{ stopColor: renk }} stopOpacity="0.32" />
+          <stop offset="100%" style={{ stopColor: renk }} stopOpacity="0.02" />
         </linearGradient>
       </defs>
       <path d={alan} fill="url(#netDolgu)" className="grafik-alan" />
-      <path d={cizgi} className="grafik-cizgi" pathLength="1" fill="none" stroke={renk} strokeWidth="2.5"
+      <path d={cizgi} className="grafik-cizgi" pathLength="1" fill="none" style={{ stroke: renk }} strokeWidth="2.5"
             strokeLinecap="round" strokeLinejoin="round" />
       <circle className="grafik-nokta grafik-nokta--son" cx={x(veri.length - 1)} cy={y(son)} r="4.5"
-              fill={renk} stroke="#ffffff" strokeWidth="2.5" />
-      <text className="grafik-etiket grafik-etiket--gec" x={x(veri.length - 1) - 8} y={Math.max(10, y(son) - 9)} textAnchor="end" fill={renk}>
+              style={{ fill: renk, stroke: 'var(--beyaz)' }} strokeWidth="2.5" />
+      <text className="grafik-etiket grafik-etiket--gec" x={x(veri.length - 1) - 8} y={Math.max(10, y(son) - 9)} textAnchor="end">
         {son.toFixed(1)}
       </text>
     </svg>

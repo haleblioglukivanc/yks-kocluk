@@ -361,6 +361,41 @@
   --instagram-3: #4f5bd5;
   --tiktok: #111111;
   --tiktok-kenar: #333333;
+
+  /* Ders kimlik renkleri (lib/dersGorunum.js token adıyla kullanır) */
+  --ders-tur: #ea580c;
+  --ders-mat: #2563eb;
+  --ders-geo: #0891b2;
+  --ders-fiz: #7c3aed;
+  --ders-kim: #db2777;
+  --ders-biy: #15803d;
+  --ders-tar: #a16207;
+  --ders-cog: #0d9488;
+  --ders-fel: #9333ea;
+  --ders-man: #a855f7;
+  --ders-psi: #c026d3;
+  --ders-sos: #be185d;
+  --ders-edb: #b45309;
+  --ders-din: #475569;
+  --ders-ing: #0369a1;
+  --ders-fen: #059669;
+  --ders-yok: #94a3b8;
+
+  /* Kutlama konfetisi (Konfeti.jsx tuvalde okur) */
+  --konfeti-1: #ffb454;
+  --konfeti-2: #ff7a45;
+  --konfeti-3: #6d9aff;
+  --konfeti-4: #2fa36b;
+  --konfeti-5: #ffc94a;
+  --konfeti-6: #e87ba4;
+
+  /* Sınıf özeti net grafiği: yükselen mavi, düşen turuncu */
+  --grafik-yukselen: #1f63c4;
+  --grafik-dusen: #e2571f;
+
+  /* Tarayıcı durum çubuğu (meta theme-color): App.jsx okur */
+  --durum-cubugu-panel: #2e3a52;
+  --durum-cubugu: #ffffff;
 }
 body[data-rol='koc'] {
   --kagit: var(--koc-kagit);

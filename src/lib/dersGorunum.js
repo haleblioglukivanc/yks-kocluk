@@ -10,43 +10,45 @@
  * İki bilgi böylece çakışmıyor.
  *
  * Tek kaynak: ızgara, gün hedefleri, raporlar — hepsi burayı kullanmalı.
+ * Renk değerleri tema.css'te (--ders-*); burada yalnız token adı durur,
+ * hepsi --ders-renk CSS değişkeni olarak kullanılır.
  */
 
 const HARITA = {
-  'türkçe': ['TÜR', '#ea580c'],
-  'matematik': ['MAT', '#2563eb'],
-  'geometri': ['GEO', '#0891b2'],
-  'fizik': ['FİZ', '#7c3aed'],
-  'kimya': ['KİM', '#db2777'],
-  'biyoloji': ['BİY', '#15803d'],
-  'tarih': ['TAR', '#a16207'],
-  'coğrafya': ['COĞ', '#0d9488'],
-  'felsefe': ['FEL', '#9333ea'],
-  'mantık': ['MAN', '#a855f7'],
-  'psikoloji': ['PSİ', '#c026d3'],
-  'sosyoloji': ['SOS', '#be185d'],
-  'edebiyat': ['EDB', '#b45309'],
-  'türk dili ve edebiyatı': ['EDB', '#b45309'],
-  'din kültürü ve ahlak bilgisi': ['DİN', '#475569'],
-  'ingilizce': ['İNG', '#0369a1'],
-  'i̇ngilizce': ['İNG', '#0369a1'],
-  'fen bilimleri': ['FEN', '#059669'],
-  't.c. inkılap tarihi ve atatürkçülük': ['İNK', '#a16207'],
-  't.c. i̇nkılap tarihi ve atatürkçülük': ['İNK', '#a16207'],
+  'türkçe': ['TÜR', 'var(--ders-tur)'],
+  'matematik': ['MAT', 'var(--ders-mat)'],
+  'geometri': ['GEO', 'var(--ders-geo)'],
+  'fizik': ['FİZ', 'var(--ders-fiz)'],
+  'kimya': ['KİM', 'var(--ders-kim)'],
+  'biyoloji': ['BİY', 'var(--ders-biy)'],
+  'tarih': ['TAR', 'var(--ders-tar)'],
+  'coğrafya': ['COĞ', 'var(--ders-cog)'],
+  'felsefe': ['FEL', 'var(--ders-fel)'],
+  'mantık': ['MAN', 'var(--ders-man)'],
+  'psikoloji': ['PSİ', 'var(--ders-psi)'],
+  'sosyoloji': ['SOS', 'var(--ders-sos)'],
+  'edebiyat': ['EDB', 'var(--ders-edb)'],
+  'türk dili ve edebiyatı': ['EDB', 'var(--ders-edb)'],
+  'din kültürü ve ahlak bilgisi': ['DİN', 'var(--ders-din)'],
+  'ingilizce': ['İNG', 'var(--ders-ing)'],
+  'i̇ngilizce': ['İNG', 'var(--ders-ing)'],
+  'fen bilimleri': ['FEN', 'var(--ders-fen)'],
+  't.c. inkılap tarihi ve atatürkçülük': ['İNK', 'var(--ders-tar)'],
+  't.c. i̇nkılap tarihi ve atatürkçülük': ['İNK', 'var(--ders-tar)'],
 }
 
 /* Haritada olmayan dersler için sabit palet. Aynı ad her zaman
    aynı rengi alsın diye ada göre deterministik seçiliyor. */
 const YEDEK_RENKLER = [
-  '#2563eb', '#0891b2', '#7c3aed', '#db2777',
-  '#15803d', '#a16207', '#0d9488', '#be185d',
+  'var(--ders-mat)', 'var(--ders-geo)', 'var(--ders-fiz)', 'var(--ders-kim)',
+  'var(--ders-biy)', 'var(--ders-tar)', 'var(--ders-cog)', 'var(--ders-sos)',
 ]
 
 const buyuk = (m) => m.toLocaleUpperCase('tr-TR')
 
 export function dersGorunumu(ad) {
   const temiz = (ad ?? '').trim()
-  if (!temiz) return { kod: '—', renk: '#94a3b8', ad: '' }
+  if (!temiz) return { kod: '—', renk: 'var(--ders-yok)', ad: '' }
 
   const anahtar = temiz.toLocaleLowerCase('tr-TR')
   const kayit = HARITA[anahtar]
