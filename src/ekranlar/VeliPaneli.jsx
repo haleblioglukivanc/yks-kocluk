@@ -37,18 +37,21 @@ function KocNotu({ o, birden }) {
 
 export default function VeliPaneli({ profil }) {
   const [cocuklar, setCocuklar] = useState(null)
-  const [ozetler, setOzetler] = useState([])
+  const [ozetler, setOzetler] = useState(null)
   const [hata, setHata] = useState('')
 
   useEffect(() => {
     ;(async () => {
-      const { data, error } = await supabase
-        .from('veli_ogrenci')
-        .select('ogrenci_id, iliski, ogrenciler(sinif, alan, profiller!ogrenciler_id_fkey(ad_soyad), kataloglar(ad))')
+      /* İki sorgu paralel. Sırayla giderken koçun notu en son geliyor,
+         listenin üstüne eklenip sayfayı itiyordu. */
+      const [{ data, error }, { data: oz }] = await Promise.all([
+        supabase
+          .from('veli_ogrenci')
+          .select('ogrenci_id, iliski, ogrenciler(sinif, alan, profiller!ogrenciler_id_fkey(ad_soyad), kataloglar(ad))'),
+        supabase.rpc('veli_ozetim'),
+      ])
       if (error) setHata(hataMetni(error))
       setCocuklar(data ?? [])
-
-      const { data: oz } = await supabase.rpc('veli_ozetim')
       setOzetler(oz ?? [])
     })()
   }, [])
@@ -57,14 +60,25 @@ export default function VeliPaneli({ profil }) {
 
   return (
     <div className="panel">
-      <VeliBasligi ozet={ozetler[0]} cocukAdi={ilkCocuk} profil={profil} />
+      <VeliBasligi ozet={ozetler?.[0]} cocukAdi={ilkCocuk} profil={profil} />
       <Uyari>{hata}</Uyari>
 
-      {ozetler.map((o) => (
-        <KocNotu key={o.ogrenciId} o={o} birden={ozetler.length > 1} />
-      ))}
-
-      <HaftalikIlham />
+      {ozetler === null ? (
+        /* Koçun notu gelene kadar yeri tutulur. */
+        <Kart kaldirilmis>
+          <Yukleniyor satir={3} />
+        </Kart>
+      ) : (
+        ozetler.length === 0 ? (
+          /* Not yoksa da kart yerinde kalır: veli neyi beklediğini bilsin,
+             iskelet kaybolup sayfa yukarı zıplamasın. */
+          <Kart kaldirilmis baslik="Koçun bu haftaki notu">
+            <p className="kart-alt">Koç bu haftanın özetini henüz yayınlamadı. Yayınlanınca burada görünecek.</p>
+          </Kart>
+        ) : (
+          ozetler.map((o) => <KocNotu key={o.ogrenciId} o={o} birden={ozetler.length > 1} />)
+        )
+      )}
 
       <Kart duz baslik="Takip ettiğim öğrenciler">
         {cocuklar === null ? (
@@ -96,6 +110,10 @@ export default function VeliPaneli({ profil }) {
           </ul>
         )}
       </Kart>
+
+      {/* Haftanın kitabı ve sözü en sonda: veri gelmeden yer kaplamıyor,
+          üstte dururken gelince listeyi aşağı itiyordu. */}
+      {cocuklar !== null && <HaftalikIlham />}
     </div>
   )
 }

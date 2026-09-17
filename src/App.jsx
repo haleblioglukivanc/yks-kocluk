@@ -1,5 +1,5 @@
 import { Kalem } from './bilesenler/Kalem.jsx'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useLayoutEffect } from 'react'
 import { flushSync } from 'react-dom'
 import { supabase } from './lib/supabase.js'
 import { useOturum } from './lib/oturum.js'
@@ -257,7 +257,10 @@ export default function App() {
      Koç vekaleten (/gozuyle/) girince de aynı ekranı görür. Erken
      dönüşlerin üstünde duruyor; hook sırası bozulmasın. */
   const ogrenciDunyasi = profil?.rol === 'ogrenci' || yol.startsWith('/gozuyle/')
-  useEffect(() => {
+  /* useLayoutEffect: boyamadan önce çalışır. useEffect ile ilk kare
+     data-rol'süz boyanıyor, masaüstünde üst şerit ve içerik bir kez
+     zıplıyordu (her sayfada CLS ~0.03). */
+  useLayoutEffect(() => {
     if (ogrenciDunyasi) document.body.dataset.rol = 'ogrenci'
     else if (profil) document.body.dataset.rol = 'koc'
     else delete document.body.dataset.rol
