@@ -52,8 +52,18 @@ const sayPerDosya = (b) => {
 const temaDisiCss = cssDosyalar.filter((d) => !d.endsWith('tema.css'))
 const hexKacak = tara(temaDisiCss, /#[0-9a-fA-F]{3,8}\b/, { disla: /^\s*\/\*|url\(/ })
 const rgbKacak = tara(temaDisiCss, /\b(rgba?|hsla?)\(/, { disla: /^\s*\/\*/ })
-const jsxRenk = tara(jsxDosyalar, /(#[0-9a-fA-F]{6}\b|\brgba?\()/, { disla: /^\s*(\/\/|\/\*|\*)|href=|id=|#\{|aria-|kalem|marka/ })
-const inlineStyle = tara(jsxDosyalar, /style=\{\{/)
+/* Kalem.jsx: Çizbi'nin çizimi — izin verilen tek illüstrasyon, kendi paletiyle (satır içi 'kalem' dışlaması dosyayı kaçırıyordu) */
+const jsxRenk = tara(jsxDosyalar.filter((d) => !d.endsWith('Kalem.jsx')), /(#[0-9a-fA-F]{6}\b|\brgba?\()/, { disla: /^\s*(\/\/|\/\*|\*)|href=|id=|#\{|aria-|kalem|marka/ })
+/* Inline style: yalnız tamamen sabit değerli olanlar kaçaktır (CSS'e taşınabilir).
+   Çalışma anında hesaplanan değerler (yüzde, konum, --ders-renk gibi değişkenler)
+   React'te stil nesnesiyle verilir; onlar sayılmaz. */
+const sabitStil = (satir) => {
+  const ic = satir.match(/style=\{\{([^}]*)\}\}/)
+  if (!ic) return false
+  const ciftler = ic[1].split(',').map((c) => c.trim()).filter(Boolean)
+  return ciftler.length > 0 && ciftler.every((c) => /^['"]?[-\w]+['"]?\s*:\s*('[^'$]*'|"[^"$]*"|-?[\d.]+)$/.test(c))
+}
+const inlineStyle = tara(jsxDosyalar, /style=\{\{/).filter((b) => sabitStil(oku(path.join(KOK, b.dosya)).split('\n')[b.satir - 1]))
 const pxKacak = tara(
   temaDisiCss.filter((d) => !d.endsWith('yerlesim.css')),
   /\b\d+px\b/,
@@ -74,14 +84,26 @@ for (const d of cssDosyalar) {
   })
 }
 
-/* Tekrarlı seçici: aynı seçici birden fazla dosyada tanımlanmış */
+/* Tekrarlı seçici: aynı seçici, aynı bağlamda (üst düzey ya da aynı @media),
+   birden fazla dosyada. Çok satırlı seçici listeleri bütün okunur; farklı
+   @media içindeki aynı seçici tekrar değildir — kesme noktası ezmeleri
+   kural gereği yerlesim.css'te durur. */
 const seciciHarita = {}
 for (const d of cssDosyalar) {
   const metin = oku(d).replace(/\/\*[\s\S]*?\*\//g, '')
-  for (const es of metin.matchAll(/(^|\n)\s*([^@{}\n][^{}\n]*?)\s*\{/g)) {
-    const secici = es[2].trim().replace(/\s+/g, ' ')
-    if (!secici || secici.startsWith(':root') || secici.startsWith('from') || secici.startsWith('to') || /^\d/.test(secici)) continue
-    ;(seciciHarita[secici] ??= new Set()).add(goreli(d))
+  const yigin = []
+  let bas = 0
+  for (let i = 0; i < metin.length; i++) {
+    const c = metin[i]
+    if (c === '{') {
+      const secici = metin.slice(bas, i).trim().replace(/\s+/g, ' ')
+      const baglam = yigin.filter((x) => x.startsWith('@')).join(' ')
+      yigin.push(secici)
+      bas = i + 1
+      if (!secici || secici.startsWith('@') || secici.startsWith(':root') || /^(from|to|\d)/.test(secici) || /keyframes/.test(baglam)) continue
+      ;(seciciHarita[(baglam ? baglam + ' ' : '') + secici] ??= new Set()).add(goreli(d))
+    } else if (c === '}') { yigin.pop(); bas = i + 1 }
+    else if (c === ';') bas = i + 1
   }
 }
 const tekrarliSecici = Object.entries(seciciHarita)

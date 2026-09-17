@@ -181,11 +181,12 @@ export default function App() {
     const etiket = document.querySelector('meta[name="theme-color"]')
     /* Üst şerit koyu (tema.css --tepe-ust): durum çubuğu onunla aynı
        renkte olsun ki tepe tek parça görünsün. */
-    const renk = panelAcik ? '#2e3a52' : '#ffffff'
+    const token = (ad) => getComputedStyle(document.documentElement).getPropertyValue(ad).trim()
+    const renk = token(panelAcik ? '--durum-cubugu-panel' : '--durum-cubugu')
     if (etiket) etiket.setAttribute('content', renk)
     return () => {
       delete document.body.dataset.tema
-      if (etiket) etiket.setAttribute('content', '#ffffff')
+      if (etiket) etiket.setAttribute('content', token('--durum-cubugu'))
     }
   }, [panelAcik])
 
@@ -525,8 +526,8 @@ export default function App() {
       {!ogrenciDunyasi && (
         <div className="zemin-lekeler" aria-hidden="true">
           <i className="leke leke--1" /><i className="leke leke--2" /><i className="leke leke--3" /><i className="leke leke--4" />
-          <b className="piril" style={{ left: '38%', top: '9%' }} /><b className="piril piril--mavi" style={{ left: '86%', top: '34%' }} />
-          <b className="piril piril--mercan" style={{ left: '55%', top: '72%' }} /><b className="piril" style={{ left: '22%', top: '88%' }} />
+          <b className="piril piril--1" /><b className="piril piril--mavi piril--2" />
+          <b className="piril piril--mercan piril--3" /><b className="piril piril--4" />
         </div>
       )}
       {/* Tepe: koyu şerit. Bugün ekranlarında altındaki koyu başlıkla

@@ -26,7 +26,7 @@
 .r-cipler--esit > * { flex: 1 1 0; }
 .r-cip { font: inherit; font-size: var(--punto-kucuk); font-weight: 600; min-height: 44px; padding: 0 16px; border-radius: 999px; border: 1px solid var(--g-cizgi-2); background: var(--g-yuzey); color: var(--g-murekkep); cursor: pointer; transition: background .15s, border-color .15s; }
 .r-cip:hover { border-color: var(--g-murekkep); }
-.r-cip--secili, .r-cip--secili:hover { background: var(--t-lacivert); border-color: var(--t-lacivert); color: #fff; }
+.r-cip--secili, .r-cip--secili:hover { background: var(--t-lacivert); border-color: var(--t-lacivert); color: var(--beyaz); }
 
 .r-ikili { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 

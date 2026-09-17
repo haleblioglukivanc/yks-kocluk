@@ -85,7 +85,7 @@
 .konu-rozet--tamamlandi          { --durum-esle: iyi; }
 .konu-rozet--calisiliyor,
 .sekme--etkin, .alt-bag--etkin   { --durum-esle: eylem; }
-.rozet--notr                     { --durum-esle: notr; }
+/* .rozet--notr → notr eşlemesi index.css'teki .rozet--notr kuralında */
 .rozet--sonuk,
 .konu-rozet--baslanmadi          { --durum-esle: sonuk; }
 
@@ -196,11 +196,7 @@
 /* ── 6. SAYILAR ────────────────────────────────────────────────
    Her metrik mono ve tabular: listede %30 ile %0 alt alta gelsin. */
 
-.sayi {
-  font-family: var(--mono);
-  font-variant-numeric: tabular-nums;
-  letter-spacing: -0.03em;
-}
+/* .sayi'nin mono + tabular tanımı index.css başındaki sayı grubunda (tek yerde). */
 .sayi--buyuk { font-size: 2rem; font-weight: 700; line-height: var(--satir-dar); }
 .sayi--dev   { font-size: 2.75rem; font-weight: 700; line-height: var(--satir-dar); }
 
@@ -222,7 +218,7 @@
 
 .dugme, .cip, .alt-bag, .sekme, .gorev { min-height: 44px; }
 .dugme--ufak, .metin-dugme { min-height: 36px; }
-.ust-logo { min-height: 44px; }
+/* .ust-logo 44px: index.css'teki .ust-logo kuralında */
 
 /* Küçük yuvarlak kontrol: görünen boyutu korur, hedefi büyütür.
    Ölçüsü ne olursa olsun ortalanmış 44px'lik alan bırakır. */
