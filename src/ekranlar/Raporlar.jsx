@@ -298,7 +298,21 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
         <Uyari tur='bilgi'>{bilgi}</Uyari>
 
         {veri === null ? (
-          <Yukleniyor />
+          /* İskelet dolu halin kalıbında: aynı dört KPI kutusu ve grafik
+             yüksekliği. Tek parça iskelet dolu halden kısaydı; alttaki
+             kartları itiyordu (tablette CLS 0.095). */
+          <div aria-busy='true'>
+            <div className='kpi-satir rapor-kpi'>
+              {['Toplam çalışma', 'Görev tamamlama', 'Öğrenci', 'Deneme'].map((ad) => (
+                <div key={ad} className='kpi-kart'>
+                  <p className='kpi-etiket'>{ad}</p>
+                  <p className='kpi-sayi'>–</p>
+                  <p className='kpi-alt'>&nbsp;</p>
+                </div>
+              ))}
+            </div>
+            <div className='rapor-grafik rapor-grafik--bekliyor' aria-hidden='true' />
+          </div>
         ) : veri === false ? (
           <Bos baslik='Rapor alınamadı' aciklama='Yenile diyerek tekrar dene.' />
         ) : (

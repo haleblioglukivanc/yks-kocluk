@@ -908,7 +908,7 @@ function Konular({ ogrenci }) {
                           <span className="ders-kapsam-sayi">{konuSayisi(d)} konu</span>
                         </p>
                       )}
-                      <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" />
+                      <KonuYolu ogrenciId={ogrenci.id} dersId={d.id} rol="koc" durakSayisi={konuSayisi(d)} />
                     </div>
                   ))}
               </li>

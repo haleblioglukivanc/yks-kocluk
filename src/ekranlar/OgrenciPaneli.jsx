@@ -58,6 +58,7 @@ export default function OgrenciPaneli({
   }
   const [hata, setHata] = useState('')
   const [ozet, setOzet] = useState(null)
+  const [ozetGeldi, setOzetGeldi] = useState(false)
   const [tazele, setTazele] = useState(0)
   const [kutlamalar, setKutlamalar] = useState([])
   const [kapatAcik, setKapatAcik] = useState(false)
@@ -95,25 +96,28 @@ export default function OgrenciPaneli({
       }
       setKayit(o)
 
-      const { data: d } = await supabase
-        .from('deneme_ozet')
-        .select('id, tarih, tur, yayin, toplam_net')
-        .eq('ogrenci_id', hedefId)
-        .order('tarih', { ascending: false })
-        .limit(8)
+      /* Üç sorgu birbirinden bağımsız; paralel gidiyor. Sırayla giderken
+         Bugün özeti en sona kalıyor, "Bugün için plan yok" görünüp sonra
+         görevler ve hafta şeridi gelince kart büyüyordu. */
+      const [{ data: d }, { data: nd }, { data: bugun }] = await Promise.all([
+        supabase
+          .from('deneme_ozet')
+          .select('id, tarih, tur, yayin, toplam_net')
+          .eq('ogrenci_id', hedefId)
+          .order('tarih', { ascending: false })
+          .limit(8),
+        supabase
+          .from('ogrenci_net_durumu')
+          .select('tur, son_net, en_yuksek_net')
+          .eq('ogrenci_id', hedefId),
+        supabase.rpc('ogrenci_bugun_ozeti', { p_ogrenci_id: hedefId }),
+      ])
       setDenemeler(d ?? [])
-
-      const { data: nd } = await supabase
-        .from('ogrenci_net_durumu')
-        .select('tur, son_net, en_yuksek_net')
-        .eq('ogrenci_id', hedefId)
       setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
-
-      const { data: bugun } = await supabase.rpc('ogrenci_bugun_ozeti', {
-        p_ogrenci_id: hedefId,
-      })
       // Çizbi artık uygulama kabuğunda, köşede duruyor; burada sadece veri
       if (bugun) setOzet(bugun)
+      // Özet gelmese de iskelet takılı kalmasın; eski boş hal çizilir.
+      setOzetGeldi(true)
 
       // Vekaletteyken çağırmıyoruz: RPC auth.uid()'e bakar, koç öğrenci
       // olmadığı için zaten boş dönerdi — boşuna gidip gelmesin.
@@ -152,7 +156,13 @@ export default function OgrenciPaneli({
       )}
 
       <div className="sekme-govde" style={aksanStili()}>
-      {sekme === 'bugun' ? (
+      {sekme === 'bugun' && !ozetGeldi ? (
+        /* Bugün özeti gelene kadar Sıradaki kartı + Günü tamamla kadar yer.
+           Boş liste gösterilirse öğrenci bir an "plan yok" okuyordu. */
+        <Kart sinif='bugun-bekliyor'>
+          <Yukleniyor satir={4} />
+        </Kart>
+      ) : sekme === 'bugun' ? (
         <>
           <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
           <SiradakiKart

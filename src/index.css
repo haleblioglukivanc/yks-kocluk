@@ -1,5 +1,7 @@
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
+/* Masaüstünde içerik uzayınca kaydırma çubuğu belirip sayfayı yana itiyordu. */
+html { scrollbar-gutter: stable; }
 body {
   background-color: var(--kagit);
   color: var(--murekkep);
@@ -1536,6 +1538,10 @@ body[data-tema='panel'] {
 @keyframes cubuk-dol { from { transform: scaleY(0); } }
 @media (prefers-reduced-motion: reduce) { .cubuk-dolgu { animation: none; } }
 .rapor-grafik .net-grafik { height: 72px; }
+/* Öğrenci Bugün'ü yüklenirken: Sıradaki kartı + hafta şeridi + Günü tamamla. */
+.bugun-bekliyor { min-height: 20rem; }
+/* Yüklenirken grafik + gün etiketleri kadar yer. */
+.rapor-grafik--bekliyor { height: calc(72px + 1.5rem); border-radius: var(--r-kucuk, 8px); background: var(--cizgi); opacity: 0.5; }
 .rapor-grafik-etiket {
   display: flex; margin-top: 4px;
   font-size: var(--punto-etiket); color: var(--soluk);

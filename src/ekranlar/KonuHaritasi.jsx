@@ -83,7 +83,16 @@ export default function KonuHaritasi({ profilId, odakDers }) {
     ozetiYukle()
   }, [ozetiYukle])
 
-  if (dersler === null) return <Yukleniyor />
+  /* Harita gelmeden bir ekran boyu yer tutulur. Altındaki Seri ve kitap
+     kartları daha hızlı geliyordu; harita sonradan açılınca onları ekrandan
+     itiyordu. Gerçek patika neredeyse her zaman bir ekrandan uzun. */
+  if (dersler === null) {
+    return (
+      <Kart sinif='konu-haritasi--bekliyor'>
+        <Yukleniyor satir={4} />
+      </Kart>
+    )
+  }
 
   /* TYT Matematik ve AYT Matematik katalogda iki satır, öğrencinin
      yolunda tek ders. Çubuk da ikisinin toplamını gösteriyor: "matematikte
@@ -152,7 +161,7 @@ export default function KonuHaritasi({ profilId, odakDers }) {
                 <span className='ders-kapsam-sayi'>{d.tamamlandi}/{d.toplam}</span>
               </p>
             )}
-            <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} />
+            <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} durakSayisi={d.toplam} />
           </div>
         ))}
       </Kart>

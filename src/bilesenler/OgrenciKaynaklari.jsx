@@ -83,6 +83,23 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     })
   }, [suzulmus, tumu, liste])
 
+  /* Öğrencide dolu hali tek satır katlanır kart; yüklenirken de aynı satır
+     çizilir. Önceden iki satırlık iskelet kartı gelip küçülüyor, altındaki
+     haftanın sözünü yukarı çekiyordu. */
+  if (liste === null && ben) {
+    return (
+      <section className="kart kaynak-kart" aria-busy="true">
+        <div className="kaynak-basi">
+          <span className="kaynak-emoji" aria-hidden="true">📚</span>
+          <span className="kaynak-ad">
+            Kaynaklarım
+            <small>Geliyor…</small>
+          </span>
+        </div>
+      </section>
+    )
+  }
+
   if (liste === null) {
     return (
       <Kart baslik={baslik}>

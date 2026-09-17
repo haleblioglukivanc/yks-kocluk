@@ -82,7 +82,7 @@ function soz(rol, durak, bolge, olay) {
   }
 }
 
-export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti }) {
+export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti, durakSayisi = 0 }) {
   const [yol, setYol] = useState(null)
   const [hata, setHata] = useState('')
   const [secili, setSecili] = useState(null)
@@ -276,7 +276,17 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   }, [patlayan])
 
   if (hata && !yol) return <Uyari>{hata}</Uyari>
-  if (!yol) return <Yukleniyor sade />
+  /* Yüklenirken patikanın yeri tutulur: durak başına 88px. Eskiden tek satır
+     "Geliyor…" yazıyordu; patika gelince 2000px'lik yol altındaki Seri ve
+     kitap kartlarını ekrandan itiyordu (mobilde CLS 0.75). Durak sayısı
+     bilinmiyorsa (koç detayı) en az bir ekran boyu yer ayrılır. */
+  if (!yol) {
+    return (
+      <div className="konu-yolu konu-yolu--bekliyor" style={{ minHeight: durakSayisi ? `${durakSayisi * 88}px` : undefined }}>
+        <Yukleniyor satir={3} />
+      </div>
+    )
+  }
 
   const koc = rol === 'koc'
 
