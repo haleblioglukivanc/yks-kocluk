@@ -306,6 +306,61 @@
   --leke-gok:     #cbe6ff;
   --leke-nane:    #d9f5e6;
   --leke-leylak:  #e9dcff;
+
+  /* Tanıtım sayfası paleti (tanitim.css'ten taşındı; --t- öneki yalnız orada kullanılır) */
+  --t-gece:      #070b18;   /* üst çubuk, ders şeridi */
+  --t-lacivert:  #0b1230;   /* kahraman, çarşamba bandı */
+  --t-lacivert-2:#111d3d;   /* koyu kart */
+  --t-lacivert-c:#24336a;   /* koyu kenar */
+  --t-balon:     #1c2a52;
+  --t-turuncu:   #f26a1b;   /* koçun sesi: dolgu, nokta */
+  --t-turuncu-a: #ff9a5c;   /* koyu zeminde turuncu */
+  --t-turuncu-m: #b5400a;   /* açık zeminde turuncu metin */
+  --t-turuncu-z: #ffe9dc;
+  --t-turuncu-k: #f6b894;
+  --t-mercan:    #e0284f;   /* ana eylem */
+  --t-mercan-h:  #c2183d;
+  --t-kalan:     #c53a2c;   /* kalan iş çizgisi */
+  --t-kalan-m:   #a32b21;
+  --t-acik-mavi: #c9d6ff;   /* koyu zeminde ikincil metin */
+  --t-wa:   #1f8f4e;   /* WhatsApp düğmesi — tanınan marka rengi */
+  --t-wa-h: #17773f;
+
+  /* Tek yerde kullanılan ham tonlar (hijyen turunda bileşen CSS'lerinden taşındı).
+     Saydam kullanımlar color-mix(in srgb, var(--x) N%, transparent) ile yazılır. */
+  --siyah: #000000;
+  --golge-lacivert: #10263e;
+  --golge-koyu: #0e1626;
+  --gri-kanal: #7d879e;
+  --nabiz-amber: #f0b048;
+  --golge-arduvaz: #0f172a;
+  --perde-koyu: #060a12;
+  --golge-murekkep: #141c2d;
+  --golge-seftali: #ff8c3c;
+  --ob-metin: #1a1f36;
+  --golge-wa: #0f3c23;
+  --yol-yesil: #2fa36b;
+  --yol-amber: #ffb454;
+  --yol-perde: #060a14;
+  --piril-mavi: #6fa8ff;
+  --piril-mercan: #ff7e5f;
+  --ob-kim: #8a4b00;
+  --whatsapp: #25d366;
+  --whatsapp-uzeri: #04291d;
+  --yol-yesil-uzeri: #06231a;
+  --yol-amber-uzeri: #2a1600;
+  --t-mini-tasindi: #ffd9c2;
+  --t-gorev-bitti: #d8deea;
+  --kpi-serin: #eef4ff;
+  --kpi-sicak: #fff1d6;
+  --kpi-acil: #ffe1e7;
+  --t-kanal-hover: #16244a;
+  --youtube: #ff0033;   /* sosyal kanal ikonları: markaların tanınan renkleri */
+  --instagram-1: #feda75;
+  --instagram-2: #d62976;
+  --instagram-3: #4f5bd5;
+  --tiktok: #111111;
+  --tiktok-kenar: #333333;
 }
 body[data-rol='koc'] {
   --kagit: var(--koc-kagit);

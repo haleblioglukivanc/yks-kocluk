@@ -39,23 +39,23 @@
     position: sticky; top: 0; align-self: start; height: 100dvh;
     flex-direction: column; justify-content: flex-start; gap: 0.25rem;
     padding: 4.25rem 0.75rem 1rem;
-    background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%); border-top: 0; border-right: 1px solid rgba(255, 255, 255, 0.08);
+    background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%); border-top: 0; border-right: 1px solid color-mix(in srgb, var(--beyaz) 8%, transparent);
     /* Sağ kenarda çok hafif iç gölge: yan çubuk kâğıdın altında kalır. */
-    box-shadow: inset -10px 0 14px -12px rgba(0, 0, 0, 0.35);
+    box-shadow: inset -10px 0 14px -12px color-mix(in srgb, var(--siyah) 35%, transparent);
     view-transition-name: none;
   }
   .alt-bag {
     flex: none; width: 100%;
     flex-direction: row; justify-content: flex-start; gap: 0.75rem;
     padding: 0.7rem 0.85rem; min-height: 44px; border-radius: var(--r);
-    font-size: var(--punto-orta); color: rgba(255, 255, 255, 0.72); opacity: 1;
+    font-size: var(--punto-orta); color: color-mix(in srgb, var(--beyaz) 72%, transparent); opacity: 1;
   }
   .alt-bag-ikon { width: auto; height: auto; }
   .alt-bag { transition: background-color 140ms ease, transform 80ms ease; }
-  .alt-bag:hover { background: rgba(255, 255, 255, 0.06); }
+  .alt-bag:hover { background: color-mix(in srgb, var(--beyaz) 6%, transparent); }
   /* Etkin bağlantı: solda 3px amber çizgi — marka imzası, büyük yüzey değil. */
   .alt-bag--etkin, .alt-bag--etkin:hover {
-    background: rgba(255, 255, 255, 0.12); color: var(--beyaz);
+    background: color-mix(in srgb, var(--beyaz) 12%, transparent); color: var(--beyaz);
     box-shadow: inset 3px 0 0 var(--altin);
   }
   .alt-bag--etkin .alt-bag-ikon { background: transparent; }
@@ -95,7 +95,7 @@
   .uygulama.uygulama--koyu-tepe .iki-sutun .panel > :is(.hero-yuzey:first-child, .koc-selam + .hero-yuzey) + :is(.kart, .dikis-kart) {
     position: relative; z-index: 2; margin-top: -3rem; margin-inline: 0.75rem;
     background: var(--yuzey); border: 1px solid var(--cizgi);
-    box-shadow: 0 12px 24px -14px rgba(14, 22, 38, 0.45);
+    box-shadow: 0 12px 24px -14px color-mix(in srgb, var(--golge-koyu) 45%, transparent);
   }
   .uygulama--koyu-tepe main:has(> .panel > .iki-sutun) { padding-top: 0; }
   .uygulama.uygulama--koyu-tepe .iki-sutun .panel > :first-child:not(.hero-yuzey) { margin-top: 1.5rem; }
@@ -201,7 +201,7 @@
 @media (min-width: 64rem) {
   body[data-rol='koc'] .ust-serit { background: transparent; }
   body[data-rol='koc'] .ust-serit .ust-ikon, body[data-rol='koc'] .ust-serit .ust-geri {
-    background: var(--yuzey); border-color: transparent; color: var(--murekkep); box-shadow: 0 2px 6px rgba(20, 28, 45, .08);
+    background: var(--yuzey); border-color: transparent; color: var(--murekkep); box-shadow: 0 2px 6px color-mix(in srgb, var(--golge-murekkep) 8%, transparent);
   }
   body[data-rol='koc'] .ust-serit .ust-ikon--etkin { background: var(--altin); color: var(--altin-uzeri); }
   body[data-rol='koc'] .ust-serit .ust-ikon--hesap { background: var(--yuzey); }
@@ -224,7 +224,7 @@
   }
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child::after { display: none; }
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .rt-alt { color: var(--soluk); }
-  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .ikon-dugme--koyu { background: var(--murekkep); border-color: var(--murekkep); color: #fff; }
+  body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt .ikon-dugme--koyu { background: var(--murekkep); border-color: var(--murekkep); color: var(--beyaz); }
   body[data-rol='koc'] .sutun-yan .panel > .hero-yuzey.rt:first-child + :is(.kart, .dikis-kart) {
     margin: -1rem 0 0; border-radius: 0 0 20px 20px; border: 0; box-shadow: var(--golge-kart); animation: none;
   }
