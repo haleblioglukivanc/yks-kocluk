@@ -160,6 +160,14 @@ export default function App() {
   const [hesapAcik, setHesapAcik] = useState(false)
   const [bekleyenKarar, setBekleyenKarar] = useState(0)
   const [yol, git] = useYol()
+
+  /* Her sayfanın canonical'ı kendi adresi. index.html tek dosya olduğu için
+     statik etiket hep ana sayfayı gösteriyordu; arama motoru /giris ve
+     /randevu'yu ana sayfanın kopyası sanıyordu. */
+  useEffect(() => {
+    const etiket = document.querySelector('link[rel="canonical"]')
+    if (etiket) etiket.setAttribute('href', `https://khkocluk.com${yol}`)
+  }, [yol])
   const [okunmamisMesaj, setOkunmamisMesaj] = useState(0)
 
   /* Koyu tema gövdeye de yazılır. Sadece .uygulama üzerinde olduğunda,
