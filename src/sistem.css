@@ -227,7 +227,8 @@
 .sil-dugme, .cozulen-sil, .ok-dugme, .kalem-kabarcik-kapat, .ob-basla, .ob-tamam,
 .metin-dugme, .dugme--ufak, .cip, .acil-secenek, .satir-genislet, .satir-eylem,
 .kaynak-ayrac--dugme, .suzgec-kaldir, .durtme-sablon, .t-belge-kapat, .t-belge-ok,
-.acil-dugme, .tur-cip { position: relative; }
+.acil-dugme, .tur-cip, .kaynak-cip, .t-gun-sekme, .kk-ana-eylem, .kk-ikon, .rutin-ac,
+.t-marka { position: relative; }
 .dokun-halka::after,
 .ust-ikon::after, .ust-geri::after, .ust-logo::after, .kk-geri::after,
 .ikon-dugme::after, .kurulum-kapat::after, .sil-dugme::after, .cozulen-sil::after,
@@ -235,7 +236,11 @@
 .metin-dugme::after, .dugme--ufak::after, .cip::after, .acil-secenek::after,
 .satir-genislet::after, .satir-eylem::after, .kaynak-ayrac--dugme::after,
 .suzgec-kaldir::after, .durtme-sablon::after, .t-belge-kapat::after,
-.t-belge-ok::after, .acil-dugme::after, .tur-cip::after {
+.t-belge-ok::after, .acil-dugme::after, .tur-cip::after, .kaynak-cip::after,
+.t-gun-sekme::after, .kk-ana-eylem::after, .kk-ikon::after, .rutin-ac::after, .t-marka::after,
+/* Hafta şeridindeki gün: ::after bugün vurgusunda kullanılıyor, halka ::before'da.
+   Gün 40px, aralık 4px: 44px'lik halka komşuya taşmadan sığar. */
+.hafta-gun::before {
   content: ''; position: absolute; left: 50%; top: 50%;
   width: max(100%, 44px); height: max(100%, 44px);
   transform: translate(-50%, -50%);

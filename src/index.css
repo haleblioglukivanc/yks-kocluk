@@ -2752,7 +2752,9 @@ body[data-tema='panel'] {
 }
 .kaynak-cipler {
   display: flex; gap: 0.375rem; overflow-x: auto;
-  padding-bottom: 0.125rem; scrollbar-width: none;
+  /* Çiplerin 44px dokunma halkası (5px) kaydırma kabına sığsın diye dikey
+     iç boşluk; eksi dış boşluk yerleşimi eski yerinde tutar. */
+  padding-block: 5px calc(0.125rem + 5px); margin-block: -5px; scrollbar-width: none;
 }
 .kaynak-cipler::-webkit-scrollbar { display: none; }
 .kaynak-cip {

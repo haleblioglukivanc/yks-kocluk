@@ -113,7 +113,20 @@ for (const M of MOTORLAR) {
                 const st = getComputedStyle(el)
                 if (r.width === 0 || r.height === 0 || st.visibility === 'hidden' || st.display === 'none') continue
                 if (r.top > window.innerHeight * 3) continue
-                if (Math.min(r.width, r.height) < 44) {
+                /* Etkin hedef: görünmez halka (::after/::before, sistem.css .dokun-halka) ya da
+                   içinde durduğu <label> — etikete dokunmak da kutuyu işaretler. */
+                let w = r.width, h = r.height
+                for (const ps of ['::after', '::before']) {
+                  const p = getComputedStyle(el, ps)
+                  if (p.content !== 'none' && p.position === 'absolute') { w = Math.max(w, parseFloat(p.width) || 0); h = Math.max(h, parseFloat(p.height) || 0) }
+                }
+                const etiket = el.closest('label')
+                if (etiket) {
+                  const e = etiket.getBoundingClientRect(), ea = getComputedStyle(etiket, '::after')
+                  const halka = ea.content !== 'none' && ea.position === 'absolute' ? e.height - parseFloat(ea.top) - parseFloat(ea.bottom) : 0
+                  w = Math.max(w, e.width); h = Math.max(h, e.height, halka)
+                }
+                if (Math.min(w, h) < 44) {
                   kucuk.push({ etiket: (el.getAttribute('aria-label') || el.textContent || el.className || el.tagName).toString().trim().replace(/\s+/g, ' ').slice(0, 30), w: Math.round(r.width), h: Math.round(r.height) })
                 }
               }

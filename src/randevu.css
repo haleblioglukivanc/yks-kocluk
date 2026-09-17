@@ -30,7 +30,10 @@
 
 .r-ikili { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-.r-onay { display: flex; gap: 10px; align-items: flex-start; font-size: var(--punto-kucuk); color: var(--g-grafit); line-height: 1.45; cursor: pointer; margin-top: 4px; }
+.r-onay { position: relative; display: flex; gap: 10px; align-items: flex-start; font-size: var(--punto-kucuk); color: var(--g-grafit); line-height: 1.45; cursor: pointer; margin-top: 4px; }
+/* Görünmez dokunma payı: iki satırlık etiket telefonda 41px, 2px taşmayla 44 üstüne çıkar.
+   Daha fazlası alttaki aydınlatma bağlantısının üstüne biner. */
+.r-onay::after { content: ''; position: absolute; inset: -2px 0; }
 .r-onay input { width: 20px; height: 20px; margin: 0; flex: none; accent-color: var(--t-lacivert); }
 .r-aydinlatma { margin: 10px 0 0 30px; font-size: var(--punto-mini); color: var(--g-soluk); }
 .r-aydinlatma summary { cursor: pointer; color: var(--g-murekkep); text-decoration: underline; text-underline-offset: 3px; width: fit-content; }
