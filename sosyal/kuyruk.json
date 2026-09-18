@@ -1,0 +1,19 @@
+[
+  {
+    "tarih": "2026-09-18",
+    "saat": "11:30",
+    "kanal": "6aacdcb9ea19ca0bde7503b1",
+    "metin": "Buffer bağlantı testi. Bu video özel yüklendi, silinebilir.",
+    "medya": "sosyal/medya/test-baglanti.mp4",
+    "metadata": {
+      "youtube": {
+        "title": "Bağlantı testi (özel)",
+        "categoryId": "27",
+        "privacy": "private",
+        "notifySubscribers": false,
+        "madeForKids": false
+      }
+    },
+    "yayinla": true
+  }
+]

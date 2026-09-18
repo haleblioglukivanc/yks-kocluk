@@ -57,9 +57,9 @@ jobs:
                   sys.exit("Buffer hatasi: " + json.dumps(veri["errors"], ensure_ascii=False))
               return veri["data"]
 
-          # 1) Kanal kimliği henüz yoksa: kanalları listele ve dur
-          if not env("BUFFER_CHANNEL_ID"):
-              print("BUFFER_CHANNEL_ID secret'i yok. Bagli kanallar asagida:\n")
+          # 1) Kanalları listele: istendiğinde ya da hiçbir kanal kimliği yoksa
+          def kanallari_listele():
+              print("Buffer'a bagli kanallar:\n")
               orgs = buffer("{ account { organizations { id name } } }")["account"]["organizations"]
               for o in orgs:
                   print("=== Organizasyon: %s ===" % o["name"])
@@ -69,8 +69,7 @@ jobs:
                       print("  Bagli kanal yok. Buffer'da Instagram hesabini bagla.")
                   for k in kanallar:
                       print("  servis: %-12s ad: %-24s BUFFER_CHANNEL_ID = %s" % (k["service"], k["name"], k["id"]))
-              print("\nInstagram satirindaki kimligi Secrets'a BUFFER_CHANNEL_ID adiyla ekle.")
-              sys.exit(0)
+              print("\nKimligi kuyruk.json satirinda 'kanal' alanina ya da Secrets'a BUFFER_CHANNEL_ID olarak yaz.")
 
           # 2) Günün gönderisini kuyruktan bul
           simdi = datetime.now(TR)
@@ -83,6 +82,10 @@ jobs:
               print("%s icin kuyrukta gonderi yok." % gun); sys.exit(0)
 
           deneme = (env("DENEME") or "").lower() == "true"
+          if deneme or not (env("BUFFER_CHANNEL_ID") or all(g.get("kanal") for g in bugunkuler)):
+              kanallari_listele()
+          if not (env("BUFFER_CHANNEL_ID") or all(g.get("kanal") for g in bugunkuler)):
+              sys.exit("Kanal kimligi yok; yukaridaki listeden birini kullan.")
 
           def yukle(dosya):
               url = env("SUPABASE_URL").rstrip("/")
@@ -112,14 +115,19 @@ jobs:
 
               print("-" * 50)
               print("Gun   :", gun, "| Saat:", zaman.strftime("%H:%M"), "(TR)")
+              print("Kanal :", g.get("kanal") or env("BUFFER_CHANNEL_ID"))
               print("Medya :", medya or "(yok)")
+              if g.get("metadata"):
+                  print("Ayar  :", json.dumps(g["metadata"], ensure_ascii=False))
               print("Metin :\n" + g["metin"])
               if deneme:
                   print(">> DENEME MODU: Buffer'a gonderilmedi.")
                   continue
 
-              girdi = {"text": g["metin"], "channelId": env("BUFFER_CHANNEL_ID"),
+              girdi = {"text": g["metin"], "channelId": g.get("kanal") or env("BUFFER_CHANNEL_ID"),
                        "schedulingType": "automatic", "mode": "customScheduled", "dueAt": due}
+              if g.get("metadata"):          # platforma özel ayar (youtube: baslik, gizlilik...)
+                  girdi["metadata"] = g["metadata"]
               if medya:
                   link = yukle(medya)
                   print("Yuklendi:", link)
