@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu, 1. adım)
+Son güncelleme: 18 Eylül 2026 (tasarım turu, 2. adım)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu, 2. adım: koç Bugün + renk dili
+
+- Mokap: https://claude.ai/artifact/To7GoQKsCe85rVkAXweyjf (Bekir onayladı).
+- **Renk kararı (Bekir):** amber/şeftali tonları öğrenci dünyasına ait. Koçun Bugün başlığı artık üst şeritle
+  aynı koyu lacivert (tek parça tepe, beyaz kalın cümle); şeftali degrade kalktı. Öğrencinin tepesi daha koyu
+  amber (`--ogr-tepe-ust #44280e`, `--ogr-tepe-alt #2c1908`); üst şerit ve başlık aynı ton.
+- Karar segmentleri (Acil / Süreli / Bugün / Bu hafta) hap şerit yerine `Sekmeler` (koyu) olarak başlığın alt
+  kenarında — KararKuyrugu portal ile KocBasligi'ndeki `.ob-sekme-yuvasi`na çiziyor.
+- Karar kartı: tek beyaz yüzey, sol çizgi/gölge yok; tür etiketi hap değil küçük başlık yazısı; tek dolu düğme,
+  diğer eylemler yazı düğmesi; gidecek mesaj gri kutu değil etiketli düz metin (üç kart türünde de).
+- Sırada: kart değil `Bolum`; renkli hap ve sol çizgi yok, bağlam adın altında düz metin ("Konu onayı · Ders · Konu").
+- Masaüstü: başlıktaki üç sayı kutusuz.
+- Sıradaki: TESPIT.md sırası — koçun öğrenci ekranının kalan sekmeleri.
 
 ## 18 Eylül 2026 — tasarım turu, 1. adım: ortak bileşenler + koçun öğrenci ekranı
 

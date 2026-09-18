@@ -3534,18 +3534,38 @@ body[data-tema='panel'] {
 /* ═══ Koç Bugün: kaldırılmış karar kartı, düz "Sırada" ve "Bugün girenler" ═══ */
 .uygulama .kart--kaldirilmis {
   background: var(--yuzey);
-  box-shadow: var(--golge-kalkik);
+  box-shadow: none; border: 0;
   padding: 1.25rem;
 }
-.uygulama .kuyruk-tip { letter-spacing: 0; }
-.uygulama .kuyruk-tip[data-tip='risk'] { background: var(--kizil-zemin); color: var(--kizil-metin); }
+/* Karar türü hap değil, küçük başlık yazısı (TASARIM-KURALLARI 7). */
+.uygulama .kuyruk-tip {
+  background: none; padding: 0; border-radius: 0;
+  font-size: var(--punto-mini); font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--sicak-metin);
+}
+.uygulama .kuyruk-tip[data-tip='risk'], .uygulama .kuyruk-tip[data-tip='gorusme'], .uygulama .kuyruk-tip[data-tip='blok'] { background: none; color: var(--kizil-metin); }
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
 .uygulama .kuyruk-tip[data-tip='plan'],
 .uygulama .kuyruk-tip[data-tip='odeme'],
 .uygulama .kuyruk-tip[data-tip='konu'],
-.uygulama .kuyruk-tip[data-tip='analiz'] { background: var(--sicak-zemin); color: var(--sicak-metin); }
+.uygulama .kuyruk-tip[data-tip='analiz'] { background: none; color: var(--sicak-metin); }
 /* Tebrik yolunda demek: yeşil. Kuyrukta tek olumlu kart bu. */
-.uygulama .kuyruk-tip[data-tip='tebrik'] { background: var(--isaret-zemin); color: var(--isaret-metin); }
+.uygulama .kuyruk-tip[data-tip='tebrik'] { background: none; color: var(--isaret-metin); }
+/* Tek dolu düğme; diğer eylemler yazı düğmesi (TASARIM-KURALLARI 6). */
+.uygulama .kuyruk-alt-dugmeler { justify-content: center; gap: 1.75rem; }
+.uygulama .kuyruk-alt-dugmeler .dugme {
+  flex: 0 0 auto; background: none; border: 0; box-shadow: none; padding-inline: 0.25rem;
+  color: var(--serin); font-weight: 700;
+}
+/* Gidecek mesaj kutu içinde kutu değil: etiketli düz metin. */
+.uygulama .kart--kaldirilmis .kuyruk-mesaj {
+  background: none; border: 0; padding: 0; margin: 0;
+  font-size: var(--punto-govde); line-height: 1.55; color: var(--murekkep);
+}
+.uygulama .kart--kaldirilmis .kuyruk-mesaj::before {
+  content: 'Gidecek mesaj'; display: block; margin-bottom: 0.3rem;
+  font-size: var(--punto-mini); font-weight: 700; color: var(--soluk);
+}
 .uygulama .kuyruk-cubuk-dolu { background: var(--sicak); }
 .sirada-liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.15rem; }
 .sirada-satir {
@@ -3780,14 +3800,15 @@ body[data-tema='panel'] {
 .segment-sekme[data-segment='pencere'] .segment-adet { background: var(--sicak-zemin); color: var(--sicak-metin); }
 .segment-sekme:focus-visible { outline: 2px solid var(--sicak); outline-offset: 2px; }
 /* Sıradaki satırlar: sol şerit segmenti söyler, dokununca o karta atlanır. */
-.sirada-satir[data-segment] {
-  border-left: 3px solid var(--cizgi);
-  padding-left: 0.6rem;
-  gap: 0.5rem;
-}
-.sirada-satir[data-segment='acil'] { border-left-color: var(--kizil); }
-.sirada-satir[data-segment='pencere'] { border-left-color: var(--marka-amber); }
-.sirada-satir[data-segment='bugun'] { border-left-color: var(--sicak); }
+.sirada-satir[data-segment] { gap: 0.75rem; }
+/* Sırada: sol çizgi ve renkli hap yok; satırları ince çizgi ayırır,
+   bağlam adın altında düz metin (TASARIM-KURALLARI 7–8). */
+.sirada-liste li + li .sirada-satir { border-top: 1px solid var(--cizgi); }
+.sirada-satir { min-height: 56px; padding: 0.6rem 0; }
+.sirada-kimlik { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sirada-kimlik .sirada-ad { flex: none; font-weight: 600; }
+.sirada-kimlik .sirada-alt { display: block; font-size: var(--punto-mini); color: var(--soluk); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sirada-ok { flex: none; color: var(--soluk); font-size: var(--punto-orta); }
 .sirada-baglam {
   flex: 1;
   min-width: 0;
@@ -4377,26 +4398,31 @@ body[data-rol='ogrenci'] .uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekm
 @keyframes piril { 0%, 100% { opacity: .15; transform: scale(.6) rotate(0); } 50% { opacity: .9; transform: scale(1.1) rotate(25deg); } }
 body[data-rol='koc'] .uygulama { position: relative; z-index: 1; }
 
-/* Koç tepesi: şeftali→amber degrade, koyu yazı. Öğrencide sıcak mürekkep kalır. */
+/* Koç tepesi: üst şeritle aynı koyu lacivert, beyaz kalın cümle (Çizbi'nin
+   ortak sesi). Şeftali/amber öğrenci dünyasına ait (Bekir, 18 Eylül 2026). */
 body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .hero-yuzey.ob, body[data-rol='koc'] .uygulama .hero-yuzey.ob {
-  background: linear-gradient(120deg, var(--koc-tepe-ust) 0%, var(--koc-tepe-orta) 55%, var(--koc-tepe-alt) 100%);
-  color: var(--murekkep);
-  box-shadow: 0 18px 36px -18px color-mix(in srgb, var(--golge-seftali) 55%, transparent);
+  background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%);
+  color: var(--beyaz);
+  box-shadow: none;
 }
-body[data-rol='koc'] .uygulama .hero-yuzey.ob::after { background: color-mix(in srgb, var(--beyaz) 22%, transparent); animation: suzul 16s ease-in-out infinite alternate; }
-body[data-rol='koc'] .hero-yuzey.ob .rt-baslik, body[data-rol='koc'] .hero-yuzey.ob .ob-mesaj { color: var(--murekkep); }
-body[data-rol='koc'] .hero-yuzey.ob .rt-alt { color: color-mix(in srgb, var(--ob-metin) 70%, transparent); }
-body[data-rol='koc'] .hero-yuzey.ob .ob-kim { color: var(--ob-kim); }
-body[data-rol='koc'] .hero-yuzey.ob .ob-basla { background: var(--murekkep); color: var(--beyaz); }
-body[data-rol='koc'] .hero-yuzey.ob .ob-tamam { background: color-mix(in srgb, var(--beyaz) 55%, transparent); color: var(--murekkep); }
+body[data-rol='koc'] .uygulama .hero-yuzey.ob::after { background: color-mix(in srgb, var(--beyaz) 5%, transparent); }
+body[data-rol='koc'] .hero-yuzey.ob .rt-baslik, body[data-rol='koc'] .hero-yuzey.ob .ob-mesaj { color: var(--beyaz); }
+body[data-rol='koc'] .hero-yuzey.ob .rt-alt { color: color-mix(in srgb, var(--beyaz) 70%, transparent); }
+body[data-rol='koc'] .hero-yuzey.ob .ob-kim { color: var(--marka-koyu-amber); }
+body[data-rol='koc'] .hero-yuzey.ob .ob-basla { background: var(--marka-koyu-amber); color: var(--k-kagit); }
+body[data-rol='koc'] .hero-yuzey.ob .ob-tamam { background: transparent; color: var(--beyaz); padding-inline: 0.25rem; }
 body[data-rol='koc'] .hero-yuzey.ob .ob-kalem svg { filter: var(--golge-cizbi); }
 body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir { animation: cizbi-gir 520ms cubic-bezier(.34, 1.56, .64, 1) both, hop 2.6s ease-in-out 600ms infinite; }
+/* Sekme yuvası boşsa (tek segment) blok yine nefes alsın. */
+.ob-sekme-yuvasi:empty { height: 1.25rem; }
 @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 /* Sağdaki üç sayı: yalnız geniş ekranda (yerlesim.css açar). */
 .ob-kpi { display: none; order: 3; margin-left: auto; gap: 10px; align-self: center; }
-.ob-kpi > div { background: color-mix(in srgb, var(--beyaz) 72%, transparent); border-radius: 16px; padding: 10px 14px; min-width: 96px; }
-.ob-kpi b { display: block; font-family: var(--mono); font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
-.ob-kpi small { font-size: var(--punto-etiket); color: var(--grafit); font-weight: 600; }
+.ob-kpi { gap: 2rem; }
+/* Kutu yok (TASARIM-KURALLARI 1): sayı ve etiketi doğrudan koyu blokta. */
+.ob-kpi > div { min-width: 0; }
+.ob-kpi b { display: block; font-family: var(--display); font-size: 28px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--beyaz); }
+.ob-kpi small { font-size: var(--punto-mini); color: color-mix(in srgb, var(--beyaz) 70%, transparent); font-weight: 600; }
 
 /* Yan çubuk rozeti */
 .alt-bag-rozet { display: none; margin-left: auto; background: var(--kizil); color: var(--beyaz); border-radius: var(--r-tam); padding: 1px 8px; font-family: var(--mono); font-size: 12px; font-weight: 700; }

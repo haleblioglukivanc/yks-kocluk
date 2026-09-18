@@ -9,9 +9,17 @@
    Görünümü .hero-yuzey'den gelir (öğrenci başlığıyla aynı yüzey).
    Sekmeli blok sekmelerle biter: altına dikiş kartı oturmaz, alt boşluk
    yalnız sekme çizgisi kadar. Seçici koyu-tepe kuralından güçlü. */
-.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ust-blok--sekmeli:first-child,
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > :is(.hero-yuzey.ust-blok--sekmeli:first-child, .koc-selam + .hero-yuzey.ust-blok--sekmeli),
 .ust-blok--sekmeli {
   padding-bottom: 0;
+}
+/* Sekmeli bloğun altına dikiş kartı oturmaz: kart normal akışta başlar.
+   Koyu-tepe dikiş kuralları rol/genişlik seçicileriyle çok özgül olduğu
+   için burada !important bilerek kullanılıyor (tek yer). */
+.hero-yuzey.ust-blok--sekmeli + :is(.kart, .dikis-kart) {
+  margin-top: 1.25rem !important;
+  border: 0 !important;
+  box-shadow: none !important;
 }
 .uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ust-blok--sekmeli { padding-bottom: 0; }
 .ust-blok--sekmeli + * { margin-top: 0.25rem; }
@@ -38,6 +46,9 @@
 }
 .alt-sekme:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
 .alt-sekme[aria-current='page'] { font-weight: 700; }
+.alt-sekme-sayi { font-weight: 500; opacity: 0.75; font-variant-numeric: tabular-nums; }
+.alt-sekmeler--koyu .alt-sekme-sayi[data-segment='acil'] { color: color-mix(in srgb, var(--kizil) 45%, var(--beyaz)); opacity: 1; font-weight: 700; }
+.alt-sekmeler--acik .alt-sekme-sayi[data-segment='acil'] { color: var(--kizil-metin); opacity: 1; font-weight: 700; }
 
 .alt-sekmeler--koyu { margin-top: 1rem; }
 .alt-sekmeler--koyu .alt-sekme { color: color-mix(in srgb, var(--beyaz) 68%, transparent); }

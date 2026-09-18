@@ -287,15 +287,19 @@
      üstünde yanıyor. body[data-rol='ogrenci'] bu değerleri anlam
      katmanına yazar; bileşenler yine --kagit / --tepe-ust okur. */
   --ogr-kagit:    #f7f0e3;
-  --ogr-tepe-ust: #3a2a1a;
-  --ogr-tepe-alt: #2a1f14;
+  /* Koyu amber (Bekir, 18 Eylül 2026): öğrencinin üst şeridi ve başlığı tek ton. */
+  --ogr-tepe-ust: #44280e;
+  --ogr-tepe-alt: #2c1908;
   --ogr-yuzey-2:  #f1e9da;
   --ogr-cizgi:    #eadfcb;
 
   /* ── KOÇ DÜNYASI ───────────────────────────────────────────
      Koç bir araç kullanıyor ama araç neşeli olabilir: mürekkep-mavi yan
      çubuk, şeftali→amber tepe şeridi, krem kâğıt ve zeminde pastel lekeler.
-     Bekir'in kararı (15 Eylül 2026): "finans arayüzü gibi durmasın". */
+     Bekir'in kararı (15 Eylül 2026): "finans arayüzü gibi durmasın".
+     18 Eylül 2026: amber/şeftali tonları öğrenci dünyasına ait; koçun Bugün
+     başlığı da üst şeritle aynı koyu lacivert (tek parça tepe). --koc-tepe-*
+     artık yalnız tarihî referans, bileşenler okumuyor. */
   --koc-yan-ust:  #2c2f72;
   --koc-yan-alt:  #1c1f4d;
   --koc-tepe-ust: #ff9a5c;

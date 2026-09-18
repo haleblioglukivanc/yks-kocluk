@@ -60,7 +60,7 @@ function Sayan({ deger }) {
   return <>{Math.round(d)}</>
 }
 
-export default function KocBasligi({ profil, ozet, onGit }) {
+export default function KocBasligi({ profil, ozet, onGit, sekmeYuvasi }) {
   /* Bekleyen özet / okunmamış kısayolları zile taşındı (Bildirimler). */
   const [olay, setOlay] = useState(null)
 
@@ -102,7 +102,7 @@ export default function KocBasligi({ profil, ozet, onGit }) {
       <h1 className="koc-selam-ad">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
       <p className="koc-selam-alt">{tarih}{ozet ? ` · ${(ozet.riskliOgrenciler ?? []).length} öğrenci önce bakılacak` : ''}</p>
     </div>
-    <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve günün özeti`}>
+    <section className="hero-yuzey ob ust-blok ust-blok--sekmeli" aria-label={`${KALEM_ADI} ve günün özeti`}>
       {/* Başlık satırı her sekmede aynı kalıp (SekmeTepesi ile aynı sınıflar):
           büyük ad, altında gri tek satır. Bugün'de o satır tarih. */}
       <div className="rt-satir">
@@ -149,6 +149,10 @@ export default function KocBasligi({ profil, ozet, onGit }) {
         </div>
       </div>
 
+      {/* Karar segmentleri (Acil / Süreli / Bu hafta) buraya, bloğun alt
+          kenarına yerleşir; KararKuyrugu portal ile doldurur
+          (TASARIM-KURALLARI 3–4). */}
+      <div className="ob-sekme-yuvasi" ref={sekmeYuvasi} />
     </section>
     </>
   )

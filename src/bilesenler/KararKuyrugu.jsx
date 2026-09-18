@@ -1,5 +1,8 @@
 import { metindenDers } from '../lib/dersGorunum.js'
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { createPortal } from 'react-dom'
+import Sekmeler from '../ortak/Sekmeler.jsx'
+import Bolum from '../ortak/Bolum.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
 import { Avatar } from './Fotograf.jsx'
@@ -33,7 +36,7 @@ function anahtar(k) {
   return `${k.tip}-${k.kaynak_id}`
 }
 
-export default function KararKuyrugu({ onOgrenciAc }) {
+export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
   const [kartlar, setKartlar] = useState(null)
   const [bitenler, setBitenler] = useState([])
   const [verilen, setVerilen] = useState(0)
@@ -149,6 +152,7 @@ export default function KararKuyrugu({ onOgrenciAc }) {
       <GorusmeSeridi />
 
       <SegmentSeridi
+        yuva={sekmeYuvasi}
         sayilar={sayilar}
         aktif={odak.segment}
         onSec={(s) => {
@@ -191,26 +195,25 @@ export default function KararKuyrugu({ onOgrenciAc }) {
 
 /* Segment şeridi: hangi işin ne kadar beklediği tek bakışta. Acil varsa kuyruk
    kendiliğinden orada açılır; koç isterse başka segmente atlar. */
-function SegmentSeridi({ sayilar, aktif, onSec }) {
+function SegmentSeridi({ yuva, sayilar, aktif, onSec }) {
   const gorunen = SEGMENT_SIRA.filter((s) => sayilar[s])
   if (gorunen.length < 2) return null
-  return (
-    <div className="segment-serit" role="tablist" aria-label="Karar segmentleri">
-      {gorunen.map((s) => (
-        <button
-          key={s}
-          role="tab"
-          aria-selected={s === aktif}
-          className="segment-sekme"
-          data-segment={s}
-          onClick={() => onSec(s)}
-        >
-          {SEGMENT_ETIKET[s]}
-          <span className="segment-adet">{sayilar[s]}</span>
-        </button>
-      ))}
-    </div>
+  /* Hap şerit yerine ortak alt çizgili sekmeler. Başlıkta yuva varsa
+     koyu bloğun alt kenarına, yoksa zemine çizilir. */
+  const sekmeler = (
+    <Sekmeler
+      varyant={yuva ? 'koyu' : 'acik'}
+      etiket="Karar segmentleri"
+      deger={aktif}
+      onSec={onSec}
+      secenekler={gorunen.map((s) => ({
+        k: s,
+        ad: SEGMENT_ETIKET[s],
+        rozet: <span className="alt-sekme-sayi" data-segment={s}>{sayilar[s]}</span>,
+      }))}
+    />
   )
+  return yuva ? createPortal(sekmeler, yuva) : sekmeler
 }
 
 /* Bekleyen kararlar tek satır halinde. Önce dört tanesi görünür, gerisi
@@ -221,52 +224,47 @@ function Sirada({ kartlar, onSec, dersBul = metindenDers }) {
   const [hepsi, setHepsi] = useState(false)
   if (kartlar.length === 0) return null
   const gosterilen = hepsi ? kartlar : kartlar.slice(0, 4)
+  /* Kart değil bölüm (TASARIM-KURALLARI 8): zemine oturan başlık + liste.
+     Renkli ders hapı yerine bağlam adın altında düz metin. */
   return (
-    <Kart
-      duz
+    <Bolum
       baslik="Sırada"
-      altBaslik={`${kartlar.length} karar bekliyor`}
-      eylem={
-        kartlar.length > 4 ? (
-          <button className="metin-dugme" onClick={() => setHepsi((a) => !a)} aria-expanded={hepsi}>
-            {hepsi ? 'Kısalt' : `Hepsi · ${kartlar.length}`}
-          </button>
-        ) : null
-      }
+      sayi={kartlar.length}
+      eylem={kartlar.length > 4 ? (hepsi ? 'Kısalt' : 'Hepsi') : null}
+      onEylem={() => setHepsi((a) => !a)}
     >
       <ul className="sirada-liste">
         {gosterilen.map((k) => {
           const ders = dersBul(k.baglam)
-          /* "22:05 bloğu · Soru çözümü — Cümlede Anlam": ilk parça zaman/tür
-             bilgisiyse adın altına, kalanı sağda çip. Tek parçaysa hepsi çip. */
           const parcalar = String(k.baglam ?? '').split(' · ')
-          /* Zaman/tarih parçası adın altına: "22:05 bloğu", "08.09". Kalanı çip. */
           const zamanMi = (p) => /bloğu|onayı|^\d\d[:.]\d\d/i.test(p)
-          const altSatir = parcalar.length > 1 ? (parcalar.find(zamanMi) ?? null) : null
-          let cip = parcalar.filter((p) => p !== altSatir).join(' · ') || (k.baglam ?? '')
-          /* Dersi bulunmuşsa çip "Ders · Konu" olur; tür ("Soru çözümü") düşer. */
+          const zaman = parcalar.length > 1 ? (parcalar.find(zamanMi) ?? null) : null
+          let baglam = parcalar.filter((p) => p !== zaman).join(' · ') || (k.baglam ?? '')
+          /* Dersi bulunmuşsa "Ders · Konu"; tür ("Soru çözümü") düşer. */
           if (ders) {
-            const konu = cip.split(' — ').pop().replace(new RegExp(`^${ders.ad}\\s*·\\s*`, 'i'), '')
-            cip = `${ders.ad} · ${konu}`
+            const konu = baglam.split(' — ').pop().replace(new RegExp(`^${ders.ad}\\s*·\\s*`, 'i'), '')
+            baglam = `${ders.ad} · ${konu}`
           }
+          const alt = [TIP_ETIKET[k.tip], zaman, baglam].filter(Boolean).join(' · ')
           return (
-          <li key={anahtar(k)}>
-            <button
-              className="sirada-satir sirada-satir--dokun"
-              data-segment={k.segment}
-              style={ders ? { '--ders-renk': ders.renk } : undefined}
-              onClick={() => onSec(k)}
-            >
-              <span className="sirada-av" aria-hidden="true">{basHarf(k.ad)}</span>
-              <span className="sirada-ad">{k.ad}{altSatir && <small className="sirada-alt">{altSatir}</small>}</span>
-              {cip && <span className="sirada-baglam">{cip}</span>}
-              <span className="sirada-ac" aria-hidden="true">Aç</span>
-            </button>
-          </li>
+            <li key={anahtar(k)}>
+              <button
+                className="sirada-satir sirada-satir--dokun"
+                data-segment={k.segment}
+                onClick={() => onSec(k)}
+              >
+                <span className="sirada-av" aria-hidden="true">{basHarf(k.ad)}</span>
+                <span className="sirada-kimlik">
+                  <span className="sirada-ad">{k.ad}</span>
+                  {alt && <small className="sirada-alt">{alt}</small>}
+                </span>
+                <span className="sirada-ok" aria-hidden="true">›</span>
+              </button>
+            </li>
           )
         })}
       </ul>
-    </Kart>
+    </Bolum>
   )
 }
 

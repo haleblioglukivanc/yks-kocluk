@@ -10,6 +10,8 @@ import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
  *  özet yalnız başlığın cümlesi için çekiliyor. */
 export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
   const [ozet, setOzet] = useState(null)
+  /* Başlığın alt kenarındaki sekme yuvası: kuyruk segmentlerini oraya çizer. */
+  const [sekmeYuvasi, setSekmeYuvasi] = useState(null)
 
   useEffect(() => {
     let iptal = false
@@ -23,8 +25,8 @@ export default function KocPaneli({ profil, onOgrenciAc, onGit }) {
 
   return (
     <div className="panel">
-      <KocBasligi profil={profil} ozet={ozet} onGit={onGit} />
-      <KararKuyrugu onOgrenciAc={onOgrenciAc} />
+      <KocBasligi profil={profil} ozet={ozet} onGit={onGit} sekmeYuvasi={setSekmeYuvasi} />
+      <KararKuyrugu onOgrenciAc={onOgrenciAc} sekmeYuvasi={sekmeYuvasi} />
       {/* Onaylanan veli özetleri buraya düşer; koç kendi telefonundan iletir. */}
       <VeliMesajlari />
     </div>
