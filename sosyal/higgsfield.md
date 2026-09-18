@@ -1,4 +1,25 @@
-# Higgsfield — sosyal medya video hattı
+# Sosyal medya video hattı (Higgsfield + Remotion)
+
+> **Karar (18 Eylül 2026, Bekir):** Proje sıfır bütçeyle yürüyor. Sosyal
+> medya animasyonları **Remotion ile, ücretsiz** üretilecek — çizim tabanlı
+> anlatım (kâğıt, kutular, silinen satır, değişen ışık) zaten sitedeki
+> çarşamba sahnesinde var, 9:16 dikeye çevrilecek. Yüz gereken içerik
+> Kıvanç'ın kendi telefonuyla çekilecek. Higgsfield bağlı ve çalışır
+> durumda ama **kredi gerektirdiği için şimdilik kullanılmıyor**; yalnızca
+> çizimle anlatılamayan gerçek görüntü gerektiğinde açılacak.
+>
+> Uyarı: Higgsfield'ın 3 günlük ücretsiz denemesi kart istiyor ve süre
+> bitince otomatik ücretlendiriyor. Kullanılırsa hemen ardından otomatik
+> yenileme iptal edilmeli.
+>
+> Sıradaki iş: sitedeki çarşamba sahnesinin + yazışmanın Remotion ile
+> ~20 saniyelik dikey videoya çevrilmesi (ilk test). Ayrı bir sohbette
+> yürütülecek. Not: bu repoda Remotion ve Buffer'a ait hiçbir dosya yok;
+> o çalışma başka bir yerde duruyorsa önce birleştirilmeli.
+
+---
+
+## Higgsfield — referans (kullanılmaya başlandığında)
 
 Kısa dikey videoları (Reels / Shorts / TikTok) üretmek için kullanılıyor.
 Higgsfield kendi modeli değil; Sora, Veo, Kling, Seedance gibi modelleri tek
