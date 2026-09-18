@@ -100,7 +100,7 @@ function Sade({ f, govde, sakin }) {
     {govde.map((s, i) => {
       const p = sakin ? interpolate(f, [SATIR[i], SATIR[i] + 24], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) : yay(f, SATIR[i])
       return <div key={i} style={{ ...gel(p, sakin ? 0 : 24), fontFamily: GOVDE, fontSize: 44, lineHeight: 1.36,
-        color: i === govde.length - 1 ? R.turuncuA : R.acikMavi, fontWeight: i === govde.length - 1 ? 600 : 400 }}>{s}</div>
+        color: !sakin && i === govde.length - 1 ? R.turuncuA : R.acikMavi, fontWeight: !sakin && i === govde.length - 1 ? 600 : 400 }}>{s}</div>
     })}
   </div>
 }
@@ -138,8 +138,14 @@ export function Gunluk({ gun, govde, muzik }) {
   const cizgi = efsane ? interpolate(f, [150, 175], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' }) : 0
   const gercek = efsane ? yay(f, 172) : 0
   const yazisma = s === 'yazisma'
+  // Efsane: tırnaklı kısım efsanedir; tırnak yoksa efsane başlıktır, kanca hükümdür.
+  let mit = gun.kanca, hukum = ''
+  if (efsane) {
+    const m = gun.kanca.match(/^[‘'"“](.+?)[’'"”]\s*(.*)$/)
+    if (m) { mit = `‘${m[1]}’`; hukum = m[2] } else { mit = `‘${gun.baslik}.’`; hukum = gun.kanca }
+  }
   const ortada = s === 'tek-cumle' || hassas
-  const ac = ortada ? 1 : yay(f, 150, { damping: 20, stiffness: 90 })   // 0 = kapak düzeni, 1 = içerik düzeni
+  const ac = yay(f, ortada ? 165 : 150, { damping: 20, stiffness: 90 })   // 0 = kapak düzeni, 1 = içerik düzeni
 
   return (
     <AbsoluteFill style={{ background: hassas ? R.lacivert :
@@ -148,7 +154,8 @@ export function Gunluk({ gun, govde, muzik }) {
       {/* Reels/TikTok arayüzü üstte ~200px, altta ~320px kapatır */}
       <div style={{ position: 'absolute', left: 80, right: 80, top: ortada ? 0 : 190, bottom: ortada ? 0 : 340,
         display: 'flex', flexDirection: 'column', justifyContent: ortada ? 'center' : 'flex-start' }}>
-        <div style={{ transform: `translateY(${(1 - ac) * 380}px) scale(${1 + 0.1 * (1 - ac)})`, transformOrigin: 'left top' }}>
+        <div style={{ transform: `translateY(${(1 - ac) * (ortada ? 190 : 380)}px) scale(${1 + 0.1 * (1 - ac)})`,
+          transformOrigin: ortada ? 'center top' : 'left top', textAlign: ortada ? 'center' : 'left' }}>
         {!hassas && <Etiket gun={gun} />}
         {efsane && <div style={{ marginTop: 26, display: 'flex', gap: 14 }}>
           <span style={{ fontFamily: MONO, fontSize: 28, background: R.mercan, color: R.beyaz, padding: '8px 18px', borderRadius: 10 }}>EFSANE</span></div>}
@@ -157,16 +164,18 @@ export function Gunluk({ gun, govde, muzik }) {
               fontFamily: GOVDE, fontWeight: 600, fontSize: punto(gun.kanca, 62), lineHeight: 1.28, padding: '30px 36px',
               borderRadius: '36px 36px 36px 10px' }}>{gun.kanca}<div style={{ fontFamily: MONO, fontSize: 24, color: R.soluk, marginTop: 12 }}>öğrenci · 22:47</div></div>
           : <div style={{ position: 'relative' }}>
-              <Kanca metin={gun.kanca} boyut={hassas ? 84 : undefined}
+              <Kanca metin={mit} boyut={ortada ? punto(gun.kanca, 104) : undefined}
                 renk={efsane ? `color-mix(in srgb, ${R.beyaz} ${100 - 45 * cizgi}%, transparent)` : R.beyaz}
-                stil={hassas ? { textAlign: 'center' } : {}} />
-              {efsane && <div style={{ position: 'absolute', left: 0, top: '55%', height: 10, width: `${cizgi * 100}%`,
-                background: R.mercan, borderRadius: 5 }} />}
+                stil={{ ...(ortada ? { textAlign: 'center' } : {}),
+                  ...(efsane ? { textDecorationLine: 'line-through', textDecorationThickness: 9,
+                    textDecorationColor: `color-mix(in srgb, ${R.mercan} ${Math.round(cizgi * 100)}%, transparent)` } : {}) }} />
+              {hukum && <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: punto(hukum, 64), lineHeight: 1.12,
+                letterSpacing: '-0.02em', color: R.turuncuA, marginTop: 22 }}>{hukum}</div>}
             </div>}
         </div>
         {efsane && <div style={{ ...gel(gercek), marginTop: 40 }}>
           <span style={{ fontFamily: MONO, fontSize: 28, background: R.turuncu, color: R.beyaz, padding: '8px 18px', borderRadius: 10 }}>GERÇEK</span></div>}
-        <div style={{ marginTop: hassas ? 60 : efsane ? 30 : 64, textAlign: hassas ? 'center' : 'left' }}>
+        <div style={{ marginTop: hassas ? 60 : efsane ? 30 : 64, textAlign: ortada ? 'center' : 'left' }}>
           {s === 'kart-liste' && <Liste f={f} govde={govde} />}
           {s === 'soru-cozum' && <Adimlar f={f} govde={govde} />}
           {yazisma && <Sohbet f={f} govde={govde} />}
