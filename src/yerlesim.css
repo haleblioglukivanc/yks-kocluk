@@ -199,7 +199,7 @@
    sütunun üstüne yayılır, sağ sütunun "Öğrenciler" başlığı beyaz kart olur.
    (Bekir, 15 Eylül: "amber şerit sona kadar gelsin, yukarısı zemine uygun") */
 @media (min-width: 64rem) {
-  body[data-rol='koc'] .ust-serit { background: transparent; }
+  body[data-rol='koc'] .ust-serit { background: transparent; box-shadow: none; }
   body[data-rol='koc'] .ust-serit .ust-ikon, body[data-rol='koc'] .ust-serit .ust-geri {
     background: var(--yuzey); border-color: transparent; color: var(--murekkep); box-shadow: 0 2px 6px color-mix(in srgb, var(--golge-murekkep) 8%, transparent);
   }

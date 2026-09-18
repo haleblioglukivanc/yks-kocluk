@@ -44,6 +44,37 @@ export function Avatar({ yol, ad, boyut = 'orta' }) {
   )
 }
 
+/* Telefondan gelen fotoğraf çoğu zaman 3–10 MB ve yatay/dikey. Yüklemeden
+   önce tarayıcıda ortadan kare kırpılıp 512px JPEG'e indirilir (~50–90 KB):
+   yükleme takılmaz, liste ve karar kartında avatar anında açılır. */
+const KARE = 512
+
+function resmiAc(dosya) {
+  return new Promise((coz, reddet) => {
+    const adres = URL.createObjectURL(dosya)
+    const resim = new Image()
+    resim.onload = () => { URL.revokeObjectURL(adres); coz(resim) }
+    resim.onerror = () => { URL.revokeObjectURL(adres); reddet(new Error('Bu fotoğraf açılamadı. JPG ya da PNG deneyin.')) }
+    resim.src = adres
+  })
+}
+
+async function kareKucult(dosya) {
+  const resim = await resmiAc(dosya)
+  const g = resim.naturalWidth, y = resim.naturalHeight
+  const kenar = Math.min(g, y)
+  const hedef = Math.min(KARE, kenar)
+  const tuval = document.createElement('canvas')
+  tuval.width = hedef
+  tuval.height = hedef
+  const c = tuval.getContext('2d')
+  c.imageSmoothingQuality = 'high'
+  c.drawImage(resim, (g - kenar) / 2, (y - kenar) / 2, kenar, kenar, 0, 0, hedef, hedef)
+  const blob = await new Promise((coz) => tuval.toBlob(coz, 'image/jpeg', 0.85))
+  if (!blob) throw new Error('Fotoğraf hazırlanamadı.')
+  return blob
+}
+
 export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
   const girdi = useRef(null)
   const [bekliyor, setBekliyor] = useState(false)
@@ -53,23 +84,19 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
     if (!dosya) return
     setHata('')
 
-    if (!['image/jpeg', 'image/png', 'image/webp'].includes(dosya.type)) {
-      setHata('Yalnızca JPG, PNG veya WEBP yükleyebilirsiniz.')
-      return
-    }
-    if (dosya.size > 3 * 1024 * 1024) {
-      setHata('Dosya 3 MB’den küçük olmalı.')
+    if (dosya.type && !dosya.type.startsWith('image/')) {
+      setHata('Lütfen bir fotoğraf seçin.')
       return
     }
 
     setBekliyor(true)
     try {
-      const uzanti = dosya.type === 'image/png' ? 'png' : dosya.type === 'image/webp' ? 'webp' : 'jpg'
-      const yol = `${ogrenciId}/portre-${Date.now()}.${uzanti}`
+      const kucuk = await kareKucult(dosya)
+      const yol = `${ogrenciId}/portre-${Date.now()}.jpg`
 
       const { error: yHata } = await supabase.storage
         .from(KOVA)
-        .upload(yol, dosya, { cacheControl: '3600', upsert: false })
+        .upload(yol, kucuk, { cacheControl: '3600', upsert: false, contentType: 'image/jpeg' })
       if (yHata) throw yHata
 
       const { error: pHata } = await supabase
@@ -112,7 +139,7 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
         <input
           ref={girdi}
           type="file"
-          accept="image/jpeg,image/png,image/webp"
+          accept="image/*"
           onChange={(e) => sec(e.target.files?.[0])}
           hidden
         />

@@ -3328,9 +3328,12 @@ body[data-tema='panel'] {
   /* Üst şerit her zaman en üstte kalmalı: vekalet bandı (z-index 10)
      top:0'a yapışınca zilin ve hesap ikonunun üstüne biniyor, tıklamayı
      yutuyordu. Band artık şeridin altından başlıyor. */
-  position: sticky; top: 0; z-index: var(--kat-tepe);
+  /* top:-1px + yukarı gölge: iOS Safari kaydırırken şeritle tarayıcı
+     tepesi arasında 1px aralık bırakıp krem zemini gösteriyordu. */
+  position: sticky; top: -1px; z-index: var(--kat-tepe);
   background: var(--tepe-ust);
-  padding-top: env(safe-area-inset-top);
+  padding-top: calc(env(safe-area-inset-top) + 1px);
+  box-shadow: 0 -12px 0 var(--tepe-ust);
 }
 .ust-cubuk {
   max-width: 44rem; margin-inline: auto;
@@ -4412,11 +4415,10 @@ body[data-rol='koc'] .hero-yuzey.ob .rt-alt { color: color-mix(in srgb, var(--be
 body[data-rol='koc'] .hero-yuzey.ob .ob-kim { color: var(--marka-koyu-amber); }
 body[data-rol='koc'] .hero-yuzey.ob .ob-basla { background: var(--marka-koyu-amber); color: var(--k-kagit); }
 body[data-rol='koc'] .hero-yuzey.ob .ob-tamam { background: transparent; color: var(--beyaz); padding-inline: 0.25rem; }
-body[data-rol='koc'] .hero-yuzey.ob .ob-kalem svg { filter: var(--golge-cizbi); }
-body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir { animation: cizbi-gir 520ms cubic-bezier(.34, 1.56, .64, 1) both, hop 2.6s ease-in-out 600ms infinite; }
+/* Çizbi koçta da diğer ekranlardaki gibi: gölgesiz, efektsiz, yalnız giriş
+   hareketi (Bekir, 18 Eylül 2026). */
 /* Sekme yuvası boşsa (tek segment) blok yine nefes alsın. */
 .ob-sekme-yuvasi:empty { height: 1.25rem; }
-@keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 /* Sağdaki üç sayı: yalnız geniş ekranda (yerlesim.css açar). */
 .ob-kpi { display: none; order: 3; margin-left: auto; gap: 10px; align-self: center; }
 .ob-kpi { gap: 2rem; }
