@@ -187,6 +187,80 @@ function Gunler() {
   )
 }
 
+/* Çarşamba müdahalesi — küçük sahne.
+   Hikâye hafta.js'teki veriyle birebir: çarşamba üç iş kalır, paragraf
+   haftadan silinir, gazlar (20 soruya inerek) ve manyetizma perşembeye
+   taşınır, perşembe ikisi de biter. Sahne görünür olunca bir kez oynar;
+   "tekrar oynat" ile baştan alınır. Kutular ızgarada değil, yüzde
+   konumlarda durur — bu yüzden gün değiştirirken kayarak gider. */
+const SAHNE_YAZI = [
+  'Çarşamba 21:40 — üç iş kaldı.',
+  'Çarşamba 21:40 — üç iş kaldı.',
+  'Paragraf bu haftadan silindi; cuma zaten var.',
+  'Gazlar 20 soruya indi, manyetizma videosuyla perşembeye taşındı.',
+  'Perşembe: iki iş, ikisi de bitti.',
+]
+const SAHNE_SURE = [1500, 1700, 1900, 1700]
+// Sabit günler (0=Pzt … 6=Paz). Çarşamba ve perşembe sahnede oynatılıyor.
+const SAHNE_SABIT = [
+  { g: 0, tipler: ['bitti', 'bitti', 'bitti'] },
+  { g: 1, tipler: ['bitti', 'kaldi', 'bitti'] },
+  { g: 4, tipler: ['bitti', 'bitti', 'bitti'] },
+  { g: 5, tipler: ['bitti', 'bitti'] },
+  { g: 6, tipler: ['bitti'] },
+]
+function Mudahale() {
+  const ref = useRef(null)
+  const [asama, setAsama] = useState(-1) // -1: beklemede
+  const zamanlar = useRef([])
+  const oynat = () => {
+    zamanlar.current.forEach(clearTimeout); zamanlar.current = []
+    setAsama(0)
+    let t = 0
+    SAHNE_SURE.forEach((sure, i) => {
+      t += sure
+      zamanlar.current.push(setTimeout(() => setAsama(i + 1), t))
+    })
+  }
+  useEffect(() => {
+    const el = ref.current
+    if (!el) return
+    if (!hareketVar()) { setAsama(4); return }
+    const birak = gozle(el, oynat, 0.85)
+    return () => { birak(); zamanlar.current.forEach(clearTimeout) }
+  }, [])
+  const a = Math.max(asama, 0)
+  const tasindi = a >= 3 // gazlar + manyetizma perşembeye geçti mi?
+  const isler = [
+    { ad: 'Kimya · gazlar', g: tasindi ? 3 : 2, s: 0, tip: a >= 4 ? 'bitti' : 'kaldi', gizli: false },
+    { ad: 'Fizik · manyetizma', g: tasindi ? 3 : 2, s: 1, tip: a >= 4 ? 'bitti' : 'kaldi', gizli: false },
+    { ad: 'Türkçe · paragraf', g: 2, s: 2, tip: 'kaldi', gizli: a >= 2 },
+  ]
+  const kutu = (tip, g, s, anahtar, ek = '', stil = {}) => (
+    <span key={anahtar} className={`t-sahne-kutu t-sahne-kutu--${tip}${ek}`}
+      style={{ left: `calc((${g} + .5) * 100% / 7)`, top: `${s * 22}px`, ...stil }} />
+  )
+  return (
+    <div className="t-sahne" ref={ref}>
+      <div className="t-sahne-bas">
+        <span>Çarşamba · aynı hafta</span>
+        <button type="button" className="t-sahne-tekrar" onClick={oynat}>↻ tekrar</button>
+      </div>
+      <div className="t-sahne-alan" aria-hidden="true">
+        <span className={'t-sahne-sutun' + (a < 3 ? ' t-sahne-sutun--uyari' : '')} style={{ left: 'calc(2 * 100% / 7)' }} />
+        {gunler.map((g, i) => (
+          <span key={g.kisa} className={'t-sahne-gun' + (i === 2 && a < 3 ? ' t-sahne-gun--uyari' : '')}
+            style={{ left: `calc((${i} + .5) * 100% / 7)` }}>{g.kisa}</span>
+        ))}
+        {SAHNE_SABIT.flatMap((g) => g.tipler.map((t, s) => kutu(t, g.g, s, `${g.g}-${s}`)))}
+        {isler.map((i, n) => kutu(i.tip, i.g, i.s, 'is' + n,
+          (i.gizli ? ' t-sahne-kutu--silindi' : '') + (a >= 1 && a < 3 && !i.gizli ? ' t-sahne-kutu--nabiz' : '')))}
+      </div>
+      <p className="t-sahne-yazi" key={a}>{SAHNE_YAZI[a]}</p>
+    </div>
+  )
+}
+
 function KocVideosu() {
   const [var_, setVar] = useState(false)
   const [aktif, setAktif] = useState(0)
@@ -543,6 +617,7 @@ export default function Tanitim({ onGiris, onRandevu }) {
             </div>
           </div>
           <div className="t-sohbet-yuva">
+            <Mudahale />
             <div className="t-sohbet">
               <div className="t-sohbet-bas"><span>{ogrenci.ad} ↔ Koç</span><span>Çar · 16 Eki</span></div>
               {mesajlar.map((m, i) => (
