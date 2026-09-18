@@ -437,6 +437,58 @@ const KANALLAR = [
   { anahtar: 'tiktok', ad: 'TikTok', eylem: 'Takip et' },
 ]
 
+/* Son paylaşım: kanalın en yeni videosu Supabase'deki `son-paylasim`
+   fonksiyonundan gelir (YouTube'un herkese açık akışı, bir saat önbellek).
+   İçerik üç kanalda aynı olduğu için Instagram ve TikTok yalnız bağlantı.
+   Video yoksa ya da istek düşerse kart hiç basılmaz. */
+const SON_PAYLASIM_ADRESI = 'https://sjcovxnhardtvmvooqpn.supabase.co/functions/v1/son-paylasim'
+
+function tarihYaz(iso) {
+  const t = new Date(iso)
+  return Number.isNaN(t.getTime()) ? '' : t.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
+}
+
+function SonPaylasim({ iletisim }) {
+  const [video, setVideo] = useState(null)
+  useEffect(() => {
+    let iptal = false
+    fetch(SON_PAYLASIM_ADRESI)
+      .then((y) => (y.ok ? y.json() : null))
+      .then((v) => { if (!iptal && v?.video?.id) setVideo(v.video) })
+      .catch(() => {})
+    return () => { iptal = true }
+  }, [])
+  if (!video) return null
+
+  const digerleri = [['Instagram', iletisim.instagram], ['TikTok', iletisim.tiktok]].filter(([, a]) => a)
+
+  return (
+    <div className="t-son">
+      <a className={`t-son-kapak${video.kisa ? ' t-son-kapak--dikey' : ''}`} href={video.adres} target="_blank" rel="noopener noreferrer" aria-label={`${video.baslik} — YouTube'da izle`}>
+        <img src={video.kapak} alt="" loading="lazy" />
+        <span className="t-son-oynat" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l11-6.5-11-6.5Z" /></svg>
+        </span>
+      </a>
+      <div className="t-son-govde">
+        <p className="t-son-ust"><i className="t-nokta" /><span>Son paylaşım{tarihYaz(video.tarih) && <span className="t-son-tarih"> · {tarihYaz(video.tarih)}</span>}</span></p>
+        <h3 className="t-son-baslik">{video.baslik}</h3>
+        <p className="t-son-alt">
+          <a className="t-son-izle" href={video.adres} target="_blank" rel="noopener noreferrer">YouTube'da izle →</a>
+          {digerleri.length > 0 && (
+            <span className="t-son-diger">
+              Ayrıca{' '}
+              {digerleri.map(([ad, adres], i) => (
+                <span key={ad}>{i > 0 && ' · '}<a href={adres} target="_blank" rel="noopener noreferrer">{ad}</a></span>
+              ))}
+            </span>
+          )}
+        </p>
+      </div>
+    </div>
+  )
+}
+
 /* Adres varsa tıklanabilir kart, yoksa soluk "yakında" kartı. Adresi
    site.js → iletisim bloğuna yazmak yeterli; başka yere dokunmaya gerek yok. */
 function Kanallar({ kanallar, iletisim }) {
@@ -455,6 +507,8 @@ function Kanallar({ kanallar, iletisim }) {
           </div>
           <p className="t-kanal-giris">{kanallar.aciklama}</p>
         </div>
+
+        <SonPaylasim iletisim={iletisim} />
 
         <div className="t-kanal-izgara">
           {KANALLAR.map(({ anahtar, ad, eylem }) => {
