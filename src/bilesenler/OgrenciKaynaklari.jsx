@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import Bolum from '../ortak/Bolum.jsx'
 import { supabase } from '../lib/supabase.js'
-import { Bos, Kart, Yukleniyor } from './Ortak.jsx'
+import { Yukleniyor } from './Ortak.jsx'
 import { FAZ_ADI } from '../lib/kaynak.js'
 
 /**
@@ -88,17 +88,9 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
      çizilir. Önceden iki satırlık iskelet kartı gelip küçülüyor, altındaki
      haftanın sözünü yukarı çekiyordu. */
   if (liste === null && ben) {
-    return (
-      <section className="kart kaynak-kart" aria-busy="true">
-        <div className="kaynak-basi">
-          <span className="kaynak-emoji" aria-hidden="true">📚</span>
-          <span className="kaynak-ad">
-            Kaynaklarım
-            <small>Geliyor…</small>
-          </span>
-        </div>
-      </section>
-    )
+    /* Öğrenci: kart değil bölüm (TASARIM-KURALLARI 8); yüklenirken de aynı
+       tek satır, altındaki içerik zıplamasın. */
+    return <Bolum cizgili baslik="Kaynaklarım" aciklama="Geliyor…" />
   }
 
   if (liste === null) {
@@ -114,54 +106,40 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
      Koç tarafında bölüm zaten katlanır tek satır; boşken de tek satır. */
   if (liste.length === 0 && ben) {
     return (
-      <Kart baslik={baslik}>
-        <Bos
-          baslik="Kaynakların burada toplanacak"
-          aciklama="Koçun bir göreve kitap iliştirdiğinde o kitap burada listelenir."
-        />
-      </Kart>
+      <Bolum
+        cizgili
+        baslik="Kaynaklarım"
+        aciklama="Koçun bir göreve kitap iliştirdiğinde o kitap burada listelenir."
+      />
     )
   }
 
   if (ben) {
     const sayi = gosterilen?.length ?? 0
     return (
-      <section className="kart kaynak-kart">
-        <button
-          className="kaynak-basi"
-          aria-expanded={acik}
-          onClick={() => setAcik((a) => !a)}
-        >
-          <span className="kaynak-emoji" aria-hidden="true">📚</span>
-          <span className="kaynak-ad">
-            Kaynaklarım
-            <small>{suzulmus && !tumu ? 'Bugünkü derslerin kitapları' : 'Görevlerde kullandığın kitaplar'}</small>
-          </span>
-          <span className="kaynak-sayi">{sayi}</span>
-          <svg className={acik ? 'kaynak-ok kaynak-ok--acik' : 'kaynak-ok'} viewBox="0 0 24 24"
-               width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
-               strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <path d="m6 9 6 6 6-6" />
-          </svg>
-        </button>
-
-        {acik && (
-          <>
-            {suzulmus && (
-              <button className="metin-dugme kaynak-tumu" onClick={() => setTumu((t) => !t)}>
-                {tumu ? 'Bugünküler' : 'Tümü'}
-              </button>
-            )}
-            <ul className="liste kaynak-adlar">
-              {gosterilen.map((k) => (
-                <li key={k.id} className="liste-satir">
-                  <span className="liste-ad">{k.ad}</span>
-                </li>
-              ))}
-            </ul>
-          </>
+      <Bolum
+        cizgili
+        baslik="Kaynaklarım"
+        sayi={sayi}
+        aciklama={suzulmus && !tumu ? 'Bugünkü derslerin kitapları.' : 'Görevlerde kullandığın kitaplar.'}
+        eylem={acik ? 'Gizle' : 'Göster'}
+        onEylem={() => setAcik((a) => !a)}
+      >
+        {acik && suzulmus && (
+          <button className="metin-dugme kaynak-tumu" onClick={() => setTumu((t) => !t)}>
+            {tumu ? 'Bugünküler' : 'Tümü'}
+          </button>
         )}
-      </section>
+        {acik && (
+          <ul className="liste kaynak-adlar">
+            {gosterilen.map((k) => (
+              <li key={k.id} className="liste-satir">
+                <span className="liste-ad">{k.ad}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Bolum>
     )
   }
 

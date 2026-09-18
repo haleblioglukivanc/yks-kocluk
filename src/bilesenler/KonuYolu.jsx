@@ -293,6 +293,14 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   return (
     <div className="konu-yolu">
       <Uyari>{hata}</Uyari>
+      {/* Anlatıcı: haritanın üstüne binen ikinci Çizbi balonu yerine düz
+          durum satırı (tek ses kuralı; Bekir, 18 Eylül 2026). Metin aynı,
+          kaydırdıkça değişmeye devam ediyor. Haritadaki Çizbi yerinde. */}
+      <p className="yol-balon" role="status" aria-live="polite">
+        <i className="yol-balon-nokta" aria-hidden="true" />
+        <span>{soz(rol, balon.durak, balon.bolge, balon.olay)}</span>
+      </p>
+
 
       <div className="yol-harita" ref={haritaRef}>
         <svg className={cizgi.soluk ? 'yol-cizgi yol-cizgi--hazir' : 'yol-cizgi'} viewBox={`0 0 ${cizgi.w || 1} ${cizgi.h || 1}`} preserveAspectRatio="none" aria-hidden="true">
@@ -343,13 +351,6 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
             })}
           </section>
         ))}
-      </div>
-
-      <div className="yol-balon">
-        <div className="yol-balon-cizbi">
-          <Kalem ruh={ruh === 'isaret' ? 'anlatiyor' : ruh} boyut={40} />
-        </div>
-        <p><span className="yol-balon-ad">{KALEM_ADI}</span>{soz(rol, balon.durak, balon.bolge, balon.olay)}</p>
       </div>
 
       {secili && (

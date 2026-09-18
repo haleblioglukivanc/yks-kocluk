@@ -1,4 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
+import Sekmeler from '../ortak/Sekmeler.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
@@ -58,7 +62,7 @@ const ayniDers = (a, b) => {
   return Boolean(x) && Boolean(y) && (x === y || x.includes(y) || y.includes(x))
 }
 
-export default function KonuHaritasi({ profilId, odakDers }) {
+export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null }) {
   const [dersler, setDersler] = useState(null)
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
@@ -119,9 +123,7 @@ export default function KonuHaritasi({ profilId, odakDers }) {
     return (
       <>
         <Uyari>{hata}</Uyari>
-        <Kart baslik='Konu haritası'>
-          <Bos baslik='Yol henüz çizilmedi' aciklama='Koçun konu listeni tanımlayınca harita burada belirir.' />
-        </Kart>
+        <BosDurum metin='Yol henüz çizilmedi. Koçun konu listeni tanımlayınca harita burada belirir.' />
       </>
     )
   }
@@ -131,30 +133,28 @@ export default function KonuHaritasi({ profilId, odakDers }) {
   return (
     <>
       <Uyari>{hata}</Uyari>
-      <Kart baslik={etkin.ad} altBaslik={`${kapsamEtiketi(etkin)} · ${t.toplam} konu`}>
-        <div className='ders-serit' role='tablist' aria-label='Dersler'>
-          {gruplar.map((g) => {
-            const gt = grupToplami(g, ['toplam', 'tamamlandi'])
-            const bu = g.kod === etkin.kod
-            return (
-              <button
-                key={g.kod}
-                role='tab'
-                aria-selected={bu}
-                className={bu ? 'ders-cip ders-cip--etkin' : 'ders-cip'}
-                onClick={() => setSecili(g.kod)}
-              >
-                <span className='ders-cip-ad'>{g.ad}</span>
-                <span className='ders-cip-sayi'>{gt.tamamlandi}/{gt.toplam}</span>
-              </button>
-            )
-          })}
-        </div>
-
+      {/* Ders seçimi kutu değil: başlığın alt kenarında alt çizgili sekmeler
+          (yuva yoksa zeminde). Harita kartsız; kendisi beyaz yüzeyde. */}
+      {(() => {
+        const sekmeler = (
+          <Sekmeler
+            varyant={sekmeYuvasi ? 'koyu' : 'acik'}
+            etiket='Dersler'
+            deger={etkin.kod}
+            onSec={setSecili}
+            secenekler={gruplar.map((g) => {
+              const gt = grupToplami(g, ['toplam', 'tamamlandi'])
+              return { k: g.kod, ad: g.ad, rozet: <span className='alt-sekme-sayi'>{gt.tamamlandi}/{gt.toplam}</span> }
+            })}
+          />
+        )
+        return sekmeYuvasi ? createPortal(sekmeler, sekmeYuvasi) : sekmeler
+      })()}
+      <Bolum baslik={etkin.ad} sayi={`${kapsamEtiketi(etkin)} · ${t.toplam} konu`}>
         <Cubuk toplam={t.toplam} tamamlandi={t.tamamlandi} onayli={t.onayli} calisiliyor={t.calisiliyor} tekrar={t.tekrar} />
 
         {etkin.dersler.map((d) => (
-          <div key={d.dersId} className='ders-kapsam'>
+          <div key={d.dersId} className='ders-kapsam veri-yuzey'>
             {etkin.dersler.length > 1 && (
               <p className='ders-kapsam-basi'>
                 <span className='ders-kapsam-rozet'>{dersKapsamAdi(d)}</span>
@@ -164,7 +164,7 @@ export default function KonuHaritasi({ profilId, odakDers }) {
             <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} durakSayisi={d.toplam} />
           </div>
         ))}
-      </Kart>
+      </Bolum>
     </>
   )
 }

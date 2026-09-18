@@ -54,14 +54,14 @@ export default function GunSeridi({
                 >
                   <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
                   <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
-                  <span className="hafta-gun-sayi" aria-label={`${s.biten}/${s.toplam} iş`}>
+                  <span
+                    className={`hafta-gun-sayi${damga && tam ? ' hafta-gun-sayi--tam' : ''}`}
+                    aria-label={`${s.biten}/${s.toplam} iş`}
+                  >
+                    {/* Tik eskiden gün adının üstüne biniyordu; artık sayının yanında. */}
+                    {damga && tam && <span className="hafta-tik" style={{ animationDelay: `${i * 70}ms` }} aria-hidden="true">✓ </span>}
                     {s.toplam === 0 ? '·' : `${s.biten}/${s.toplam}`}
                   </span>
-                  {damga && tam && (
-                    <span className="hafta-damga" style={{ animationDelay: `${i * 70}ms` }} aria-hidden="true">
-                      ✓
-                    </span>
-                  )}
                 </button>
               )
             })}

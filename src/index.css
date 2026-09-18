@@ -4604,3 +4604,37 @@ body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { backgr
 .hi-rozetler { gap: 0.25rem 0.9rem; }
 /* Boş net grafiği yer ayırmasın: cümle kadar yer kaplar. */
 .bolum .net-yer:has(.bos-durum) { min-height: 0; height: auto; }
+
+/* ═══ Öğrenci Bugün ve Yol (tasarım turu 5) ═══════════════════════════ */
+/* Çizbi'nin sesi öğrencide de koçtaki gibi: koyu zeminde beyaz kalın cümle,
+   beyaz balon yok (tek ses). */
+body[data-rol='ogrenci'] .ob-soz { background: none; border-radius: 0; padding: 0; animation: none; }
+body[data-rol='ogrenci'] .ob-mesaj { color: var(--beyaz); }
+body[data-rol='ogrenci'] .ob-kim { color: var(--marka-koyu-amber); }
+body[data-rol='ogrenci'] .ob-tamam { background: transparent; color: var(--beyaz); padding-inline: 0.25rem; }
+/* Gün başlığı + şerit zeminde; gün kutuları çerçevesiz, yalnız seçili dolu. */
+.ogr-gun { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.5rem; }
+.ogr-gun .bolum-baslik { min-height: 2rem; display: flex; align-items: center; }
+.ogr-gun .hafta-serit-kap { margin: 0; }
+.siradaki .hafta-gun, .ogr-gun .hafta-gun, .uygulama .ogr-gun .hafta-gun { background: transparent; border-color: transparent; }
+.uygulama .ogr-gun .hafta-gun--secili { background: var(--murekkep); border-color: var(--murekkep); }
+.uygulama .ogr-gun .hafta-gun--bugun:not(.hafta-gun--secili) { background: var(--sicak-zemin); }
+.hafta-gun-sayi--tam { color: var(--isaret-metin); font-weight: 700; }
+.hafta-gun--secili .hafta-gun-sayi--tam { color: var(--kagit); }
+.hafta-tik { display: inline; animation: damga 420ms cubic-bezier(.34, 1.56, .64, 1) both; }
+.sayac-secim { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+/* Günü tamamla: günün asıl eylemi, içerikteki tek dolu düğme. */
+.uygulama .gunu-kapat-dugme {
+  background: var(--murekkep); color: var(--kagit); border: 0; border-radius: var(--r-buyuk);
+  min-height: 56px; align-items: center; text-align: center;
+}
+.uygulama .gunu-kapat-dugme strong { color: var(--kagit); }
+.uygulama .gunu-kapat-dugme span { color: color-mix(in srgb, var(--kagit) 72%, transparent); }
+.uygulama .gunu-kapat-dugme--kapali { background: var(--isaret-zemin); color: var(--isaret-metin); }
+.uygulama .gunu-kapat-dugme--kapali strong { color: var(--isaret-metin); }
+.uygulama .gunu-kapat-dugme--kapali span { color: var(--isaret-metin); }
+/* Haftanın sözü/kitabı: tek beyaz yüzey. */
+.ogr-soz { margin-top: 1.5rem; padding: 0.75rem 1rem; }
+.ogr-soz .hi-kutu { border-top: 0; padding: 0.25rem 0; }
+/* Yol: harita blokları beyaz yüzeyde; dersler başlıkta sekme. */
+.ders-kapsam.veri-yuzey { padding: 0.75rem 1rem; }

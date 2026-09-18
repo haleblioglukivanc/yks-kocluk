@@ -130,17 +130,13 @@
 @keyframes yol-zipla { 30% { transform: translateY(-16px) scale(1.04, 0.96); } 60% { transform: translateY(0) scale(0.96, 1.04); } }
 @keyframes yol-zipla-ayna { 30% { transform: scaleX(-1) translateY(-16px); } 60% { transform: scaleX(-1) translateY(0); } }
 
-/* Anlatıcı: kartın altında sabit duran balon, Çizbi konuşur */
+/* Anlatıcı: haritanın üstünde düz durum satırı (balon ve ikinci Çizbi yok). */
 .yol-balon {
-  position: sticky; bottom: calc(env(safe-area-inset-bottom) + 4.25rem);
-  display: flex; gap: 0.75rem; align-items: center;
-  background: var(--yuzey-2, var(--yuzey)); border: 1px solid var(--cizgi); border-radius: 18px;
-  padding: 0.625rem 0.875rem; box-shadow: 0 12px 34px color-mix(in srgb, var(--siyah) 35%, transparent); margin-top: -4rem; z-index: 2;
+  display: flex; gap: 0.5rem; align-items: flex-start; margin: 0.25rem 0 0.75rem;
+  font-size: var(--punto-kucuk); font-weight: 700; line-height: 1.4; color: var(--sicak-metin);
 }
-.yol-balon-cizbi { flex: none; width: 40px; height: 40px; }
-.yol-balon p { margin: 0; font-size: var(--punto-orta); line-height: 1.35; color: var(--murekkep); }
-.yol-balon p b { font-weight: 600; color: var(--fosfor); }
-.yol-balon-ad { display: block; font-size: var(--punto-etiket); font-weight: 600; opacity: 0.6; }
+.yol-balon-nokta { flex: none; width: 8px; height: 8px; margin-top: 0.4em; border-radius: 50%; background: currentColor; }
+.yol-balon b { font-weight: 800; color: inherit; }
 
 /* Durak sayfası */
 .yol-perde { position: fixed; inset: 0; background: color-mix(in srgb, var(--yol-perde) 55%, transparent); z-index: var(--kat-yaprak); }

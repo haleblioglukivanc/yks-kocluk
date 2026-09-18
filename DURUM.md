@@ -1,11 +1,23 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (rötuş turu)
+Son güncelleme: 18 Eylül 2026 (tasarım turu 5)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu 5: öğrenci Bugün ve Yol
+
+- Mokap: https://claude.ai/artifact/8QgWvpyZ6f5unKFTVJ8hkG (Bekir onayladı).
+- Çizbi'nin sesi öğrencide de koyu zeminde beyaz kalın cümle (beyaz balon kalktı); "Tamam" beyaz yazı.
+- Bugün: gün başlığı ("Cuma, 18 Eylül") + hafta şeridi `SiradakiKart`'ın dışına, zemine çıktı (`.ogr-gun`); gün
+  kutuları çerçevesiz, tamamlanan günde tik sayının yanında (`GunSeridi`, koçta da aynı bileşen). Sayaç seçenekleri
+  saat ikonlu `EylemDugmesi`. "Günü tamamla" içerikteki tek dolu düğme. Kaynaklarım `Bolum`, haftanın sözü beyaz yüzey.
+- Yol: başlık + ders sekmeleri tek koyu blok (`KonuHaritasi` portal ile `.ob-sekme-yuvasi`na çiziyor); harita kartsız,
+  ders kapsamları beyaz yüzeyde. Haritanın üstüne binen ikinci Çizbi balonu kalktı: aynı dinamik metin haritanın
+  üstünde düz durum satırı (`.yol-balon`, koçun Konular sekmesinde de aynı bileşen).
+- Sıradaki (TESPIT.md): Koç · Kaynaklar.
 
 ## 18 Eylül 2026 — rötuş turu (Bekir'in değerlendirmesi)
 

@@ -10,6 +10,7 @@ const IKON = {
   gonder: <path d="M4 12 20 4l-6 16-3-7-7-1z" />,
   kapat: <path d="M6 6l12 12M18 6 6 18" />,
   ok: <path d="m9 6 6 6-6 6" />,
+  saat: <path d="M12 21a8 8 0 1 0 0-16 8 8 0 0 0 0 16zM12 9v4l2 2M9 2h6" />,
   goz: <path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12zm10 3a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />,
 }
 

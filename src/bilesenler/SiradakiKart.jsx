@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import EylemDugmesi from '../ortak/EylemDugmesi.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { dersGorunumu } from '../lib/dersGorunum.js'
 import { Kart, Uyari } from './Ortak.jsx'
@@ -293,17 +294,15 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         sinif="siradaki"
         baslik={hepsiBitti ? 'Bugünün hepsi bitti' : 'Bugün için plan yok'}
         altBaslik={hepsiBitti ? 'İstersen serbest çalış, sayaç sayar.' : 'Sayaçla serbest çalışabilirsin.'}
-        eylem={
-          <div className="sayac-secim">
-            {SAYAC_SURELERI.map((dk) => (
-              <button key={dk} className="dugme dugme--ikincil dugme--ufak" onClick={() => sayac?.basla(dk)}>
-                {dk} dk
-              </button>
-            ))}
-          </div>
-        }
       >
         {serit}
+        {/* Sayaç seçenekleri başlığın yanında sıkışmıyor; açıklamanın altında
+            saat ikonlu ikincil düğmeler (TASARIM-KURALLARI 6). */}
+        <div className="sayac-secim">
+          {SAYAC_SURELERI.map((dk) => (
+            <EylemDugmesi key={dk} ikon="saat" onClick={() => sayac?.basla(dk)}>{`${dk} dk`}</EylemDugmesi>
+          ))}
+        </div>
         <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
         {/* Gün bitince de liste duruyor: bitirilen işler ekrandan
             kaybolmuyor, tikine tekrar dokunup geri alınabiliyor. */}

@@ -20,6 +20,8 @@ import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import Bolum from '../ortak/Bolum.jsx'
 
 
 /* Sekme tek yoldan yönetilir: kabuktaki alt çubuk. Öğrenci kendi
@@ -31,6 +33,13 @@ import KonuHaritasi from './KonuHaritasi.jsx'
 /* Kural motoru eski sekme adlarıyla yönlendirebilir; hepsi bir yere gider. */
 /* Ben sekmesi kalktı: seri Yol'da, hedefe göre net Denemeler'de,
    haftanın sözü Bugün'ün sonunda. Eski adlar yine bir yere gider. */
+/* "Cuma, 18 Eylül" — şeridin üstündeki gün başlığı. */
+const gunBasligi = (t) =>
+  t
+    ? new Date(`${t}T00:00:00`).toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
+        .replace(/^(\d+ \S+) (\S+)$/, '$2, $1')
+    : 'Bugün'
+
 const SEKME_ESLE = { program: 'bugun', rozetler: 'konular', ben: 'konular' }
 
 export default function OgrenciPaneli({
@@ -68,6 +77,7 @@ export default function OgrenciPaneli({
   /* Hafta şeridi artık görev kartının başlığı: seçili gün burada tutuluyor,
      o günün listesi de şeritten buraya geliyor ve aynı karta besleniyor. */
   const [seciliGun, setSeciliGun] = useState(null)
+  const [dersYuvasi, setDersYuvasi] = useState(null)
   const [gunVerisi, setGunVerisi] = useState(null)
   /* Koçun okunmamış mesajı başlıkta çıkar; vekalette koç kendi mesajını görmesin. */
   const kocMesaji = useKocMesaji(hedefId, !vekaleten)
@@ -165,23 +175,26 @@ export default function OgrenciPaneli({
       ) : sekme === 'bugun' ? (
         <>
           <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
+          {/* Gün başlığı ve şerit zeminde; günün içeriği altındaki beyaz
+              yüzeyde (TASARIM-KURALLARI 1). Şerit eskiden kartın içindeydi. */}
+          <section className="ogr-gun">
+            <h3 className="bolum-baslik">{gunBasligi(seciliGun ?? ozet?.bugun)}</h3>
+            <HaftaSeridi
+              ogrenciId={kayit.id}
+              haftaBasi={ozet?.haftaBasi}
+              bugun={ozet?.bugun}
+              bugunGorevler={ozet?.gorevler}
+              onDegisti={yenile}
+              secili={seciliGun ?? ozet?.bugun ?? null}
+              onSec={setSeciliGun}
+              onListe={setGunVerisi}
+            />
+          </section>
           <SiradakiKart
             gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
             bugunMu={gunVerisi?.bugunMu !== false}
             gunAdi={gunVerisi?.bugunMu === false ? gunVerisi.ad : 'Bugünün hedefi'}
             onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
-            serit={
-              <HaftaSeridi
-                ogrenciId={kayit.id}
-                haftaBasi={ozet?.haftaBasi}
-                bugun={ozet?.bugun}
-                bugunGorevler={ozet?.gorevler}
-                onDegisti={yenile}
-                secili={seciliGun ?? ozet?.bugun ?? null}
-                onSec={setSeciliGun}
-                onListe={setGunVerisi}
-              />
-            }
           />
           {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
               Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
@@ -211,15 +224,20 @@ export default function OgrenciPaneli({
             bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
           />
           {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
-          <HaftalikIlham goster="soz" />
+          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="soz" /></div>
         </>
       ) : sekme === 'konular' ? (
         <>
-          <SekmeTepesi baslik="Yol" altBaslik="Konu konu nerede olduğun" />
-          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} />
+          {/* Başlık + ders sekmeleri tek koyu blok (TASARIM-KURALLARI 3–4). */}
+          <UstBlok etiket="Yol" sekmeli sinif="rapor-tepe">
+            <h1 className="rt-baslik">Yol</h1>
+            <p className="rt-alt">Konu konu nerede olduğun</p>
+            <div className="ob-sekme-yuvasi" ref={setDersYuvasi} />
+          </UstBlok>
+          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} sekmeYuvasi={dersYuvasi} />
           {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
-          <HaftalikIlham goster="kitap" />
+          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="kitap" /></div>
         </>
       ) : (
         <>
