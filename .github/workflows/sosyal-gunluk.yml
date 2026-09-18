@@ -32,7 +32,7 @@ jobs:
           DENEME: ${{ inputs.deneme }}
           TARIH: ${{ inputs.tarih }}
         run: |
-          import json, os, sys, mimetypes, pathlib, urllib.request, urllib.error
+          import json, os, sys, hashlib, mimetypes, pathlib, urllib.request, urllib.error
           from datetime import datetime, timedelta, timezone
 
           TR = timezone(timedelta(hours=3))          # Türkiye, yaz/kış farkı yok
@@ -90,7 +90,8 @@ jobs:
           def yukle(dosya):
               url = env("SUPABASE_URL").rstrip("/")
               p = pathlib.Path(dosya)
-              ad = "%s/%s" % (gun, p.name)
+              iz = hashlib.sha1(p.read_bytes()).hexdigest()[:8]   # dosya degisince baglanti da degisir
+              ad = "%s/%s-%s%s" % (gun, p.stem, iz, p.suffix)
               tur = mimetypes.guess_type(p.name)[0] or "application/octet-stream"
               r = urllib.request.Request("%s/storage/v1/object/%s/%s" % (url, KOVA, ad),
                   data=p.read_bytes(), method="POST", headers={
@@ -120,9 +121,22 @@ jobs:
               if g.get("metadata"):
                   print("Ayar  :", json.dumps(g["metadata"], ensure_ascii=False))
               print("Metin :\n" + g["metin"])
+              if g.get("degistir"):
+                  print("Degisecek eski gonderi:", g["degistir"])
               if deneme:
                   print(">> DENEME MODU: Buffer'a gonderilmedi.")
                   continue
+
+              # 'degistir': Buffer'da bekleyen eski gonderiyi silip yerine bunu koyar
+              if g.get("degistir"):
+                  try:
+                      sil = buffer("""mutation($i: DeletePostInput!){ deletePost(input: $i){
+                               ... on DeletePostSuccess { id } ... on MutationError { message } } }""",
+                               {"i": {"id": g["degistir"]}})["deletePost"]
+                      print(">> Eski gonderi silindi:" if "id" in sil else ">> Eski gonderi silinemedi:",
+                            sil.get("id") or sil.get("message"))
+                  except SystemExit as e:
+                      print(">> Eski gonderi silinemedi (zaten silinmis olabilir):", e)
 
               girdi = {"text": g["metin"], "channelId": g.get("kanal") or env("BUFFER_CHANNEL_ID"),
                        "schedulingType": "automatic", "mode": "customScheduled", "dueAt": due}
@@ -132,7 +146,12 @@ jobs:
                   link = yukle(medya)
                   print("Yuklendi:", link)
                   video = medya.lower().endswith((".mp4", ".mov"))
-                  girdi["assets"] = [{"video" if video else "image": {"url": link}}]
+                  varlik = {"url": link}
+                  # kapak_ms: Instagram/TikTok/Pinterest kapak karesi (ms). YouTube kabul etmez;
+                  # orada Shorts ilk kareyi kullanir, bu yuzden videolarin ilk karesi kapak olarak tasarlanir.
+                  if video and g.get("kapak_ms") is not None:
+                      varlik["metadata"] = {"thumbnailOffset": int(g["kapak_ms"])}
+                  girdi["assets"] = [{"video" if video else "image": varlik}]
               s = """mutation($i: CreatePostInput!){ createPost(input: $i){
                        ... on PostActionSuccess { post { id dueAt } }
                        ... on MutationError { message } } }"""

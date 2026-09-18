@@ -18,3 +18,16 @@ npm run kapak    # -> sosyal/medya/carsamba-kapak.png
 - Reels/TikTok arayüzü üstte ~200px, altta ~320px kapatır; içerik aradadır.
 - Render edilen video onaylanınca `sosyal/medya/` altına alınır ve
   `sosyal/kuyruk.json`'a satır düşülür (bkz. `sosyal/higgsfield.md`).
+
+## Kapak kuralı: ilk kare kapaktır
+YouTube Shorts dışarıdan kapak görseli kabul etmez; küçük resmi videonun
+karelerinden seçer ve çoğu zaman ilk kareyi kullanır. Buffer önizlemesi de
+ilk kareyi gösterir. Bu yüzden **her videonun 0. karesi eksiksiz bir kapak
+olarak tasarlanır**: başlık, sahne ve ilk mesaj 0. karede hazır durur, hiçbir
+şey karartıdan ya da boş ekrandan açılmaz. `npm run kapak` 0. kareyi PNG
+olarak verir; yayından önce ona bakmak yeterli.
+
+Instagram, TikTok ve Pinterest için kuyruk satırına `"kapak_ms": 0` gibi bir
+değer yazılırsa Buffer o milisaniyedeki kareyi kapak yapar.
+Bekleyen bir gönderiyi yenisiyle değiştirmek için satıra
+`"degistir": "<eski Buffer gönderi kimliği>"` yazılır; iş akışı önce eskisini siler.

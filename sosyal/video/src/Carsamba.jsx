@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import {
   AbsoluteFill, Audio, Img, continueRender, delayRender, interpolate, spring,
-  staticFile, useCurrentFrame, useVideoConfig,
+  staticFile, useCurrentFrame,
 } from 'remotion'
 import { loadFont as baslikFontu } from '@remotion/google-fonts/BricolageGrotesque'
 import { loadFont as govdeFontu } from '@remotion/google-fonts/Karla'
@@ -21,7 +21,9 @@ const [BASLIK, GOVDE, MONO] = FONTLAR.map((x) => x.fontFamily)
 export const SURE = 600 // 20 sn
 
 // ── Zaman çizelgesi (kare) ───────────────────────────────────────
-const MESAJ_KARE = [36, 88, 150, 205, 300, 336] // her mesajın geldiği kare
+// İlk kare kapak olur (YouTube/Instagram/TikTok küçük resmi): 0. karede sahne,
+// başlık ve öğrencinin ilk mesajı hazır durur; hiçbir şey karartıdan açılmaz.
+const MESAJ_KARE = [0, 88, 150, 205, 300, 336] // her mesajın geldiği kare
 const YAZIYOR = { 1: 66, 3: 185, 5: 318 }        // koç mesajından önce "yazıyor"
 const SILINDI = 370   // paragraf haftadan silinir
 const TASINDI = 410   // gazlar + manyetizma perşembeye kayar
@@ -36,7 +38,7 @@ const YAZILAR = [
 ]
 
 const yay = (f, bas, cfg = { damping: 18, stiffness: 120 }) =>
-  spring({ frame: f - bas, fps: 30, config: cfg })
+  bas <= 0 ? 1 : spring({ frame: f - bas, fps: 30, config: cfg })
 
 // ── Hafta sahnesi ───────────────────────────────────────────────
 const SABIT = [
@@ -66,11 +68,11 @@ function Hafta({ f }) {
   const genislik = 936, sutun = genislik / 7
   const x = (g) => (g + 0.5) * sutun
   const uyari = f < TASINDI
-  const nabiz = f > MESAJ_KARE[0] && f < TASINDI ? (Math.sin((f / 30) * Math.PI * 1.8) + 1) / 2 : 0
+  const nabiz = f < TASINDI ? (Math.sin((f / 30) * Math.PI * 1.8) + 1) / 2 : 0
   const kayma = yay(f, TASINDI, { damping: 16, stiffness: 90 })
   const bitis = interpolate(f, [BITTI, BITTI + 10], [0, 1], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
   const silinme = yay(f, SILINDI, { damping: 20, stiffness: 160 })
-  const giris = (i) => yay(f, 6 + i * 2)
+  const giris = () => 1
   const isler = [
     { s: 0, g: 2 + kayma },
     { s: 1, g: 2 + kayma },
@@ -243,15 +245,13 @@ function Kapanis({ f }) {
 // ── Kompozisyon ─────────────────────────────────────────────────
 export function Carsamba() {
   const f = useCurrentFrame()
-  const { durationInFrames } = useVideoConfig()
-  const giris = interpolate(f, [0, 12], [0, 1], { extrapolateRight: 'clamp' })
-  return (
+    return (
     <AbsoluteFill style={{
       background: `radial-gradient(900px 700px at 85% 8%, color-mix(in srgb, ${R.mavi} 38%, transparent), transparent 65%),
                    radial-gradient(700px 600px at 0% 100%, color-mix(in srgb, ${R.turuncu} 16%, transparent), transparent 60%), ${R.lacivert}`,
     }}>
       {/* Reels/TikTok arayüzü üstte ~200px, altta ~320px kapatır; içerik aradaki alanda. */}
-      <div style={{ position: 'absolute', left: 72, right: 72, top: 170, opacity: giris }}>
+      <div style={{ position: 'absolute', left: 72, right: 72, top: 170 }}>
         <div style={{ fontFamily: MONO, fontSize: 28, letterSpacing: '.14em', color: R.turuncuA, textTransform: 'uppercase', marginBottom: 22 }}>
           ● Aynı hafta · çarşamba
         </div>
@@ -264,8 +264,6 @@ export function Carsamba() {
       {/* Fon müziği muzik/carsamba.py ile koddan üretilir; akorlar bu zaman çizelgesine oturur. */}
       <Audio src={staticFile('carsamba-muzik.mp3')} />
       <Kapanis f={f} />
-      {/* döngüye yumuşak dönüş: son 6 kare kararır */}
-      <AbsoluteFill style={{ background: R.lacivert, opacity: interpolate(f, [durationInFrames - 6, durationInFrames], [0, 0.6], { extrapolateLeft: 'clamp' }) }} />
     </AbsoluteFill>
   )
 }
