@@ -158,6 +158,18 @@ Deno.serve(async (req) => {
   const url = new URL(req.url)
   // Meta webhook doğrulaması
   if (req.method === 'GET') {
+    // Kurulum yardımcıları (doğrulama anahtarıyla korunur): anahtarlar görünmeden durum ve Telegram bağlantısı
+    const kur = url.searchParams.get('kur')
+    if (kur && url.searchParams.get('anahtar') === (await ayar('IG_VERIFY_TOKEN'))) {
+      if (kur === 'durum') {
+        const adlar = ['IG_APP_SECRET', 'IG_TOKEN', 'TG_BOT_TOKEN', 'TG_CHAT_ID', 'TG_SECRET', 'CF_ACCOUNT_ID', 'CF_AI_TOKEN']
+        return json(Object.fromEntries(await Promise.all(adlar.map(async (a) => [a, Boolean(await ayar(a))]))))
+      }
+      if (kur === 'telegram') {
+        return json(await tg('setWebhook', { url: `${Deno.env.get('SUPABASE_URL')}/functions/v1/sosyal-yanit`,
+          secret_token: await ayar('TG_SECRET'), allowed_updates: ['message', 'callback_query'] }))
+      }
+    }
     if (url.searchParams.get('hub.mode') === 'subscribe' &&
         url.searchParams.get('hub.verify_token') === (await ayar('IG_VERIFY_TOKEN'))) {
       return new Response(url.searchParams.get('hub.challenge') ?? '', { status: 200 })
