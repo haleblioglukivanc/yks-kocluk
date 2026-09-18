@@ -55,7 +55,7 @@ ama Sistem'in cron listesi ve KPI kartları kart dizisi. Kıvanç hesabıyla ayr
 2. ✓ Koç · öğrenci ekranının kalan sekmeleri (18 Eylül 2026)
 3. ✓ Koç · Raporlar (18 Eylül 2026)
 4. ✓ Öğrenci · Bugün şeridi + Yol (18 Eylül 2026)
-5. Koç · Kaynaklar
+5. ✓ Koç · Kaynaklar (18 Eylül 2026)
 6. Veli
 7. Yönetim (Kıvanç'ın hesabıyla tespit + düzeltme)
 8. Denetim kontrollerinin `denetim/`'e eklenmesi — sonraki ekranlar kuralı bozarsa otomatik yakalansın

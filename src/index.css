@@ -4638,3 +4638,28 @@ body[data-rol='ogrenci'] .ob-tamam { background: transparent; color: var(--beyaz
 .ogr-soz .hi-kutu { border-top: 0; padding: 0.25rem 0; }
 /* Yol: harita blokları beyaz yüzeyde; dersler başlıkta sekme. */
 .ders-kapsam.veri-yuzey { padding: 0.75rem 1rem; }
+
+/* ═══ Kaynaklar (tasarım turu 6) ══════════════════════════════════════
+   Kaynak kart değil satır: ad + düz açıklama satırı, beyaz yüzeyin içinde
+   ince çizgiyle ayrılır. Göreve kaynak seçerken (KaynakSecici) seçilebilir
+   öğe olduğu için kenarlığı korunur (kural 2: kenarlık dokunulan şeyde). */
+.kaynak {
+  display: flex; gap: 0.75rem; align-items: center;
+  padding: 0.7rem 0; background: none; border: 0; border-bottom: 1px solid var(--cizgi); border-radius: 0;
+}
+.kaynak-liste > .kaynak:last-child { border-bottom: 0; }
+.kaynak-secim .kaynak { padding: 0.75rem 0.875rem; background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--r-kart); }
+.kaynak-ad { margin: 0; font-size: var(--punto-govde); font-weight: 600; line-height: 1.35; }
+.kaynak-alt { margin: 0.2rem 0 0; font-size: var(--punto-mini); color: var(--grafit); line-height: 1.45; }
+.kaynak-sv { font-weight: 700; }
+.kaynak-sv--1 { color: var(--isaret-metin); }
+.kaynak-sv--2 { color: var(--sicak-metin); }
+.kaynak-sv--3 { color: var(--kizil-metin); }
+.kaynak-resmi { color: var(--serin-metin); font-weight: 600; }
+.kaynak-uyari { color: var(--kizil-metin); font-weight: 700; }
+.kaynak-liste { display: block; gap: 0; }
+.kaynak-tepe .kaynak-ekle { margin: 0.9rem 0 1.25rem; }
+
+.kaynak-suzgec { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 0.6rem; margin-top: 1rem; }
+.kaynak-suzgec input { grid-column: 1 / -1; }
+.kaynak-suzgec + .alt-sekmeler { margin-top: 0.5rem; }

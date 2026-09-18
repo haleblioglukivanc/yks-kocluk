@@ -273,3 +273,12 @@
   /* Koç masaüstünde üst şerit yer kaplamıyor; rapor başlığı tepeye yapışmasın. */
   body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .panel > .hero-yuzey.rapor-tepe { padding-top: 1.5rem; padding-right: 9rem; }
 }
+
+/* Kaynaklar: süzgeç tek satır, liste beyaz yüzeyde iki sütun. */
+@media (min-width: 64rem) {
+  .kaynak-suzgec { grid-template-columns: minmax(0, 1fr) 14rem 12rem; }
+  .kaynak-suzgec input { grid-column: auto; }
+  .kaynak-liste { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 2.5rem; }
+  .kaynak-liste > .kaynak:nth-last-child(2):nth-child(odd) { border-bottom: 0; }
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .panel > .hero-yuzey.kaynak-tepe { padding-top: 1.5rem; padding-right: 9rem; }
+}

@@ -16,22 +16,17 @@ import {
  * yapı aynı kalır, yalnızca solunda seçim işareti belirir.
  */
 
-const BICIM_IKONU = {
-  dosya: '📄',
-  baglanti: '🔗',
-  basili: '📕',
-}
-
+/* Satır, kart değil (TASARIM-KURALLARI 1, 7): ad, altında düz açıklama
+   satırı. Etiketler çerçeveli hap değil; seviye kendi renginde yazı,
+   uyarılar kırmızı yazı. Emoji ikon kalktı. Kütüphane, göreve kaynak
+   seçme ve öğrenci tarafı aynı satırı kullanır. */
 function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
   const eskimis = baglantiEskimis(kaynak)
   const adres = kaynakAdresi(kaynak)
+  const alt = [kaynak.yayinevi, etiket, FAZ_ADI[kaynak.faz] ?? kaynak.faz].filter(Boolean)
 
   return (
     <article className={soluk ? 'kaynak kaynak--soluk' : 'kaynak'}>
-      <span className="kaynak-ikon" aria-hidden="true">
-        {BICIM_IKONU[kaynak.bicim] ?? '📄'}
-      </span>
-
       <div className="kaynak-govde">
         <p className="kaynak-ad">
           {adres ? (
@@ -42,32 +37,18 @@ function KaynakKarti({ kaynak, soluk = false, eylem, etiket }) {
             kaynak.ad
           )}
         </p>
-
-        {kaynak.yayinevi && <p className="kaynak-alt">{kaynak.yayinevi}</p>}
-
-        <div className="kaynak-etiketler">
-          {/* Hangi dersin kaynağı: liste artık kütüphanenin tamamını
-              gösterdiği için ad tek başına yetmiyor. */}
-          {etiket && <span className="kaynak-et kaynak-et--ders">{etiket}</span>}
-
-          <span className="kaynak-et kaynak-et--faz">{FAZ_ADI[kaynak.faz] ?? kaynak.faz}</span>
-
-          {/* Seviye bilinmiyorsa hiç yazılmıyor. Boş alan boş kalsın,
-              uydurulmuş bir etiket yanlış yönlendirir. */}
+        <p className="kaynak-alt">
+          {alt.join(' · ')}
+          {/* Seviye bilinmiyorsa hiç yazılmıyor: uydurulmuş etiket yanıltır. */}
           {kaynak.seviye != null && (
-            <span className={`kaynak-et kaynak-et--sv${kaynak.seviye}`}>
-              {SEVIYE_ADI[kaynak.seviye]}
-            </span>
+            <>
+              {alt.length ? ' · ' : ''}
+              <b className={`kaynak-sv kaynak-sv--${kaynak.seviye}`}>{SEVIYE_ADI[kaynak.seviye]}</b>
+            </>
           )}
-
-          {kaynak.telif === 'resmi' && (
-            <span className="kaynak-et kaynak-et--resmi">Resmî kaynak</span>
-          )}
-
-          {eskimis && (
-            <span className="kaynak-et kaynak-et--uyari">Bağlantıyı kontrol et</span>
-          )}
-        </div>
+          {kaynak.telif === 'resmi' && <> · <span className="kaynak-resmi">Resmî kaynak</span></>}
+          {eskimis && <> · <span className="kaynak-uyari">Bağlantıyı kontrol et</span></>}
+        </p>
       </div>
 
       {eylem && <div className="kaynak-eylem">{eylem}</div>}

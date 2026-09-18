@@ -1,6 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Alan, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import Sekmeler from '../ortak/Sekmeler.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
 import KaynakKarti from '../bilesenler/KaynakKarti.jsx'
 import {
   FAZ_ADI,
@@ -80,18 +84,40 @@ export default function Kaynaklar({ profil }) {
 
   const dersAdi = (kod) => dersler.find((d) => d.ders_kod === kod)?.ad ?? kod
 
+  /* Derse göre gruplar: kütüphane uzun, ders başlığı göz için durak. */
+  const gruplar = useMemo(() => {
+    const m = new Map()
+    for (const k of gorunen) {
+      const kod = k.ders_kod ?? '—'
+      if (!m.has(kod)) m.set(kod, [])
+      m.get(kod).push(k)
+    }
+    return [...m.entries()]
+      .map(([kod, liste]) => ({ kod, ad: kod === '—' ? 'Ders atanmamış' : dersAdi(kod), liste }))
+      .sort((a, b) => a.ad.localeCompare(b.ad, 'tr'))
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gorunen, dersler])
+
   return (
-    <div className="panel">
-      <Kart
-        baslik="Kaynaklar"
-        altBaslik="Kitaplar, bağlantılar ve kendi hazırladıkların"
-        eylem={
-          <Dugme tur="ufak" onClick={() => setFormAcik((a) => !a)}>
-            {formAcik ? 'Kapat' : 'Kaynak ekle'}
-          </Dugme>
-        }
-      >
-        {formAcik && (
+    <>
+      {/* Tek koyu blok: başlık, toplam, asıl eylem (TASARIM-KURALLARI 3).
+          Eskiden bütün ekran tek büyük kartın içindeydi. */}
+      <UstBlok sinif="rapor-tepe kaynak-tepe" etiket="Kaynaklar" sekmeli>
+        <h1 className="rt-baslik">Kaynaklar</h1>
+        <p className="rt-alt">
+          {kaynaklar ? `${kaynaklar.length} kaynak · ` : ''}kitap, bağlantı ve kendi hazırladıkların
+        </p>
+        <button type="button" className="kk-ana-eylem kaynak-ekle" onClick={() => setFormAcik((a) => !a)}>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+               strokeWidth="2.4" strokeLinecap="round" aria-hidden="true">
+            {formAcik ? <path d="M6 6l12 12M18 6 6 18" /> : <path d="M12 5v14M5 12h14" />}
+          </svg>
+          {formAcik ? 'Kapat' : 'Kaynak ekle'}
+        </button>
+      </UstBlok>
+
+      {formAcik && (
+        <Bolum baslik="Yeni kaynak">
           <KaynakFormu
             profil={profil}
             dersler={dersler}
@@ -100,79 +126,74 @@ export default function Kaynaklar({ profil }) {
               yukle()
             }}
           />
-        )}
+        </Bolum>
+      )}
 
-        <div className="kaynak-suzgec">
-          <input
-            type="text"
-            value={arama}
-            onChange={(e) => setArama(e.target.value)}
-            placeholder="Kaynak ara"
-            aria-label="Kaynak ara"
-          />
+      {/* Süzgeç: arama + iki seçim kutusu; tür alt çizgili sekme. Haplar kalktı. */}
+      <div className="kaynak-suzgec">
+        <input
+          type="search"
+          value={arama}
+          onChange={(e) => setArama(e.target.value)}
+          placeholder="Kitap ya da yayınevi ara"
+          aria-label="Kaynak ara"
+        />
+        <select value={dersKod} onChange={(e) => setDersKod(e.target.value)} aria-label="Ders">
+          <option value="">Tüm dersler</option>
+          {dersler.map((d) => (
+            <option key={d.ders_kod} value={d.ders_kod}>{d.ad}</option>
+          ))}
+        </select>
+        <select value={seviye} onChange={(e) => setSeviye(e.target.value)} aria-label="Seviye">
+          <option value="">Tüm seviyeler</option>
+          {Object.entries(SEVIYE_ADI).map(([n, ad]) => (
+            <option key={n} value={n}>{ad}</option>
+          ))}
+        </select>
+      </div>
+      <Sekmeler
+        varyant="acik"
+        etiket="Tür"
+        deger={faz}
+        onSec={setFaz}
+        secenekler={[{ k: '', ad: 'Tümü' }, ...Object.entries(FAZ_ADI).map(([k, ad]) => ({ k, ad }))]}
+      />
 
-          <select value={dersKod} onChange={(e) => setDersKod(e.target.value)} aria-label="Ders">
-            <option value="">Tüm dersler</option>
-            {dersler.map((d) => (
-              <option key={d.ders_kod} value={d.ders_kod}>{d.ad}</option>
-            ))}
-          </select>
-
-          <div className="kaynak-cipler" role="group" aria-label="Tür">
-            <Cip etkin={!faz} onClick={() => setFaz('')}>Tümü</Cip>
-            {Object.entries(FAZ_ADI).map(([k, ad]) => (
-              <Cip key={k} etkin={faz === k} onClick={() => setFaz(faz === k ? '' : k)}>
-                {ad}
-              </Cip>
-            ))}
-          </div>
-
-          <div className="kaynak-cipler" role="group" aria-label="Seviye">
-            {Object.entries(SEVIYE_ADI).map(([n, ad]) => (
-              <Cip
-                key={n}
-                etkin={seviye === n}
-                onClick={() => setSeviye(seviye === n ? '' : n)}
-              >
-                {ad}
-              </Cip>
-            ))}
-          </div>
-        </div>
-
-        {kaynaklar === null ? (
-          <Yukleniyor metin="Kütüphaneye bakıyorum" />
-        ) : gorunen.length === 0 ? (
-          <Bos
-            baslik={dersKod ? `${dersAdi(dersKod)} için kaynak yok` : 'Henüz kaynak yok'}
-            aciklama="MEB'in ücretsiz kaynakları hazır yüklü. Kendi notunu ya da bir kitabı da ekleyebilirsin."
-          />
-        ) : (
-          <div className="kaynak-liste">
-            {gorunen.map((k) => (
-              <KaynakKarti
-                key={k.id}
-                kaynak={k}
-                eylem={
-                  k.koc_id === profil?.id ? (
-                    <button
-                      type="button"
-                      className="metin-dugme"
-                      onClick={async () => {
-                        await supabase.from('kaynaklar').update({ aktif: false }).eq('id', k.id)
-                        yukle()
-                      }}
-                    >
-                      Kaldır
-                    </button>
-                  ) : null
-                }
-              />
-            ))}
-          </div>
-        )}
-      </Kart>
-    </div>
+      {kaynaklar === null ? (
+        <Yukleniyor metin="Kütüphaneye bakıyorum" />
+      ) : gorunen.length === 0 ? (
+        <BosDurum
+          metin={`${dersKod ? `${dersAdi(dersKod)} için kaynak yok.` : 'Bu süzgeçle kaynak yok.'} MEB'in ücretsiz kaynakları hazır yüklü; kendi notunu ya da bir kitabı da ekleyebilirsin.`}
+        />
+      ) : (
+        gruplar.map((g) => (
+          <Bolum key={g.kod} baslik={g.ad} sayi={g.liste.length}>
+            <div className="liste kaynak-liste">
+              {g.liste.map((k) => (
+                <KaynakKarti
+                  key={k.id}
+                  kaynak={k}
+                  eylem={
+                    k.koc_id === profil?.id ? (
+                      <button
+                        type="button"
+                        className="tehlike-yazi-dugme"
+                        onClick={async () => {
+                          await supabase.from('kaynaklar').update({ aktif: false }).eq('id', k.id)
+                          yukle()
+                        }}
+                      >
+                        Kaldır
+                      </button>
+                    ) : null
+                  }
+                />
+              ))}
+            </div>
+          </Bolum>
+        ))
+      )}
+    </>
   )
 }
 
@@ -271,7 +292,7 @@ function KaynakFormu({ profil, dersler, onEklendi }) {
   }
 
   return (
-    <div className="form-kutu">
+    <div className="form-kutu form-kutu--duz">
       <Alan etiket="Ad">
         <input
           type="text"

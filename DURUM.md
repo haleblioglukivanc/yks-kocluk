@@ -1,11 +1,23 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu 5)
+Son güncelleme: 18 Eylül 2026 (tasarım turu 6)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu 6: Kaynaklar
+
+- Mokap: https://claude.ai/artifact/Mmi2CYPKG7fJjRA7DvBKno (Bekir onayladı).
+- Koyu tepe (`/kaynaklar` koyuTepe'ye eklendi): başlık + toplam sayı + amber "Kaynak ekle" (asıl eylem).
+  Ekleme formu açılınca "Yeni kaynak" bölümünde, kutusuz.
+- Süzgeç: arama + ders + seviye seçim kutuları (seviye hapları kalktı); tür alt çizgili `Sekmeler`.
+- Liste derse göre gruplu (`Bolum` başlığı + sayı), beyaz yüzeyde satırlar; masaüstünde iki sütun.
+- `KaynakKarti` kart değil satır: emoji ikon ve çerçeveli etiketler kalktı; açıklama satırı "Yayınevi · tür · seviye"
+  (seviye renkli yazı), resmî/uyarı notları düz yazı. Göreve kaynak seçerken (`KaynakSecici`) seçilebilir öğe
+  olduğu için kenarlık korunuyor.
+- Sıradaki (TESPIT.md): Veli.
 
 ## 18 Eylül 2026 — tasarım turu 5: öğrenci Bugün ve Yol
 
