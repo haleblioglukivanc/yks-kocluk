@@ -33,14 +33,15 @@ def metinler(g, govde):
     """Platform başına açıklama. Hassas günlerde çağrı ve etiket yok."""
     satirlar = '\n'.join(govde)
     et = {k: ' '.join(v) for k, v in g['etiket'].items()}
+    soru = f"\n\n💬 {g['soru']}" if g.get('soru') else ''
     if g['hassas']:
         yalin = f"{g['kanca']}\n\n{satirlar}"
         return {'yt': yalin, 'ig': yalin, 'tt': yalin}, g['baslik']
-    yt = (f"{g['kanca']}\n\n{satirlar}\n\n{g['seri']} · her gün bir video.\n"
+    yt = (f"{g['kanca']}\n\n{satirlar}{soru}\n\n{g['seri']} · her gün bir video.\n"
           f"Kıvanç Hoca ile Eğitim Koçluğu: {SITE}\nTanışma görüşmesi (30 dk, ücretsiz): {SITE}/#iletisim\n\n{et['yt']}")
-    ig = (f"{g['kanca']}\n\n{satirlar}\n\n{g['seri']} · her gün bir video. Kaydet, haftaya lazım olur.\n"
+    ig = (f"{g['kanca']}\n\n{satirlar}{soru}\n\n{g['seri']} · her gün bir video. Kaydet, haftaya lazım olur.\n"
           f"Tanışma görüşmesi: khkocluk.com (profildeki bağlantı)\n\n{et['ig']}")
-    tt = f"{g['kanca']}\n\n{satirlar}\n\nkhkocluk.com\n\n{et['tt']}"
+    tt = f"{g['kanca']}\n\n{satirlar}{soru}\n\nkhkocluk.com\n\n{et['tt']}"
     baslik = g['kanca'] if len(g['kanca']) <= 92 else g['baslik']
     return {'yt': yt, 'ig': ig, 'tt': tt}, baslik + ' #Shorts'
 
@@ -51,7 +52,7 @@ def render(g, govde, cikti):
     if not (paket / 'index.html').exists():        # bir kez paketle, sonra her kare hızlı
         subprocess.run(['npx', 'remotion', 'bundle', 'src/index.js', f'--out-dir={paket}', '--log=error'],
                        cwd=video, check=True)
-    props = {'gun': g, 'govde': govde, 'muzik': None if g['hassas'] else f"muzik/{MUZIK[g['seri']]}.mp3"}
+    props = {'gun': g, 'govde': govde, 'muzik': f"muzik/{MUZIK[g['seri']]}.mp3" if g.get('muzik') else None}
     pf = video / '.props.json'
     pf.write_text(json.dumps(props, ensure_ascii=False), encoding='utf-8')
     cikti.parent.mkdir(parents=True, exist_ok=True)

@@ -1,10 +1,18 @@
 // Günlük video: takvimdeki bir günün satırından 20 sn dikey video.
 // Kural: 0. kare eksiksiz bir kapaktır (başlık + seri + görsel hazır durur).
-import { AbsoluteFill, Audio, Img, interpolate, spring, staticFile, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, Audio, interpolate, spring, staticFile, useCurrentFrame } from 'remotion'
 import { loadFont as baslikFontu } from '@remotion/google-fonts/BricolageGrotesque'
 import { loadFont as govdeFontu } from '@remotion/google-fonts/Karla'
 import { loadFont as monoFontu } from '@remotion/google-fonts/JetBrainsMono'
-import { R } from './renk.js'
+import { TEMALAR } from './tema.js'
+import { Ikon, IKON_ADI, Logo, Susler } from './Ikonlar.jsx'
+
+// Aktif tema. Gunluk her karede günün temasını buraya yazar; alt bileşenler R'den okur.
+let R = TEMALAR.gece
+
+// Güvenli alan (1080×1920): 20:9 telefonlarda platform videoyu yandan ~108 px kırpar;
+// sağda beğeni/yorum düğmeleri, altta açıklama, üstte sekme çubuğu durur.
+export const GUVENLI = { sol: 130, sag: 170, ust: 250, alt: 430 }
 
 const ALT = { subsets: ['latin', 'latin-ext'] }
 const BASLIK = baslikFontu('normal', { weights: ['800'], ...ALT }).fontFamily
@@ -47,7 +55,7 @@ function Liste({ f, govde, numara = true }) {
       const p = yay(f, SATIR[i])
       return <div key={i} style={{ ...gel(p, 40), display: 'flex', gap: 26, alignItems: 'center', background: R.lacivert2,
         border: `2px solid ${R.kenar}`, borderRadius: 30, padding: '28px 32px' }}>
-        {numara && <div style={{ flex: '0 0 72px', height: 72, borderRadius: 36, background: R.turuncu, color: R.beyaz,
+        {numara && <div style={{ flex: '0 0 72px', height: 72, borderRadius: 36, background: R.turuncu, color: '#ffffff',
           fontFamily: BASLIK, fontWeight: 800, fontSize: 40, display: 'grid', placeItems: 'center' }}>{i + 1}</div>}
         <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 40, lineHeight: 1.3, color: R.beyaz }}>{s}</div>
       </div>
@@ -76,7 +84,7 @@ function Sohbet({ f, govde }) {
     {govde.map((s, i) => {
       const p = yay(f, SATIR[i], { damping: 16, stiffness: 150 }); const koc = kim[i] === 'koc'
       return <div key={i} style={{ ...gel(p, 24), alignSelf: koc ? 'flex-end' : 'flex-start', maxWidth: '86%',
-        background: koc ? R.mercan : R.balon, color: R.beyaz, fontFamily: GOVDE, fontSize: 40, lineHeight: 1.36,
+        background: koc ? R.mercan : R.balon, color: koc ? '#ffffff' : R.balonMetin, fontFamily: GOVDE, fontSize: 40, lineHeight: 1.36,
         padding: '22px 30px', borderRadius: koc ? '32px 32px 8px 32px' : '32px 32px 32px 8px' }}>{s}</div>
     })}
   </div>
@@ -111,16 +119,20 @@ function Kapanis({ f, gun }) {
   if (!perde) return null
   const a = yay(f, KAPANIS + 8), b = yay(f, KAPANIS + 30), c = yay(f, KAPANIS + 52)
   return <AbsoluteFill style={{ background: `color-mix(in srgb, ${R.lacivert} ${Math.round(perde * 100)}%, transparent)`,
-    padding: '0 90px', justifyContent: 'center' }}>
+    padding: `0 ${GUVENLI.sag}px 0 ${GUVENLI.sol}px`, justifyContent: 'center' }}>
     <div style={{ ...gel(a, 40), fontFamily: MONO, fontSize: 30, letterSpacing: '.14em', color: R.turuncuA, textTransform: 'uppercase' }}>
       {gun.seri}</div>
     <div style={{ ...gel(b, 40), fontFamily: BASLIK, fontWeight: 800, fontSize: 104, lineHeight: 1.02, letterSpacing: '-0.035em',
-      color: R.beyaz, marginTop: 18 }}>Her gün<br />bir video.</div>
+      color: R.beyaz, marginTop: 18 }}>{gun.soru ? 'Senin sıran.' : <>Her gün<br />bir video.</>}</div>
     {gun.yks_kalan != null && <div style={{ ...gel(b, 40), display: 'inline-block', alignSelf: 'flex-start', marginTop: 34,
       fontFamily: MONO, fontSize: 30, color: R.beyaz, border: `2px solid ${R.turuncu}`, borderRadius: 999, padding: '10px 24px' }}>
       YKS'ye {gun.yks_kalan} gün</div>}
-    <div style={{ ...gel(c, 40), display: 'flex', alignItems: 'center', gap: 28, marginTop: 90 }}>
-      <Img src={staticFile('logo-kh.svg')} style={{ height: 76 }} />
+    {gun.soru && <div style={{ ...gel(c, 40), marginTop: 44, borderLeft: `6px solid ${R.turuncu}`, paddingLeft: 26 }}>
+      <div style={{ fontFamily: MONO, fontSize: 24, letterSpacing: '.12em', color: R.turuncuA }}>YORUMLARA YAZ</div>
+      <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 42, lineHeight: 1.28, color: R.beyaz, marginTop: 8 }}>{gun.soru}</div>
+    </div>}
+    <div style={{ ...gel(c, 40), display: 'flex', alignItems: 'center', gap: 28, marginTop: gun.soru ? 60 : 90 }}>
+      <Logo renk={R.beyaz} vurgu={R.turuncuA} />
       <div>
         <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: 44, color: R.beyaz }}>Kıvanç Hoca ile koçluk</div>
         <div style={{ fontFamily: MONO, fontSize: 28, color: R.acikMavi, marginTop: 6 }}>khkocluk.com</div>
@@ -130,8 +142,9 @@ function Kapanis({ f, gun }) {
 }
 
 // ── Kompozisyon ──────────────────────────────────────────────────
-export function Gunluk({ gun, govde, muzik }) {
+export function Gunluk({ gun, govde, muzik, onizleme = false }) {
   const f = useCurrentFrame()
+  R = TEMALAR[gun.hassas ? 'gece' : gun.tema] || TEMALAR.gece
   const s = gun.sablon
   const hassas = gun.hassas || s === 'sade-kart'
   const efsane = s === 'efsane-gercek'
@@ -152,15 +165,19 @@ export function Gunluk({ gun, govde, muzik }) {
       `radial-gradient(900px 700px at 85% 8%, color-mix(in srgb, ${R.mavi} 38%, transparent), transparent 65%),
        radial-gradient(700px 600px at 0% 100%, color-mix(in srgb, ${R.turuncu} 16%, transparent), transparent 60%), ${R.lacivert}` }}>
       {/* Reels/TikTok arayüzü üstte ~200px, altta ~320px kapatır */}
-      <div style={{ position: 'absolute', left: 80, right: 80, top: ortada ? 0 : 190, bottom: ortada ? 0 : 340,
+      {!hassas && <Susler f={f} renk={R.turuncu} renk2={R.acikMavi} />}
+      <div style={{ position: 'absolute', left: GUVENLI.sol, right: GUVENLI.sag, top: ortada ? GUVENLI.ust - 60 : GUVENLI.ust,
+        bottom: ortada ? GUVENLI.alt - 60 : GUVENLI.alt,
         display: 'flex', flexDirection: 'column', justifyContent: ortada ? 'center' : 'flex-start' }}>
         <div style={{ transform: `translateY(${(1 - ac) * (ortada ? 190 : 380)}px) scale(${1 + 0.1 * (1 - ac)})`,
           transformOrigin: ortada ? 'center top' : 'left top', textAlign: ortada ? 'center' : 'left' }}>
+        {!hassas && <div style={{ marginBottom: 18, display: ortada ? 'flex' : 'block', justifyContent: 'center' }}>
+          <Ikon ad={IKON_ADI[gun.seri]} f={f} boyut={ortada ? 170 : 140} renk={R.beyaz} vurgu={R.turuncu} /></div>}
         {!hassas && <Etiket gun={gun} />}
         {efsane && <div style={{ marginTop: 26, display: 'flex', gap: 14 }}>
-          <span style={{ fontFamily: MONO, fontSize: 28, background: R.mercan, color: R.beyaz, padding: '8px 18px', borderRadius: 10 }}>EFSANE</span></div>}
+          <span style={{ fontFamily: MONO, fontSize: 28, background: R.mercan, color: '#ffffff', padding: '8px 18px', borderRadius: 10 }}>EFSANE</span></div>}
         {yazisma
-          ? <div style={{ marginTop: 30, alignSelf: 'flex-start', maxWidth: '92%', background: R.balon, color: R.beyaz,
+          ? <div style={{ marginTop: 30, alignSelf: 'flex-start', maxWidth: '92%', background: R.balon, color: R.balonMetin,
               fontFamily: GOVDE, fontWeight: 600, fontSize: punto(gun.kanca, 62), lineHeight: 1.28, padding: '30px 36px',
               borderRadius: '36px 36px 36px 10px' }}>{gun.kanca}<div style={{ fontFamily: MONO, fontSize: 24, color: R.soluk, marginTop: 12 }}>öğrenci · 22:47</div></div>
           : <div style={{ position: 'relative' }}>
@@ -174,7 +191,7 @@ export function Gunluk({ gun, govde, muzik }) {
             </div>}
         </div>
         {efsane && <div style={{ ...gel(gercek), marginTop: 40 }}>
-          <span style={{ fontFamily: MONO, fontSize: 28, background: R.turuncu, color: R.beyaz, padding: '8px 18px', borderRadius: 10 }}>GERÇEK</span></div>}
+          <span style={{ fontFamily: MONO, fontSize: 28, background: R.turuncu, color: '#ffffff', padding: '8px 18px', borderRadius: 10 }}>GERÇEK</span></div>}
         <div style={{ marginTop: hassas ? 60 : efsane ? 30 : 64, textAlign: ortada ? 'center' : 'left' }}>
           {s === 'kart-liste' && <Liste f={f} govde={govde} />}
           {s === 'soru-cozum' && <Adimlar f={f} govde={govde} />}
@@ -184,13 +201,28 @@ export function Gunluk({ gun, govde, muzik }) {
           {(s === 'tek-cumle' || hassas) && <Sade f={f} govde={govde} sakin={hassas} />}
         </div>
       </div>
-      {!ortada && <div style={{ position: 'absolute', left: 80, right: 80, bottom: 380, opacity: 1 - ac,
+      {!ortada && <div style={{ position: 'absolute', left: GUVENLI.sol, right: GUVENLI.sag, bottom: GUVENLI.alt + 20, opacity: 1 - ac,
         display: 'flex', justifyContent: 'space-between', fontFamily: MONO, fontSize: 28, color: R.acikMavi }}>
         <span>Her gün bir video</span><span>khkocluk.com</span></div>}
       {hassas
-        ? <Img src={staticFile('logo-kh.svg')} style={{ position: 'absolute', bottom: 360, left: '50%', height: 60, marginLeft: -40, opacity: 0.7 }} />
+        ? <div style={{ position: 'absolute', bottom: GUVENLI.alt + 40, left: 0, right: 0, display: 'flex', justifyContent: 'center', opacity: 0.7 }}>
+            <Logo boyut={60} renk={R.beyaz} vurgu={R.turuncuA} /></div>
         : <Kapanis f={f} gun={gun} />}
       {muzik && !hassas && <Audio src={staticFile(muzik)} />}
+      {onizleme && <TelefonArayuzu />}
     </AbsoluteFill>
   )
+}
+
+// Önizleme: Reels/TikTok arayüzünün kapladığı yerler ve 20:9 telefonda kırpılan kenarlar.
+// Yalnız kontrol görüntüsü içindir; yayındaki videoda yoktur.
+function TelefonArayuzu() {
+  const kutu = { position: 'absolute', background: 'rgb(255 0 80 / .28)', border: '3px dashed rgb(255 0 80 / .9)' }
+  return <AbsoluteFill>
+    <div style={{ ...kutu, left: 0, right: 0, top: 0, height: 200 }} />
+    <div style={{ ...kutu, left: 0, right: 0, bottom: 0, height: 330 }} />
+    <div style={{ ...kutu, right: 108, width: 130, top: 1080, height: 520 }} />
+    <div style={{ position: 'absolute', top: 0, bottom: 0, left: 108, borderLeft: '4px dashed #ffd400' }} />
+    <div style={{ position: 'absolute', top: 0, bottom: 0, right: 108, borderRight: '4px dashed #ffd400' }} />
+  </AbsoluteFill>
 }

@@ -167,16 +167,20 @@ def etiketler(g, seri, kitle, ders=None, hassas=False):
         return {"ig": [], "tt": [], "yt": []}
     yil = "#yks2027" if g <= YKS + timedelta(1) else "#yks2028"   # kohort değişimi
     ana = [yil, "#yks"]
-    seri_et = {
-     "Haftanın Planı": ["#dersprogramı", "#verimliçalışma"],
-     "Ders Taktiği": ["#soruçözümü", "#tyt"],
-     "Aynı Hafta": ["#öğrencihayatı", "#sınavstresi"],
-     "Veli Köşesi": ["#veli", "#sınavyılı"],
-     "Doğru Bilinen Yanlışlar": ["#dersçalışma", "#doğrubilinenyanlışlar"],
-     "Deneme Günü": ["#denemesınavı", "#netartırma"],
-     "Pazar Akşamı": ["#motivasyon", "#sınavkaygısı"],
-     "Özel Gün": ["#motivasyon", "#tyt"],
+    hafta = hafta_no(g)
+    havuz = {
+     "Haftanın Planı": ["#dersprogramı", "#verimliçalışma", "#çalışmaplanı", "#planlıçalışma", "#zamanyönetimi"],
+     "Ders Taktiği": ["#soruçözümü", "#derstaktikleri", "#tytkampı", "#konuanlatımı", "#sorubankası"],
+     "Aynı Hafta": ["#öğrencihayatı", "#sınavstresi", "#yksmotivasyon", "#sınavkaygısı", "#öğrenci"],
+     "Veli Köşesi": ["#veli", "#sınavyılı", "#ebeveyn", "#anneyiz", "#velirehberi"],
+     "Doğru Bilinen Yanlışlar": ["#dersçalışma", "#doğrubilinenyanlışlar", "#çalışmayöntemleri", "#bilgi", "#verimliçalışma"],
+     "Deneme Günü": ["#denemesınavı", "#netartırma", "#tytdeneme", "#denemeanalizi", "#türkiyegenelideneme"],
+     "Pazar Akşamı": ["#motivasyon", "#sınavkaygısı", "#pazarakşamı", "#yksmotivasyon", "#psikoloji"],
+     "Özel Gün": ["#motivasyon", "#eğitim", "#öğrenci", "#yks"],
     }[seri]
+    seri_et = [havuz[(hafta + i) % len(havuz)] for i in range(2)]
+    if g.weekday() == 3:                         # perşembe: yerel keşif için konum etiketi
+        seri_et = seri_et[:1] + ["#mersin"]
     if ders:
         seri_et = ["#" + kucuk(ders.split()[-1])] + seri_et[:1]
         if ders.startswith("LGS"):
@@ -202,6 +206,21 @@ def sec(banka, kullanilan, ay):
     return banka[i]
 
 # ── Üret ────────────────────────────────────────────────────────────────────
+def hafta_no(g):
+    """Pazartesiden başlayan hafta sayısı (14 Eylül 2026 haftası = 0)."""
+    return (g - date(2026, 9, 14)).days // 7
+
+TEMA_SIRA = ["gece", "krem", "orman", "murdum", "gok"]   # her hafta bir tema: profil ızgarası düzenli, akış çeşitli
+SORU = {
+ "Haftanın Planı": ["Bu haftanın 3 işi ne? Yaz, cuma soralım.", "En verimli saatin hangisi?", "Bu hafta neyi bırakıyorsun?"],
+ "Ders Taktiği": ["Bu taktiği dene, sonucu yaz.", "Sıradaki taktik hangi dersten olsun?", "Senin bu konudaki taktiğin ne?"],
+ "Aynı Hafta": ["Sen olsan koça ne yazardın?", "Bu mesaj sana tanıdık geldi mi?", "Koç doğru mu söyledi? Yaz."],
+ "Veli Köşesi": ["Evde işe yarayan tek cümleniz ne?", "Sizce en zor kısmı ne?", "Bir sonraki veli konusu ne olsun?"],
+ "Doğru Bilinen Yanlışlar": ["Sen de buna inanıyor muydun? Evet ya da hayır.", "Başka hangi efsaneyi çürütelim?", "Sence doğru mu? Yaz."],
+ "Deneme Günü": ["Bugünkü netin kaç? Sadece rakam.", "En çok hangi derste boş bıraktın?", "Denemeye kaçta başladın?"],
+ "Pazar Akşamı": ["Bu haftanı tek kelimeyle yaz.", "Bu hafta seni ne iyi hissettirdi?", "Yarının ilk işi ne?"],
+}
+
 def uret():
     kullanilan = {k: set() for k in SERI}
     satirlar = []
@@ -233,7 +252,9 @@ def uret():
             "lgs_kalan": (LGS - g).days if g <= LGS else None,
             "ramazan": g in RAMAZAN, "tatil": g in TATIL,
             "cta": "" if hassas else ("Tanışma görüşmesi: khkocluk.com" if wd in (3, 6) else "Takip et, her gün bir tane."),
-            "muzik": not hassas,
+            "muzik": not hassas and seri != "Veli Köşesi" and not (seri == "Pazar Akşamı" and hafta_no(g) % 2),
+            "tema": "gece" if hassas else TEMA_SIRA[hafta_no(g) % len(TEMA_SIRA)],
+            "soru": "" if (hassas or seri == "Özel Gün") else SORU[seri][hafta_no(g) % len(SORU[seri])],
         })
     return satirlar
 
