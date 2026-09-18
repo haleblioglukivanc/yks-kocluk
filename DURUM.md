@@ -15,7 +15,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
   Gönderim `sosyal-yanit` Edge Function (yönetici oturumu). Telegram onayı kaldırıldı.
 - Kriz/istismar → `private.sosyal_acil_bildir` → `mail_kuyrugu` (`sosyal_acil`) → `rapor-mail` (kaynağı artık repoda).
 - `deneme = true` 7 örnek kayıt var; platforma gitmez. Gerçek bağlantılar gelince silinecek.
-- Bekleyen: Instagram bağlantısı (Meta uygulaması + IG_TOKEN/IG_APP_SECRET), YouTube bağlantısı (OAuth + 10 dk kontrol).
+- YouTube: panelde "YouTube'u bağla" (Google OAuth, `youtube.force-ssl`) → yenileme anahtarı `sosyal_ayar`'da.
+  Cron `sosyal-youtube-tara` 10 dakikada bir yeni yorumları çeker (yalnız bağlantı anından sonrakiler; kanalın zaten yanıtladıkları atlanır).
+  Gereken: Google Cloud'da OAuth istemcisi → Supabase secret `YT_CLIENT_ID`, `YT_CLIENT_SECRET`;
+  yönlendirme adresi `https://sjcovxnhardtvmvooqpn.supabase.co/functions/v1/sosyal-yanit`. Uygulama "In production" olmalı (Testing'de izin 7 günde düşer).
+- Bekleyen: Instagram bağlantısı (Meta uygulaması + IG_TOKEN/IG_APP_SECRET).
 
 ## 18 Eylül 2026 — sosyal bağlantılar ve son paylaşım (oturum raporu)
 

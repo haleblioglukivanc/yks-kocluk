@@ -140,6 +140,80 @@ function Mesaj({ m, onDegisti }) {
   )
 }
 
+
+/* Bağlantılar şeridi: hangi platform bağlı, son kontrol ne zaman, hata var mı.
+   YouTube bağlantısı buradan başlar (Google izin ekranı → geri buraya döner). */
+function Baglantilar({ onTarandi }) {
+  const [d, setD] = useState(null)
+  const [isleniyor, setIsleniyor] = useState('')
+  const [not, setNot] = useState(() => {
+    const q = new URLSearchParams(window.location.search).get('youtube')
+    return q === 'bagli' ? 'YouTube bağlandı.' : q === 'hata' ? 'YouTube bağlanamadı; ayrıntı aşağıda.' : ''
+  })
+  const cagir = (islem) => supabase.functions.invoke('sosyal-yanit', { body: { islem } })
+  const yukle = useCallback(async () => {
+    const { data } = await cagir('durum')
+    if (data) setD(data)
+  }, [])
+  useEffect(() => {
+    yukle()
+    // Dönüş parametresini adres çubuğundan temizle
+    if (window.location.search.includes('youtube=')) {
+      window.history.replaceState(null, '', window.location.pathname + window.location.hash)
+    }
+  }, [yukle])
+
+  const baglan = async () => {
+    setIsleniyor('baglan'); setNot('')
+    const { data, error } = await cagir('youtube_baglan')
+    if (data?.url) { window.location.href = data.url; return }
+    setIsleniyor('')
+    setNot(data?.hata ?? hataMetni(error))
+  }
+  const tara = async () => {
+    setIsleniyor('tara'); setNot('')
+    const { data } = await cagir('youtube_tara')
+    setIsleniyor('')
+    setNot(data?.hata ? '' : data?.yeni ? `${data.yeni} yeni yorum geldi.` : 'Yeni yorum yok.')
+    await yukle(); onTarandi()
+  }
+
+  if (!d) return null
+  const yt = d.youtube
+  return (
+    <div className="sk-baglantilar">
+      <div className="sk-baglanti">
+        <span className="sk-cip sk-cip--youtube"><PlatformIkon platform="youtube" /> YouTube</span>
+        {yt.bagli ? (
+          <>
+            <span className="sk-baglanti-durum sk-baglanti-durum--iyi">Bağlı{yt.kanal ? `: ${yt.kanal}` : ''}</span>
+            <span className="sk-baglanti-alt">{yt.son_tarama ? `son kontrol ${once(yt.son_tarama)}` : 'henüz kontrol edilmedi'} · 10 dakikada bir</span>
+            <button className="sk-bag" onClick={tara} disabled={!!isleniyor}>{isleniyor === 'tara' ? 'Bakılıyor…' : 'Şimdi kontrol et'}</button>
+            <button className="sk-bag sk-bag--soluk" onClick={baglan} disabled={!!isleniyor}>Yeniden bağla</button>
+          </>
+        ) : yt.hazir ? (
+          <>
+            <span className="sk-baglanti-durum">Bağlı değil</span>
+            <button className="sk-gonder sk-gonder--ufak" onClick={baglan} disabled={!!isleniyor}>
+              {isleniyor === 'baglan' ? 'Google açılıyor…' : "YouTube'u bağla"}
+            </button>
+          </>
+        ) : (
+          <span className="sk-baglanti-durum">Kurulum bekliyor (Google uygulama bilgileri eklenmedi)</span>
+        )}
+      </div>
+      <div className="sk-baglanti">
+        <span className="sk-cip sk-cip--instagram"><PlatformIkon platform="instagram" /> Instagram</span>
+        <span className={d.instagram.bagli ? 'sk-baglanti-durum sk-baglanti-durum--iyi' : 'sk-baglanti-durum'}>
+          {d.instagram.bagli ? 'Bağlı' : 'Kurulum bekliyor'}
+        </span>
+      </div>
+      {not && <p className="sk-baglanti-not">{not}</p>}
+      {yt.son_hata && <Uyari>{`YouTube: ${yt.son_hata}`}</Uyari>}
+    </div>
+  )
+}
+
 export default function SosyalKutusu({ onSayac }) {
   const [liste, setListe] = useState(null)
   const [hata, setHata] = useState('')
@@ -197,6 +271,7 @@ export default function SosyalKutusu({ onSayac }) {
       {!liste && !hata && <Yukleniyor metin="Mesajlar geliyor" satir={4} />}
       {liste && (
         <>
+          <Baglantilar onTarandi={yukle} />
           <div className="sk-filtreler" role="group" aria-label="Filtre">
             {FILTRELER.map(([k, ad, uyan]) => (
               <button key={k} aria-pressed={filtre === k} className={filtre === k ? 'sk-filtre sk-filtre--etkin' : 'sk-filtre'}

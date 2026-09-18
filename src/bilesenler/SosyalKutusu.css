@@ -90,3 +90,15 @@
   .sk-ozet { gap: 0.875rem; }
   .sk-zaman { margin-left: 0; width: 100%; }
 }
+
+.sk-baglantilar {
+  display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; padding: 0.75rem 0.875rem;
+  background: var(--kagit); border: 1px solid var(--cizgi); border-radius: var(--r-kart);
+}
+.sk-baglanti { display: flex; align-items: center; flex-wrap: wrap; gap: 0.25rem 0.75rem; min-height: 40px; }
+.sk-baglanti-durum { font-size: var(--punto-kucuk); font-weight: 700; color: var(--grafit); }
+.sk-baglanti-durum--iyi { color: var(--isaret-metin); }
+.sk-baglanti-alt { font-size: var(--punto-mini); color: var(--soluk); }
+.sk-baglanti-not { margin: 0; font-size: var(--punto-kucuk); color: var(--murekkep); font-weight: 600; }
+.sk-bag--soluk { color: var(--grafit); font-weight: 600; }
+.sk-gonder--ufak { min-height: 40px; padding: 0 1rem; font-size: var(--punto-kucuk); }
