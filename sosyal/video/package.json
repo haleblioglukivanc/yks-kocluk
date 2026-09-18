@@ -1,0 +1,17 @@
+{
+  "name": "khkocluk-video",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render Carsamba ../medya/carsamba.mp4",
+    "kapak": "remotion still Carsamba ../medya/carsamba-kapak.png --frame=520"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.526",
+    "@remotion/google-fonts": "^4.0.526",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "remotion": "^4.0.526"
+  }
+}

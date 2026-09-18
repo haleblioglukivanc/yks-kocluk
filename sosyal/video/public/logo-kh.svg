@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -8 145 116" width="145" height="116" role="img" aria-label="KH monogram">
+  <title>Kıvanç Hoca ile Eğitim Koçluğu — KH monogramı</title>
+  <g fill="none" stroke-width="16" stroke-linecap="round">
+    <path d="M8 0V100" stroke="#E9EEF7"/>
+    <path d="M10.4 50L72 0" stroke="#E9EEF7"/>
+    <path d="M10.4 50L72 100" stroke="#E9EEF7"/>
+    <path d="M72 50H137" stroke="#E9EEF7"/>
+    <path d="M137 0V100" stroke="#E9EEF7"/>
+    <path d="M72 0V100" stroke="#FFC24A"/>
+  </g>
+</svg>
