@@ -1,7 +1,7 @@
 # Yorum ve mesaj yanıt kuralları
 
 Yanıtları yapay zekâ **taslak** olarak yazar; başlangıçta her taslağı Kıvanç
-onaylar (tek dokunuş). Rutin kategoriler zamanla tam otomatiğe geçebilir;
+onaylar: Yönetim paneli → **Sosyal** sekmesi (Instagram DM/yorum + YouTube yorum tek listede). Rutin kategoriler zamanla tam otomatiğe geçebilir;
 **kriz ve istismar hiçbir zaman** otomatiğe geçmez.
 
 ## Ses
@@ -17,7 +17,7 @@ onaylar (tek dokunuş). Rutin kategoriler zamanla tam otomatiğe geçebilir;
 - Hakaret ve spama yanıt vermez (gizleme önerir).
 
 ## Kriz (kendine zarar, intihar, "yaşamak istemiyorum")
-Yapay zekâ yazmaz. Sabit mesaj önerilir ve Kıvanç'a **hemen** bildirim gider:
+Yapay zekâ yazmaz. Sabit mesaj önerilir, listede en üste kırmızı çıkar ve Kıvanç'a **hemen** e-posta gider:
 > Bunu yazdığın için teşekkür ederim, şu an yalnız değilsin. Lütfen hemen güvendiğin bir
 > yetişkine (ailen, öğretmenin, rehber öğretmenin) anlat. Kendini güvende hissetmiyorsan
 > 112'yi ara. Sana buradan da ulaşacağız. — KH ekibi

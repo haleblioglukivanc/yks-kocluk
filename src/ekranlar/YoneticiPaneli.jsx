@@ -4,6 +4,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
+import SosyalKutusu from '../bilesenler/SosyalKutusu.jsx'
 
 /* Koç paneli "bugün ne oluyor" sorusuna cevap veriyor. Burası başka bir
    soruya cevap veriyor: sistem çalışıyor mu, nereden sızdırıyor.
@@ -626,11 +627,20 @@ const SEKMELER = [
   ['koclar', 'Koçlar'],
   ['ogrenciler', 'Öğrenciler'],
   ['tahsilat', 'Tahsilat'],
+  ['sosyal', 'Sosyal'],
   ['sistem', 'Sistem'],
 ]
 
 export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
-  const [sekme, setSekme] = useState('koclar')
+  // Acil e-postadaki bağlantı /yonetim#sosyal ile doğrudan bu sekmeyi açar.
+  const [sekme, setSekme] = useState(() =>
+    typeof window !== 'undefined' && window.location.hash === '#sosyal' ? 'sosyal' : 'koclar')
+  const [sosyal, setSosyal] = useState(null)
+
+  // Sekme rozeti: panel açılınca bir kez; Sosyal sekmesi açıkken bileşen günceller.
+  useEffect(() => {
+    supabase.rpc('sosyal_bekleyen').then(({ data }) => { if (data) setSosyal(data) })
+  }, [])
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState(null)
 
@@ -701,6 +711,12 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
                 onClick={() => setSekme(k)}
               >
                 {ad}
+                {k === 'sosyal' && sosyal?.bekleyen > 0 && (
+                  <span className={sosyal.acil ? 'sekme-rozet sekme-rozet--acil' : 'sekme-rozet'}
+                    aria-label={`${sosyal.bekleyen} bekleyen${sosyal.acil ? `, ${sosyal.acil} acil` : ''}`}>
+                    {sosyal.bekleyen}
+                  </span>
+                )}
               </button>
             ))}
           </nav>
@@ -720,6 +736,8 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
           )}
 
           {sekme === 'tahsilat' && <Tahsilat t={veri.tahsilat} onOgrenciAc={onOgrenciAc} />}
+
+          {sekme === 'sosyal' && <SosyalKutusu onSayac={setSosyal} />}
 
           {sekme === 'sistem' && (
             <>

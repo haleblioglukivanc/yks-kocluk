@@ -7,6 +7,16 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 18 Eylül 2026 — Sosyal Gelen Kutusu (yönetim paneli)
+
+- Yönetim → **Sosyal** sekmesi: Instagram DM/yorum ve YouTube yorumları tek listede; taslak düzenle → Gönder / Atla / Geri al.
+  Sekmede bekleyen sayısı rozeti (acil varsa kırmızı). `/yonetim#sosyal` doğrudan açar.
+- Veri: `sosyal_yanit` (+`baglam`, `deneme`, `karar_*`), RPC `sosyal_kutusu`, `sosyal_bekleyen`, `sosyal_karar`.
+  Gönderim `sosyal-yanit` Edge Function (yönetici oturumu). Telegram onayı kaldırıldı.
+- Kriz/istismar → `private.sosyal_acil_bildir` → `mail_kuyrugu` (`sosyal_acil`) → `rapor-mail` (kaynağı artık repoda).
+- `deneme = true` 7 örnek kayıt var; platforma gitmez. Gerçek bağlantılar gelince silinecek.
+- Bekleyen: Instagram bağlantısı (Meta uygulaması + IG_TOKEN/IG_APP_SECRET), YouTube bağlantısı (OAuth + 10 dk kontrol).
+
 ## 18 Eylül 2026 — sosyal bağlantılar ve son paylaşım (oturum raporu)
 
 - TikTok (`@khkocluk`) `site.js` → `iletisim.tiktok` alanına yazıldı; kanal kartı ve alt bilgi bağlantısı canlıda.
