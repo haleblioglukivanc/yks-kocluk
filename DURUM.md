@@ -7,6 +7,20 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 18 Eylül 2026 — sosyal bağlantılar ve son paylaşım (oturum raporu)
+
+- TikTok (`@khkocluk`) `site.js` → `iletisim.tiktok` alanına yazıldı; kanal kartı ve alt bilgi bağlantısı canlıda.
+- Kanallar bölümüne "Son paylaşım" kartı eklendi (mokap onaylı). Kaynak YouTube'un herkese açık
+  akışı (kanal `UCE5lZ1CG0-CqeRpaqlxa5-Q`); Instagram/TikTok API'leri anahtar yenileme ve uygulama
+  onayı istediği için seçilmedi, içerik üç kanalda aynı olduğundan ikisi yalnız bağlantı.
+- Yeni Edge Function `son-paylasim` (JWT kapalı, yalnız herkese açık veri): en yeni videoyu döner,
+  1 saat bellek + 15 dk CDN önbelleği. Video yoksa `{video:null}` → kart hiç basılmaz. Shorts dikey,
+  normal video yatay kapakla gösterilir.
+- Tablette kanal kartları 2+1 diziliyordu; ızgara `minmax(220px)` ile üçü tek sıraya alındı.
+- 390/820/1366'da örnek veriyle doğrulandı, yatay taşma yok.
+- Açık: kanalda henüz video yok; 18 Eyl 20:00'deki ilk Buffer gönderisinden sonra kartın canlıda
+  dolduğu kontrol edilmeli. "Videolar" bölümü hâlâ demo içerikte; istenirse aynı akışa bağlanabilir.
+
 ## 16 Eylül 2026 — Tur 0 makine denetimi
 
 Proje geneli kalite/tutarlılık denetimi başladı. Yöntem: makine okur, model yargılar.
@@ -31,7 +45,7 @@ ikisi de DENETIM.md'den başlar.
 | Yayın | Cloudflare Workers · `khkocluk.com` |
 | Dağıtım | Cloudflare **Workers Builds**, repoya doğrudan bağlı. `main`'e her push'ta Cloudflare kendisi derleyip yayınlar. GitHub Actions'ta dağıtım iş akışı **yoktur**; commit'teki `Workers Builds: yks-kocluk` kontrolü bakılacak yerdir. |
 | Yayın hattı | `main` dalına her push otomatik derlenip yayınlanır |
-| Edge Function | `kullanici-olustur` · sürüm 3 · aktif |
+| Edge Function | `kullanici-olustur` · sürüm 3 · aktif; `son-paylasim` · tanıtım sayfası için YouTube akışı |
 
 Depo ve Cloudflare Kıvanç'ın hesabında; Supabase projesi ayrı bir org altında.
 İki hesap ayrı olduğu için erişim yetkileri elle takip edilmeli.
