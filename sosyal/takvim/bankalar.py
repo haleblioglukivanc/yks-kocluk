@@ -384,15 +384,15 @@ MEVSIM = {
  "Okul yetişmiyor": {10, 11, 12, 3, 4, 5},
  # Veli
  "Karne haftası": {1, 6}, "Tercih dönemi": {7, 8}, "Sınav günü": {6}, "Bayram ziyaretleri": {3, 5},
- "Uzun hafta sonu": {5}, "11. sınıf velisi": {6, 7, 8, 9}, "Sonuç günü": {7},
- "Yıl sonu değerlendirme": {6, 7}, "Ara tatil": {11, 3}, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
+ "Uzun hafta sonu": {5}, "11. sınıf velisi": {7, 8, 9}, "Sonuç günü": {7},
+ "Yıl sonu değerlendirme": {7}, "Ara tatil": {11, 3}, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
  "Mezun öğrenci": {9, 10, 7, 8}, "LGS velisi": {9, 10, 11},
  # Efsane
  "Kış tembel yapar": {11, 12, 1}, "Son ay her şeyi değiştirir": {4, 5}, "Son hafta yeni konu": {5, 6},
  "Bayramda çalışılmaz": {3, 5}, "Tercihte puan her şey": {7, 8}, "11. sınıf erken": {6, 7, 8, 9},
  "Son sınıfta her şey biter": {9, 10}, "Mezun yılı kolay": {7, 8, 9},
  # Deneme
- "Son denemeler": {5, 6}, "Bayram denemesi": {3, 5}, "Yaz denemesi": {6, 7, 8}, "İlk deneme": {9, 10},
+ "Son denemeler": {5, 6}, "Bayram denemesi": {3, 5}, "Yaz denemesi": {7, 8}, "İlk deneme": {9, 10},
  "Dönem sonu denemesi": {1}, "Sınav provası": {4, 5, 6},
  # Pazar
  "Işık ve ruh hali": {11, 12, 1}, "Bahar huzursuzluğu": {4, 5}, "Sınav yaklaşırken": {4, 5, 6},
