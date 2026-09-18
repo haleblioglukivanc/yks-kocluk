@@ -7,6 +7,8 @@ import UyariSatiri from '../ortak/UyariSatiri.jsx'
 import KocDetay, { DURUM_ADI } from '../bilesenler/KocDetay.jsx'
 import Entegrasyonlar from '../bilesenler/Entegrasyonlar.jsx'
 import ErisimGunlugu from '../bilesenler/ErisimGunlugu.jsx'
+import Basvurular from '../bilesenler/Basvurular.jsx'
+import SmsKaydi from '../bilesenler/SmsKaydi.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -632,7 +634,7 @@ const SEKMELER = [
   ['koclar', 'Koçlar'],
   ['ogrenciler', 'Öğrenciler'],
   ['tahsilat', 'Tahsilat'],
-  ['sosyal', 'Sosyal'],
+  ['iletisim', 'İletişim'],
   ['icerik', 'İçerik'],
   ['teknik', 'Teknik'],
 ]
@@ -640,7 +642,7 @@ const SEKMELER = [
 export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
   // Acil e-postadaki bağlantı /yonetim#sosyal ile doğrudan bu sekmeyi açar.
   const [sekme, setSekme] = useState(() =>
-    typeof window !== 'undefined' && window.location.hash === '#sosyal' ? 'sosyal' : window.location.hash === '#sistem' || window.location.hash === '#teknik' ? 'teknik' : 'koclar')
+    typeof window !== 'undefined' && window.location.hash === '#sosyal' || window.location.hash === '#iletisim' ? 'iletisim' : window.location.hash === '#sistem' || window.location.hash === '#teknik' ? 'teknik' : 'koclar')
   const [sosyal, setSosyal] = useState(null)
 
   // Sekme rozeti: panel açılınca bir kez; Sosyal sekmesi açıkken bileşen günceller.
@@ -699,7 +701,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
             k,
             ad,
             rozet:
-              k === 'sosyal' && sosyal?.bekleyen > 0 ? (
+              k === 'iletisim' && sosyal?.bekleyen > 0 ? (
                 <span className={sosyal.acil ? 'sekme-rozet sekme-rozet--acil' : 'sekme-rozet'}
                   aria-label={`${sosyal.bekleyen} bekleyen${sosyal.acil ? `, ${sosyal.acil} acil` : ''}`}>
                   {sosyal.bekleyen}
@@ -739,7 +741,14 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {sekme === 'tahsilat' && <Tahsilat t={veri.tahsilat} onOgrenciAc={onOgrenciAc} />}
 
-          {sekme === 'sosyal' && <SosyalKutusu onSayac={setSosyal} />}
+          {/* İletişim: başvurular, sosyal gelen kutusu, SMS (TESPIT-YONETIM.md 2.5). */}
+          {sekme === 'iletisim' && (
+            <>
+              <Basvurular />
+              <div className="bolum--cizgili-ust"><SosyalKutusu onSayac={setSosyal} /></div>
+              <SmsKaydi />
+            </>
+          )}
 
           {/* İçerik: kurum geneli içerik kararları (TESPIT-YONETIM.md 4). */}
           {sekme === 'icerik' && (

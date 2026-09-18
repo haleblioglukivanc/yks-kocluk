@@ -77,6 +77,6 @@ Bugün "Sistem" sekmesinde içerikle karışık duruyor. Önerilen **Teknik** se
    yöneticinin "şifre sıfırla" düğmesi (yeni geçici şifre, Edge Function).
 2. ✓ **Koç detay + durum + öğrenci aktarma** (19 Eylül 2026) (veritabanı: `profiller`'e durum/başlangıç/kapasite; aktarma RPC'si).
 3. ✓ **Teknik sekmesi** (19 Eylül 2026) ayrımı + entegrasyon durumları + erişim günlüğü.
-4. **Başvurular** listesi (İletişim).
+4. ✓ **Başvurular** listesi (İletişim) (19 Eylül 2026).
 5. **İçerik** sekmesi ve taşımalar.
 6. Öğrenci/veli yönetimi ve KVKK kayıtları.

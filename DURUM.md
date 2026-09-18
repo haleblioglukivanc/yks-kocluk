@@ -1,11 +1,23 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (Teknik sekmesi)
+Son güncelleme: 19 Eylül 2026 (İletişim sekmesi)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 4: İletişim (başvurular, sosyal, SMS)
+
+- Sosyal sekmesi **İletişim** oldu (`#sosyal` bağlantısı çalışmaya devam ediyor): Başvurular + Sosyal gelen kutusu + SMS kaydı.
+- **Başvurular** (`bilesenler/Basvurular.jsx`): tanıtım formundan gelenler, durum sekmeleri (Yeni · Arandı · Kayıt oldu ·
+  Olmadı · Tümü), dokunulabilir telefon, formdaki not, görüşme notu, durum düğmeleri. Migration `iletisim_basvurular_sms`:
+  durumlar genişledi (`kayit_oldu`, `olmadi`; eski `kapandi` Olmadı sayılır), `sonuc_notu`, `isleyen_id`, `guncellendi`;
+  yönetici okur/günceller; RPC `basvuru_isle`.
+- **SMS kaydı** (`bilesenler/SmsKaydi.jsx`, RPC `yonetici_sms_kaydi`, `yonetici_sms_iptal`): kuyruk durumu, bekleyen/hatalı iptal.
+  Teknik'te görülen 2 bekleyen SMS silinmiş örnek öğrencilerdendi (alıcısı yok) → iptal edildi.
+- **Açık bulgu**: `sms_kuyrugu`'nu boşaltan bir cron yok; kayıtlar deneme 0'da kalıyordu. Gerçek veli özeti gönderimi
+  başlamadan kuyruk işleyicisi (ya da doğrudan gönderim akışı) doğrulanmalı.
 
 ## 19 Eylül 2026 — Yönetim işlevleri 3: Teknik ve İçerik sekmeleri
 
