@@ -18,6 +18,7 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
   + tek düğme; "Hafta boyu tekrarlar" `Bolum` (sarı yuvarlak artı → "+ Ekle"). Geniş ekranda şerit yapışmıyor.
 - Öğrencinin `HaftaSeridi`'si de `GunSeridi`'yi çiziyor (görünüm aynı; boş gün "—" yerine "·").
 - Yönetim sekmeleri `Sekmeler` (açık varyant) oldu.
+- Tespit raporu: `TESPIT.md` (tüm ekranlar, önerilen sıra). Sonraki adımlar o sıraya göre, ekran ekran.
 - Açık kalanlar (sıradaki adımlar): öğrenci Bugün'deki şeritte gün kutularının kenarlığı (`.siradaki` kapsamlı stil),
   "Öğrencinin kaynakları" kartı, Denemeler/Konular/Kayıt sekmelerindeki kartlar, koç Bugün, Rapor/veli, yönetim alanı, denetim kontrolleri.
 
