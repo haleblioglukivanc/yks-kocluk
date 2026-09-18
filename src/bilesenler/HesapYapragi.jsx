@@ -106,6 +106,11 @@ export default function HesapYapragi({
               </button>
             </>
           )}
+          <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/sifre') }}>
+            <svg {...ikon}><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
+            <span>Şifremi değiştir</span>
+            <em>›</em>
+          </button>
           <button type="button" className="hesap-satir hesap-satir--cikis" onClick={onCikis}>
             <svg {...ikon}>
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

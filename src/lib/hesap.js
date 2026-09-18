@@ -39,3 +39,11 @@ async function cagir(ad, govde) {
   }
   return data
 }
+
+/**
+ * Başka bir hesaba yeni geçici şifre üretir (yönetici: herkes; koç: kendi
+ * öğrencisi ve velisi). Şifre bir kez döner, hiçbir yere yazılmaz.
+ */
+export async function sifreSifirla(id) {
+  return await cagir('sifre-sifirla', { id })
+}

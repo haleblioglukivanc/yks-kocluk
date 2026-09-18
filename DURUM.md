@@ -1,11 +1,26 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (tasarım turu 8)
+Son güncelleme: 19 Eylül 2026 (şifre işleri)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 1: şifre işleri
+
+- **Şifremi değiştir** (`/sifre`, `ekranlar/SifreDegistir.jsx`): hesap menüsünde herkes için. Supabase'de "mevcut şifre
+  gerekli" ayarı açık olduğu için form mevcut şifreyi de istiyor (`updateUser({ password, current_password })`).
+  Başarılı olunca `profiller.sifre_degistirmeli = false`.
+- **İlk giriş önerisi**: `sifre_degistirmeli` açık hesap girişte "Kendi şifreni belirle" ekranını görür; karar gereği
+  zorunlu değil, "Sonra" oturum boyunca ertelenir (sessionStorage).
+- **Şifre sıfırla** (`bilesenler/SifreSifirla.jsx` + yeni Edge Function `sifre-sifirla` v1): yönetici herkes için
+  (Yönetim → Koçlar satırı), koç kendi öğrencisi/velisi için (öğrenci ekranı → Kayıt → Hesap). Yeni geçici şifre bir
+  kez görünür, bayrak açılır. Uçtan uca denendi (demo öğrenci: sıfırla → geçici şifreyle giriş → yeni şifre).
+- **Hata düzeltmesi**: "yönetici" artık rol değil bayrak (`profiller.yonetici`), ama Edge Function'lar rol = 'yonetici'
+  bakıyordu → yönetici koç **ekleyemiyordu**. `kullanici-olustur` v15 düzeltildi ve kaynağı ilk kez repoya alındı.
+  `kullanici-sil` repoda düzeltildi, **henüz yayınlanmadı** (koç silme arayüzü yok; öğrenci silme etkilenmiyor).
+- Sıradaki (TESPIT-YONETIM.md 5): koç detay + durum + öğrenci aktarma.
 
 ## 19 Eylül 2026 — tasarım turu 8: Yönetim + işlevsel tarama
 

@@ -85,12 +85,14 @@ Deno.serve(async (req: Request) => {
   // 2) Cagiranin rolu veritabanindan okunur.
   const { data: cagiran, error: cagiranHatasi } = await yonetim
     .from('profiller')
-    .select('rol')
+    .select('rol, yonetici')
     .eq('id', cagiranId)
     .maybeSingle()
 
   if (cagiranHatasi) return cevap({ hata: `Profil okunamadi: ${cagiranHatasi.message}` }, 500)
-  if (!cagiran || (cagiran.rol !== 'koc' && cagiran.rol !== 'yonetici')) {
+  // Yonetici artik rol degil bayrak (profiller.yonetici); ikisi de kabul.
+  const yoneticiMi = cagiran?.yonetici === true || cagiran?.rol === 'yonetici'
+  if (!cagiran || (cagiran.rol !== 'koc' && !yoneticiMi)) {
     return cevap({ hata: 'Bu islem icin koc yetkisi gerekli.' }, 403)
   }
 
@@ -114,10 +116,10 @@ Deno.serve(async (req: Request) => {
 
   // 4) Yetki kademesi
   if (hedef.rol === 'koc' || hedef.rol === 'yonetici') {
-    if (cagiran.rol !== 'yonetici') {
+    if (!yoneticiMi) {
       return cevap({ hata: 'Koc hesabini yalnizca yonetici silebilir.' }, 403)
     }
-  } else if (cagiran.rol !== 'yonetici') {
+  } else if (!yoneticiMi) {
     // Koc yalnizca kendi ogrencisine (ve o ogrencinin velisine) dokunabilir.
     if (hedef.rol === 'ogrenci') {
       const { data: o } = await yonetim

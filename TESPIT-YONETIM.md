@@ -73,7 +73,7 @@ Bugün "Sistem" sekmesinde içerikle karışık duruyor. Önerilen **Teknik** se
 **İletişim** (Başvurular, Sosyal, SMS) · **İçerik** (Kaynaklar, Konu öncelikleri, Haftalık ilham) · **Teknik**
 
 ## 5. Önerilen sıra
-1. **Şifre işleri** (kritik, küçük): herkes için "Şifremi değiştir" (hesap menüsü), ilk girişte değişim,
+1. ✓ **Şifre işleri** (19 Eylül 2026) (kritik, küçük): herkes için "Şifremi değiştir" (hesap menüsü), ilk girişte değişim,
    yöneticinin "şifre sıfırla" düğmesi (yeni geçici şifre, Edge Function).
 2. **Koç detay + durum + öğrenci aktarma** (veritabanı: `profiller`'e durum/başlangıç/kapasite; aktarma RPC'si).
 3. **Teknik sekmesi** ayrımı + entegrasyon durumları + erişim günlüğü.

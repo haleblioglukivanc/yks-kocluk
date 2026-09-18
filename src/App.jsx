@@ -11,6 +11,7 @@ import KocPaneli from './ekranlar/KocPaneli.jsx'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import Baglantilar from './ekranlar/Baglantilar.jsx'
+import SifreDegistir from './ekranlar/SifreDegistir.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
@@ -158,6 +159,9 @@ export default function App() {
      sütun ve ayrı ekranlar. Kanca koşulsuz, en üstte. */
   const genis = useGenisEkran()
   const { durum, profil, kullanici, cikisYap } = useOturum()
+  const [sifreErtelendi, setSifreErtelendi] = useState(() => {
+    try { return sessionStorage.getItem('sifre-ertelendi') === '1' } catch { return false }
+  })
   const [hesapAcik, setHesapAcik] = useState(false)
   const [bekleyenKarar, setBekleyenKarar] = useState(0)
   const [yol, git] = useYol()
@@ -360,7 +364,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/baglantilar', '/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -378,10 +382,11 @@ export default function App() {
 
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
+    yol === '/sifre' ||
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
        bitişik tek parça (TASARIM-KURALLARI 3). */
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || Boolean(ogrenciId))) ||
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || yol === '/sifre' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
@@ -423,6 +428,20 @@ export default function App() {
   const bildirimlerdeMi = yol === '/bildirimler'
 
   function icerik() {
+    /* Geçici şifreyle açılan (ya da sıfırlanan) hesap: önce kendi şifresini
+       belirlemesi önerilir. "Sonra" bu oturum boyunca sormaz. */
+    if (profil.sifre_degistirmeli && !sifreErtelendi && !gozuyleId)
+      return (
+        <SifreDegistir
+          ilk
+          onSonra={() => {
+            try { sessionStorage.setItem('sifre-ertelendi', '1') } catch { /* gizli sekme */ }
+            setSifreErtelendi(true)
+          }}
+          onBitti={() => window.location.assign('/')}
+        />
+      )
+    if (yol === '/sifre') return <SifreDegistir onBitti={() => git('/')} />
     if (yol === '/mesajlar') return <Mesajlar profil={profil} />
     if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} />
     if (kocMu && yol === '/konular')

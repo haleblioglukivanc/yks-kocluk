@@ -13,6 +13,7 @@ import { aksanStili } from '../lib/sekmeAksani.js'
 import Sekmeler from '../ortak/Sekmeler.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
+import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
 import { kullaniciSil } from '../lib/hesap.js'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
@@ -126,6 +127,9 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           <Odemeler ogrenci={ogrenci} />
           <Veliler ogrenci={ogrenci} />
           <Notlar ogrenci={ogrenci} />
+          <Bolum cizgili baslik="Hesap" aciklama="Öğrenci şifresini unuttuysa yeni geçici şifre üret.">
+            <SifreSifirla kisiId={ogrenci.id} ad={ad} />
+          </Bolum>
           <TehlikeliBolge ogrenci={ogrenci} onSilindi={onGeri} />
         </>
       )}

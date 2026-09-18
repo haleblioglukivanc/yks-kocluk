@@ -4,6 +4,7 @@ import UstBlok from '../ortak/UstBlok.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import UyariSatiri from '../ortak/UyariSatiri.jsx'
+import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -157,7 +158,7 @@ function YoneticiAnahtari({ koc, onDegisti, onHata }) {
 /* Koçlar tek listede: performans, yetki ve ekleme aynı yerde. Eskiden
    "Koçlar" ve "Koçlar ve yetkiler" iki ayrı kartta aynı kişileri iki kez
    sayıyordu (Yönetim turu, 19 Eylül 2026). */
-function Koclar({ liste, onDegisti }) {
+function Koclar({ liste, onDegisti, benId }) {
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
   return (
@@ -189,6 +190,8 @@ function Koclar({ liste, onDegisti }) {
                   <YoneticiAnahtari koc={k} onDegisti={onDegisti} onHata={setHata} />
                 </div>
                 {uyari.length > 0 && <UyariSatiri durum="acil">{uyari.join(' · ')}</UyariSatiri>}
+                {/* Kendi şifreni buradan değil hesap menüsünden değiştirirsin. */}
+                {k.koc_id !== benId && <SifreSifirla kisiId={k.koc_id} ad={k.ad_soyad} />}
               </li>
             )
           })}
@@ -702,7 +705,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {sekme === 'koclar' && (
             <>
-              <Koclar liste={veri.koclar} onDegisti={yukle} />
+              <Koclar liste={veri.koclar} onDegisti={yukle} benId={profil.id} />
               {/* Koçun kendi bağlantısı (Raporlar'dan taşındı). */}
               <TelegramBaglanti />
             </>

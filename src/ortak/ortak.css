@@ -168,3 +168,11 @@
 /* ── Ölçü kartı (istisna) ─────────────────────────────────────────────
    Sayı taşıyan pastel kart zeminde tek katman olarak durabilir
    (Raporlar'daki dört kart). İçinde kutu yok. */
+
+/* ── Şifre ─────────────────────────────────────────────────────────── */
+.sifre-sifirla { display: flex; flex-direction: column; gap: 0.4rem; margin-top: 0.25rem; }
+.sifre-sifirla--sonuc { background: var(--serin-zemin); border-radius: var(--r-buyuk); padding: 0.75rem 1rem; }
+.sifre-sifirla--sonuc .kod-rozet { font-size: var(--punto-orta); font-weight: 700; letter-spacing: 0.04em; }
+.sifre-sifirla-dugmeler { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+.sifre-tamam { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; }
+.sifre-sonra { align-self: center; min-height: 44px; }
