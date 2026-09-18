@@ -4560,3 +4560,46 @@ body[data-rol='koc'] .sirada-satir[style*='--ders-renk'] .sirada-baglam { backgr
 
 /* Sıradan seçilen kart üst şeridin altına girmesin: kaydırma orada dursun. */
 .kart--kaldirilmis { scroll-margin-top: calc(env(safe-area-inset-top) + 4.5rem); }
+
+/* ═══ Raporlar (tasarım turu 4) ═══════════════════════════════════════
+   Tek üst blok: gösterge + dönemin tek sayısı + üç özet + durum + dönem
+   sekmeleri. Altında kartsız bölümler; geniş ekranda iki sütun. */
+.rapor-tepe .rt-alt { color: color-mix(in srgb, var(--beyaz) 70%, transparent); }
+.rapor-tepe-ozet { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+.rapor-tepe .rt-gosterge { width: 112px; height: 62px; }
+.rapor-tepe .rt-gosterge svg { width: 112px; height: 62px; }
+.rapor-tepe .rt-gosterge path:first-child { stroke: color-mix(in srgb, var(--beyaz) 18%, transparent); }
+.rapor-tepe .rt-deger { display: none; }
+.rapor-tepe-sayi { margin: 0; font-family: var(--display); font-size: var(--punto-dev); font-weight: 700; line-height: 1; color: var(--beyaz); }
+.rapor-tepe-alt { margin: 0.3rem 0 0; font-size: var(--punto-kucuk); color: color-mix(in srgb, var(--beyaz) 72%, transparent); }
+.rapor-tepe-satir {
+  display: flex; flex-wrap: wrap; gap: 0.35rem 1.25rem; margin: 0.9rem 0 0.6rem;
+  font-size: var(--punto-kucuk); color: color-mix(in srgb, var(--beyaz) 72%, transparent);
+}
+.rapor-tepe-satir b { color: var(--beyaz); font-size: var(--punto-orta); }
+.rapor-tarih { margin-top: 1rem; }
+.risk-satiri { display: flex; flex-wrap: wrap; gap: 0.35rem 1rem; margin: 0.2rem 0 0.4rem; font-size: var(--punto-mini); color: var(--grafit); }
+.risk-satiri span::before { content: '●'; margin-right: 0.3rem; }
+.risk-satiri [data-durum='iyi']::before { color: var(--isaret-metin); }
+.risk-satiri [data-durum='izle']::before { color: var(--sicak-metin); }
+.risk-satiri [data-durum='acil']::before { color: var(--kizil-metin); }
+/* Durum hap değil yazı (TASARIM-KURALLARI 7). */
+.durum-yazi { flex: 0 0 auto; font-size: var(--punto-mini); font-weight: 700; color: var(--grafit); white-space: nowrap; }
+.durum-yazi[data-durum='uyari'] { color: var(--kizil-metin); }
+.durum-yazi[data-durum='izle'] { color: var(--sicak-metin); }
+.durum-yazi[data-durum='iyi'] { color: var(--isaret-metin); }
+.durum-yazi[data-durum='sonuk'] { color: var(--soluk); }
+.rapor-eposta-alt { display: flex; justify-content: space-between; align-items: center; }
+.rapor-yan > .bolum:first-child.bolum--cizgili { border-top: 1px solid var(--cizgi); }
+/* Haftanın kitabı/sözü: kutu değil, çizgiyle ayrılan iki blok (koç, öğrenci
+   ve velide aynı bileşen). */
+.uygulama .hi-kutu, .hi-kutu {
+  background: none; border: 0; border-radius: 0; box-shadow: none;
+  padding: 0.75rem 0; border-top: 1px solid var(--cizgi);
+}
+.uygulama .hi-kutu--kitap, .uygulama .hi-kutu--soz, .hi-kutu--kitap, .hi-kutu--soz { border-top: 1px solid var(--cizgi); }
+.haftalik-ilham > .hi-kutu:first-child { border-top: 0; padding-top: 0.25rem; }
+.uygulama .hi-rozet, .hi-rozet { background: none; border: 0; padding: 0; font-size: var(--punto-mini); color: var(--soluk); }
+.hi-rozetler { gap: 0.25rem 0.9rem; }
+/* Boş net grafiği yer ayırmasın: cümle kadar yer kaplar. */
+.bolum .net-yer:has(.bos-durum) { min-height: 0; height: auto; }

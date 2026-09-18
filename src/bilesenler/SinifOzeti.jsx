@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Kart, Bos, Yukleniyor } from './Ortak.jsx'
-import { haftaAraligi, kisaTarih } from '../lib/hafta.js'
-import RaporTepesi from './RaporTepesi.jsx'
+import { Yukleniyor } from './Ortak.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
 
 /**
  * Sınıfın "bak" katmanı: plan tamamlama, aktif öğrenci, net trendi.
@@ -32,7 +32,7 @@ export default function SinifOzeti() {
 
 function NetGrafigi({ veri }) {
   if (!veri || veri.length < 2) {
-    return <Bos ruh="dusunuyor" baslik="Sınıf eğrisi burada belirecek" aciklama="İki haftalık deneme verisi birikince çizgi kendiliğinden çizilir." />
+    return <BosDurum metin="Karşılaştırma için iki haftalık deneme gerekiyor; henüz yok." />
   }
 
   const G = 300
@@ -75,49 +75,27 @@ function NetGrafigi({ veri }) {
   )
 }
 
+/* Raporlar'daki sınıf net bölümü. Plan tamamlama göstergesi buradan
+   kalktı: Raporlar'ın üst bloğu seçilen dönemin tek sayısını gösteriyor
+   (eskiden burada haftalık %86, aşağıda dönemlik %100 — iki sayı çelişiyordu). */
 function Ozetler({ ozet }) {
   const yukleniyor = ozet == null
-  const riskli = ozet?.riskliOgrenciler ?? []
-  const sessiz = riskli.filter((o) => (o.gunGecti ?? 0) >= 3 || o.hicBaslamadi).length
-  const tamamlama = ozet?.planTamamlama ?? 0
   const net = ozet?.sinifNetDegisimi
-  const iyi = tamamlama >= 60 && !sessiz
-
-  /* Dönem Raporlar kartındaki "Bu hafta" ile aynı: pazartesiden bugüne.
-     Tarih tarayıcıda hesaplanır, veri beklemez. */
-  const [bas, bit] = haftaAraligi()
-
   return (
-    <>
-      <RaporTepesi
-        baslik="Bu hafta"
-        altBaslik={`${kisaTarih(bas)} – ${kisaTarih(bit)}`}
-        yuzde={yukleniyor ? null : tamamlama}
-        deger={yukleniyor ? '–' : `%${tamamlama}`}
-        etiket="Plan tamamlama"
-        detay={
-          yukleniyor
-            ? 'Öğrenciler sayılıyor…'
-            : `${ozet.aktifOgrenci ?? 0} / ${ozet.toplamOgrenci ?? 0} öğrenci aktif${sessiz ? ` · ${sessiz} kişi 3 gündür yok` : ''}`
-        }
-        durum={yukleniyor ? 'bekliyor' : iyi ? 'iyi' : 'dikkat'}
-        durumMetni={yukleniyor ? '\u00a0' : iyi ? 'Yolunda' : 'Dikkat'}
-      />
-
-      <Kart
-        baslik="Sınıf ortalaması net"
-        altBaslik={
-          yukleniyor
-            ? 'Hesaplanıyor…'
-            : net == null
-              ? 'Geçen haftayla karşılaştırma için yeterli veri yok'
-              : `Geçen haftaya göre ${net > 0 ? '+' : ''}${Number(net).toFixed(1)} net`
-        }
-      >
-        <div className="net-yer">
-          {yukleniyor ? <Yukleniyor satir={3} /> : <NetGrafigi veri={ozet.netTrendi} />}
-        </div>
-      </Kart>
-    </>
+    <Bolum
+      cizgili
+      baslik="Sınıf ortalaması net"
+      aciklama={
+        yukleniyor
+          ? 'Hesaplanıyor…'
+          : net == null
+            ? null
+            : `Geçen haftaya göre ${net > 0 ? '+' : ''}${Number(net).toFixed(1)} net`
+      }
+    >
+      <div className="net-yer">
+        {yukleniyor ? <Yukleniyor satir={3} /> : <NetGrafigi veri={ozet.netTrendi} />}
+      </div>
+    </Bolum>
   )
 }

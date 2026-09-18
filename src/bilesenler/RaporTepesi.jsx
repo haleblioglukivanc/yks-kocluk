@@ -13,7 +13,7 @@
 const YARICAP = 50
 const YAY = Math.PI * YARICAP // yarım çevre
 
-function Gosterge({ yuzde, deger, etiket }) {
+export function Gosterge({ yuzde, deger, etiket }) {
   const oran = yuzde == null ? 0 : Math.max(0, Math.min(100, yuzde)) / 100
   return (
     <div className="rt-gosterge" role="img" aria-label={`${etiket} ${deger}`}>

@@ -262,3 +262,14 @@
 @media (min-width: 64rem) {
   .prg-serit-kap { position: static; background: none; }
 }
+
+/* Raporlar: geniş ekranda iki sütun — solda grafikler ve öğrenci tablosu,
+   sağda e-posta, bu hafta giden, araçlar, Telegram. */
+@media (min-width: 64rem) {
+  .rapor-izgara { display: grid; grid-template-columns: minmax(0, 1fr) 22rem; gap: 3rem; align-items: start; }
+  .rapor-yan > .bolum:first-child { margin-top: 1.5rem; }
+}
+@media (min-width: 64rem) {
+  /* Koç masaüstünde üst şerit yer kaplamıyor; rapor başlığı tepeye yapışmasın. */
+  body[data-rol='koc'] .uygulama.uygulama--koyu-tepe .panel > .hero-yuzey.rapor-tepe { padding-top: 1.5rem; padding-right: 9rem; }
+}

@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu, 3. adım)
+Son güncelleme: 18 Eylül 2026 (tasarım turu, 4. adım)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu, 4. adım: Raporlar
+
+- Mokap: https://claude.ai/artifact/5bTmZZmbD8NmDmdmK5VLrf (Bekir onayladı).
+- Tek üst blok (`UstBlok`, `.rapor-tepe`): gösterge + seçilen dönemin görev tamamlaması (tek sayı), çalışma / çalışan
+  öğrenci / deneme satırı, durum satırı, dönem sekmeleri (Bugün, Bu hafta, Son 30 gün, Özel). Eskiden haftalık
+  plan tamamlama (%86) ile dönemlik görev tamamlama (%100) iki ayrı sayı olarak çelişiyordu; artık tek sayı.
+  "Yenile" düğmesi kalktı (dönem değişince yeniden yüklüyor).
+- `SinifOzeti` yalnız "Sınıf ortalaması net" bölümü; `RaporTepesi` koçta kullanılmıyor (öğrencinin Denemeler'inde duruyor),
+  `Gosterge` oradan dışa açıldı.
+- Risk dağılımı kartı → Öğrenciler bölümünde tek satır. Hap/rozetler → `.durum-yazi`. E-posta: "Bana gönder" ve
+  "Test maili" yazı düğmesi, geçmiş son 3 + "Tümü". `TelegramBaglanti` bölüm oldu.
+- `HaftalikIlham` kutusuz (koç, öğrenci ve velide ortak — üçünde de değişti).
+- Geniş ekranda `.rapor-izgara` iki sütun (yerlesim.css).
 
 ## 18 Eylül 2026 — tasarım turu, 3. adım: koçun öğrenci ekranı, kalan sekmeler
 

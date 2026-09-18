@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useState } from 'react'
 import { useGenisEkran } from '../lib/genislik.js'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import Sekmeler from '../ortak/Sekmeler.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
+import UyariSatiri from '../ortak/UyariSatiri.jsx'
+import { Gosterge } from '../bilesenler/RaporTepesi.jsx'
 import Sayan from '../bilesenler/Sayan.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
 import { gunEkle, haftaBasi, yerelIso } from '../lib/hafta.js'
@@ -51,13 +57,7 @@ function GunlukGrafik({ gunler }) {
   if (!gunler?.length) return null
   // Hiç çalışma yoksa boş eksen çizilmez: boş grafik "bozuk" okunuyor.
   if (!gunler.some((g) => g.dakika > 0)) {
-    return (
-      <Bos
-        ruh="dusunuyor"
-        baslik="Çalışma grafiği burada belirecek"
-        aciklama="Öğrenciler sayaç başlatınca günlük süreler bu kartta çubuk olur."
-      />
-    )
+    return <BosDurum metin="Öğrenciler sayaç başlattıkça günlük süreler burada çubuk olur." />
   }
   const enYuksek = Math.max(...gunler.map((g) => g.dakika), 1)
   const genislik = 300
@@ -108,41 +108,24 @@ function GunlukGrafik({ gunler }) {
 const RISK_ADI = { acil: 'Önce bunlar', izle: 'İzle', iyi: 'Yolunda', pasif: 'Pasif' }
 const RISK_TONU = { acil: 'uyari', izle: 'izle', iyi: 'iyi', pasif: 'notr' }
 
-/* Risk dağılımı: üç sayı, üç çubuk. Sınıfın hangi üçte biri nerede —
-   listeyi tek tek okumadan görünsün. */
-function RiskDagilimi({ riskler, toplam }) {
-  /* riskler null = sorgu sürüyor. Sıfır göstermek "öğrenci yok" diye okunuyordu. */
-  if (riskler == null || toplam == null) {
-    return (
-      <Kart baslik='Risk dağılımı' altBaslik='Sayılıyor…'>
-        <Yukleniyor satir={3} />
-      </Kart>
-    )
-  }
+/* Risk dağılımı artık ayrı kart değil, Öğrenciler bölümünde tek satır:
+   üç renkli nokta, üç sayı. */
+function RiskSatiri({ riskler }) {
+  if (riskler == null) return null
   const say = { iyi: 0, izle: 0, acil: 0 }
   for (const r of Object.values(riskler)) {
     if (r.risk_seviyesi in say) say[r.risk_seviyesi] += 1
   }
-  const en = Math.max(say.iyi, say.izle, say.acil, 1)
-  const satir = [
-    ['Yolunda', say.iyi, 'var(--isaret-metin)'],
-    ['İzle', say.izle, 'var(--marka-amber)'],
-    ['Önce bunlar', say.acil, 'var(--marka-alev)'],
-  ]
   return (
-    <Kart baslik='Risk dağılımı' altBaslik={`${toplam} aktif öğrenci`}>
-      {satir.map(([ad, n, renk]) => (
-        <div key={ad} className='rd-satir'>
-          <span className='rd-ad'>{ad}</span>
-          <span className='rd-ray'>
-            <span className='rd-dolgu' style={{ width: `${(n / en) * 100}%`, background: renk }} />
-          </span>
-          <span className='rd-sayi'>{n}</span>
-        </div>
-      ))}
-    </Kart>
+    <p className='risk-satiri'>
+      <span data-durum='iyi'>{say.iyi} yolunda</span>
+      <span data-durum='izle'>{say.izle} izle</span>
+      <span data-durum='acil'>{say.acil} önce bu</span>
+    </p>
   )
 }
+
+const tarihYaz = (t) => new Date(`${t}T00:00:00`).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long' })
 
 export default function Raporlar({ onOgrenciAc, onGit }) {
   const genis = useGenisEkran()
@@ -154,6 +137,7 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
   const [islemde, setIslemde] = useState(null)
   const [hata, setHata] = useState('')
   const [bilgi, setBilgi] = useState('')
+  const [gecmisHepsi, setGecmisHepsi] = useState(false)
 
   const yukle = useCallback(async () => {
     setVeri(null)
@@ -246,289 +230,260 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
 
   const g = veri?.genel ?? {}
   const ogrenciler = veri?.ogrenciler ?? []
-  const enUzun = Math.max(...ogrenciler.map((o) => o.dakika ?? 0), 1)
+
+  const calisan = ogrenciler.filter((o) => (o.dakika ?? 0) > 0).length
+  const acilVar = riskler ? Object.values(riskler).some((r) => r.risk_seviyesi === 'acil') : false
+  const iyi = (g.tamamlama_yuzdesi ?? 0) >= 60 && !acilVar
+  const donem = bas === bit ? tarihYaz(bas) : `${tarihYaz(bas)} – ${tarihYaz(bit)}`
 
   return (
     <>
-      {/* Sınıfın haftalık bakışı panelden buraya indi: KPI + net trendi. */}
-      <SinifOzeti />
-
-      <Kart
-        baslik='Raporlar'
-        altBaslik='Seçtiğin dönemin toplu görüntüsü'
-        eylem={
-          <Dugme tur='ikincil' onClick={yukle} disabled={veri === null}>
-            Yenile
-          </Dugme>
-        }
-      >
-        <div className='tur-secim'>
-          {ARALIKLAR.map(([ad, etiket]) => (
-            <button
-              key={ad}
-              className={aralik === ad ? 'tur-cip tur-cip--etkin' : 'tur-cip'}
-              onClick={() => aralikSec(ad)}
-            >
-              {etiket}
-            </button>
-          ))}
+      {/* Tek üst blok: dönemin tek sayısı, üç özet, durum ve dönem sekmeleri
+          (TASARIM-KURALLARI 3–4). Eskiden üstte haftalık gösterge, altta
+          dönemlik KPI kutuları vardı; iki farklı yüzde çelişiyordu. */}
+      <UstBlok sinif='rapor-tepe' etiket='Rapor' sekmeli>
+        <h1 className='rt-baslik'>Rapor</h1>
+        <p className='rt-alt'>{donem}</p>
+        <div className='rapor-tepe-ozet'>
+          <Gosterge
+            yuzde={veri ? g.tamamlama_yuzdesi ?? null : null}
+            deger={veri && g.tamamlama_yuzdesi != null ? `%${g.tamamlama_yuzdesi}` : '–'}
+            etiket='Görev tamamlama'
+          />
+          <div>
+            <p className='rapor-tepe-sayi'>
+              {veri && g.tamamlama_yuzdesi != null ? <Sayan on='%' deger={g.tamamlama_yuzdesi} /> : '–'}
+            </p>
+            <p className='rapor-tepe-alt'>
+              görev tamamlandı{veri ? ` · ${g.gorev_tamam ?? 0} / ${g.gorev_toplam ?? 0}` : ''}
+            </p>
+          </div>
         </div>
+        <p className='rapor-tepe-satir'>
+          <span><b>{veri ? saatDakika(g.toplam_dakika ?? 0) : '–'}</b> çalışma</span>
+          <span><b>{veri ? `${calisan}/${g.ogrenci_sayisi ?? 0}` : '–'}</b> öğrenci çalıştı</span>
+          <span><b>{veri ? g.deneme_sayisi ?? 0 : '–'}</b> deneme</span>
+        </p>
+        {veri ? (
+          <UyariSatiri durum={iyi ? 'iyi' : 'izle'}>{iyi ? 'Yolunda' : 'Dikkat'}</UyariSatiri>
+        ) : null}
+        <Sekmeler
+          varyant='koyu'
+          etiket='Dönem'
+          deger={aralik}
+          onSec={aralikSec}
+          secenekler={ARALIKLAR.map(([k, ad]) => ({ k, ad }))}
+        />
+      </UstBlok>
 
-        {aralik === 'ozel' && (
-          <div className='rapor-tarih'>
-            <input
-              type='date'
-              value={bas}
-              max={bit}
-              aria-label='Başlangıç tarihi'
-              onChange={(e) => setTarih([e.target.value, bit])}
-            />
-            <span className='rapor-tire'>–</span>
-            <input
-              type='date'
-              value={bit}
-              min={bas}
-              aria-label='Bitiş tarihi'
-              onChange={(e) => setTarih([bas, e.target.value])}
-            />
-          </div>
-        )}
+      {aralik === 'ozel' && (
+        <div className='rapor-tarih'>
+          <input
+            type='date'
+            value={bas}
+            max={bit}
+            aria-label='Başlangıç tarihi'
+            onChange={(e) => setTarih([e.target.value, bit])}
+          />
+          <span className='rapor-tire'>–</span>
+          <input
+            type='date'
+            value={bit}
+            min={bas}
+            aria-label='Bitiş tarihi'
+            onChange={(e) => setTarih([bas, e.target.value])}
+          />
+        </div>
+      )}
 
-        <Uyari>{hata}</Uyari>
-        <Uyari tur='bilgi'>{bilgi}</Uyari>
+      <Uyari>{hata}</Uyari>
+      <Uyari tur='bilgi'>{bilgi}</Uyari>
 
-        {veri === null ? (
-          /* İskelet dolu halin kalıbında: aynı dört KPI kutusu ve grafik
-             yüksekliği. Tek parça iskelet dolu halden kısaydı; alttaki
-             kartları itiyordu (tablette CLS 0.095). */
-          <div aria-busy='true'>
-            <div className='kpi-satir rapor-kpi'>
-              {['Toplam çalışma', 'Görev tamamlama', 'Öğrenci', 'Deneme'].map((ad) => (
-                <div key={ad} className='kpi-kart'>
-                  <p className='kpi-etiket'>{ad}</p>
-                  <p className='kpi-sayi'>–</p>
-                  <p className='kpi-alt'>&nbsp;</p>
-                </div>
-              ))}
-            </div>
-            <div className='rapor-grafik rapor-grafik--bekliyor' aria-hidden='true' />
-          </div>
-        ) : veri === false ? (
-          <Bos baslik='Rapor alınamadı' aciklama='Yenile diyerek tekrar dene.' />
-        ) : (
-          <>
-            <div className='kpi-satir rapor-kpi'>
-              <div className='kpi-kart'>
-                <p className='kpi-etiket'>Toplam çalışma</p>
-                <p className='kpi-sayi'>{saatDakika(g.toplam_dakika ?? 0)}</p>
-                <p className='kpi-alt'>{veri.gun_sayisi} günde</p>
-              </div>
-              <div className='kpi-kart'>
-                <p className='kpi-etiket'>Görev tamamlama</p>
-                <p className='kpi-sayi'>
-                  {g.tamamlama_yuzdesi == null ? '—' : <Sayan on="%" deger={g.tamamlama_yuzdesi} />}
-                </p>
-                <p
-                  className={
-                    (g.tamamlama_yuzdesi ?? 0) >= 60 ? 'kpi-alt kpi-alt--iyi' : 'kpi-alt kpi-alt--kotu'
-                  }
-                >
-                  {g.gorev_tamam ?? 0} / {g.gorev_toplam ?? 0} görev
-                </p>
-              </div>
-              <div className='kpi-kart'>
-                <p className='kpi-etiket'>Öğrenci</p>
-                <p className='kpi-sayi'><Sayan deger={g.ogrenci_sayisi ?? 0} /></p>
-                <p className='kpi-alt'>
-                  {ogrenciler.filter((o) => (o.dakika ?? 0) > 0).length} tanesi çalıştı
-                </p>
-              </div>
-              <div className='kpi-kart'>
-                <p className='kpi-etiket'>Deneme</p>
-                <p className='kpi-sayi'><Sayan deger={g.deneme_sayisi ?? 0} /></p>
-                <p className='kpi-alt'>bu dönemde girildi</p>
-              </div>
-            </div>
+      <div className='rapor-izgara'>
+        <div className='rapor-ana'>
+          <Bolum baslik='Günlük çalışma'>
+            {veri === null ? (
+              <div className='rapor-grafik rapor-grafik--bekliyor' aria-hidden='true' />
+            ) : veri === false ? (
+              <BosDurum metin='Rapor alınamadı. Dönemi yeniden seçerek tekrar dene.' />
+            ) : (
+              <GunlukGrafik gunler={veri.gunluk} />
+            )}
+          </Bolum>
 
-            <GunlukGrafik gunler={veri.gunluk} />
-          </>
-        )}
-      </Kart>
+          <SinifOzeti />
 
-      <RiskDagilimi
-        riskler={riskler}
-        toplam={veri === null || riskler === null ? null : g.ogrenci_sayisi ?? Object.keys(riskler).length}
-      />
-
-      <Kart
-        baslik='Öğrenciler'
-        altBaslik={genis ? 'Satıra dokun, öğrenciye git' : 'Çalışma süresine göre sıralı'}
-      >
-        {veri === null ? (
-          <Yukleniyor />
-        ) : ogrenciler.length === 0 ? (
-          <Bos baslik='Aktif öğrenci yok' />
-        ) : genis ? (
-          /* Geniş ekranda tablo: on iki öğrencinin haftası tek bakışta.
-             Telefonda tablo okunmuyor, orada çubuklu liste kalıyor. */
-          <div className='yk-tablo-kap'>
-            <table className='yk-tablo'>
-              <thead>
-                <tr>
-                  <th>Öğrenci</th><th>Çalışma</th><th>Tamamlama</th>
-                  <th>Son net</th><th>Değişim</th><th>Gecikmiş</th><th>Durum</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ogrenciler.map((o) => {
-                  const r = riskler?.[o.ogrenci_id] ?? {}
-                  const fark = r.net_farki == null ? null : Number(r.net_farki)
-                  return (
-                    <tr
-                      key={o.ogrenci_id}
-                      tabIndex={0}
-                      onClick={() => onOgrenciAc?.(o.ogrenci_id)}
-                      onKeyDown={(e) => e.key === 'Enter' && onOgrenciAc?.(o.ogrenci_id)}
-                    >
-                      <td>{o.ad_soyad}</td>
-                      <td className='yk-sayi'>{saatDakika(o.dakika ?? 0)}</td>
-                      <td className='yk-sayi'>{o.yuzde == null ? '—' : `%${o.yuzde}`}</td>
-                      <td className='yk-sayi'>{o.son_net == null ? '—' : o.son_net}</td>
-                      <td className={`yk-sayi${fark ? (fark > 0 ? ' rd-yukari' : ' rd-asagi') : ''}`}>
-                        {fark == null || fark === 0 ? '—' : `${fark > 0 ? '▲' : '▼'} ${Math.abs(fark).toFixed(2)}`}
-                      </td>
-                      <td className='yk-sayi'>{r.gecikmis_gorev ?? 0}</td>
-                      <td>
-                        <Rozet ton={RISK_TONU[r.risk_seviyesi] ?? 'notr'}>
-                          {RISK_ADI[r.risk_seviyesi] ?? '—'}
-                        </Rozet>
-                      </td>
+          <Bolum
+            cizgili
+            baslik='Öğrenciler'
+            sayi={veri ? ogrenciler.length : null}
+            aciklama={genis ? 'Satıra tıkla, öğrenciye git.' : 'Çalışma süresine göre sıralı.'}
+          >
+            <RiskSatiri riskler={riskler} />
+            {veri === null ? (
+              <Yukleniyor />
+            ) : ogrenciler.length === 0 ? (
+              <BosDurum metin='Aktif öğrenci yok.' />
+            ) : genis ? (
+              /* Geniş ekranda tablo: on iki öğrencinin dönemi tek bakışta. */
+              <div className='yk-tablo-kap'>
+                <table className='yk-tablo'>
+                  <thead>
+                    <tr>
+                      <th>Öğrenci</th><th>Çalışma</th><th>Tamamlama</th>
+                      <th>Son net</th><th>Değişim</th><th>Gecikmiş</th><th>Durum</th>
                     </tr>
+                  </thead>
+                  <tbody>
+                    {ogrenciler.map((o) => {
+                      const r = riskler?.[o.ogrenci_id] ?? {}
+                      const fark = r.net_farki == null ? null : Number(r.net_farki)
+                      return (
+                        <tr
+                          key={o.ogrenci_id}
+                          tabIndex={0}
+                          onClick={() => onOgrenciAc?.(o.ogrenci_id)}
+                          onKeyDown={(e) => e.key === 'Enter' && onOgrenciAc?.(o.ogrenci_id)}
+                        >
+                          <td>{o.ad_soyad}</td>
+                          <td className='yk-sayi'>{saatDakika(o.dakika ?? 0)}</td>
+                          <td className='yk-sayi'>{o.yuzde == null ? '—' : `%${o.yuzde}`}</td>
+                          <td className='yk-sayi'>{o.son_net == null ? '—' : o.son_net}</td>
+                          <td className={`yk-sayi${fark ? (fark > 0 ? ' rd-yukari' : ' rd-asagi') : ''}`}>
+                            {fark == null || fark === 0 ? '—' : `${fark > 0 ? '▲' : '▼'} ${Math.abs(fark).toFixed(2)}`}
+                          </td>
+                          <td className='yk-sayi'>{r.gecikmis_gorev ?? 0}</td>
+                          <td>
+                            <span className='durum-yazi' data-durum={RISK_TONU[r.risk_seviyesi] ?? 'notr'}>
+                              {RISK_ADI[r.risk_seviyesi] ?? '—'}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            ) : (
+              <ul className='liste'>
+                {ogrenciler.map((o) => {
+                  const durgun = (o.dakika ?? 0) === 0
+                  return (
+                    <li key={o.ogrenci_id}>
+                      <button
+                        className='ogrenci-satir rapor-satir'
+                        onClick={() => onOgrenciAc?.(o.ogrenci_id)}
+                      >
+                        <div className='rapor-satir-metin'>
+                          <span className='liste-ad'>{o.ad_soyad}</span>
+                          <span className='liste-alt'>
+                            {saatDakika(o.dakika ?? 0)} · {o.gorev_tamam}/{o.gorev_toplam} görev
+                            {o.son_net != null && ` · son net ${o.son_net}`}
+                          </span>
+                        </div>
+                        {durgun ? (
+                          <span className='durum-yazi' data-durum='uyari'>durgun</span>
+                        ) : (
+                          <span className='hedef-deger'>
+                            <strong>{o.yuzde == null ? '—' : `%${o.yuzde}`}</strong>
+                          </span>
+                        )}
+                        <span className='ok' aria-hidden='true'>›</span>
+                      </button>
+                    </li>
                   )
                 })}
-              </tbody>
-            </table>
-          </div>
-        ) : (
-          <ul className='liste'>
-            {ogrenciler.map((o) => {
-              const durgun = (o.dakika ?? 0) === 0
-              return (
-                <li key={o.ogrenci_id}>
-                  <button
-                    className='ogrenci-satir rapor-satir'
-                    onClick={() => onOgrenciAc?.(o.ogrenci_id)}
-                  >
-                    <div className='rapor-satir-metin'>
-                      <span className='liste-ad'>{o.ad_soyad}</span>
-                      <span className='liste-alt'>
-                        {saatDakika(o.dakika ?? 0)} · {o.gorev_tamam}/{o.gorev_toplam} görev
-                        {o.son_net != null && ` · son net ${o.son_net}`}
-                      </span>
-                      <div className='hedef-cubuk rapor-cubuk'>
-                        <div
-                          className='hedef-dolgu'
-                          style={{ width: `${Math.round(((o.dakika ?? 0) / enUzun) * 100)}%` }}
-                        />
-                      </div>
-                    </div>
-                    {durgun ? (
-                      <Rozet ton='uyari'>durgun</Rozet>
-                    ) : (
-                      <span className='hedef-deger'>
-                        <strong>{o.yuzde == null ? '—' : `%${o.yuzde}`}</strong>
-                      </span>
-                    )}
-                    <span className='ok' aria-hidden='true'>›</span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        )}
-      </Kart>
-
-      <Kart
-        baslik='E-posta gönderimi'
-        altBaslik='Veli raporları özet yayınlanınca kendiliğinden gider'
-      >
-        <div className='rapor-eylemler'>
-          <Dugme onClick={kuyrugaAt} bekliyor={islemde === 'gonder'} disabled={!veri}>
-            Bu raporu bana gönder
-          </Dugme>
-          <Dugme tur='ikincil' onClick={testMaili} bekliyor={islemde === 'test'}>
-            Test maili
-          </Dugme>
+              </ul>
+            )}
+          </Bolum>
         </div>
 
-        {gecmis === null ? (
-          <Yukleniyor />
-        ) : gecmis.length === 0 ? (
-          <Bos
-            baslik='Henüz mail gitmedi'
-            aciklama='Önce test maili göndererek altyapının çalıştığını doğrula.'
-          />
-        ) : (
-          <ul className='liste rapor-gecmis'>
-            {gecmis.map((m) => (
-              <li key={m.id} className='liste-satir'>
-                <div className='rapor-satir-metin'>
-                  <span className='liste-ad'>{m.konu}</span>
-                  <span className='liste-alt'>
-                    {TIP_YAZI[m.rapor_tipi] ?? m.rapor_tipi} ·{' '}
-                    {new Date(m.gonderildi_zaman ?? m.olusturuldu).toLocaleString('tr-TR', {
-                      day: '2-digit',
-                      month: '2-digit',
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                  {m.durum === 'hata' && m.hata_mesaji && (
-                    <span className='rapor-hata'>{m.hata_mesaji}</span>
-                  )}
-                </div>
-                <Rozet
-                  ton={m.durum === 'hata' ? 'uyari' : m.durum === 'gonderildi' ? 'notr' : 'sonuk'}
-                >
-                  {DURUM_YAZI[m.durum] ?? m.durum}
-                </Rozet>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Kart>
-
-      {/* Öğrencilere ve velilere o hafta ne gittiğini koçun da görmesi
-          gerekiyor; aynı bileşen, aynı veri. */}
-      <HaftalikIlham />
-
-      {/* Alt çubuktan inen ekranlar. Günlük değil, arada bir kullanılan işler. */}
-      <Kart baslik='Araçlar'>
-        <ul className='liste arac-listesi'>
-          {[
-            ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
-            ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
-          ].map(([yol, ad, not]) => (
-            <li key={yol} className='liste-satir'>
-              <button className='arac-satir' onClick={() => onGit?.(yol)}>
-                <span>
-                  <span className='liste-ad'>{ad}</span>
-                  <span className='liste-alt'>{not}</span>
-                </span>
-                <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
-                     strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
-                  <path d='m9 6 6 6-6 6' />
-                </svg>
+        <div className='rapor-yan'>
+          <Bolum
+            cizgili
+            baslik='E-posta'
+            aciklama='Veli raporları özet yayınlanınca kendiliğinden gider.'
+            eylem={islemde === 'gonder' ? 'Gönderiliyor…' : 'Bana gönder'}
+            onEylem={() => veri && islemde !== 'gonder' && kuyrugaAt()}
+          >
+            {gecmis === null ? (
+              <Yukleniyor />
+            ) : gecmis.length === 0 ? (
+              <BosDurum metin='Henüz mail gitmedi. Önce test maili göndererek altyapıyı doğrula.' />
+            ) : (
+              <ul className='liste rapor-gecmis'>
+                {(gecmisHepsi ? gecmis : gecmis.slice(0, 3)).map((m) => (
+                  <li key={m.id} className='liste-satir'>
+                    <div className='rapor-satir-metin'>
+                      <span className='liste-ad'>{m.konu}</span>
+                      <span className='liste-alt'>
+                        {TIP_YAZI[m.rapor_tipi] ?? m.rapor_tipi} ·{' '}
+                        {new Date(m.gonderildi_zaman ?? m.olusturuldu).toLocaleString('tr-TR', {
+                          day: '2-digit',
+                          month: '2-digit',
+                          hour: '2-digit',
+                          minute: '2-digit',
+                        })}
+                      </span>
+                      {m.durum === 'hata' && m.hata_mesaji && (
+                        <span className='rapor-hata'>{m.hata_mesaji}</span>
+                      )}
+                    </div>
+                    <span
+                      className='durum-yazi'
+                      data-durum={m.durum === 'hata' ? 'uyari' : m.durum === 'gonderildi' ? 'notr' : 'sonuk'}
+                    >
+                      {DURUM_YAZI[m.durum] ?? m.durum}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            <div className='rapor-eposta-alt'>
+              {gecmis && gecmis.length > 3 ? (
+                <button className='bolum-eylem' onClick={() => setGecmisHepsi((v) => !v)}>
+                  {gecmisHepsi ? 'Kısalt' : `Tümü · ${gecmis.length}`}
+                </button>
+              ) : <span />}
+              <button className='bolum-eylem' onClick={testMaili} disabled={islemde === 'test'}>
+                {islemde === 'test' ? 'Gönderiliyor…' : 'Test maili'}
               </button>
-            </li>
-          ))}
-        </ul>
-      </Kart>
+            </div>
+          </Bolum>
 
-      {/* Telefon değişir, hesap kaybolur. Bunlar geliştiriciye sorulacak
-          şeyler değil: koç kendi bağlantısını buradan kurar ve koparır. */}
-      <TelegramBaglanti />
+          {/* Öğrencilere ve velilere o hafta ne gittiğini koçun da görmesi
+              gerekiyor; aynı bileşen, aynı veri. */}
+          <Bolum cizgili baslik='Bu hafta giden'>
+            <HaftalikIlham />
+          </Bolum>
 
+          {/* Arada bir kullanılan işler. */}
+          <Bolum cizgili baslik='Araçlar'>
+            <ul className='liste arac-listesi'>
+              {[
+                ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
+                ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
+              ].map(([yol, ad, not]) => (
+                <li key={yol} className='liste-satir'>
+                  <button className='arac-satir' onClick={() => onGit?.(yol)}>
+                    <span>
+                      <span className='liste-ad'>{ad}</span>
+                      <span className='liste-alt'>{not}</span>
+                    </span>
+                    <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
+                         strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
+                      <path d='m9 6 6 6-6 6' />
+                    </svg>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </Bolum>
+
+          {/* Telefon değişir, hesap kaybolur: koç bağlantısını buradan kurar. */}
+          <TelegramBaglanti />
+        </div>
+      </div>
     </>
   )
 }

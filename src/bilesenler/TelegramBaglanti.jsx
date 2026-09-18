@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Dugme, Kart, Rozet, Uyari, Yukleniyor } from './Ortak.jsx'
+import { Uyari, Yukleniyor } from './Ortak.jsx'
+import Bolum from '../ortak/Bolum.jsx'
 
 /* Telefon değişir, hesap kaybolur, kod unutulur. Bunların hiçbiri
    geliştiriciye sorulacak bir şey olmamalı: koç kendi kodunu burada
@@ -61,17 +62,17 @@ export default function TelegramBaglanti() {
 
   if (hata) {
     return (
-      <Kart baslik='Telegram'>
+      <Bolum cizgili baslik='Telegram'>
         <Uyari>{hata}</Uyari>
-      </Kart>
+      </Bolum>
     )
   }
 
   if (durum === null) {
     return (
-      <Kart baslik='Telegram'>
+      <Bolum cizgili baslik='Telegram'>
         <Yukleniyor satir={2} sade />
-      </Kart>
+      </Bolum>
     )
   }
 
@@ -80,14 +81,13 @@ export default function TelegramBaglanti() {
   const kalan = saatKaldi(durum.kod_bitis)
 
   return (
-    <Kart
+    /* Kart değil bölüm; durum hap değil açıklama satırı (TASARIM-KURALLARI 7–8). */
+    <Bolum
+      cizgili
       baslik='Telegram'
-      altBaslik='Öğrencilerinle telefonundan yazış'
-      eylem={
-        <Rozet ton={durum.bagli_mi ? 'iyi' : 'notr'}>
-          {durum.bagli_mi ? 'Bağlı' : 'Bağlı değil'}
-        </Rozet>
-      }
+      aciklama={durum.bagli_mi ? '● Bağlı' : 'Bağlı değil · öğrencilerinle telefonundan yazış'}
+      eylem={durum.bagli_mi ? null : kod ? null : 'Kod üret'}
+      onEylem={kodUret}
     >
       {durum.bagli_mi ? (
         <div className='tg-govde'>
@@ -103,9 +103,9 @@ export default function TelegramBaglanti() {
             yapmana gerek yok. Hesabı kaybettiysen önce bağlantıyı kes, sonra
             yeni kod üret.
           </p>
-          <Dugme tur='ikincil' onClick={baglantiyiKes} bekliyor={bekliyor}>
+          <button className='tehlike-yazi-dugme' onClick={baglantiyiKes} disabled={bekliyor}>
             Bağlantıyı kes
-          </Dugme>
+          </button>
         </div>
       ) : kod ? (
         <div className='tg-govde'>
@@ -126,9 +126,9 @@ export default function TelegramBaglanti() {
             {kalan ? `Kod ${kalan} geçerli.` : 'Kodun süresi doldu.'} Tek kullanımlık —
             kaybedersen yenisini üretebilirsin.
           </p>
-          <Dugme tur='ikincil' onClick={kodUret} bekliyor={bekliyor}>
+          <button className='bolum-eylem' onClick={kodUret} disabled={bekliyor}>
             Yeni kod üret
-          </Dugme>
+          </button>
         </div>
       ) : (
         <div className='tg-govde'>
@@ -136,11 +136,8 @@ export default function TelegramBaglanti() {
             Bağlandığında öğrencilerinle Telegram üzerinden yazışabilir, gelen
             mesajları uygulamayı açmadan cevaplayabilirsin.
           </p>
-          <Dugme onClick={kodUret} bekliyor={bekliyor}>
-            Bağlanma kodu üret
-          </Dugme>
         </div>
       )}
-    </Kart>
+    </Bolum>
   )
 }
