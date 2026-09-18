@@ -1,0 +1,17 @@
+{
+  "_not": "Sınav tarihleri. 'kesin': false olanlar tahmindir. sosyal/sinav_takip.py ÖSYM takvimini her hafta okur; 2027-YKS tarihleri yayınlanınca bu dosyayı kendisi günceller ve takvimi yeniden kurar. LGS tarihi MEB duyurusuyla elle (ya da Claude ile) güncellenir.",
+  "yks": {
+    "tyt": "2027-06-19",
+    "ayt": "2027-06-20",
+    "basvuru_bas": "2027-02-05",
+    "basvuru_bit": "2027-03-01",
+    "sonuc": "2027-07-20",
+    "kesin": false,
+    "kaynak": "tahmin: 2026 düzeni (TYT haziranın 3. cumartesisi, başvuru şubat, sonuç temmuz)"
+  },
+  "lgs": {
+    "tarih": "2027-06-13",
+    "kesin": false,
+    "kaynak": "tahmin: haziranın 2. hafta sonu"
+  }
+}

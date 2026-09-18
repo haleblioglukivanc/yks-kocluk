@@ -1,0 +1,43 @@
+name: Sosyal - sınav tarihi takibi
+
+# Her pazartesi 07:30 (Türkiye) ÖSYM sınav takvimini okur. YKS tarihleri yayınlanınca
+# sosyal/takvim/sinavlar.json'u günceller, takvimi yeniden kurar, değişikliği depoya
+# işler ve bir GitHub konusuyla (e-posta) haber verir. LGS için yalnız öneri yazar.
+on:
+  schedule:
+    - cron: '30 4 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  takip:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: ÖSYM ve haberleri kontrol et
+        id: takip
+        run: python3 sosyal/sinav_takip.py
+      - name: Takvimi depoya işle
+        if: steps.takip.outputs.degisti == '1'
+        run: |
+          git config user.name "sinav-takip"
+          git config user.email "actions@github.com"
+          git add sosyal/takvim
+          git commit -m "Sosyal: sınav tarihleri resmî takvime göre güncellendi, takvim yeniden kuruldu"
+          git push
+      - name: Haber ver
+        if: steps.takip.outputs.rapor == '1'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python3 - <<'PY'
+          import json, os, urllib.request
+          govde = open('sosyal/.sinav-rapor.md', encoding='utf-8').read()
+          r = urllib.request.Request(f"https://api.github.com/repos/{os.environ['GITHUB_REPOSITORY']}/issues", method='POST',
+              data=json.dumps({'title': 'Sınav tarihleri güncellendi', 'body': govde, 'labels': ['sınav takvimi']}).encode(),
+              headers={'Authorization': f"Bearer {os.environ['GITHUB_TOKEN']}", 'Accept': 'application/vnd.github+json'})
+          print(json.loads(urllib.request.urlopen(r).read())['html_url'])
+          PY

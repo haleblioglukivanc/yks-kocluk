@@ -37,8 +37,14 @@ def aralik(a, b):
     while g <= b:
         yield g; g += timedelta(1)
 
-YKS = date(2027, 6, 19)          # tahmini: ÖSYM 2027 takvimi henüz yok (19–20 Haziran bekleniyor)
-LGS = date(2027, 6, 13)          # tahmini: MEB açıklamadı (haziranın 2. hafta sonu bekleniyor)
+# Sınav tarihleri tek bir dosyada: sinavlar.json (ÖSYM yayınlayınca sinav_takip.py günceller)
+SINAV = json.loads((BURASI / "sinavlar.json").read_text(encoding="utf-8"))
+_g = lambda t: date.fromisoformat(t)
+YKS, AYT = _g(SINAV["yks"]["tyt"]), _g(SINAV["yks"]["ayt"])
+SONUC, BASVURU = _g(SINAV["yks"]["sonuc"]), _g(SINAV["yks"]["basvuru_bas"])
+LGS = _g(SINAV["lgs"]["tarih"])
+YKS_KESIN = "kesin" if SINAV["yks"]["kesin"] else "tahmini"
+LGS_KESIN = "kesin" if SINAV["lgs"]["kesin"] else "tahmini"
 TATIL = set()
 for a, b in [((2026,11,14),(2026,11,22)), ((2027,1,23),(2027,2,7)), ((2027,3,6),(2027,3,14)),
              ((2027,6,26),(2027,9,12))]:        # MEB resmi + hafta sonları; yaz: okul açılışı tahmini
@@ -59,42 +65,69 @@ OZEL = {
  date(2026,11,10): ("10 Kasım", "Saygı ve rahmetle anıyoruz.", "herkes", True, "kesin"),
  date(2026,11,13): ("Ara tatil planı", "9 günlük ara tatil: 3 gün dinlen, 6 gün telafi.", "öğrenci", False, "kesin"),
  date(2026,11,24): ("Öğretmenler Günü", "Bir öğretmenin tek cümlesi bir yılı değiştirebilir.", "herkes", False, "kesin"),
- date(2026,12,1): ("YKS'ye 200 gün", "200 gün. Haftada 7 gün değil, haftada 6 iyi gün.", "öğrenci", False, "tahmini"),
  date(2026,12,21): ("Yılın en uzun gecesi", "Bugün yılın en uzun gecesi. Yarından itibaren günler uzuyor.", "öğrenci", False, "kesin"),
  date(2026,12,31): ("Yılbaşı gecesi", "Bu gece ders yok. Yarın 2027: sınav yılı.", "herkes", False, "kesin"),
  date(2027,1,1): ("2027: sınav yılı", "Yeni yıl, yeni plan değil. Aynı plan, daha sakin.", "öğrenci", False, "kesin"),
- date(2027,1,20): ("YKS'ye 150 gün", "150 gün kaldı. Panik değil, tempo.", "öğrenci", False, "tahmini"),
  date(2027,1,22): ("Karne günü", "Karneye bakmadan önce çocuğunuzun yüzüne bakın.", "veli", False, "kesin"),
  date(2027,1,25): ("Yarıyıl: yılın en değerli 16 günü", "16 gün okul yok. Yılın en değerli bloğu başladı.", "öğrenci", False, "kesin"),
  date(2027,2,6): ("6 Şubat", "Kaybettiklerimizi rahmetle anıyoruz.", "herkes", True, "kesin"),
  date(2027,2,8): ("İkinci dönem ve Ramazan", "İkinci dönem başladı. Ramazanda çalışma saatleri değişir.", "öğrenci", False, "tahmini"),
- date(2027,2,11): ("YKS başvuru dönemi", "Başvuru ayı: kimlik, fotoğraf, ücret. Son güne bırakmayın.", "veli", False, "tahmini"),
  date(2027,3,8): ("Arife ve ara tatil", "Bayram ve ara tatil birleşti. Her gün 1 saat kural.", "öğrenci", False, "tahmini"),
  date(2027,3,9): ("Ramazan Bayramı", "Bayramınız mübarek olsun.", "herkes", False, "tahmini"),
- date(2027,3,11): ("YKS'ye 100 gün", "100 gün. Yeni konu değil, tekrar zamanı başlıyor.", "öğrenci", False, "tahmini"),
  date(2027,3,21): ("Gün geceyi geçti", "Bugünden sonra gündüz geceden uzun. Işık senden yana.", "öğrenci", False, "kesin"),
  date(2027,4,23): ("23 Nisan", "23 Nisan kutlu olsun. LGS'ye hazırlanan çocuklarımıza.", "herkes", False, "kesin"),
- date(2027,4,30): ("YKS'ye 50 gün", "50 gün. Her gün bir deneme değil, her gün bir analiz.", "öğrenci", False, "tahmini"),
  date(2027,5,9): ("Anneler Günü", "Sınav yılının görünmeyen koçu: anneler.", "herkes", False, "kesin"),
  date(2027,5,15): ("Kurban arifesi: 5 günlük ara", "5 gün tatil: 2 gün aile, 3 gün düzenli tekrar.", "öğrenci", False, "tahmini"),
  date(2027,5,16): ("Kurban Bayramı", "Bayramınız mübarek olsun.", "herkes", False, "tahmini"),
  date(2027,5,19): ("19 Mayıs", "Gençlik ve Spor Bayramı kutlu olsun. Bu yıl sizin yılınız.", "herkes", False, "kesin"),
- date(2027,5,20): ("YKS'ye 30 gün", "30 gün. Uyku saatini sınav saatine göre ayarla.", "öğrenci", False, "tahmini"),
- date(2027,6,9): ("YKS'ye 10 gün", "10 gün. Yeni hiçbir şey. Sadece bildiklerin.", "öğrenci", False, "tahmini"),
- date(2027,6,12): ("LGS'ye bir gün", "Yarın LGS. Bu akşam çanta, kimlik, erken yatak.", "veli", False, "tahmini"),
- date(2027,6,13): ("LGS günü", "Bugün çocuklarımızın günü. Sonuç ne olursa olsun, yanlarındayız.", "veli", False, "tahmini"),
- date(2027,6,18): ("Yarın TYT", "Yarın TYT. Bu gece çalışma. Uyu.", "öğrenci", False, "tahmini"),
- date(2027,6,19): ("TYT günü", "Bugün hazırlığın konuşuyor. Sakin ol, sırayla git.", "öğrenci", False, "tahmini"),
- date(2027,6,20): ("AYT günü ve Babalar Günü", "Son oturum. Ve bugün Babalar Günü.", "herkes", False, "tahmini"),
- date(2027,6,21): ("Sınav bitti", "Bitti. Şimdi dinlen. Sonuç beklemek de bir iş.", "öğrenci", False, "tahmini"),
  date(2027,6,25): ("Karne ve 11. sınıflar", "11. sınıf bitti. YKS 2028'e bir yıl.", "öğrenci", False, "kesin"),
- date(2027,7,14): ("Sonuç haftası", "Sonuç yaklaşıyor. Bekleme kaygısı normal.", "herkes", False, "tahmini"),
  date(2027,7,15): ("15 Temmuz", "Demokrasi ve Millî Birlik Günü.", "herkes", True, "kesin"),
- date(2027,7,21): ("Tercih dönemi", "Tercih listesi: şehir, bölüm, puan, sen. Bu sırayla değil.", "veli", False, "tahmini"),
- date(2027,8,26): ("Yerleştirme sonuçları", "Sonuç ne olursa olsun, bir sonraki adım var.", "herkes", False, "tahmini"),
  date(2027,8,30): ("Zafer Bayramı", "30 Ağustos Zafer Bayramı kutlu olsun.", "herkes", False, "kesin"),
  date(2027,9,13): ("Yeni ders yılı", "Yeni yıl. YKS 2028 bugün başlıyor.", "öğrenci", False, "tahmini"),
 }
+
+def ucuncu_pazar(yil, ay):
+    g = date(yil, ay, 1)
+    g += timedelta((6 - g.weekday()) % 7)
+    return g + timedelta(14)
+
+def sinav_gunleri():
+    """Sınava bağlı özel günler: tarihleri sinavlar.json'dan hesaplanır, sabit değildir.
+    Ulusal/dini günlerle çakışan geri sayım günü bir gün ileri kayar; sınav günleri kaymaz."""
+    yk, lk = YKS_KESIN, LGS_KESIN
+    babalar = ucuncu_pazar(AYT.year, 6)
+    kayabilir = [
+     (YKS - timedelta(200), "YKS'ye 200 gün", "200 gün. Haftada 7 gün değil, haftada 6 iyi gün.", "öğrenci", yk),
+     (YKS - timedelta(150), "YKS'ye 150 gün", "150 gün kaldı. Panik değil, tempo.", "öğrenci", yk),
+     (BASVURU + timedelta(6), "YKS başvuru dönemi", "Başvuru ayı: kimlik, fotoğraf, ücret. Son güne bırakmayın.", "veli", yk),
+     (YKS - timedelta(100), "YKS'ye 100 gün", "100 gün. Yeni konu değil, tekrar zamanı başlıyor.", "öğrenci", yk),
+     (YKS - timedelta(50), "YKS'ye 50 gün", "50 gün. Her gün bir deneme değil, her gün bir analiz.", "öğrenci", yk),
+     (YKS - timedelta(30), "YKS'ye 30 gün", "30 gün. Uyku saatini sınav saatine göre ayarla.", "öğrenci", yk),
+     (YKS - timedelta(10), "YKS'ye 10 gün", "10 gün. Yeni hiçbir şey. Sadece bildiklerin.", "öğrenci", yk),
+     (SONUC - timedelta(6), "Sonuç haftası", "Sonuç yaklaşıyor. Bekleme kaygısı normal.", "herkes", yk),
+     (SONUC + timedelta(7), "Tercih dönemi başladı", "Tercih listesi: şehir, bölüm, puan, sen. Bu sırayla değil.", "veli", "tahmini"),
+     (SONUC + timedelta(37), "Yerleştirme sonuçları", "Sonuç ne olursa olsun, bir sonraki adım var.", "herkes", "tahmini"),
+    ]
+    sabit = [
+     (LGS - timedelta(1), "LGS'ye bir gün", "Yarın LGS. Bu akşam çanta, kimlik, erken yatak.", "veli", lk),
+     (LGS, "LGS günü", "Bugün çocuklarımızın günü. Sonuç ne olursa olsun, yanlarındayız.", "veli", lk),
+     (YKS - timedelta(1), "Yarın TYT", "Yarın TYT. Bu gece çalışma. Uyu.", "öğrenci", yk),
+     (YKS, "TYT günü", "Bugün hazırlığın konuşuyor. Sakin ol, sırayla git.", "öğrenci", yk),
+     (AYT, "AYT günü ve Babalar Günü" if AYT == babalar else "AYT günü",
+      "Son oturum. Ve bugün Babalar Günü." if AYT == babalar else "Son oturum. Dün geçti, bugün yeni bir sınav.", "herkes", yk),
+     (AYT + timedelta(1), "Sınav bitti", "Bitti. Şimdi dinlen. Sonuç beklemek de bir iş.", "öğrenci", yk),
+     (SONUC, "Sonuçlar açıklandı", "Sonuç bir sayı. Senin bu yılın o sayıdan büyük.", "herkes", yk),
+    ]
+    if AYT != babalar:
+        kayabilir.append((babalar, "Babalar Günü", "Sınav yılının sessiz destekçileri: babalar.", "herkes", "kesin"))
+    ozel = dict(OZEL)
+    for t, b, k, kit, kes in sabit:
+        ozel[t] = (b, k, kit, False, kes)
+    for t, b, k, kit, kes in kayabilir:
+        while t in ozel:
+            t += timedelta(1)
+        ozel[t] = (b, k, kit, False, kes)
+    return ozel
 
 SERI = {  # haftanın günü -> (seri adı, banka, kitle, video şablonu)
  0: ("Haftanın Planı", PLAN, "öğrenci", "kart-liste"),
@@ -193,13 +226,20 @@ def etiketler(g, seri, kitle, ders=None, hassas=False):
         "yt": [ana[0], seri_et[0], "#Shorts"],          # YouTube: başlığın üstünde bu üçü görünür
     }
 
-def sec(banka, kullanilan, ay):
-    """Önce bu aya ait mevsimlik konu, yoksa sıradaki yıl boyu konu."""
+def uygun(kosul, g):
+    """Mevsim koşulu: ay kümesi {11, 12} ya da sınava göreli pencere ('yks', -21, -1)."""
+    if isinstance(kosul, tuple):
+        capa = {"yks": YKS, "sonuc": SONUC, "lgs": LGS}[kosul[0]]
+        return capa + timedelta(kosul[1]) <= g <= capa + timedelta(kosul[2])
+    return g.month in kosul
+
+def sec(banka, kullanilan, g):
+    """Önce bu güne uyan mevsimlik konu, yoksa sıradaki yıl boyu konu."""
     baslik = lambda o: o[-2]
     bos = [i for i in range(len(banka)) if i not in kullanilan]
     if not bos:
         kullanilan.clear(); bos = list(range(len(banka)))
-    mevsimlik = [i for i in bos if ay in MEVSIM.get(baslik(banka[i]), ())]
+    mevsimlik = [i for i in bos if baslik(banka[i]) in MEVSIM and uygun(MEVSIM[baslik(banka[i])], g)]
     genel = [i for i in bos if baslik(banka[i]) not in MEVSIM]
     i = (mevsimlik or genel or bos)[0]
     kullanilan.add(i)
@@ -223,18 +263,19 @@ SORU = {
 
 def uret():
     kullanilan = {k: set() for k in SERI}
+    ozel_gunler = sinav_gunleri()
     satirlar = []
     for g in aralik(BAS, BIT):
         gb = gun_batimi(g)
         wd = g.weekday()
         seri, banka, kitle, sablon = SERI[wd]
         ders = None
-        if g in OZEL:
-            baslik, kanca, kitle, hassas, kesinlik = OZEL[g]
+        if g in ozel_gunler:
+            baslik, kanca, kitle, hassas, kesinlik = ozel_gunler[g]
             seri, sablon = "Özel Gün", ("sade-kart" if hassas else "tek-cumle")
         else:
             hassas, kesinlik = False, "kesin"
-            oge = sec(banka, kullanilan[wd], g.month)
+            oge = sec(banka, kullanilan[wd], g)
             if len(oge) == 3: ders, baslik, kanca = oge
             else: baslik, kanca = oge
         mevsim, ruh, isik = ruh_hali(g, gb)

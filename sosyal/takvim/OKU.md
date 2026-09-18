@@ -60,3 +60,15 @@ Takvime bağlı 41 gün ("Özel Gün") serinin yerini alır. Hassas günlerde
   işaretlenir. Seçilen konu `takvim/gundem.json`'a eklenir:
   `{"tarih": "2026-10-05", "baslik": "...", "kanca": "...", "govde": ["...","...","..."], "onay": true}`
   O günün videosu takvimdeki konunun yerine bununla üretilir.
+
+## Sınav tarihleri kendiliğinden güncellenir
+- Bütün sınava bağlı günler `sinavlar.json`'daki tarihlerden hesaplanır: geri sayımlar
+  (200/150/100/50/30/10 gün), başvuru, LGS, TYT/AYT, sınav bitti, sonuç, tercih,
+  yerleştirme; ayrıca "son pazar", "son denemeler", "tercih kaygısı" gibi konular sınava
+  göre bir pencere içinde yerleşir (`bankalar.py` → `MEVSIM`).
+- `.github/workflows/sosyal-sinav-takip.yml` her pazartesi ÖSYM takvimini okur. O yılın
+  YKS'si yayınlanınca dosyayı günceller (`kesin: true`), takvimi yeniden kurar, depoya
+  işler ve "Sınav tarihleri güncellendi" konusuyla haber verir. Ertesi sabahki üretim
+  yeni takvimle çalışır. Yayınlanmış/planlanmış günler değişmez.
+- LGS için MEB'in okunabilir bir takvimi yok: haberlerde tarih görülürse yalnız öneri
+  yazılır; `sinavlar.json`'da `lgs.tarih` elle güncellenir.

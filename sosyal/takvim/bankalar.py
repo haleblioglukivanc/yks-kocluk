@@ -371,30 +371,30 @@ PAZAR = [
  ("Son pazar", "Sınavdan önceki son pazar gibi düşün: sakin."),
 ]
 
-# Mevsime bağlı konular: başlık -> hangi aylarda yayınlanabilir.
+# Mevsime bağlı konular: başlık -> hangi aylarda {ay} ya da sınava göre hangi pencerede ('yks'|'sonuc'|'lgs', başlangıç, bitiş gün farkı).
 # Buradaki konular yalnız bu aylarda seçilir; diğerleri yıl boyu sırayla gelir.
 MEVSIM = {
  # Plan
  "Kış saatleri": {11, 12, 1}, "Yaz planı": {7, 8}, "Okul yoğun haftası": {10, 11, 12, 3, 4, 5},
  "Sınavdan geriye plan": {3, 4, 5}, "Tatil sonrası dönüş": {11, 2, 3},
  # Aynı Hafta
- "Kış karanlığı": {11, 12, 1}, "Bahar yorgunluğu": {4, 5}, "Son 100 gün paniği": {3},
- "Tercih kaygısı": {7, 8}, "Yeni başlıyorum": {6, 7, 8, 9}, "Mezun yılı": {9, 10, 7, 8},
+ "Kış karanlığı": {11, 12, 1}, "Bahar yorgunluğu": {4, 5}, "Son 100 gün paniği": ("yks", -106, -90),
+ "Tercih kaygısı": ("sonuc", 0, 30), "Yeni başlıyorum": {6, 7, 8, 9}, "Mezun yılı": {9, 10, 7, 8},
  "Ara tatil bitti": {11, 3}, "Bayram çalışması": {3, 5}, "Hastalandım": {12, 1, 2},
  "Okul yetişmiyor": {10, 11, 12, 3, 4, 5},
  # Veli
- "Karne haftası": {1, 6}, "Tercih dönemi": {7, 8}, "Sınav günü": {6}, "Bayram ziyaretleri": {3, 5},
- "Uzun hafta sonu": {5}, "11. sınıf velisi": {7, 8, 9}, "Sonuç günü": {7},
- "Yıl sonu değerlendirme": {7}, "Ara tatil": {11, 3}, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
+ "Karne haftası": {1, 6}, "Tercih dönemi": ("sonuc", 0, 35), "Sınav günü": ("yks", -21, -2), "Bayram ziyaretleri": {3, 5},
+ "Uzun hafta sonu": {5}, "11. sınıf velisi": {7, 8, 9}, "Sonuç günü": ("sonuc", -4, 6), "Başarısızlık korkusu": ("yks", 1, 30),
+ "Yıl sonu değerlendirme": ("yks", 3, 45), "Ara tatil": {11, 3}, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
  "Mezun öğrenci": {9, 10, 7, 8}, "LGS velisi": {9, 10, 11},
  # Efsane
- "Kış tembel yapar": {11, 12, 1}, "Son ay her şeyi değiştirir": {4, 5}, "Son hafta yeni konu": {5, 6},
- "Bayramda çalışılmaz": {3, 5}, "Tercihte puan her şey": {7, 8}, "11. sınıf erken": {6, 7, 8, 9},
+ "Kış tembel yapar": {11, 12, 1}, "Son ay her şeyi değiştirir": {4, 5}, "Son hafta yeni konu": ("yks", -45, -3),
+ "Bayramda çalışılmaz": {3, 5}, "Tercihte puan her şey": ("sonuc", -3, 30), "11. sınıf erken": {6, 7, 8, 9},
  "Son sınıfta her şey biter": {9, 10}, "Mezun yılı kolay": {7, 8, 9},
  # Deneme
- "Son denemeler": {5, 6}, "Bayram denemesi": {3, 5}, "Yaz denemesi": {7, 8}, "İlk deneme": {9, 10},
- "Dönem sonu denemesi": {1}, "Sınav provası": {4, 5, 6},
+ "Son denemeler": ("yks", -40, -5), "Bayram denemesi": {3, 5}, "Yaz denemesi": {7, 8}, "İlk deneme": {9, 10},
+ "Dönem sonu denemesi": {1}, "Sınav provası": ("yks", -80, -7),
  # Pazar
- "Işık ve ruh hali": {11, 12, 1}, "Bahar huzursuzluğu": {4, 5}, "Sınav yaklaşırken": {4, 5, 6},
- "Son pazar": {6}, "Mevsim değişimi": {10, 3},
+ "Işık ve ruh hali": {11, 12, 1}, "Bahar huzursuzluğu": {4, 5}, "Sınav yaklaşırken": ("yks", -75, -7),
+ "Son pazar": ("yks", -21, -1), "Mevsim değişimi": {10, 3},
 }
