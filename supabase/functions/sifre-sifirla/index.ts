@@ -107,6 +107,11 @@ Deno.serve(async (req: Request) => {
 
   // Ilk giriste yeni sifre belirlemesi icin bayrak.
   await yonetim.from('profiller').update({ sifre_degistirmeli: true }).eq('id', hedefId)
+  // Erisim gunlugu (Yonetim → Teknik): kim, kimin sifresini sifirladi.
+  await yonetim.from('erisim_gunlugu').insert({
+    yapan_id: cagiranId, olay: 'sifre_sifirlandi', hedef_id: hedefId, hedef_ad: hedef.ad_soyad,
+    ayrinti: { rol: hedef.rol },
+  })
 
   return cevap({
     id: hedefId,

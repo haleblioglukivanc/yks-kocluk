@@ -5,6 +5,8 @@ import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import UyariSatiri from '../ortak/UyariSatiri.jsx'
 import KocDetay, { DURUM_ADI } from '../bilesenler/KocDetay.jsx'
+import Entegrasyonlar from '../bilesenler/Entegrasyonlar.jsx'
+import ErisimGunlugu from '../bilesenler/ErisimGunlugu.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -631,13 +633,14 @@ const SEKMELER = [
   ['ogrenciler', 'Öğrenciler'],
   ['tahsilat', 'Tahsilat'],
   ['sosyal', 'Sosyal'],
-  ['sistem', 'Sistem'],
+  ['icerik', 'İçerik'],
+  ['teknik', 'Teknik'],
 ]
 
 export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
   // Acil e-postadaki bağlantı /yonetim#sosyal ile doğrudan bu sekmeyi açar.
   const [sekme, setSekme] = useState(() =>
-    typeof window !== 'undefined' && window.location.hash === '#sosyal' ? 'sosyal' : 'koclar')
+    typeof window !== 'undefined' && window.location.hash === '#sosyal' ? 'sosyal' : window.location.hash === '#sistem' || window.location.hash === '#teknik' ? 'teknik' : 'koclar')
   const [sosyal, setSosyal] = useState(null)
 
   // Sekme rozeti: panel açılınca bir kez; Sosyal sekmesi açıkken bileşen günceller.
@@ -738,16 +741,29 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {sekme === 'sosyal' && <SosyalKutusu onSayac={setSosyal} />}
 
-          {sekme === 'sistem' && (
+          {/* İçerik: kurum geneli içerik kararları (TESPIT-YONETIM.md 4). */}
+          {sekme === 'icerik' && (
             <>
+              {/* Haftalık ilham takvimi: koç görünen hali okuyor, 12 haftalık
+                  planı yönetici kuruyor. */}
+              <HaftalikTakvim />
+              <Ayarlar onGit={onGit} />
+            </>
+          )}
+
+          {/* Teknik (IT): entegrasyonlar, arka plan işleri, kuyruklar,
+              erişim günlüğü, sürüm (TESPIT-YONETIM.md 3). */}
+          {sekme === 'teknik' && (
+            <>
+              <Entegrasyonlar />
               <Sistem s={veri.sistem} />
               {/* Posta kaydı ve elle gönderim (Raporlar'dan taşındı). */}
               <EpostaKaydi />
+              <ErisimGunlugu />
               <Vekalet liste={veri.vekalet} />
-              {/* Haftalik Ilham takvimi icerik kuratorlugu: koc gorunen hali
-                  okuyor, 12 haftalik plani yonetici kuruyor. */}
-              <HaftalikTakvim />
-              <Ayarlar onGit={onGit} />
+              <Bolum cizgili baslik="Sürüm" aciklama="Canlıdaki derleme; her gönderimde Cloudflare yeniden derler.">
+                <p className="liste-alt">derleme {__DERLEME__}</p>
+              </Bolum>
             </>
           )}
         </>

@@ -4720,3 +4720,4 @@ body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); 
 @media (hover: hover) { .yk-koc-ac:hover .liste-ad { text-decoration: underline; } }
 .koc-detay .bolum:first-child { margin-top: 0.5rem; }
 .koc-ogrenci-sec { flex: 1; min-height: 44px; align-items: center; }
+.teknik-anahtarlar { margin-top: 0.5rem; overflow-wrap: anywhere; }

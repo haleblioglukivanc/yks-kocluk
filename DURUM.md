@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (koç yönetimi)
+Son güncelleme: 19 Eylül 2026 (Teknik sekmesi)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 3: Teknik ve İçerik sekmeleri
+
+- Sekmeler: Koçlar · Öğrenciler · Tahsilat · Sosyal · **İçerik** · **Teknik** (Sistem → Teknik; eski `#sistem` bağlantısı Teknik'i açar).
+- **Entegrasyonlar** (`bilesenler/Entegrasyonlar.jsx`): e-posta, SMS (İleti Merkezi), Telegram, web bildirimi, YouTube,
+  Instagram, yapay zekâ — anahtar var mı, son çalışma, bekleyen/hata. Kaynak: `yonetici_entegrasyon_durumu` RPC +
+  yeni `sistem-durumu` Edge Function (fonksiyon ortamındaki anahtar ADLARI; değer dönmez; yalnız yönetici).
+  İlk bulgular: SMS kuyruğunda 2 kayıt hiç gönderilmemiş; YouTube ve Instagram anahtarları tanımlı değil.
+- **Erişim günlüğü** (`erisim_gunlugu` tablosu + `ErisimGunlugu.jsx`): hesap açma (auth tetikleyicisi, yapan "sistem"),
+  hesap silme, şifre sıfırlama (`sifre-sifirla` v2 yazıyor, yapanıyla), kendi şifresini değiştirme, yönetici yetkisi,
+  koç durumu, öğrenci aktarma. Günlük 19 Eylül 2026'dan itibaren.
+- Teknik ayrıca: arka plan işleri + hatalar, e-posta kaydı, vekâlet kayıtları, sürüm (derleme zamanı).
+- İçerik: haftalık ilham takvimi + platform ayarları (Konu öncelikleri, Kaynaklar). Görsel yenileme sıradaki İçerik adımında.
+- Açık: `kullanici-olustur`/`kullanici-sil` yapanı günlüğe kendileri yazmıyor (tetikleyici "sistem" gösteriyor).
 
 ## 19 Eylül 2026 — Yönetim işlevleri 2: koç detayı, durum, öğrenci aktarma
 

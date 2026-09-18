@@ -1,0 +1,5 @@
+-- Kayıt amaçlı: yayındaki migration'lar "teknik_sekmesi_erisim_gunlugu_entegrasyon",
+-- "entegrasyon_durumu_duzeltme", "entegrasyon_durumu_duzeltme_2" (19 Eylül 2026).
+-- public.erisim_gunlugu (RLS: yönetici okur; kullanıcı yalnız kendi 'sifre_degistirdi' kaydını yazar)
+-- Tetikleyiciler: profiller (yetki, koç durumu, silme), ogrenciler.koc_id (aktarma), auth.users insert (hesap açma)
+-- RPC: yonetici_erisim_gunlugu(p_limit), yonetici_entegrasyon_durumu()

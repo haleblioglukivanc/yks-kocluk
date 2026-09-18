@@ -48,6 +48,12 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
     }
     if (u?.user?.id) {
       await supabase.from('profiller').update({ sifre_degistirmeli: false }).eq('id', u.user.id)
+      // Erişim günlüğü (Yönetim → Teknik). Yazılamazsa şifre yine değişmiştir.
+      const { data: ben } = await supabase.from('profiller').select('ad_soyad').eq('id', u.user.id).maybeSingle()
+      await supabase.from('erisim_gunlugu').insert({
+        yapan_id: u.user.id, hedef_id: u.user.id, olay: 'sifre_degistirdi',
+        hedef_ad: ben?.ad_soyad ?? null,
+      })
     }
     setBekliyor(false)
     setMevcut('')
