@@ -49,7 +49,7 @@ export default function VeliBasligi({ ozet, cocukAdi, profil }) {
   const ilkAd = (profil?.ad_soyad ?? '').trim().split(/\s+/)[0] || ''
   const tarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' })
   return (
-    <section className="hero-yuzey ob" aria-label={`${KALEM_ADI} ve haftanın özeti`}>
+    <section className="hero-yuzey ob ust-blok ust-blok--sekmeli" aria-label={`${KALEM_ADI} ve haftanın özeti`}>
       {/* Başlık satırı her sekmede aynı kalıp (SekmeTepesi ile aynı sınıflar):
           büyük ad, altında gri tek satır. Bugün'de o satır tarih. */}
       <div className="rt-satir">
@@ -71,6 +71,8 @@ export default function VeliBasligi({ ozet, cocukAdi, profil }) {
           )}
         </div>
       </div>
+      {/* Alt boşluk: blok dikiş kartı taşımıyor (TASARIM-KURALLARI 3). */}
+      <div className="ob-sekme-yuvasi" />
     </section>
   )
 }

@@ -401,6 +401,13 @@
   --durum-cubugu-panel: #2e3a52;
   --durum-cubugu: #ffffff;
 }
+/* Veli de yetişkinin aracı: koçla aynı lacivert tepe (Bekir, 19 Eylül 2026).
+   Amber öğrenci dünyasına ait. */
+body[data-rol='veli'] {
+  --kagit: var(--koc-kagit);
+  --tepe-ust: var(--koc-yan-ust);
+  --tepe-alt: var(--koc-yan-alt);
+}
 body[data-rol='koc'] {
   --kagit: var(--koc-kagit);
   --tepe-ust: var(--koc-yan-ust);

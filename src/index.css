@@ -4663,3 +4663,23 @@ body[data-rol='ogrenci'] .ob-tamam { background: transparent; color: var(--beyaz
 .kaynak-suzgec { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 0.6rem; margin-top: 1rem; }
 .kaynak-suzgec input { grid-column: 1 / -1; }
 .kaynak-suzgec + .alt-sekmeler { margin-top: 0.5rem; }
+
+/* ═══ Veli (tasarım turu 7) ═══════════════════════════════════════════ */
+.veli-not { padding: 1rem; }
+.veli-not-metin { margin: 0; font-size: var(--punto-govde); line-height: 1.6; color: var(--murekkep); white-space: pre-line; }
+.veli-not-imza { margin: 0.5rem 0 0; font-size: var(--punto-mini); color: var(--grafit); }
+.veli-not-bos { margin: 0; font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.5; }
+.veli-not-deneme {
+  display: flex; justify-content: space-between; gap: 1rem; margin: 0.75rem 0 0; padding-top: 0.6rem;
+  border-top: 1px solid var(--cizgi); font-size: var(--punto-kucuk); color: var(--grafit);
+}
+.veli-not-deneme b { color: var(--murekkep); }
+.veli-cocuk { justify-content: flex-start; gap: 0.75rem; }
+.veli-cocuk-av {
+  flex: none; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center;
+  background: var(--serin-zemin); color: var(--serin-metin); font-size: var(--punto-mini); font-weight: 700;
+}
+/* Veli başlığında Çizbi'nin sesi koç ve öğrenciyle aynı: koyu zeminde beyaz. */
+body[data-rol='veli'] .hero-yuzey.ob { background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%); }
+body[data-rol='veli'] .ob-mesaj, body[data-rol='veli'] .rt-baslik { color: var(--beyaz); }
+body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); }

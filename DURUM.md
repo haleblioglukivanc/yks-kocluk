@@ -1,11 +1,19 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu 6)
+Son güncelleme: 19 Eylül 2026 (tasarım turu 7)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — tasarım turu 7: Veli
+
+- Mokap: https://claude.ai/artifact/ST9euM4pS7LLCKhfjLv7H5 (Bekir onayladı).
+- Veli tepesi koçla aynı lacivert (`body[data-rol='veli']` tokenları); Çizbi koyu zeminde beyaz cümle; başlık dikiş kartı taşımıyor.
+- Koçun notu: kart değil `Bolum`, not beyaz yüzeyde büyük yazı + imza/hafta; yaklaşan deneme hap değil düz satır.
+- Takip ettiğim öğrenciler: `Bolum` + baş harfli satırlar (beyaz yüzey). Haftanın kitabı/sözü "Bu hafta" bölümünde tek yüzey.
+- Sıradaki: Yönetim (Kıvanç hesabı gerekli; demo koç yönetici değil).
 
 ## 18 Eylül 2026 — tasarım turu 6: Kaynaklar
 
