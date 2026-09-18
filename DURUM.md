@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu, 4. adım)
+Son güncelleme: 18 Eylül 2026 (rötuş turu)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — rötuş turu (Bekir'in değerlendirmesi)
+
+- **Kural 1 düzeltmesi:** sadeleşme renk ayrımını yok etmişti. Başlık/açıklama krem zeminde, veri (künye, liste,
+  tablo, form) tek beyaz yüzeyde — `ortak.css` "Veri yüzeyi" seçicisi `Bolum` içindeki blokları kendiliğinden yakalar.
+  Kayıt künyesi, Sırada, Konular, notlar/veli formları, öğrenci tablosu, bu hafta giden… hepsi beyaz yüzeye oturdu.
+- **Kural 6 düzeltmesi:** düz mavi yazı düğmesi kayboluyordu. Yeni `EylemDugmesi`: ikonlu, hafif dolgulu (metinden ikon
+  çıkarır: "+" → artı, "Düzenle" → kalem, "gönder" → uçak). `Bolum` eylemleri, "+ İş ekle", karar kartı ikincil eylemleri.
+- **Raporlar:** dört ölçü kartı geri geldi (Bekir: "güzeldi, tasarımı bozmuyordu"); üst bloktaki gösterge ve özet satırı
+  kalktı (sayılar iki kez görünmesin). Kural 11: e-posta kaydı → Yönetim → Sistem (`EpostaKaydi`: haftalık raporu elle
+  gönder + test maili + son 20 kayıt); Telegram → Yönetim → Koçlar ve hesap menüsü → yeni `/baglantilar` ekranı;
+  Araçlar (Konu öncelikleri, Kaynaklar) → hesap menüsü. Raporlar artık yalnız "bak" ekranı.
+- `TASARIM-KURALLARI.md`: kural 1 ve 6 güncellendi, kural 11 ve "ölçü kartı" istisnası eklendi.
+- Sıradaki (TESPIT.md): öğrenci Bugün şeridi + Yol.
 
 ## 18 Eylül 2026 — tasarım turu, 4. adım: Raporlar
 

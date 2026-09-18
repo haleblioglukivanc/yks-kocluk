@@ -85,6 +85,27 @@ export default function HesapYapragi({
             <span>Mesajlar</span>
             <em>›</em>
           </button>
+          {/* Koçun arada bir kullandığı işler: Raporlar'daki "Araçlar" ve
+              Telegram buraya taşındı (Bekir, 18 Eylül 2026). */}
+          {profil?.rol === 'koc' && (
+            <>
+              <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/konular') }}>
+                <svg {...ikon}><path d="M4 6h16M4 12h10M4 18h6" /></svg>
+                <span>Konu öncelikleri</span>
+                <em>›</em>
+              </button>
+              <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/kaynaklar') }}>
+                <svg {...ikon}><path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z" /><path d="M5 16a4 4 0 0 1 4-4h10" /></svg>
+                <span>Kaynaklar</span>
+                <em>›</em>
+              </button>
+              <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/baglantilar') }}>
+                <svg {...ikon}><path d="M4 12 20 4l-6 16-3-7-7-1z" /></svg>
+                <span>Telegram bağlantısı</span>
+                <em>›</em>
+              </button>
+            </>
+          )}
           <button type="button" className="hesap-satir hesap-satir--cikis" onClick={onCikis}>
             <svg {...ikon}>
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />

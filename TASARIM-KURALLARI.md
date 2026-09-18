@@ -8,8 +8,9 @@ Referans: "Koç · Öğrenci ekranı — önce / sonra" mokapı (18 Eylül 2026)
 
 ## A. Görsel kurallar
 
-**1. Tek yüzey katmanı.**
-Sayfada iki seviye vardır: zemin ve üzerindeki yüzey. Yüzeyin içinde ikinci bir yüzey (kutu içinde kutu) olmaz. İçerideki ayrımı üç şey yapar: boşluk, ince çizgi (`--cizgi`) ve yazı ağırlığı.
+**1. Tek yüzey katmanı; veri beyaz yüzeyde.** *(düzeltme 18 Eylül 2026)*
+Sayfada iki seviye vardır: krem zemin ve beyaz yüzey. Başlık ve açıklama zeminde durur; veri — künye, liste, tablo, form alanları — tek bir beyaz yüzeyin üzerinde durur. Yüzeyin içinde ikinci bir yüzey (kutu içinde kutu) olmaz; içerideki ayrımı boşluk, ince çizgi ve yazı ağırlığı yapar. Sadeleşme renk ayrımını yok etmemeli: her şey tek renk olunca göz nereye bakacağını bilemez.
+Uygulama: `Bolum`'un içine konan `.liste`, `.kunye`, `.yk-tablo-kap`, `.form-kutu--duz` vb. kendiliğinden beyaz yüzey alır (`ortak.css`, "Veri yüzeyi"); başka bir veri bloğu için `.veri-yuzey`.
 
 **2. Kenarlık yalnız dokunulan şeyde olur.**
 Giriş alanı, ikincil düğme ve seçilebilir öğe kenarlık alabilir. Bilgi gösteren alan (istatistik, açıklama, boş durum) kenarlık ya da gölge almaz.
@@ -23,8 +24,8 @@ Kutu düğme şeklinde sekme olmaz. Tek bileşen (`Sekmeler`) iki varyantla kull
 **5. Boş durum kart değildir.**
 Başlık ya da en fazla bir cümle, altında tek bir düğme. Kart, çerçeve ya da uzun açıklama kullanılmaz.
 
-**6. İçerik alanında tek birincil eylem olur.**
-Zeminde dolu düğme bir tanedir (üst bloktaki vurgulu eylem, örn. Mesaj, bunun dışındadır). Diğer eylemler yazı düğmesidir ("+ Ekle"). Yüzen yuvarlak artı düğmesi kullanılmaz.
+**6. Üç düzey eylem.** *(düzeltme 18 Eylül 2026)*
+Dolu düğme içerik alanında bir tanedir (üst bloktaki vurgulu eylem, örn. Mesaj, bunun dışındadır). İkincil eylemler **başında ikon olan hafif dolgulu düğmedir** (`EylemDugmesi`: "+ Plan kur" → artı ikonu, "Düzenle" → kalem). Düz mavi yazı düğmesi kullanılmaz: kayboluyor. Yüzen yuvarlak artı düğmesi kullanılmaz.
 
 **7. Önemli bilgi rozetin içinde saklanmaz.**
 Uyarı, önündeki renkli noktayla birlikte düz metin olarak yazılır. Aynı bilgi ilgili yerde de renkle tekrar görünür (örnek: hafta şeridinde geciken günler kırmızı yazılır).
@@ -38,7 +39,10 @@ Koç masaüstünde yoğun (tablo, iki sütun), öğrenci tek işe odaklı, veli 
 **10. Yönetim ve teknik ekranlar günlük işe karışmaz.**
 Koçlar, Tahsilat, Sosyal ve Sistem gibi ekranlar hesap menüsünün arkasındaki "Yönetim" alanındadır. Zamanlanmış görevler (cron) listesi yalnız yönetim ekranında görünür.
 
-**İstisnalar:** Çizbi balonu ve yaprak/pencere (modal). Yaprak kendi başına bir yüzeydir; içinde yine kart olmaz.
+**11. Ekran yalnız kendi işini taşır.** *(18 Eylül 2026)*
+Ayar ve sistem kaydı içerik ekranına girmez. Örnek: e-posta kaydı Raporlar'da değil Yönetim → Sistem'de; Telegram bağlantısı Yönetim → Koçlar'da ve hesap menüsünde; ara sıra kullanılan araçlar hesap menüsünde.
+
+**İstisnalar:** Çizbi balonu ve yaprak/pencere (modal). **Ölçü kartı:** sayı taşıyan pastel kart (Raporlar'daki dört kart) zeminde tek katman olarak durabilir; içinde kutu olmaz. Yaprak kendi başına bir yüzeydir; içinde yine kart olmaz.
 
 ---
 
@@ -55,6 +59,7 @@ Ortak bileşenler `src/ortak/` altında durur ve her rol yalnız bunları kullan
 - `BosDurum` — bir cümle + tek düğme ✓
 - `Bolum` — başlık + yazı eylemi + açıklama + içerik (`cizgili`) ✓
 - `UyariSatiri` — nokta + düz metin (`durum="acil|izle|iyi|notr|kapali"`) ✓
+- `EylemDugmesi` — ikonlu hafif dolgulu ikincil düğme; `Bolum`'un eylemi bunu kullanır ✓
 - `ListeSatiri` — öğrenci, görev, bildirim satırları (sonraki tur)
 
 Hepsi `src/ortak/` altında, stilleri tek dosyada: `src/ortak/ortak.css`.

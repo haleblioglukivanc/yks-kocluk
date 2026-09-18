@@ -10,6 +10,7 @@ import Giris from './ekranlar/Giris.jsx'
 import KocPaneli from './ekranlar/KocPaneli.jsx'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
+import Baglantilar from './ekranlar/Baglantilar.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
@@ -359,7 +360,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
+  const TANINAN = ['/baglantilar', '/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -380,7 +381,7 @@ export default function App() {
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
        bitişik tek parça (TASARIM-KURALLARI 3). */
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || Boolean(ogrenciId))) ||
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
@@ -427,6 +428,7 @@ export default function App() {
     if (kocMu && yol === '/konular')
       return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
+    if (kocMu && yol === '/baglantilar') return <Baglantilar />
     if (kocMu && genis && (yol === '/ogrenciler' || ogrenciId))
       return (
         <div className="iki-sutun">

@@ -3553,9 +3553,10 @@ body[data-tema='panel'] {
 .uygulama .kuyruk-tip[data-tip='tebrik'] { background: none; color: var(--isaret-metin); }
 /* Tek dolu düğme; diğer eylemler yazı düğmesi (TASARIM-KURALLARI 6). */
 .uygulama .kuyruk-alt-dugmeler { justify-content: center; gap: 1.75rem; }
+.uygulama .kuyruk-alt-dugmeler { gap: 0.6rem; }
 .uygulama .kuyruk-alt-dugmeler .dugme {
-  flex: 0 0 auto; background: none; border: 0; box-shadow: none; padding-inline: 0.25rem;
-  color: var(--serin); font-weight: 700;
+  flex: 0 0 auto; min-height: 40px; padding: 0 1rem; border: 0; box-shadow: none; border-radius: var(--r-tam);
+  background: var(--serin-zemin); color: var(--serin-metin); font-weight: 700;
 }
 /* Gidecek mesaj kutu içinde kutu değil: etiketli düz metin. */
 .uygulama .kart--kaldirilmis .kuyruk-mesaj {

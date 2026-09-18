@@ -4,6 +4,7 @@ import { Uyari, Yukleniyor } from './Ortak.jsx'
 import GunSeridi from '../ortak/GunSeridi.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import Bolum from '../ortak/Bolum.jsx'
+import EylemDugmesi from '../ortak/EylemDugmesi.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import {
   GOREV_TUR_ADI,
@@ -255,13 +256,7 @@ export default function ProgramIzgarasi({
             <div className="prg-gun-basi">
               <h3 className="prg-gun-ad-baslik">{gunBasligi(seciliGun)}</h3>
               {duzenlenebilir && gunListesi.length > 0 && (
-                <button
-                  type="button"
-                  className="bolum-eylem"
-                  onClick={() => onHucreSec?.(null, seciliGun, null)}
-                >
-                  + İş ekle
-                </button>
+                <EylemDugmesi onClick={() => onHucreSec?.(null, seciliGun, null)}>+ İş ekle</EylemDugmesi>
               )}
             </div>
             {gunListesi.length === 0 ? (

@@ -6,6 +6,8 @@ import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/
 import { kullaniciOlustur } from '../lib/hesap.js'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
 import SosyalKutusu from '../bilesenler/SosyalKutusu.jsx'
+import EpostaKaydi from '../bilesenler/EpostaKaydi.jsx'
+import TelegramBaglanti from '../bilesenler/TelegramBaglanti.jsx'
 
 /* Koç paneli "bugün ne oluyor" sorusuna cevap veriyor. Burası başka bir
    soruya cevap veriyor: sistem çalışıyor mu, nereden sızdırıyor.
@@ -726,6 +728,8 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
             <>
               <Koclar liste={veri.koclar} onDegisti={yukle} />
               <KocEkle liste={veri.koclar} onEklendi={yukle} />
+              {/* Koçun kendi bağlantısı (Raporlar'dan taşındı). */}
+              <TelegramBaglanti />
             </>
           )}
 
@@ -743,6 +747,8 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
           {sekme === 'sistem' && (
             <>
               <Sistem s={veri.sistem} />
+              {/* Posta kaydı ve elle gönderim (Raporlar'dan taşındı). */}
+              <EpostaKaydi />
               <Vekalet liste={veri.vekalet} />
               {/* Haftalik Ilham takvimi icerik kuratorlugu: koc gorunen hali
                   okuyor, 12 haftalik plani yonetici kuruyor. */}

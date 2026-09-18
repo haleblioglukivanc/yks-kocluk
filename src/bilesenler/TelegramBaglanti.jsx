@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
 import Bolum from '../ortak/Bolum.jsx'
+import EylemDugmesi from '../ortak/EylemDugmesi.jsx'
 
 /* Telefon değişir, hesap kaybolur, kod unutulur. Bunların hiçbiri
    geliştiriciye sorulacak bir şey olmamalı: koç kendi kodunu burada
@@ -126,9 +127,7 @@ export default function TelegramBaglanti() {
             {kalan ? `Kod ${kalan} geçerli.` : 'Kodun süresi doldu.'} Tek kullanımlık —
             kaybedersen yenisini üretebilirsin.
           </p>
-          <button className='bolum-eylem' onClick={kodUret} disabled={bekliyor}>
-            Yeni kod üret
-          </button>
+          <EylemDugmesi onClick={kodUret} disabled={bekliyor} ikon='ekle'>Yeni kod üret</EylemDugmesi>
         </div>
       ) : (
         <div className='tg-govde'>

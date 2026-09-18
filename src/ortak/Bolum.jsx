@@ -1,3 +1,5 @@
+import EylemDugmesi from './EylemDugmesi.jsx'
+
 /**
  * Bölüm kalıbı (kural 8): başlık satırı (solda başlık, sağda yazı eylemi),
  * bir satır açıklama, içerik. Bölümleri çizgi ya da boşluk ayırır, kutu değil.
@@ -13,11 +15,7 @@ export default function Bolum({ baslik, sayi, aciklama, eylem, onEylem, sag = nu
           {sayi != null && <span className="bolum-sayi">{sayi}</span>}
         </h3>
         {sag}
-        {eylem && onEylem && (
-          <button type="button" className="bolum-eylem" onClick={onEylem}>
-            {eylem}
-          </button>
-        )}
+        {eylem && onEylem && <EylemDugmesi onClick={onEylem}>{eylem}</EylemDugmesi>}
       </header>
       {aciklama && <p className="bolum-aciklama">{aciklama}</p>}
       {children}

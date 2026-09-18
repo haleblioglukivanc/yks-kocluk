@@ -7,11 +7,9 @@ import Sekmeler from '../ortak/Sekmeler.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import UyariSatiri from '../ortak/UyariSatiri.jsx'
-import { Gosterge } from '../bilesenler/RaporTepesi.jsx'
 import Sayan from '../bilesenler/Sayan.jsx'
 import SinifOzeti from '../bilesenler/SinifOzeti.jsx'
 import { gunEkle, haftaBasi, yerelIso } from '../lib/hafta.js'
-import TelegramBaglanti from '../bilesenler/TelegramBaglanti.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 
 /* Koçun "bu dönem ne oldu" sorusunun tek cevabı.
@@ -36,21 +34,6 @@ function aralikHesapla(ad) {
 
 const saatDakika = (dk = 0) =>
   dk >= 60 ? `${Math.floor(dk / 60)} sa ${dk % 60} dk` : `${dk} dk`
-
-const DURUM_YAZI = {
-  bekliyor: 'sırada',
-  gonderiliyor: 'gönderiliyor',
-  gonderildi: 'gönderildi',
-  hata: 'hata',
-  iptal: 'iptal',
-}
-
-const TIP_YAZI = {
-  veli_haftalik: 'Veli · haftalık',
-  koc_gunluk: 'Koç · günlük',
-  koc_haftalik: 'Koç · haftalık',
-  ogrenci_haftalik: 'Öğrenci · haftalık',
-}
 
 /** Günlük çalışmayı tek bakışta gösteren minik sütun grafiği. */
 function GunlukGrafik({ gunler }) {
@@ -133,11 +116,7 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
   const [aralik, setAralik] = useState('hafta')
   const [[bas, bit], setTarih] = useState(() => aralikHesapla('hafta'))
   const [veri, setVeri] = useState(null)
-  const [gecmis, setGecmis] = useState(null)
-  const [islemde, setIslemde] = useState(null)
   const [hata, setHata] = useState('')
-  const [bilgi, setBilgi] = useState('')
-  const [gecmisHepsi, setGecmisHepsi] = useState(false)
 
   const yukle = useCallback(async () => {
     setVeri(null)
@@ -159,73 +138,14 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
     setVeri(data)
   }, [bas, bit])
 
-  const gecmisiYukle = useCallback(async () => {
-    const { data } = await supabase
-      .from('mail_kuyrugu')
-      .select('id, rapor_tipi, konu, durum, hata_mesaji, gonderildi_zaman, olusturuldu')
-      .order('olusturuldu', { ascending: false })
-      .limit(12)
-    setGecmis(data ?? [])
-  }, [])
-
   useEffect(() => {
     yukle()
   }, [yukle])
 
-  useEffect(() => {
-    gecmisiYukle()
-  }, [gecmisiYukle])
 
   function aralikSec(ad) {
     setAralik(ad)
     if (ad !== 'ozel') setTarih(aralikHesapla(ad))
-  }
-
-  /** Kuyruğa atar, sonra kuyruğu hemen boşaltması için göndericiyi dürter. */
-  async function kuyrugaAt() {
-    setIslemde('gonder')
-    setHata('')
-    setBilgi('')
-
-    const tekGun = bas === bit
-    const { error } = await supabase.rpc('koc_raporu_gonder', {
-      p_tip: tekGun ? 'koc_gunluk' : 'koc_haftalik',
-      p_baslangic: bas,
-      p_bitis: bit,
-    })
-
-    if (error) {
-      setIslemde(null)
-      setHata(hataMetni(error))
-      return
-    }
-
-    const { data, error: fnHata } = await supabase.functions.invoke('rapor-mail')
-    setIslemde(null)
-
-    if (fnHata) {
-      setBilgi('Rapor kuyruğa alındı ama gönderici yanıt vermedi. Aşağıdaki listeden durumu izleyebilirsin.')
-    } else if (data?.basarisiz > 0) {
-      setHata('Gönderim başarısız. Aşağıdaki geçmişte hata mesajı yazıyor.')
-    } else {
-      setBilgi('Rapor e-posta olarak gönderildi.')
-    }
-    await gecmisiYukle()
-  }
-
-  async function testMaili() {
-    setIslemde('test')
-    setHata('')
-    setBilgi('')
-    const { data, error } = await supabase.functions.invoke('rapor-mail', {
-      body: { test: true },
-    })
-    setIslemde(null)
-    if (error || data?.tamam === false) {
-      setHata(`Mail altyapısı yanıt vermedi: ${data?.hata ?? error?.message ?? 'bilinmeyen hata'}`)
-      return
-    }
-    setBilgi(`Test maili ${data?.alici ?? 'gönderen adrese'} yollandı.`)
   }
 
   const g = veri?.genel ?? {}
@@ -244,26 +164,6 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
       <UstBlok sinif='rapor-tepe' etiket='Rapor' sekmeli>
         <h1 className='rt-baslik'>Rapor</h1>
         <p className='rt-alt'>{donem}</p>
-        <div className='rapor-tepe-ozet'>
-          <Gosterge
-            yuzde={veri ? g.tamamlama_yuzdesi ?? null : null}
-            deger={veri && g.tamamlama_yuzdesi != null ? `%${g.tamamlama_yuzdesi}` : '–'}
-            etiket='Görev tamamlama'
-          />
-          <div>
-            <p className='rapor-tepe-sayi'>
-              {veri && g.tamamlama_yuzdesi != null ? <Sayan on='%' deger={g.tamamlama_yuzdesi} /> : '–'}
-            </p>
-            <p className='rapor-tepe-alt'>
-              görev tamamlandı{veri ? ` · ${g.gorev_tamam ?? 0} / ${g.gorev_toplam ?? 0}` : ''}
-            </p>
-          </div>
-        </div>
-        <p className='rapor-tepe-satir'>
-          <span><b>{veri ? saatDakika(g.toplam_dakika ?? 0) : '–'}</b> çalışma</span>
-          <span><b>{veri ? `${calisan}/${g.ogrenci_sayisi ?? 0}` : '–'}</b> öğrenci çalıştı</span>
-          <span><b>{veri ? g.deneme_sayisi ?? 0 : '–'}</b> deneme</span>
-        </p>
         {veri ? (
           <UyariSatiri durum={iyi ? 'iyi' : 'izle'}>{iyi ? 'Yolunda' : 'Dikkat'}</UyariSatiri>
         ) : null}
@@ -297,7 +197,35 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
       )}
 
       <Uyari>{hata}</Uyari>
-      <Uyari tur='bilgi'>{bilgi}</Uyari>
+
+      {/* Dört ölçü kartı (Bekir, 18 Eylül: "güzeldi, tasarımı bozmuyordu").
+          Zeminde tek katman; sayılar üst blokta tekrar edilmiyor. */}
+      <div className='kpi-satir rapor-kpi' aria-busy={veri === null}>
+        <div className='kpi-kart'>
+          <p className='kpi-etiket'>Toplam çalışma</p>
+          <p className='kpi-sayi'>{veri ? saatDakika(g.toplam_dakika ?? 0) : '–'}</p>
+          <p className='kpi-alt'>{veri ? `${veri.gun_sayisi} günde` : '\u00a0'}</p>
+        </div>
+        <div className='kpi-kart'>
+          <p className='kpi-etiket'>Görev tamamlama</p>
+          <p className='kpi-sayi'>
+            {veri && g.tamamlama_yuzdesi != null ? <Sayan on='%' deger={g.tamamlama_yuzdesi} /> : '–'}
+          </p>
+          <p className={veri && (g.tamamlama_yuzdesi ?? 0) >= 60 ? 'kpi-alt kpi-alt--iyi' : 'kpi-alt kpi-alt--kotu'}>
+            {veri ? `${g.gorev_tamam ?? 0} / ${g.gorev_toplam ?? 0} görev` : '\u00a0'}
+          </p>
+        </div>
+        <div className='kpi-kart'>
+          <p className='kpi-etiket'>Öğrenci</p>
+          <p className='kpi-sayi'>{veri ? <Sayan deger={g.ogrenci_sayisi ?? 0} /> : '–'}</p>
+          <p className='kpi-alt'>{veri ? `${calisan} tanesi çalıştı` : '\u00a0'}</p>
+        </div>
+        <div className='kpi-kart'>
+          <p className='kpi-etiket'>Deneme</p>
+          <p className='kpi-sayi'>{veri ? <Sayan deger={g.deneme_sayisi ?? 0} /> : '–'}</p>
+          <p className='kpi-alt'>bu dönemde girildi</p>
+        </div>
+      </div>
 
       <div className='rapor-izgara'>
         <div className='rapor-ana'>
@@ -399,89 +327,11 @@ export default function Raporlar({ onOgrenciAc, onGit }) {
         </div>
 
         <div className='rapor-yan'>
-          <Bolum
-            cizgili
-            baslik='E-posta'
-            aciklama='Veli raporları özet yayınlanınca kendiliğinden gider.'
-            eylem={islemde === 'gonder' ? 'Gönderiliyor…' : 'Bana gönder'}
-            onEylem={() => veri && islemde !== 'gonder' && kuyrugaAt()}
-          >
-            {gecmis === null ? (
-              <Yukleniyor />
-            ) : gecmis.length === 0 ? (
-              <BosDurum metin='Henüz mail gitmedi. Önce test maili göndererek altyapıyı doğrula.' />
-            ) : (
-              <ul className='liste rapor-gecmis'>
-                {(gecmisHepsi ? gecmis : gecmis.slice(0, 3)).map((m) => (
-                  <li key={m.id} className='liste-satir'>
-                    <div className='rapor-satir-metin'>
-                      <span className='liste-ad'>{m.konu}</span>
-                      <span className='liste-alt'>
-                        {TIP_YAZI[m.rapor_tipi] ?? m.rapor_tipi} ·{' '}
-                        {new Date(m.gonderildi_zaman ?? m.olusturuldu).toLocaleString('tr-TR', {
-                          day: '2-digit',
-                          month: '2-digit',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </span>
-                      {m.durum === 'hata' && m.hata_mesaji && (
-                        <span className='rapor-hata'>{m.hata_mesaji}</span>
-                      )}
-                    </div>
-                    <span
-                      className='durum-yazi'
-                      data-durum={m.durum === 'hata' ? 'uyari' : m.durum === 'gonderildi' ? 'notr' : 'sonuk'}
-                    >
-                      {DURUM_YAZI[m.durum] ?? m.durum}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <div className='rapor-eposta-alt'>
-              {gecmis && gecmis.length > 3 ? (
-                <button className='bolum-eylem' onClick={() => setGecmisHepsi((v) => !v)}>
-                  {gecmisHepsi ? 'Kısalt' : `Tümü · ${gecmis.length}`}
-                </button>
-              ) : <span />}
-              <button className='bolum-eylem' onClick={testMaili} disabled={islemde === 'test'}>
-                {islemde === 'test' ? 'Gönderiliyor…' : 'Test maili'}
-              </button>
-            </div>
-          </Bolum>
-
-          {/* Öğrencilere ve velilere o hafta ne gittiğini koçun da görmesi
-              gerekiyor; aynı bileşen, aynı veri. */}
-          <Bolum cizgili baslik='Bu hafta giden'>
+          {/* E-posta kaydı Yönetim → Sistem'e, Telegram Yönetim → Koçlar'a,
+              Araçlar hesap menüsüne taşındı: Raporlar yalnız "bak" ekranı. */}
+          <Bolum baslik='Bu hafta giden' aciklama='Öğrencilere ve velilere bu hafta giden kitap ve söz.'>
             <HaftalikIlham />
           </Bolum>
-
-          {/* Arada bir kullanılan işler. */}
-          <Bolum cizgili baslik='Araçlar'>
-            <ul className='liste arac-listesi'>
-              {[
-                ['/konular', 'Konu öncelikleri', 'Katalogdaki konuların ağırlığı ve sırası'],
-                ['/kaynaklar', 'Kaynaklar', 'Konulara bağlı kitap, video ve soru bankaları'],
-              ].map(([yol, ad, not]) => (
-                <li key={yol} className='liste-satir'>
-                  <button className='arac-satir' onClick={() => onGit?.(yol)}>
-                    <span>
-                      <span className='liste-ad'>{ad}</span>
-                      <span className='liste-alt'>{not}</span>
-                    </span>
-                    <svg viewBox='0 0 24 24' width='16' height='16' fill='none' stroke='currentColor'
-                         strokeWidth='2' strokeLinecap='round' strokeLinejoin='round' aria-hidden='true'>
-                      <path d='m9 6 6 6-6 6' />
-                    </svg>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </Bolum>
-
-          {/* Telefon değişir, hesap kaybolur: koç bağlantısını buradan kurar. */}
-          <TelegramBaglanti />
         </div>
       </div>
     </>

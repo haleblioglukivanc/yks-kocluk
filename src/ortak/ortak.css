@@ -90,12 +90,19 @@
   font-family: var(--display); font-size: var(--punto-orta); font-weight: 700; color: var(--murekkep);
 }
 .bolum-sayi { font-family: var(--mono); font-size: var(--punto-mini); font-weight: 500; color: var(--soluk); }
-.bolum-eylem {
-  flex: 0 0 auto; min-height: 44px; padding: 0 0.25rem;
-  background: none; border: 0; cursor: pointer;
-  font: inherit; font-size: var(--punto-kucuk); font-weight: 700; color: var(--serin);
+/* İkincil eylem: ikonlu, hafif dolgulu (TASARIM-KURALLARI 6). Eski
+   .bolum-eylem sınıfı da aynı görünümü alır. */
+.eylem-dugmesi, .bolum-eylem {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.4rem;
+  min-height: 40px; padding: 0 0.9rem; margin-block: 2px;
+  background: var(--serin-zemin); color: var(--serin-metin);
+  border: 0; border-radius: var(--r-tam); cursor: pointer;
+  font: inherit; font-size: var(--punto-kucuk); font-weight: 700; white-space: nowrap;
 }
-.bolum-eylem:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+@media (hover: hover) { .eylem-dugmesi:hover, .bolum-eylem:hover { filter: brightness(0.96); } }
+.eylem-dugmesi:focus-visible, .bolum-eylem:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+.eylem-dugmesi:disabled, .bolum-eylem:disabled { opacity: 0.55; cursor: default; }
+.eylem-dugmesi svg { flex: 0 0 auto; }
 .bolum-aciklama { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
 
 /* ── GunSeridi ─────────────────────────────────────────────────────
@@ -133,3 +140,31 @@
 .tehlike-yazi-dugme:focus-visible { outline: 2px solid var(--kizil); outline-offset: 2px; }
 /* Bölüm içindeki listeler zemine oturur. */
 .bolum > .liste { margin-top: 0.25rem; }
+
+
+/* ── Veri yüzeyi (TASARIM-KURALLARI 1, düzeltme 18 Eylül) ──────────────
+   Başlık ve açıklama krem zeminde; veri (künye, liste, tablo, form) tek
+   beyaz yüzeyde. Tek katman: yüzeyin içinde yine kutu yok. Bölümün içine
+   konan bu blokları ayrı ayrı sarmaya gerek yok, seçici hepsini yakalar. */
+.bolum > :is(.liste, .kunye, .sirada-liste, .rutin-liste, .ders-liste, .yk-tablo-kap, .form-kutu--duz, .kaynak-adlar, .haftalik-ilham),
+.prg-gun > .gorev-liste,
+.veri-yuzey {
+  background: var(--yuzey);
+  border-radius: var(--r-buyuk);
+  padding: 0.25rem 1rem;
+  margin-top: 0.5rem;
+}
+.bolum > .form-kutu--duz { padding: 1rem; }
+.bolum > .yk-tablo-kap { padding: 0.25rem 0.5rem; }
+.bolum > .kunye { padding: 0.25rem 1rem; }
+.bolum > .haftalik-ilham { padding: 0.5rem 1rem; }
+/* Yüzeyin son satırı çizgi taşımaz. */
+.bolum > :is(.liste, .ders-liste, .sirada-liste, .rutin-liste) > li:last-child > *,
+.bolum > .liste > .liste-satir:last-child,
+.prg-gun > .gorev-liste > li:last-child > * { border-bottom: 0; }
+/* Beyaz yüzeydeki ikincil düğme zeminle karışmasın. */
+.veri-yuzey .eylem-dugmesi { background: var(--serin-zemin); }
+
+/* ── Ölçü kartı (istisna) ─────────────────────────────────────────────
+   Sayı taşıyan pastel kart zeminde tek katman olarak durabilir
+   (Raporlar'daki dört kart). İçinde kutu yok. */
