@@ -1,0 +1,4 @@
+{
+  "_not": "Sınav Psikolojisi serisini yazan/onaylayan uzman. Ad boşsa videoda ve açıklamada ad geçmez.",
+  "uzman": { "ad": "", "unvan": "Psikolojik Danışman" }
+}

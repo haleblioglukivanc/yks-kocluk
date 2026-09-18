@@ -17,7 +17,11 @@ from govde import GOVDE  # noqa: E402
 TR = timezone(timedelta(hours=3))
 KANAL = {'yt': '6aace7c9ea19ca0bde758f8b', 'ig': '6aad24b7ea19ca0bde778286', 'tt': '6aad283cea19ca0bde77a6ba'}
 MUZIK = {'Haftanın Planı': 'plan', 'Ders Taktiği': 'taktik', 'Aynı Hafta': 'aynihafta', 'Veli Köşesi': 'veli',
-         'Doğru Bilinen Yanlışlar': 'efsane', 'Deneme Günü': 'deneme', 'Pazar Akşamı': 'pazar', 'Özel Gün': 'ozel'}
+         'Doğru Bilinen Yanlışlar': 'efsane', 'Deneme Günü': 'deneme', 'Sınav Psikolojisi': 'pazar', 'Özel Gün': 'ozel',
+         'Gündem': 'ozel'}
+EKIP = json.loads((KOK / 'ekip.json').read_text(encoding='utf-8'))
+UZMAN_NOTU = ('Bu içerik bilgilendirme amaçlıdır. Kaygı, uykusuzluk ya da umutsuzluk haftalardır sürüyorsa '
+              'okul rehber öğretmenine ya da bir uzmana başvur. Acil bir durumda 112.')
 SITE = 'https://khkocluk.com'
 
 
@@ -25,8 +29,21 @@ def gun_bul(tarih):
     plan = json.loads((KOK / 'takvim' / 'yillik-plan.json').read_text(encoding='utf-8'))
     for g in plan:
         if g['tarih'] == tarih:
-            return g
-    sys.exit(f'{tarih} takvimde yok.')
+            break
+    else:
+        sys.exit(f'{tarih} takvimde yok.')
+    # Onaylanmış gündem içeriği (sosyal/takvim/gundem.json) takvimdeki günün yerine geçer
+    gp = KOK / 'takvim' / 'gundem.json'
+    for x in (json.loads(gp.read_text(encoding='utf-8')) if gp.exists() else []):
+        if x.get('tarih') == tarih and x.get('onay'):
+            g = {**g, 'seri': 'Gündem', 'sablon': x.get('sablon', 'kart-liste'), 'baslik': x['baslik'],
+                 'kanca': x['kanca'], 'ders': '', 'soru': x.get('soru', ''), 'gundem_govde': x['govde']}
+            g['etiket'] = {k: v[:-1] + x.get('etiket', []) + v[-1:] for k, v in g['etiket'].items()}
+            print('>> Gündem içeriği kullanılıyor:', x['baslik'])
+    # Sınav Psikolojisi: uzman imzası
+    if g['seri'] == 'Sınav Psikolojisi' and EKIP['uzman']['ad']:
+        g['imza'] = f"{EKIP['uzman']['unvan']} {EKIP['uzman']['ad']}"
+    return g
 
 
 def metinler(g, govde):
@@ -34,6 +51,8 @@ def metinler(g, govde):
     satirlar = '\n'.join(govde)
     et = {k: ' '.join(v) for k, v in g['etiket'].items()}
     soru = f"\n\n💬 {g['soru']}" if g.get('soru') else ''
+    if g['seri'] == 'Sınav Psikolojisi':
+        soru += (f"\n\n— {g['imza']}" if g.get('imza') else '') + f"\n\n{UZMAN_NOTU}"
     if g['hassas']:
         yalin = f"{g['kanca']}\n\n{satirlar}"
         return {'yt': yalin, 'ig': yalin, 'tt': yalin}, g['baslik']
@@ -143,7 +162,7 @@ if __name__ == '__main__':
     a.add_argument('--metin', action='store_true'); a.add_argument('--deneme', action='store_true')
     arg = a.parse_args()
     g = gun_bul(arg.tarih)
-    govde = GOVDE.get(g['baslik'])
+    govde = g.get('gundem_govde') or GOVDE.get(g['baslik'])
     print(f"{g['tarih']} {g['gun']} · {g['seri']} · {g['baslik']}")
     if not govde:
         print(f"::warning::{g['tarih']} ({g['baslik']}) için gövde yazılmamış; video üretilmedi.")

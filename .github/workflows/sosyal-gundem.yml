@@ -1,0 +1,23 @@
+name: Sosyal - gündem taraması
+
+# Pazartesi ve perşembe 07:00 (Türkiye): eğitim ve öğrenci psikolojisi gündemini
+# tarar, "Gündem önerileri" başlıklı bir GitHub konusu açar (e-posta bildirimi gelir).
+# Hiçbir şey kendiliğinden yayınlanmaz; onaylanan konu sosyal/takvim/gundem.json'a yazılır.
+on:
+  schedule:
+    - cron: '0 4 * * 1,4'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  tara:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Gündemi tara ve konu aç
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: python3 sosyal/gundem.py --issue

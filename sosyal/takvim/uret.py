@@ -103,7 +103,7 @@ SERI = {  # haftanın günü -> (seri adı, banka, kitle, video şablonu)
  3: ("Veli Köşesi", VELI, "veli", "kart-veli"),
  4: ("Doğru Bilinen Yanlışlar", EFSANE, "öğrenci", "efsane-gercek"),
  5: ("Deneme Günü", DENEME, "öğrenci", "kart-liste"),
- 6: ("Pazar Akşamı", PAZAR, "öğrenci", "tek-cumle"),
+ 6: ("Sınav Psikolojisi", PAZAR, "öğrenci", "tek-cumle"),   # pazar akşamı; uzman (PDR) imzalı
 }
 
 # ── Mevsim ve ruh hali ──────────────────────────────────────────────────────
@@ -175,7 +175,7 @@ def etiketler(g, seri, kitle, ders=None, hassas=False):
      "Veli Köşesi": ["#veli", "#sınavyılı", "#ebeveyn", "#anneyiz", "#velirehberi"],
      "Doğru Bilinen Yanlışlar": ["#dersçalışma", "#doğrubilinenyanlışlar", "#çalışmayöntemleri", "#bilgi", "#verimliçalışma"],
      "Deneme Günü": ["#denemesınavı", "#netartırma", "#tytdeneme", "#denemeanalizi", "#türkiyegenelideneme"],
-     "Pazar Akşamı": ["#motivasyon", "#sınavkaygısı", "#pazarakşamı", "#yksmotivasyon", "#psikoloji"],
+     "Sınav Psikolojisi": ["#sınavkaygısı", "#psikoloji", "#motivasyon", "#sınavpsikolojisi", "#pdr", "#yksmotivasyon"],
      "Özel Gün": ["#motivasyon", "#eğitim", "#öğrenci", "#yks"],
     }[seri]
     seri_et = [havuz[(hafta + i) % len(havuz)] for i in range(2)]
@@ -218,7 +218,7 @@ SORU = {
  "Veli Köşesi": ["Evde işe yarayan tek cümleniz ne?", "Sizce en zor kısmı ne?", "Bir sonraki veli konusu ne olsun?"],
  "Doğru Bilinen Yanlışlar": ["Sen de buna inanıyor muydun? Evet ya da hayır.", "Başka hangi efsaneyi çürütelim?", "Sence doğru mu? Yaz."],
  "Deneme Günü": ["Bugünkü netin kaç? Sadece rakam.", "En çok hangi derste boş bıraktın?", "Denemeye kaçta başladın?"],
- "Pazar Akşamı": ["Bu haftanı tek kelimeyle yaz.", "Bu hafta seni ne iyi hissettirdi?", "Yarının ilk işi ne?"],
+ "Sınav Psikolojisi": ["Bu haftanı tek kelimeyle yaz.", "Bu hafta seni ne iyi hissettirdi?", "Yarının ilk işi ne?"],
 }
 
 def uret():
@@ -252,7 +252,7 @@ def uret():
             "lgs_kalan": (LGS - g).days if g <= LGS else None,
             "ramazan": g in RAMAZAN, "tatil": g in TATIL,
             "cta": "" if hassas else ("Tanışma görüşmesi: khkocluk.com" if wd in (3, 6) else "Takip et, her gün bir tane."),
-            "muzik": not hassas and seri != "Veli Köşesi" and not (seri == "Pazar Akşamı" and hafta_no(g) % 2),
+            "muzik": not hassas and seri != "Veli Köşesi" and not (seri == "Sınav Psikolojisi" and hafta_no(g) % 2),
             "tema": "gece" if hassas else TEMA_SIRA[hafta_no(g) % len(TEMA_SIRA)],
             "soru": "" if (hassas or seri == "Özel Gün") else SORU[seri][hafta_no(g) % len(SORU[seri])],
         })

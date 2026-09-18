@@ -11,10 +11,11 @@ const YOL = {
   efsane: ['M10.5 4a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13z', 'M15.5 15.5L21 21', 'M8 8.5l5 5', 'M13 8.5l-5 5'],
   deneme: ['M12 7a7 7 0 1 0 0 14 7 7 0 0 0 0-14z', 'M10 3h4', 'M12 3v4', 'M12 14l3-2.5', 'M18.5 6.5l1.5-1.5'],
   pazar: ['M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z', 'M17 3v3', 'M15.5 4.5h3', 'M20.5 8v2', 'M19.5 9h2'],
+  gundem: ['M4 10v4a1 1 0 0 0 1 1h2l5 4V5L7 9H5a1 1 0 0 0-1 1z', 'M16 9a4 4 0 0 1 0 6', 'M19 6a8 8 0 0 1 0 12'],
   ozel: ['M5 6h14a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z', 'M4 10h16', 'M8 4v4', 'M16 4v4', 'M12 12.5l1.2 2.4 2.6.4-1.9 1.8.5 2.6-2.4-1.3-2.4 1.3.5-2.6-1.9-1.8 2.6-.4z'],
 }
 export const IKON_ADI = { 'Haftanın Planı': 'plan', 'Ders Taktiği': 'taktik', 'Aynı Hafta': 'aynihafta', 'Veli Köşesi': 'veli',
-  'Doğru Bilinen Yanlışlar': 'efsane', 'Deneme Günü': 'deneme', 'Pazar Akşamı': 'pazar', 'Özel Gün': 'ozel' }
+  'Doğru Bilinen Yanlışlar': 'efsane', 'Deneme Günü': 'deneme', 'Sınav Psikolojisi': 'pazar', 'Özel Gün': 'ozel', 'Gündem': 'gundem' }
 
 export function Ikon({ ad, f, boyut = 150, renk, vurgu }) {
   const yollar = YOL[ad] || YOL.ozel

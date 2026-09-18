@@ -53,7 +53,7 @@
  {
   "tarih": "2026-09-20",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Pazar akşamı ağırlığı",
   "kanca": "Pazar akşamı içinde bir ağırlık mı var? Yalnız değilsin.",
@@ -75,20 +75,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
     "#sınavkaygısı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
     "#sınavkaygısı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -410,7 +410,7 @@
  {
   "tarih": "2026-09-27",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Haftayı kapat",
   "kanca": "Bu haftanın tek iyi şeyini yaz. Bir tane yeter.",
@@ -432,20 +432,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#sınavkaygısı",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -767,7 +767,7 @@
  {
   "tarih": "2026-10-04",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Mevsim değişimi",
   "kanca": "Hava değişti, ruh halin de değişebilir. Normal.",
@@ -789,20 +789,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#motivasyon",
     "#Shorts"
    ]
   },
@@ -1124,7 +1124,7 @@
  {
   "tarih": "2026-10-11",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kendine koç ol",
   "kanca": "Kendine bir arkadaşına konuşur gibi konuş.",
@@ -1146,20 +1146,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
-    "#psikoloji",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
-    "#psikoloji",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#yksmotivasyon",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -1481,7 +1481,7 @@
  {
   "tarih": "2026-10-18",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Yetmiyorum hissi",
   "kanca": "‘Yetmiyorum’ bir his. Gerçek değil.",
@@ -1503,20 +1503,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#pdr",
+    "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#pdr",
+    "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#psikoloji",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -1838,7 +1838,7 @@
  {
   "tarih": "2026-10-25",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Yarın yeni hafta",
   "kanca": "Yarın sıfırdan değil, kaldığın yerden.",
@@ -1860,20 +1860,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -2195,7 +2195,7 @@
  {
   "tarih": "2026-11-01",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Işık ve ruh hali",
   "kanca": "Kış akşamları erken karanlık. Masaya iyi bir lamba koy.",
@@ -2218,14 +2218,14 @@
     "#yks2027",
     "#yks",
     "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
     "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
@@ -2552,7 +2552,7 @@
  {
   "tarih": "2026-11-08",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kaygıyla yaşamak",
   "kanca": "Kaygı gitmeyecek. Seninle birlikte çalışacak.",
@@ -2574,20 +2574,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -2893,7 +2893,7 @@
  {
   "tarih": "2026-11-15",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Küçük zaferler",
   "kanca": "Bu hafta bir soruyu ilk kez yaptın mı? Bu bir zafer.",
@@ -2915,20 +2915,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
-    "#psikoloji",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
-    "#psikoloji",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#yksmotivasyon",
+    "#motivasyon",
     "#Shorts"
    ]
   },
@@ -3250,7 +3250,7 @@
  {
   "tarih": "2026-11-22",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Mükemmel hafta yok",
   "kanca": "Mükemmel hafta yok. İyi yeter.",
@@ -3272,20 +3272,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#psikoloji",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -3607,7 +3607,7 @@
  {
   "tarih": "2026-11-29",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Dinlenme hakkı",
   "kanca": "Bugün dinlendiysen, suçluluk duymana gerek yok.",
@@ -3629,20 +3629,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#pdr",
+    "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#pdr",
+    "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -3964,7 +3964,7 @@
  {
   "tarih": "2026-12-06",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kıyas bırak",
   "kanca": "Bu hafta kimseye bakma. Sadece dünkü sene.",
@@ -3986,20 +3986,20 @@
    "ig": [
     "#yks2027",
     "#yks",
+    "#yksmotivasyon",
     "#sınavkaygısı",
-    "#pazarakşamı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
+    "#yksmotivasyon",
     "#sınavkaygısı",
-    "#pazarakşamı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#sınavkaygısı",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -4321,7 +4321,7 @@
  {
   "tarih": "2026-12-13",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Neden başladın",
   "kanca": "Neden başladığını hatırla. Kâğıda yaz.",
@@ -4343,20 +4343,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -4678,7 +4678,7 @@
  {
   "tarih": "2026-12-20",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Yalnızlık",
   "kanca": "Bu yol yalnız hissettirir. Ama yalnız değilsin.",
@@ -4700,20 +4700,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
     "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
     "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#yksmotivasyon",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -5035,7 +5035,7 @@
  {
   "tarih": "2026-12-27",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Beden de çalışır",
   "kanca": "Bu hafta kaç kere yürüdün? Beyin bacaklarla da çalışır.",
@@ -5057,20 +5057,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
     "#motivasyon",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
     "#motivasyon",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#psikoloji",
+    "#motivasyon",
     "#Shorts"
    ]
   },
@@ -5392,7 +5392,7 @@
  {
   "tarih": "2027-01-03",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Sınav senin değerin değil",
   "kanca": "Bir sınav, senin değerini ölçmez.",
@@ -5414,20 +5414,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -5749,7 +5749,7 @@
  {
   "tarih": "2027-01-10",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Gelecek kaygısı",
   "kanca": "Gelecek büyük. Yarın küçük. Yarına bak.",
@@ -5771,20 +5771,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#pdr",
+    "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#pdr",
+    "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#sınavkaygısı",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -6106,7 +6106,7 @@
  {
   "tarih": "2027-01-17",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Ailene teşekkür",
   "kanca": "Bu hafta evde sana destek olan birine teşekkür et.",
@@ -6128,20 +6128,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
     "#yksmotivasyon",
+    "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
     "#yksmotivasyon",
+    "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -6463,7 +6463,7 @@
  {
   "tarih": "2027-01-24",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Uyku borcu",
   "kanca": "Bu gece erken yat. Pazartesi seni teşekkürle karşılar.",
@@ -6485,20 +6485,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -6820,7 +6820,7 @@
  {
   "tarih": "2027-01-31",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kötü hafta",
   "kanca": "Kötü hafta oldu. Kötü yıl olmayacak.",
@@ -7161,7 +7161,7 @@
  {
   "tarih": "2027-02-07",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Hedefi küçült",
   "kanca": "Hedef büyük olabilir. Adım küçük olmalı.",
@@ -7184,14 +7184,14 @@
     "#yks2027",
     "#yks",
     "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
     "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
@@ -7518,7 +7518,7 @@
  {
   "tarih": "2027-02-14",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Telefonsuz akşam",
   "kanca": "Bu akşam bir saat telefonsuz. Sadece bir saat.",
@@ -7540,20 +7540,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -7875,7 +7875,7 @@
  {
   "tarih": "2027-02-21",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "İyi ki çalıştın",
   "kanca": "Yorgunsan, çalıştığın içindir.",
@@ -7897,20 +7897,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
+    "#pdr",
     "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
+    "#pdr",
     "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -8232,7 +8232,7 @@
  {
   "tarih": "2027-02-28",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Pes etmek istemek",
   "kanca": "Bırakmak istemek normal. Bırakmamak da seçim.",
@@ -8255,14 +8255,14 @@
     "#yks2027",
     "#yks",
     "#yksmotivasyon",
-    "#psikoloji",
+    "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
     "#yksmotivasyon",
-    "#psikoloji",
+    "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
@@ -8589,7 +8589,7 @@
  {
   "tarih": "2027-03-07",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Yavaş ilerleme",
   "kanca": "Yavaş ilerlemek, durmaktan iyidir.",
@@ -8611,20 +8611,20 @@
    "ig": [
     "#yks2027",
     "#yks",
+    "#sınavkaygısı",
     "#psikoloji",
-    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
+    "#sınavkaygısı",
     "#psikoloji",
-    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#psikoloji",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -8946,7 +8946,7 @@
  {
   "tarih": "2027-03-14",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kendini affet",
   "kanca": "Bu hafta yapmadıkların için kendini affet. Yarın var.",
@@ -8968,20 +8968,20 @@
    "ig": [
     "#yks2027",
     "#yks",
+    "#psikoloji",
     "#motivasyon",
-    "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
+    "#psikoloji",
     "#motivasyon",
-    "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -9660,7 +9660,7 @@
  {
   "tarih": "2027-03-28",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Plan hazırlığı",
   "kanca": "Yarının ilk işini bu akşam belirle.",
@@ -9682,20 +9682,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -10017,7 +10017,7 @@
  {
   "tarih": "2027-04-04",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Bahar huzursuzluğu",
   "kanca": "Hava güzelleşince dışarısı çağırır. 1 saat git, dön.",
@@ -10039,20 +10039,20 @@
    "ig": [
     "#yks2027",
     "#yks",
+    "#pdr",
     "#yksmotivasyon",
-    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
+    "#pdr",
     "#yksmotivasyon",
-    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#yksmotivasyon",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -10374,7 +10374,7 @@
  {
   "tarih": "2027-04-11",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Sınav yaklaşırken",
   "kanca": "Sınav yaklaştıkça zaman hızlanır gibi olur. Aynı hızda.",
@@ -10396,20 +10396,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#psikoloji",
-    "#motivasyon",
+    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#psikoloji",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -10731,7 +10731,7 @@
  {
   "tarih": "2027-04-18",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Gurur",
   "kanca": "Kendinle gurur duyduğun bir şey söyle.",
@@ -10753,20 +10753,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
     "#sınavkaygısı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
     "#sınavkaygısı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -11088,7 +11088,7 @@
  {
   "tarih": "2027-04-25",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Karşılaştırma tuzağı",
   "kanca": "Sosyal medyadaki masa, gerçek hayat değil.",
@@ -11110,20 +11110,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#sınavkaygısı",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -11445,7 +11445,7 @@
  {
   "tarih": "2027-05-02",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Sabır",
   "kanca": "Net artışı merdiven değil, rampa. Önce düz gider.",
@@ -11467,20 +11467,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#motivasyon",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#motivasyon",
     "#Shorts"
    ]
   },
@@ -12516,7 +12516,7 @@
  {
   "tarih": "2027-05-23",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Anlam",
   "kanca": "Bu yıl sadece puan değil, disiplin kazandırıyor.",
@@ -12538,20 +12538,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#motivasyon",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -12873,7 +12873,7 @@
  {
   "tarih": "2027-05-30",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Arkadaşlık",
   "kanca": "Bu hafta bir arkadaşını ara. Ders konuşmadan.",
@@ -12896,14 +12896,14 @@
     "#yks2027",
     "#yks",
     "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
     "#sınavkaygısı",
-    "#pazarakşamı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
@@ -13230,7 +13230,7 @@
  {
   "tarih": "2027-06-06",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Son pazar",
   "kanca": "Sınavdan önceki son pazar gibi düşün: sakin.",
@@ -13252,20 +13252,20 @@
    "ig": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2027",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2027",
-    "#pazarakşamı",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -14301,7 +14301,7 @@
  {
   "tarih": "2027-06-27",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Hayır demek",
   "kanca": "Bu hafta ‘hayır’ dediğin şey, ‘evet’ dediğin hedefi korudu.",
@@ -14323,20 +14323,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#pdr",
+    "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#pdr",
+    "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#motivasyon",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -14658,7 +14658,7 @@
  {
   "tarih": "2027-07-04",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Duygu günlüğü",
   "kanca": "Bugün nasıl hissettin? Bir kelimeyle.",
@@ -14680,20 +14680,20 @@
    "ig": [
     "#yks2028",
     "#yks",
+    "#yksmotivasyon",
     "#sınavkaygısı",
-    "#pazarakşamı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
+    "#yksmotivasyon",
     "#sınavkaygısı",
-    "#pazarakşamı",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#sınavkaygısı",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -15015,7 +15015,7 @@
  {
   "tarih": "2027-07-11",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Hafta puanı",
   "kanca": "Haftana 10 üzerinden kaç verirsin? 6 iyi bir not.",
@@ -15037,20 +15037,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
+    "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#pazarakşamı",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
+    "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#pazarakşamı",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -15356,7 +15356,7 @@
  {
   "tarih": "2027-07-18",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kendi hızın",
   "kanca": "Herkesin saati farklı. Senin saatin de işliyor.",
@@ -15378,20 +15378,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#yksmotivasyon",
     "#psikoloji",
+    "#motivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#yksmotivasyon",
     "#psikoloji",
+    "#motivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#yksmotivasyon",
+    "#psikoloji",
     "#Shorts"
    ]
   },
@@ -15713,7 +15713,7 @@
  {
   "tarih": "2027-07-25",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Bedenin sinyali",
   "kanca": "Başın ağrıyorsa, gözün yorgunsa: dur.",
@@ -15735,20 +15735,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#psikoloji",
     "#motivasyon",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#psikoloji",
     "#motivasyon",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#psikoloji",
+    "#motivasyon",
     "#Shorts"
    ]
   },
@@ -16070,7 +16070,7 @@
  {
   "tarih": "2027-08-01",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Umut",
   "kanca": "Umut plan değildir. Ama plansız umut da olmaz.",
@@ -16092,20 +16092,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#motivasyon",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },
@@ -16427,7 +16427,7 @@
  {
   "tarih": "2027-08-08",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Dua, niyet, dilek",
   "kanca": "Bu hafta için tek bir dileğin ne?",
@@ -16449,20 +16449,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#pdr",
+    "#yksmotivasyon",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#pdr",
+    "#yksmotivasyon",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#sınavkaygısı",
+    "#pdr",
     "#Shorts"
    ]
   },
@@ -16784,7 +16784,7 @@
  {
   "tarih": "2027-08-15",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Sessiz akşam",
   "kanca": "Bu akşam sadece dinlen. Yarın başlarız.",
@@ -16806,20 +16806,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#pazarakşamı",
     "#yksmotivasyon",
+    "#sınavkaygısı",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#pazarakşamı",
     "#yksmotivasyon",
+    "#sınavkaygısı",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#pazarakşamı",
+    "#yksmotivasyon",
     "#Shorts"
    ]
   },
@@ -17141,7 +17141,7 @@
  {
   "tarih": "2027-08-22",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kaybettiğin günler",
   "kanca": "Kaybettiğin gün yok. Ders çıkardığın gün var.",
@@ -17163,20 +17163,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#psikoloji",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#psikoloji",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#yksmotivasyon",
+    "#sınavkaygısı",
     "#Shorts"
    ]
   },
@@ -17498,7 +17498,7 @@
  {
   "tarih": "2027-08-29",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kendine mektup",
   "kanca": "Haziranda okuyacağın bir cümle yaz.",
@@ -17855,7 +17855,7 @@
  {
   "tarih": "2027-09-05",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Yeni başlangıç",
   "kanca": "Her pazartesi yeni başlangıç değil. Devam.",
@@ -17878,14 +17878,14 @@
     "#yks2028",
     "#yks",
     "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
     "#motivasyon",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#keşfet"
    ],
    "yt": [
@@ -18212,7 +18212,7 @@
  {
   "tarih": "2027-09-12",
   "gun": "Paz",
-  "seri": "Pazar Akşamı",
+  "seri": "Sınav Psikolojisi",
   "ders": "",
   "baslik": "Kontrol edebildiklerin",
   "kanca": "Soru zorluğunu değil, bugünü kontrol edebilirsin.",
@@ -18234,20 +18234,20 @@
    "ig": [
     "#yks2028",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#eğitimkoçluğu"
    ],
    "tt": [
     "#yks2028",
     "#yks",
-    "#sınavkaygısı",
-    "#pazarakşamı",
+    "#sınavpsikolojisi",
+    "#pdr",
     "#keşfet"
    ],
    "yt": [
     "#yks2028",
-    "#sınavkaygısı",
+    "#sınavpsikolojisi",
     "#Shorts"
    ]
   },

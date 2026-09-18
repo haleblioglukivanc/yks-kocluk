@@ -25,7 +25,7 @@ ve `takvim.html` (tarayıcıda tıklanabilir takvim) üretir.
 | Per | Veli Köşesi | veli | kart-veli |
 | Cum | Doğru Bilinen Yanlışlar | öğrenci | efsane-gercek |
 | Cmt | Deneme Günü | öğrenci | kart-liste |
-| Paz | Pazar Akşamı | öğrenci | tek-cumle |
+| Paz | Sınav Psikolojisi | öğrenci | tek-cumle |
 
 Takvime bağlı 41 gün ("Özel Gün") serinin yerini alır. Hassas günlerde
 (10 Kasım, 6 Şubat, 15 Temmuz) müzik, etiket ve satış çağrısı yoktur; sade kart.
@@ -49,3 +49,14 @@ Takvime bağlı 41 gün ("Özel Gün") serinin yerini alır. Hassas günlerde
 2. Günlük iş akışı: o günün satırından videoyu GitHub Actions'ta render eder,
    üç kanala `kuyruk.json` satırı yazar, Buffer'a planlar.
 3. Haftalık ölçüm: Buffer metriklerinden saat ve etiket ayarı.
+
+## Sınav Psikolojisi (pazar) ve gündem
+- Pazar serisi **Sınav Psikolojisi**: ekipteki psikolojik danışmanın (PDR) imzasıyla çıkar.
+  Ad ve unvan `sosyal/ekip.json`'da; açıklamaya "bilgilendirme amaçlıdır, uzun sürüyorsa
+  rehber öğretmene / uzmana, acilde 112" notu kendiliğinden eklenir. Aylık metinler
+  yayından önce uzmana okutulur.
+- **Gündem**: `.github/workflows/sosyal-gundem.yml` pazartesi ve perşembe sabahı
+  Google Haberler + Google Trends'i tarayıp bir GitHub konusu açar. Hassas haberler ⚠️ ile
+  işaretlenir. Seçilen konu `takvim/gundem.json`'a eklenir:
+  `{"tarih": "2026-10-05", "baslik": "...", "kanca": "...", "govde": ["...","...","..."], "onay": true}`
+  O günün videosu takvimdeki konunun yerine bununla üretilir.
