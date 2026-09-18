@@ -1,6 +1,6 @@
 import { useLayoutEffect, useRef, useState } from 'react'
 import {
-  AbsoluteFill, Img, continueRender, delayRender, interpolate, spring,
+  AbsoluteFill, Audio, Img, continueRender, delayRender, interpolate, spring,
   staticFile, useCurrentFrame, useVideoConfig,
 } from 'remotion'
 import { loadFont as baslikFontu } from '@remotion/google-fonts/BricolageGrotesque'
@@ -261,6 +261,8 @@ export function Carsamba() {
         <div style={{ height: 30 }} />
         <Sohbet f={f} />
       </div>
+      {/* Fon müziği muzik/carsamba.py ile koddan üretilir; akorlar bu zaman çizelgesine oturur. */}
+      <Audio src={staticFile('carsamba-muzik.mp3')} />
       <Kapanis f={f} />
       {/* döngüye yumuşak dönüş: son 6 kare kararır */}
       <AbsoluteFill style={{ background: R.lacivert, opacity: interpolate(f, [durationInFrames - 6, durationInFrames], [0, 0.6], { extrapolateLeft: 'clamp' }) }} />
