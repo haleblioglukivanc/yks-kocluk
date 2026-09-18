@@ -4714,3 +4714,9 @@ body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); 
 .yk-koc-suz { max-width: 11rem; min-height: 40px; font-size: var(--punto-kucuk); }
 .alt-sekmeler--koyu .sekme-rozet { background: var(--marka-koyu-amber); color: var(--k-kagit); }
 .alt-sekmeler--koyu .sekme-rozet--acil { background: var(--kizil); color: var(--beyaz); }
+/* Koç satırı: ad ve ölçüler dokunulabilir, detayı açar. */
+.yk-koc-ac { background: none; border: 0; padding: 0; text-align: left; font: inherit; color: inherit; cursor: pointer; min-height: 44px; }
+.yk-koc-ac:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+@media (hover: hover) { .yk-koc-ac:hover .liste-ad { text-decoration: underline; } }
+.koc-detay .bolum:first-child { margin-top: 0.5rem; }
+.koc-ogrenci-sec { flex: 1; min-height: 44px; align-items: center; }

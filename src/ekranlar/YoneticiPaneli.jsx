@@ -4,7 +4,7 @@ import UstBlok from '../ortak/UstBlok.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import UyariSatiri from '../ortak/UyariSatiri.jsx'
-import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
+import KocDetay, { DURUM_ADI } from '../bilesenler/KocDetay.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -161,6 +161,7 @@ function YoneticiAnahtari({ koc, onDegisti, onHata }) {
 function Koclar({ liste, onDegisti, benId }) {
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
+  const [acikKoc, setAcikKoc] = useState(null)
   return (
     <Bolum
       baslik="Koçlar"
@@ -181,21 +182,34 @@ function Koclar({ liste, onDegisti, benId }) {
             return (
               <li key={k.koc_id} className="yk-koc">
                 <div className="yk-koc-bas">
-                  <span className="yk-koc-kimlik">
-                    <span className="liste-ad">{k.ad_soyad}</span>
-                    <span className="liste-alt">
-                      {k.ogrenci_sayisi} öğrenci · bekleyen onay <b>{k.bekleyen_onay}</b> · yanıt {saatMetni(k.yanit_saat)} · veli özeti {ozetYuzde == null ? '—' : `%${ozetYuzde}`}
+                  {/* Satıra dokununca koç detayı açılır (bilgiler, öğrenciler, aktarma). */}
+                  <button type="button" className="yk-koc-kimlik yk-koc-ac" onClick={() => setAcikKoc(k.koc_id)}>
+                    <span className="liste-ad">
+                      {k.ad_soyad}
+                      {k.durum && k.durum !== 'aktif' && (
+                        <span className="durum-yazi" data-durum={k.durum === 'ayrildi' ? 'sonuk' : 'izle'}> · {DURUM_ADI[k.durum]}</span>
+                      )}
                     </span>
-                  </span>
+                    <span className="liste-alt">
+                      {k.ogrenci_sayisi}{k.kapasite ? `/${k.kapasite}` : ''} öğrenci · bekleyen onay <b>{k.bekleyen_onay}</b> · yanıt {saatMetni(k.yanit_saat)} · veli özeti {ozetYuzde == null ? '—' : `%${ozetYuzde}`}
+                    </span>
+                  </button>
                   <YoneticiAnahtari koc={k} onDegisti={onDegisti} onHata={setHata} />
                 </div>
                 {uyari.length > 0 && <UyariSatiri durum="acil">{uyari.join(' · ')}</UyariSatiri>}
-                {/* Kendi şifreni buradan değil hesap menüsünden değiştirirsin. */}
-                {k.koc_id !== benId && <SifreSifirla kisiId={k.koc_id} ad={k.ad_soyad} />}
               </li>
             )
           })}
         </ul>
+      )}
+      {acikKoc && (
+        <KocDetay
+          kocId={acikKoc}
+          koclar={liste}
+          benId={benId}
+          onKapat={() => setAcikKoc(null)}
+          onDegisti={onDegisti}
+        />
       )}
     </Bolum>
   )
@@ -634,7 +648,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
   const [hata, setHata] = useState(null)
 
   const yukle = useCallback(async () => {
-    const [nabiz, koclar, risk, sistem, vekalet, tahsilat, ogrenciler] = await Promise.all([
+    const [nabiz, koclar, risk, sistem, vekalet, tahsilat, ogrenciler, ozellik] = await Promise.all([
       supabase.rpc('yonetici_nabzi'),
       supabase.rpc('yonetici_koc_performansi'),
       supabase.rpc('yonetici_risk_listesi', { p_limit: 5 }),
@@ -642,6 +656,7 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
       supabase.rpc('yonetici_vekalet_kayitlari', { p_limit: 8 }),
       supabase.rpc('yonetici_tahsilat_ozeti'),
       supabase.rpc('yonetici_ogrenci_listesi'),
+      supabase.rpc('yonetici_koc_ozellikleri'),
     ])
     const ilkHata = [nabiz, koclar, risk, sistem, vekalet, tahsilat, ogrenciler].find((c) => c.error)
     if (ilkHata) {
@@ -650,7 +665,8 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
     }
     setVeri({
       nabiz: nabiz.data,
-      koclar: koclar.data,
+      /* Performans listesine durum/kapasite/başlangıç eklenir. */
+      koclar: (koclar.data ?? []).map((k) => ({ ...k, ...(ozellik.data?.[k.koc_id] ?? {}) })),
       risk: risk.data,
       sistem: sistem.data,
       vekalet: vekalet.data,

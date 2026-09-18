@@ -1,11 +1,24 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (şifre işleri)
+Son güncelleme: 19 Eylül 2026 (koç yönetimi)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 2: koç detayı, durum, öğrenci aktarma
+
+- Migration `koc_yonetimi_detay_durum_aktarma`: `profiller`'e `koc_durum` (aktif/izinde/ayrildi), `baslangic_tarihi`
+  (mevcut koçlar için hesap açılış günü), `kapasite`, `brans`, `ic_not`; koç bu alanları kendisi değiştiremez
+  (`private.koc_alan_koruma` tetikleyicisi — denendi). RPC'ler: `yonetici_koc_ozellikleri`, `yonetici_koc_detay`,
+  `yonetici_koc_guncelle`, `yonetici_ogrenci_aktar`.
+- Yönetim → Koçlar: satıra dokununca `KocDetay` yaprağı: bilgiler (e-posta, telefon, durum, başlangıç, son giriş,
+  kapasite, branş, iç not) + düzenle; öğrencileri + seçip başka koça **aktar** (görev, deneme, not, ödeme planı da
+  geçer); şifre sıfırla; öğrencisi kalmamış koçu silme (ad yazarak onay). Listede durum ve "öğrenci/kapasite".
+- "Ayrıldı" yalnız aktif öğrencisi yokken seçilebilir; ayrılan koç giriş yapamaz (`oturum.js` erişim kapısı).
+- `kullanici-sil` v6 yayında (yönetici bayrağı düzeltmesi). Demo öğrenci aktarma testinden sonra Demo Koç'a geri alındı.
+- Sıradaki (TESPIT-YONETIM.md 5): Teknik sekmesi.
 
 ## 19 Eylül 2026 — Yönetim işlevleri 1: şifre işleri
 

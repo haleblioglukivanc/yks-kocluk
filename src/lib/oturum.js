@@ -13,7 +13,7 @@ export function useOturum() {
   const profiliCek = useCallback(async (id) => {
     const { data, error } = await supabase
       .from('profiller')
-      .select('id, rol, ad_soyad, sifre_degistirmeli, yonetici')
+      .select('id, rol, ad_soyad, sifre_degistirmeli, yonetici, koc_durum')
       .eq('id', id)
       .maybeSingle()
     if (error) {
@@ -36,6 +36,9 @@ export function useOturum() {
       // öğrenciyi uygulamadan atmasın.
       return { ...data, erisim_acik: o ? o.aktif : true }
     }
+
+    /* Ayrılan koç giriş yapamaz (Yönetim → koç detayı → Durum). */
+    if (data.rol === 'koc') return { ...data, erisim_acik: data.koc_durum !== 'ayrildi' }
 
     return { ...data, erisim_acik: true }
   }, [])

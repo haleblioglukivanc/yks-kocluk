@@ -1,0 +1,7 @@
+-- Kayıt amaçlı: yayındaki migration adı "koc_yonetimi_detay_durum_aktarma" (19 Eylül 2026).
+-- profiller: koc_durum (aktif|izinde|ayrildi), baslangic_tarihi, kapasite, brans, ic_not
+-- private.koc_alan_koruma tetikleyicisi: bu alanları yalnız yönetici (ya da servis) değiştirir.
+-- RPC (yalnız yönetici): yonetici_koc_ozellikleri, yonetici_koc_detay, yonetici_koc_guncelle,
+--   yonetici_ogrenci_aktar (öğrenci + gorevler/denemeler/deneme_analizleri/koc_notlari/
+--   sozlesmeler/blok_talepleri/gorusme_talepleri koc_id'si yeni koça).
+-- Tam SQL için: Supabase → Database → Migrations.
