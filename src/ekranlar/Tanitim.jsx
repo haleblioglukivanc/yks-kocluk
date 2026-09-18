@@ -22,7 +22,9 @@ const hareketVar = () => typeof window !== 'undefined'
   && !!window.requestAnimationFrame
   && !window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
 
-/* Öğenin üst kenarı ekranın alt %92'sine girince fn bir kez çalışır.
+/* Öğenin üst kenarı ekranın alt sınırına (pay kadarı) girince fn bir kez
+   çalışır. Sayaçlarda pay 1: öğe ekranın en alt kenarına değdiği anda başlar,
+   yoksa geniş ekranda ilk bakışta "0" görünüp orada kalır.
    Kesişim gözcüsü yerine kaydırma konumuna bakılır: hızlı parmak
    kaydırmasında ekranı hiç "görmeden" geçilen öğe de açılır (Safari). */
 function gozle(el, fn, pay = 0.92) {
@@ -86,7 +88,7 @@ function Sayac({ deger, sure = 1300, gecikme = 0 }) {
         }
         raf = requestAnimationFrame(adim)
       }, gecikme)
-    }, 0.85)
+    }, 1)
     return () => { birak(); cancelAnimationFrame(raf); clearTimeout(zaman) }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
   const akan = k === 1 ? metin : metin.replace(/\d+(?:[.,]\d+)*/g, (s) => {
