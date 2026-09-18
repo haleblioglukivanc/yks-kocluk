@@ -19,6 +19,20 @@ harcar:
 Bağlantı kurulduktan sonra üretimler Higgsfield hesabındaki "Assets"
 bölümünde de görünür; oradan indirilip bu depoya alınır.
 
+**Durum (18 Eylül 2026):** bağlantı kuruldu ve doğrulandı. Hesap "free"
+planda, 10 kredi var — üretim için yetersiz, ilk videodan önce kredi
+gerekiyor.
+
+Bağlantıyla birlikte gelen araçlar: görsel / video / ses / 3B üretimi,
+arka plan silme, upscale, reframe (var olan videoyu 9:16'ya çevirme),
+Soul (karakter tutarlılığı) ve referans öğeleri.
+
+**Not — Buffer kararı gözden geçirilebilir:** Higgsfield'ın kendi TikTok
+yayın araçları var (hesap bağlama, doğrudan paylaşım veya taslağa gönderme,
+TikTok ticari müzik kütüphanesinden parça seçme). TikTok için Buffer'a gerek
+kalmayabilir; YouTube ve Instagram yine Buffer'dan gider. Karar sosyal medya
+komitinde verilecek.
+
 ## Kurallar (bunlara uyulmazsa marka bozulur)
 
 1. **Karede Türkçe yazı üretilmez.** Modeller ş/ğ/ı/İ harflerini bozuyor.
