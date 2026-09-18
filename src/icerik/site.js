@@ -465,7 +465,7 @@ export const site = {
     metinler: {
       youtube: 'Uzun anlatımlar: haftalık program kurulumu, deneme analizi, tercih dönemi.',
       instagram: 'Kısa notlar ve günlük paylaşımlar; sorularınızı buradan da yazabilirsiniz.',
-      tiktok: 'Kısa video denemeleri. Hesap açıldığında bu kart kendiliğinden aktifleşir.',
+      tiktok: 'Bir dakikalık kısa videolar: çalışma alışkanlıkları, motivasyon ve sınav günü ipuçları.',
     },
   },
 
@@ -488,6 +488,6 @@ export const site = {
     // hesap açıldığında buraya adresi yazmak yeterli, başka yer yok.
     youtube: 'https://youtube.com/@khkocluk',
     instagram: 'https://www.instagram.com/khkocluk',
-    tiktok: '',
+    tiktok: 'https://www.tiktok.com/@khkocluk',
   },
 }
