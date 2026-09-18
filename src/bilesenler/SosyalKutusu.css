@@ -102,3 +102,33 @@
 .sk-baglanti-not { margin: 0; font-size: var(--punto-kucuk); color: var(--murekkep); font-weight: 600; }
 .sk-bag--soluk { color: var(--grafit); font-weight: 600; }
 .sk-gonder--ufak { min-height: 40px; padding: 0 1rem; font-size: var(--punto-kucuk); }
+
+/* ═══ Tasarım turu 8 (Yönetim): hap ve kutu içinde kutu kalkıyor ═══════ */
+.sk-ozet { display: flex; flex-wrap: wrap; gap: 0.25rem 1.25rem; margin: 0.5rem 0 0.25rem; font-size: var(--punto-kucuk); color: var(--grafit); }
+.sk-ozet > span { display: inline; }
+.sk-ozet strong { font-family: var(--display); font-size: var(--punto-buyuk); color: var(--murekkep); margin-right: 0.25rem; }
+.sk-ozet strong.sk-ozet--iyi { color: var(--isaret-metin); }
+.sk-ozet strong.sk-ozet--acil { color: var(--kizil-metin); }
+/* Filtreler alt çizgili sekme. */
+.sk-filtreler { flex-wrap: nowrap; overflow-x: auto; gap: 1.25rem; border-bottom: 1px solid var(--cizgi); margin: 0.5rem 0 0.75rem; scrollbar-width: none; }
+.sk-filtre { flex: 0 0 auto; min-height: 44px; padding: 0; border: 0; border-bottom: 3px solid transparent; border-radius: 0; background: none; color: var(--grafit); margin-bottom: -1px; }
+.sk-filtre--etkin { background: none; color: var(--murekkep); border-bottom-color: var(--serin); }
+/* Mesaj: zeminde tek beyaz yüzey; acil kırmızı kenar yerine durum satırı. */
+.sk-kart { border: 0; background: var(--yuzey); border-radius: var(--r-buyuk); }
+.sk-kart--acil { border: 0; box-shadow: inset 0 0 0 2px var(--kizil); background: var(--yuzey); }
+/* Platform ve etiketler hap değil, renkli yazı. */
+.sk-cip { padding: 0; background: none; border-radius: 0; font-size: var(--punto-mini); color: var(--grafit); }
+.sk-cip + .sk-cip::before { content: '·'; margin-right: 0.375rem; color: var(--soluk); }
+.sk-cip--instagram { background: none; color: var(--serin-metin); }
+.sk-cip--youtube { background: none; color: var(--kizil-metin); }
+.sk-cip--acil { background: none; color: var(--kizil-metin); }
+.sk-cip--iyi { background: none; color: var(--isaret-metin); }
+.sk-cip--deneme { background: none; color: var(--sicak-metin); }
+.sk-mesaj { padding: 0; background: none; font-size: var(--punto-govde); }
+/* Gönder: ikincil ton düğme (her mesajda dolu mavi düğme olmasın); Atla yazı. */
+.sk-gonder { background: var(--serin-zemin); color: var(--serin-metin); border-radius: var(--r-tam); min-height: 40px; font-size: var(--punto-kucuk); }
+.sk-gonder--acil { background: var(--kizil-zemin); color: var(--kizil-metin); }
+.sk-atla { border: 0; background: none; color: var(--grafit); min-height: 40px; font-size: var(--punto-kucuk); }
+.sk-satir { border: 0; background: var(--yuzey); }
+.sk-baglantilar { border: 0; background: var(--yuzey); border-radius: var(--r-buyuk); margin-top: 0.5rem; }
+.sk-bos { border: 0; background: var(--yuzey); border-radius: var(--r-buyuk); padding: 1.25rem; text-align: left; }

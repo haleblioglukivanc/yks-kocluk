@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Kart, Uyari, Yukleniyor } from './Ortak.jsx'
+import { Uyari, Yukleniyor } from './Ortak.jsx'
+import Bolum from '../ortak/Bolum.jsx'
 import './SosyalKutusu.css'
 
 /* Sosyal Gelen Kutusu: Instagram DM/yorumları ve YouTube yorumları tek listede.
@@ -256,17 +257,19 @@ export default function SosyalKutusu({ onSayac }) {
   }, [liste, filtre])
 
   return (
-    <Kart
-      baslik="Sosyal Gelen Kutusu"
-      altBaslik="Instagram mesaj ve yorumları ile YouTube yorumları. Hiçbir yanıt onayın olmadan gitmez."
-      eylem={liste && (
-        <div className="sk-ozet">
-          <div><strong>{ozet.bekleyen}</strong><span>bekleyen</span></div>
-          <div><strong className="sk-ozet--iyi">{ozet.yanitlanan}</strong><span>bugün yanıtlanan</span></div>
-          <div><strong className={ozet.acil ? 'sk-ozet--acil' : ''}>{ozet.acil}</strong><span>acil</span></div>
-        </div>
-      )}
+    /* Kart değil bölüm; sayılar kutusuz tek satır, filtreler alt çizgili,
+       her mesaj zeminde tek beyaz yüzey (TASARIM-KURALLARI 1, 4, 7). */
+    <Bolum
+      baslik="Sosyal gelen kutusu"
+      aciklama="Instagram mesaj ve yorumları ile YouTube yorumları. Hiçbir yanıt onayın olmadan gitmez."
     >
+      {liste && (
+        <p className="sk-ozet">
+          <span><strong>{ozet.bekleyen}</strong> bekleyen</span>
+          <span><strong className="sk-ozet--iyi">{ozet.yanitlanan}</strong> bugün yanıtlanan</span>
+          <span><strong className={ozet.acil ? 'sk-ozet--acil' : ''}>{ozet.acil}</strong> acil</span>
+        </p>
+      )}
       {hata && <Uyari>{hata}</Uyari>}
       {!liste && !hata && <Yukleniyor metin="Mesajlar geliyor" satir={4} />}
       {liste && (
@@ -289,6 +292,6 @@ export default function SosyalKutusu({ onSayac }) {
           )}
         </>
       )}
-    </Kart>
+    </Bolum>
   )
 }

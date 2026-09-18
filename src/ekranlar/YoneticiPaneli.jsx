@@ -1,8 +1,12 @@
 import Sayan from '../bilesenler/Sayan.jsx'
 import Sekmeler from '../ortak/Sekmeler.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
+import UyariSatiri from '../ortak/UyariSatiri.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
+import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { kullaniciOlustur } from '../lib/hesap.js'
 import HaftalikTakvim from '../bilesenler/HaftalikTakvim.jsx'
 import SosyalKutusu from '../bilesenler/SosyalKutusu.jsx'
@@ -137,89 +141,87 @@ function YoneticiAnahtari({ koc, onDegisti, onHata }) {
   return (
     <button
       type="button"
+      role="switch"
       className={koc.yonetici ? 'yk-anahtar yk-anahtar--acik' : 'yk-anahtar'}
       onClick={cevir}
       disabled={bekliyor}
-      aria-pressed={koc.yonetici}
-      title={koc.yonetici ? 'Yöneticilik açık' : 'Yöneticilik kapalı'}
+      aria-checked={koc.yonetici}
+      aria-label={`${koc.ad_soyad} yönetici yetkisi`}
     >
+      <span>Yönetici</span>
       <span className="yk-anahtar-kutu" aria-hidden="true" />
-      <span>{koc.yonetici ? 'Yönetici' : 'Koç'}</span>
     </button>
   )
 }
 
+/* Koçlar tek listede: performans, yetki ve ekleme aynı yerde. Eskiden
+   "Koçlar" ve "Koçlar ve yetkiler" iki ayrı kartta aynı kişileri iki kez
+   sayıyordu (Yönetim turu, 19 Eylül 2026). */
 function Koclar({ liste, onDegisti }) {
   const [hata, setHata] = useState('')
-  if (!liste?.length) {
-    return (
-      <Kart baslik="Koçlar" altBaslik="Öğrenciye ne kadar hızlı dönülüyor">
-        <Bos baslik="Kayıtlı koç yok" />
-      </Kart>
-    )
-  }
-
+  const [formAcik, setFormAcik] = useState(false)
   return (
-    <Kart baslik="Koçlar" altBaslik="Öğrenciye ne kadar hızlı dönülüyor">
+    <Bolum
+      baslik="Koçlar"
+      sayi={liste?.length ?? 0}
+      aciklama="Öğrenciye ne kadar hızlı dönüldüğü ve yetkiler tek listede."
+      eylem={formAcik ? 'Kapat' : '+ Koç ekle'}
+      onEylem={() => setFormAcik((a) => !a)}
+    >
+      {formAcik && <KocEkle onEklendi={onDegisti} />}
       <Uyari>{hata}</Uyari>
-      <ul className="liste">
-        {liste.map((k) => {
-          const uyari = kocUyarisi(k)
-          const ozetYuzde = yuzde(k.ozet_yayinda, k.ozet_hazir)
-          return (
-            <li key={k.koc_id} className="yk-koc">
-              <span className="liste-ad">{k.ad_soyad}</span>
-              <span className="yk-yuk">{k.ogrenci_sayisi} öğrenci</span>
-              <YoneticiAnahtari koc={k} onDegisti={onDegisti} onHata={setHata} />
-              <div className="yk-olcum">
-                <span>
-                  Bekleyen onay<b>{k.bekleyen_onay}</b>
-                </span>
-                <span>
-                  Yanıt<b>{saatMetni(k.yanit_saat)}</b>
-                </span>
-                <span>
-                  Veli özeti<b>{ozetYuzde == null ? '—' : `%${ozetYuzde}`}</b>
-                </span>
-              </div>
-              {uyari.length > 0 && <p className="yk-uyari">{uyari.join(' · ')}</p>}
-            </li>
-          )
-        })}
-      </ul>
-    </Kart>
+      {!liste?.length ? (
+        <BosDurum metin="Kayıtlı koç yok." />
+      ) : (
+        <ul className="liste yk-koc-liste">
+          {liste.map((k) => {
+            const uyari = kocUyarisi(k)
+            const ozetYuzde = yuzde(k.ozet_yayinda, k.ozet_hazir)
+            return (
+              <li key={k.koc_id} className="yk-koc">
+                <div className="yk-koc-bas">
+                  <span className="yk-koc-kimlik">
+                    <span className="liste-ad">{k.ad_soyad}</span>
+                    <span className="liste-alt">
+                      {k.ogrenci_sayisi} öğrenci · bekleyen onay <b>{k.bekleyen_onay}</b> · yanıt {saatMetni(k.yanit_saat)} · veli özeti {ozetYuzde == null ? '—' : `%${ozetYuzde}`}
+                    </span>
+                  </span>
+                  <YoneticiAnahtari koc={k} onDegisti={onDegisti} onHata={setHata} />
+                </div>
+                {uyari.length > 0 && <UyariSatiri durum="acil">{uyari.join(' · ')}</UyariSatiri>}
+              </li>
+            )
+          })}
+        </ul>
+      )}
+    </Bolum>
   )
 }
 
 function Risk({ liste, onOgrenciAc }) {
-  if (!liste?.length) {
-    return (
-      <Kart baslik="Kopma riski" altBaslik="Koçu henüz dokunmamış öğrenciler">
-        <Bos
-          baslik="Listede kimse yok"
-          aciklama="Şu an hiçbir öğrenci risk eşiğini geçmiş görünmüyor."
-        />
-      </Kart>
-    )
-  }
-
   return (
-    <Kart baslik="Kopma riski" altBaslik="Koçu henüz dokunmamış öğrenciler">
-      <ul className="liste">
-        {liste.map((o) => (
-          <li key={o.ogrenci_id} className="liste-satir">
-            <button className="yk-baglanti" onClick={() => onOgrenciAc(o.ogrenci_id)}>
-              <span className="liste-ad">{o.ad_soyad}</span>
-              <span className="liste-alt">
-                {o.sessiz_gun > 0 ? `${o.sessiz_gun} gündür kayıt yok` : 'seri kırıldı'}
-                {o.koc_adi ? ` · ${o.koc_adi}` : ''}
+    <Bolum cizgili baslik="Önce bunlar" sayi={liste?.length || null} aciklama="Koçu henüz dokunmamış, kopma riskindeki öğrenciler.">
+      {!liste?.length ? (
+        <BosDurum metin="Şu an hiçbir öğrenci risk eşiğini geçmiş görünmüyor." />
+      ) : (
+        <ul className="liste">
+          {liste.map((o) => (
+            <li key={o.ogrenci_id} className="liste-satir">
+              <button className="yk-baglanti" onClick={() => onOgrenciAc(o.ogrenci_id)}>
+                <span className="liste-ad">{o.ad_soyad}</span>
+                <span className="liste-alt">
+                  {o.sessiz_gun > 0 ? `${o.sessiz_gun} gündür kayıt yok` : 'seri kırıldı'}
+                  {o.koc_adi ? ` · ${o.koc_adi}` : ''}
+                </span>
+              </button>
+              <span className="durum-yazi" data-durum={o.seviye === 'acil' ? 'uyari' : 'izle'}>
+                ● {o.seviye === 'acil' ? 'Acil' : 'İzle'}
               </span>
-            </button>
-            <Rozet ton={o.seviye === 'acil' ? 'uyari' : 'izle'}>{o.seviye}</Rozet>
-          </li>
-        ))}
-      </ul>
-    </Kart>
+            </li>
+          ))}
+        </ul>
+      )}
+    </Bolum>
   )
 }
 
@@ -275,91 +277,119 @@ function kisaZaman(z) {
   })
 }
 
+// Cron ifadesi yerine okunur zaman ("iki dakikada bir"); tanınmayan kalıp olduğu gibi kalır.
+function cronOku(z) {
+  const p = String(z ?? '').trim().split(/\s+/)
+  if (p.length !== 5) return z ?? ''
+  const [dk, sa, gun, ay, hg] = p
+  const iki = (n) => String(n).padStart(2, '0')
+  if (gun === '*' && ay === '*' && hg === '*') {
+    if (dk === '*' && sa === '*') return 'dakikada bir'
+    if (/^\*\/\d+$/.test(dk) && sa === '*') return `${dk.slice(2)} dakikada bir`
+    if (/^\d+$/.test(dk) && sa === '*') return `saatte bir (:${iki(dk)})`
+    if (/^\d+$/.test(dk) && /^\d+$/.test(sa)) return `her gün ${iki(sa)}:${iki(dk)}`
+  }
+  return z
+}
+
+const kisaSaat = (z) =>
+  z ? new Date(z).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : null
+
 function Sistem({ s }) {
   const mail = mailDurumu(s)
   const gunluk = s.gunluk ?? []
   const hata24s = Number(s.gunluk_hata_24s ?? 0)
+  const [hepsi, setHepsi] = useState(false)
+  const isler = s.isler ?? []
+  const saglam = isler.filter((i) => i.etkin && i.son_durum === 'succeeded').length
 
   return (
-    <Kart baslik="Sistem" altBaslik="Arka planda çalışanlar">
-      <ul className="liste">
-        {(s.isler ?? []).map((i) => (
-          <li key={i.ad} className="liste-satir">
+    <>
+      <Bolum
+        baslik="Arka planda çalışanlar"
+        sayi={isler.length}
+        aciklama={`${saglam} çalıştı${isler.length - saglam ? ` · ${isler.length - saglam} dikkat` : ''}`}
+      >
+        <ul className="liste">
+          {isler.map((i) => {
+            const iyi = i.son_durum === 'succeeded' && i.etkin
+            return (
+              <li key={i.ad} className="liste-satir">
+                <div>
+                  <span className="liste-ad">{i.ad}</span>
+                  <span className="liste-alt">
+                    {cronOku(i.zamanlama)} · {i.son_zaman ? `son ${kisaSaat(i.son_zaman)}` : 'hiç çalışmadı'}
+                  </span>
+                </div>
+                <span className="durum-yazi" data-durum={iyi ? 'iyi' : 'uyari'}>
+                  ● {!i.etkin ? 'Kapalı' : i.son_durum === 'succeeded' ? 'Çalıştı' : (i.son_durum ?? 'Bilinmiyor')}
+                </span>
+              </li>
+            )
+          })}
+          <li className="liste-satir">
             <div>
-              <span className="liste-ad">{i.ad}</span>
+              <span className="liste-ad">E‑posta kuyruğu</span>
               <span className="liste-alt">
-                {i.zamanlama}
-                {i.son_zaman ? ` · son ${new Date(i.son_zaman).toLocaleString('tr-TR')}` : ' · hiç çalışmadı'}
+                {Object.entries(s.mail ?? {})
+                  .map(([d, a]) => `${MAIL_ADI[d] ?? d}: ${a}`)
+                  .join(' · ') || 'kuyruk boş'}
+                {mail.not ? ` · ${mail.not}` : ''}
               </span>
             </div>
-            <Rozet ton={i.son_durum === 'succeeded' && i.etkin ? 'iyi' : 'uyari'}>
-              {!i.etkin ? 'kapalı' : i.son_durum === 'succeeded' ? 'çalıştı' : (i.son_durum ?? 'bilinmiyor')}
-            </Rozet>
+            <span className="durum-yazi" data-durum={mail.ton === 'iyi' ? 'iyi' : 'uyari'}>● {mail.etiket}</span>
           </li>
-        ))}
+          <li className="liste-satir">
+            <div>
+              <span className="liste-ad">Çizbi olayları</span>
+              <span className="liste-alt">
+                son 7 günde {s.kalem_olay_7g} tetiklenme · {s.kalem_kapatilan_7g} tanesi kapatıldı
+              </span>
+            </div>
+            <span className="durum-yazi" data-durum="iyi">● normal</span>
+          </li>
+        </ul>
+      </Bolum>
 
-        <li className="liste-satir">
-          <div>
-            <span className="liste-ad">E‑posta kuyruğu</span>
-            <span className="liste-alt">
-              {Object.entries(s.mail ?? {})
-                .map(([d, a]) => `${MAIL_ADI[d] ?? d}: ${a}`)
-                .join(' · ') || 'kuyruk boş'}
-            </span>
-            {mail.not && <span className="yk-uyari yk-uyari--satir">{mail.not}</span>}
-          </div>
-          <Rozet ton={mail.ton}>{mail.etiket}</Rozet>
-        </li>
-
-        <li className="liste-satir">
-          <div>
-            <span className="liste-ad">Çizbi olayları</span>
-            <span className="liste-alt">
-              son 7 günde {s.kalem_olay_7g} tetiklenme · {s.kalem_kapatilan_7g} tanesi kapatıldı
-            </span>
-          </div>
-          <Rozet ton="iyi">normal</Rozet>
-        </li>
-
-        <li className="liste-satir">
-          <div>
-            <span className="liste-ad">Arka plan hataları</span>
-            <span className="liste-alt">
-              {gunluk.length
-                ? `son 24 saatte ${hata24s} hata · son 7 günün kayıtları aşağıda`
-                : 'son 7 günde kayıt yok'}
-            </span>
-            {gunluk.length > 0 && (
-              <div className="yk-uyari yk-uyari--satir">
-                {gunluk.map((g) => {
-                  const ayrinti = ayrintiMetni(g.ayrinti)
-                  return (
-                    <div key={g.id}>
-                      <b>{g.kaynak}</b> · {kisaZaman(g.zaman)} — {g.mesaj}
-                      {ayrinti ? ` (${ayrinti})` : ''}
+      <Bolum
+        cizgili
+        baslik="Arka plan hataları"
+        sayi={gunluk.length || null}
+        eylem={gunluk.length > 3 ? (hepsi ? 'Kısalt' : `Tümü · ${gunluk.length}`) : null}
+        onEylem={() => setHepsi((v) => !v)}
+      >
+        {gunluk.length === 0 ? (
+          <BosDurum metin="Son 7 günde kayıt yok." />
+        ) : (
+          <>
+            <UyariSatiri durum={hata24s > 0 ? 'acil' : 'izle'}>
+              Son 24 saatte {hata24s} · son 7 günde {gunluk.length}
+            </UyariSatiri>
+            <ul className="liste">
+              {(hepsi ? gunluk : gunluk.slice(0, 3)).map((g) => {
+                const ayrinti = ayrintiMetni(g.ayrinti)
+                return (
+                  <li key={g.id} className="liste-satir">
+                    <div>
+                      <span className="liste-ad">{g.kaynak} · {kisaZaman(g.zaman)}</span>
+                      <span className="liste-alt">{g.mesaj}{ayrinti ? ` (${ayrinti})` : ''}</span>
                     </div>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-          <Rozet ton={hata24s > 0 ? 'uyari' : gunluk.length ? 'izle' : 'iyi'}>
-            {hata24s > 0 ? `${hata24s} hata` : gunluk.length ? 'geçmiş kayıt' : 'temiz'}
-          </Rozet>
-        </li>
-      </ul>
-    </Kart>
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+      </Bolum>
+    </>
   )
 }
 
 function Vekalet({ liste }) {
   return (
-    <Kart baslik="Öğrenci adına yapılan işlemler" altBaslik="Vekâlet modunda son 7 gün">
+    <Bolum cizgili baslik="Öğrenci adına yapılan işlemler" aciklama="Vekâlet modunda son 7 gün.">
       {!liste?.length ? (
-        <Bos
-          baslik="Kayıt yok"
-          aciklama="Son bir haftada hiçbir koç öğrenci adına işlem yapmamış."
-        />
+        <BosDurum metin="Son bir haftada hiçbir koç öğrenci adına işlem yapmamış." />
       ) : (
         <ul className="liste">
           {liste.map((v, i) => (
@@ -378,7 +408,7 @@ function Vekalet({ liste }) {
           ))}
         </ul>
       )}
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -405,15 +435,13 @@ function Tahsilat({ t, onOgrenciAc }) {
         </div>
       </div>
 
-      <Kart
-        baslik="Tahsilat"
-        altBaslik={`${t.aktif_sozlesme} aktif sözleşme · açık bakiye ${para(t.acik_bakiye)}`}
+      <Bolum
+        baslik="Gecikenler"
+        sayi={t.gecikenler?.length || null}
+        aciklama={`${t.aktif_sozlesme} aktif sözleşme · açık bakiye ${para(t.acik_bakiye)}`}
       >
         {!t.gecikenler?.length ? (
-          <Bos
-            baslik="Geciken ödeme yok"
-            aciklama={`Bu ay vadesi gelen ${para(t.bu_ay_vade)} tahsil edilmeyi bekliyor.`}
-          />
+          <BosDurum metin={`Geciken ödeme yok. Bu ay vadesi gelen ${para(t.bu_ay_vade)} tahsil edilmeyi bekliyor.`} />
         ) : (
           <ul className="liste">
             {t.gecikenler.map((g) => (
@@ -430,7 +458,7 @@ function Tahsilat({ t, onOgrenciAc }) {
             ))}
           </ul>
         )}
-      </Kart>
+      </Bolum>
     </>
   )
 }
@@ -438,8 +466,7 @@ function Tahsilat({ t, onOgrenciAc }) {
 /* Koc hesabini yalnizca yonetici acabiliyor; kural sunucuda, bu form
    onun ekrandaki karsiligi. Gecici sifre bir kez gosteriliyor ve
    hicbir yere yazilmiyor: kaybolursa yenisi uretilir. */
-function KocEkle({ liste, onEklendi }) {
-  const [acik, setAcik] = useState(false)
+function KocEkle({ onEklendi }) {
   const [adSoyad, setAdSoyad] = useState('')
   const [eposta, setEposta] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
@@ -450,11 +477,7 @@ function KocEkle({ liste, onEklendi }) {
     setHata(null)
     setBekliyor(true)
     try {
-      const d = await kullaniciOlustur({
-        rol: 'koc',
-        ad_soyad: adSoyad.trim(),
-        eposta: eposta.trim(),
-      })
+      const d = await kullaniciOlustur({ rol: 'koc', ad_soyad: adSoyad.trim(), eposta: eposta.trim() })
       setSonuc(d)
       setAdSoyad('')
       setEposta('')
@@ -466,84 +489,43 @@ function KocEkle({ liste, onEklendi }) {
     }
   }
 
+  if (sonuc) {
+    return (
+      <div className="form-kutu form-kutu--duz yk-sonuc">
+        <p className="liste-ad">{sonuc.ad_soyad} eklendi</p>
+        <p className="liste-alt">
+          {sonuc.eposta} · geçici şifre <code className="kod-rozet">{sonuc.gecici_sifre}</code>
+        </p>
+        <p className="liste-alt">Şifre bir daha gösterilmiyor. Koça ilettikten sonra kapatabilirsin.</p>
+        <Dugme tur="ikincil" onClick={() => setSonuc(null)}>Anladım</Dugme>
+      </div>
+    )
+  }
+
   return (
-    <Kart
-      baslik="Koçlar ve yetkiler"
-      altBaslik={`${liste.length} kişi`}
-      eylem={
-        <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setAcik((a) => !a)}>
-          {acik ? 'Kapat' : 'Koç ekle'}
-        </button>
-      }
-    >
-      <ul className="liste">
-        {liste.map((k) => (
-          <li key={k.koc_id} className="liste-satir">
-            <div>
-              <span className="liste-ad">{k.ad_soyad}</span>
-              <span className="liste-alt">
-                {k.yonetici ? 'Koç · yönetici' : 'Koç'} ·{' '}
-                {k.ogrenci_sayisi} öğrenci
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-
-      {acik && (
-        <div className="yk-form">
-          <Alan etiket="Ad soyad">
-            <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} autoComplete="off" />
-          </Alan>
-          <Alan
-            etiket="E‑posta"
-            ipucu="Geçici şifre üretilir; koç ilk girişte kendi şifresini belirler."
-          >
-            <input
-              type="email"
-              value={eposta}
-              onChange={(e) => setEposta(e.target.value)}
-              autoComplete="off"
-            />
-          </Alan>
-          <Uyari>{hata}</Uyari>
-          <Dugme
-            onClick={gonder}
-            bekliyor={bekliyor}
-            disabled={adSoyad.trim().length < 2 || !eposta.includes('@')}
-          >
-            Koç hesabı aç
-          </Dugme>
-        </div>
-      )}
-
-      {sonuc && (
-        <div className="yk-sonuc">
-          <p className="liste-ad">{sonuc.ad_soyad} eklendi</p>
-          <p className="liste-alt">
-            {sonuc.eposta} · geçici şifre <code className="kod-rozet">{sonuc.gecici_sifre}</code>
-          </p>
-          <p className="liste-alt">
-            Şifre bir daha gösterilmiyor. Koça ilettikten sonra bu kutuyu kapatabilirsin.
-          </p>
-          <button className="dugme dugme--ikincil dugme--ufak" onClick={() => setSonuc(null)}>
-            Anladım
-          </button>
-        </div>
-      )}
-    </Kart>
+    <div className="form-kutu form-kutu--duz">
+      <Alan etiket="Ad soyad">
+        <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} autoComplete="off" />
+      </Alan>
+      <Alan etiket="E‑posta" ipucu="Geçici şifre üretilir; koç ilk girişte kendi şifresini belirler.">
+        <input type="email" value={eposta} onChange={(e) => setEposta(e.target.value)} autoComplete="off" />
+      </Alan>
+      <Uyari>{hata}</Uyari>
+      <Dugme onClick={gonder} bekliyor={bekliyor} disabled={adSoyad.trim().length < 2 || !eposta.includes('@')}>
+        Koç hesabı aç
+      </Dugme>
+    </div>
   )
 }
 
 const AYARLAR = [
-  ['/raporlar', 'Rapor ve e‑posta', 'Veli ve öğrenci raporlarının gönderim düzeni'],
   ['/konular', 'Konu öncelikleri', 'Sınıf geneli ağırlıklar ve toplu görev atama'],
   ['/kaynaklar', 'Kaynaklar', 'Kitap ve soru bankası kataloğu'],
 ]
 
 function Ayarlar({ onGit }) {
   return (
-    <Kart baslik="Platform ayarları" altBaslik="Koç ekranında görünmez">
+    <Bolum cizgili baslik="Platform ayarları" aciklama="Koç ekranında görünmez.">
       <ul className="liste">
         {AYARLAR.map(([yol, ad, not]) => (
           <li key={yol} className="liste-satir">
@@ -557,7 +539,7 @@ function Ayarlar({ onGit }) {
           </li>
         ))}
       </ul>
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -569,21 +551,22 @@ function Ogrenciler({ liste, onOgrenciAc }) {
   const [koc, setKoc] = useState('')
   if (!liste?.length) {
     return (
-      <Kart baslik="Öğrenciler" altBaslik="Kurumun tamamı">
-        <Bos baslik="Kayıtlı öğrenci yok" />
-      </Kart>
+      <Bolum baslik="Öğrenciler">
+        <BosDurum metin="Kayıtlı öğrenci yok." />
+      </Bolum>
     )
   }
   const koclar = [...new Set(liste.map((o) => o.koc))].sort()
   const suzulmus = koc ? liste.filter((o) => o.koc === koc) : liste
 
   return (
-    <Kart
+    <Bolum
       baslik="Öğrenciler"
-      altBaslik={`${suzulmus.length} öğrenci · satıra dokun, öğrenciye git`}
-      eylem={
+      sayi={suzulmus.length}
+      aciklama="Kurumun tamamı · satıra dokun, öğrenciye git."
+      sag={
         koclar.length > 1 ? (
-          <select value={koc} onChange={(e) => setKoc(e.target.value)} aria-label="Koça göre süz">
+          <select className="yk-koc-suz" value={koc} onChange={(e) => setKoc(e.target.value)} aria-label="Koça göre süz">
             <option value="">Tüm koçlar</option>
             {koclar.map((k) => (
               <option key={k} value={k}>{k}</option>
@@ -614,15 +597,15 @@ function Ogrenciler({ liste, onOgrenciAc }) {
                     ? `${new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(o.gecikenTutar)} ₺`
                     : '—'}
                 </td>
-                <td><Rozet ton={o.risk === 'acil' ? 'uyari' : o.risk === 'izle' ? 'izle' : 'iyi'}>
+                <td><span className="durum-yazi" data-durum={o.risk === 'acil' ? 'uyari' : o.risk === 'izle' ? 'izle' : 'iyi'}>
                   {RISK_ADI[o.risk] ?? o.risk}
-                </Rozet></td>
+                </span></td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -679,23 +662,33 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
   return (
     <>
-      <div className="yk-basi">
-        <div>
-          <h1 className="yk-ad">{profil.ad_soyad}</h1>
-          <p className="yk-gun">
-            {new Date().toLocaleDateString('tr-TR', {
-              day: 'numeric',
-              month: 'long',
-              weekday: 'long',
-            })}
-          </p>
-        </div>
-      </div>
+      {/* Tek koyu blok: başlık + sekmeler (TASARIM-KURALLARI 3–4). */}
+      <UstBlok sinif="rapor-tepe" etiket="Yönetim" sekmeli>
+        <h1 className="rt-baslik">Yönetim</h1>
+        <p className="rt-alt">
+          Kurum geneli · {new Date().toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', weekday: 'long' })}
+        </p>
+        <Sekmeler
+          varyant="koyu"
+          etiket="Yönetim bölümleri"
+          deger={sekme}
+          onSec={setSekme}
+          secenekler={SEKMELER.map(([k, ad]) => ({
+            k,
+            ad,
+            rozet:
+              k === 'sosyal' && sosyal?.bekleyen > 0 ? (
+                <span className={sosyal.acil ? 'sekme-rozet sekme-rozet--acil' : 'sekme-rozet'}
+                  aria-label={`${sosyal.bekleyen} bekleyen${sosyal.acil ? `, ${sosyal.acil} acil` : ''}`}>
+                  {sosyal.bekleyen}
+                </span>
+              ) : null,
+          }))}
+        />
+      </UstBlok>
 
       {hata && (
-        <Kart baslik="Veri gelmedi">
-          <p className="kart-alt">{hata}</p>
-        </Kart>
+        <Uyari>{`Veri gelmedi: ${hata}`}</Uyari>
       )}
 
       {!veri && !hata && <Yukleniyor metin="Kurum verisi geliyor" satir={4} />}
@@ -706,28 +699,10 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {/* Tek uzun sayfaydı; dokuz kart alt alta diziliyordu. Yönetim
               ayda bir açılan yoğun bir ekran, sekme onu okunur kılıyor. */}
-          <Sekmeler
-            varyant="acik"
-            etiket="Yönetim bölümleri"
-            deger={sekme}
-            onSec={setSekme}
-            secenekler={SEKMELER.map(([k, ad]) => ({
-              k,
-              ad,
-              rozet:
-                k === 'sosyal' && sosyal?.bekleyen > 0 ? (
-                  <span className={sosyal.acil ? 'sekme-rozet sekme-rozet--acil' : 'sekme-rozet'}
-                    aria-label={`${sosyal.bekleyen} bekleyen${sosyal.acil ? `, ${sosyal.acil} acil` : ''}`}>
-                    {sosyal.bekleyen}
-                  </span>
-                ) : null,
-            }))}
-          />
 
           {sekme === 'koclar' && (
             <>
               <Koclar liste={veri.koclar} onDegisti={yukle} />
-              <KocEkle liste={veri.koclar} onEklendi={yukle} />
               {/* Koçun kendi bağlantısı (Raporlar'dan taşındı). */}
               <TelegramBaglanti />
             </>

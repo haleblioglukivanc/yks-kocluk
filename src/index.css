@@ -4685,3 +4685,30 @@ body[data-rol='ogrenci'] .ob-tamam { background: transparent; color: var(--beyaz
 body[data-rol='veli'] .hero-yuzey.ob { background: linear-gradient(180deg, var(--tepe-ust) 0%, var(--tepe-alt) 100%); }
 body[data-rol='veli'] .ob-mesaj, body[data-rol='veli'] .rt-baslik { color: var(--beyaz); }
 body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); }
+
+/* ═══ Yönetim (tasarım turu 8) ════════════════════════════════════════ */
+.yk-koc-liste > .yk-koc { display: flex; flex-direction: column; gap: 0.4rem; padding: 0.75rem 0; border-bottom: 1px solid var(--cizgi); }
+.yk-koc-liste > .yk-koc:last-child { border-bottom: 0; }
+.yk-koc-bas { display: flex; align-items: center; gap: 0.75rem; }
+.yk-koc-kimlik { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.yk-koc-kimlik .liste-alt b { color: var(--murekkep); }
+/* Yetki anahtarı: hap değil, etiketli anahtar. */
+.yk-anahtar {
+  flex: 0 0 auto; display: inline-flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0;
+  background: none; border: 0; cursor: pointer; font: inherit; font-size: var(--punto-mini); font-weight: 600; color: var(--grafit);
+}
+.yk-anahtar-kutu {
+  position: relative; width: 44px; height: 26px; border-radius: 13px; background: var(--cizgi-2);
+  border: 0; transition: background 0.15s ease;
+}
+.yk-anahtar-kutu::after {
+  content: ''; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%;
+  background: var(--beyaz); transition: transform 0.15s ease;
+}
+.yk-anahtar--acik { background: none; border: 0; color: var(--murekkep); }
+.yk-anahtar--acik .yk-anahtar-kutu { background: var(--serin); }
+.yk-anahtar--acik .yk-anahtar-kutu::after { left: 3px; transform: translateX(18px); }
+.yk-anahtar:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+.yk-koc-suz { max-width: 11rem; min-height: 40px; font-size: var(--punto-kucuk); }
+.alt-sekmeler--koyu .sekme-rozet { background: var(--marka-koyu-amber); color: var(--k-kagit); }
+.alt-sekmeler--koyu .sekme-rozet--acil { background: var(--kizil); color: var(--beyaz); }

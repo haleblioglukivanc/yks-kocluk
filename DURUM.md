@@ -1,11 +1,22 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (tasarım turu 7)
+Son güncelleme: 19 Eylül 2026 (tasarım turu 8)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — tasarım turu 8: Yönetim + işlevsel tarama
+
+- Mokap: https://claude.ai/artifact/JwGsaGkMDhu2snWH4GcZpa (Bekir onayladı).
+- Fırat Koç test hesabı silindi (Bekir'in isteği); Demo Koç'a yönetici yetkisi verildi (tarama için — gerçek veri
+  gelmeden geri alınmalı).
+- `/yonetim` koyu tepe: başlık + sekmeler tek blok; dört ölçü kartı altında. Koçlar tek listede (iki kart birleşti,
+  yetki anahtarı, uyarı durum satırı, "+ Koç ekle" formu listenin üstünde). Öğrenciler/Önce bunlar/Tahsilat/Vekâlet/
+  Platform ayarları `Bolum`; haplar `durum-yazi`. Sistem: işler okunur zamanla (`cronOku`), hatalar ayrı bölüm (son 3 + Tümü).
+  Sosyal: sayılar tek satır, filtreler alt çizgili, mesaj tek beyaz yüzey, platform/etiket renkli yazı, Gönder ikincil düğme.
+- İşlevsel tarama: `TESPIT-YONETIM.md` — kritik bulgu: şifre değiştirme hiçbir yerde yok (bileşen temizlikte silinmiş).
 
 ## 19 Eylül 2026 — tasarım turu 7: Veli
 

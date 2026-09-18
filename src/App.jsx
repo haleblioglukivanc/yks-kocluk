@@ -381,7 +381,7 @@ export default function App() {
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
        bitişik tek parça (TASARIM-KURALLARI 3). */
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || Boolean(ogrenciId))) ||
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
