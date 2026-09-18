@@ -167,6 +167,19 @@
 .t-ilke-baslik { font-family: var(--marka-baslik); font-weight: 700; font-size: 19px; letter-spacing: -.015em; }
 .t-ilke-metin { font-size: var(--punto-orta); line-height: 1.55; color: var(--k-grafit); text-wrap: pretty; }
 .t-sohbet-yuva { flex: 0 1 440px; min-width: 0; width: 100%; }
+/* Sohbet: mesajlar sırayla düşer, koç yazarken üç nokta */
+.t-hareket .t-mesaj--gel { animation: t-mesaj-gel .45s cubic-bezier(.2,.7,.2,1) both; }
+@keyframes t-mesaj-gel { from { opacity: 0; transform: translateY(10px); } }
+.t-mesaj { position: relative; }
+.t-hareket .t-mesaj--bekle > .t-balon:not(.t-balon--yaziyor), .t-hareket .t-mesaj--bekle > .t-mesaj-saat { opacity: 0; }
+.t-balon--yaziyor { position: absolute; top: 0; }
+.t-mesaj--koc .t-balon--yaziyor { right: 0; }
+.t-balon--yaziyor { display: inline-flex; gap: 5px; align-items: center; padding: 14px 16px; }
+.t-balon--yaziyor i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .45; animation: t-yaziyor 1.1s ease-in-out infinite; }
+.t-balon--yaziyor i:nth-child(2) { animation-delay: .18s; }
+.t-balon--yaziyor i:nth-child(3) { animation-delay: .36s; }
+@keyframes t-yaziyor { 30% { opacity: 1; transform: translateY(-3px); } }
+
 /* Çarşamba müdahalesi sahnesi (koyu bölüm, sohbetin üstünde) */
 .t-sahne { border-radius: 20px; border: 1px solid var(--t-lacivert-c); background: var(--t-lacivert-2); padding: 16px 18px 14px; margin-bottom: 14px; }
 .t-sahne-bas { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; font-family: var(--marka-mono); font-size: var(--punto-mini); letter-spacing: .05em; text-transform: uppercase; color: var(--t-acik-mavi); }

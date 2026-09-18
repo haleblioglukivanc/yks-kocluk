@@ -261,6 +261,49 @@ function Mudahale() {
   )
 }
 
+/* Çarşamba yazışması — gerçek zamanlı gibi, sıkıştırılmış temposuyla oynar.
+   Koç yazmadan önce kısa bir "yazıyor" noktası çıkar. Bölüm görününce bir
+   kez oynar; hareket kapalıysa altı mesaj olduğu gibi durur. */
+function Sohbet() {
+  const ref = useRef(null)
+  const acik = hareketVar()
+  const [gorunen, setGorunen] = useState(acik ? 0 : mesajlar.length)
+  const [yaziyor, setYaziyor] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || !acik) return
+    const zamanlar = []
+    const birak = gozle(el, () => {
+      let t = 300
+      mesajlar.forEach((m, i) => {
+        if (m.kim === 'koc') {
+          zamanlar.push(setTimeout(() => setYaziyor(true), t))
+          t += 850
+        }
+        zamanlar.push(setTimeout(() => { setYaziyor(false); setGorunen(i + 1) }, t))
+        t += 700
+      })
+    }, 0.8)
+    return () => { birak(); zamanlar.forEach(clearTimeout) }
+  }, [acik])
+  return (
+    <div className="t-sohbet" ref={ref}>
+      <div className="t-sohbet-bas"><span>{ogrenci.ad} ↔ Koç</span><span>Çar · 16 Eki</span></div>
+      {/* Mesajlar baştan yerleşir, sırası gelince görünür olur: kartın
+          yüksekliği sabit kalsın, altındaki içerik zıplamasın. */}
+      {mesajlar.map((m, i) => (
+        <div key={i} className={`t-mesaj ${m.kim === 'koc' ? 't-mesaj--koc' : ''} ${i < gorunen ? 't-mesaj--gel' : 't-mesaj--bekle'}`}>
+          <div className="t-balon">{m.metin}</div>
+          <span className="t-mesaj-saat">{m.saat}{m.kim === 'koc' ? ' · koç' : ''}</span>
+          {yaziyor && i === gorunen && (
+            <div className="t-balon t-balon--yaziyor" aria-hidden="true"><i /><i /><i /></div>
+          )}
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function KocVideosu() {
   const [var_, setVar] = useState(false)
   const [aktif, setAktif] = useState(0)
@@ -618,15 +661,7 @@ export default function Tanitim({ onGiris, onRandevu }) {
           </div>
           <div className="t-sohbet-yuva">
             <Mudahale />
-            <div className="t-sohbet">
-              <div className="t-sohbet-bas"><span>{ogrenci.ad} ↔ Koç</span><span>Çar · 16 Eki</span></div>
-              {mesajlar.map((m, i) => (
-                <div key={i} className={`t-mesaj ${m.kim === 'koc' ? 't-mesaj--koc' : ''}`}>
-                  <div className="t-balon">{m.metin}</div>
-                  <span className="t-mesaj-saat">{m.saat}{m.kim === 'koc' ? ' · koç' : ''}</span>
-                </div>
-              ))}
-            </div>
+            <Sohbet />
             <p className="t-sohbet-not">Kurgu bir yazışma. Gerçek öğrenci mesajları paylaşılmaz.</p>
           </div>
         </div>
