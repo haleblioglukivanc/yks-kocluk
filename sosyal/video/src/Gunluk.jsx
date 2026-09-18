@@ -38,9 +38,12 @@ const gel = (p, d = 30) => ({ opacity: p, transform: `translateY(${(1 - p) * d}p
 const punto = (t, taban = 96) => (t.length < 34 ? taban : t.length < 60 ? taban * 0.86 : taban * 0.74)
 
 function Etiket({ gun }) {
-  const ek = gun.imza ? ` · ${gun.imza}` : gun.ders ? ` · ${gun.ders}` : gun.kitle === 'veli' ? ' · veliler için' : ''
-  return <div style={{ fontFamily: MONO, fontSize: 28, letterSpacing: '.14em', textTransform: 'uppercase', color: R.turuncuA }}>
-    ● {gun.seri}{ek}</div>
+  const ek = gun.ders ? ` · ${gun.ders}` : gun.kitle === 'veli' ? ' · veliler için' : ''
+  return <div>
+    <div style={{ fontFamily: MONO, fontSize: 28, letterSpacing: '.14em', textTransform: 'uppercase', color: R.turuncuA }}>
+      ● {gun.seri}{ek}</div>
+    {gun.imza && <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 30, color: R.acikMavi, marginTop: 8 }}>{gun.imza}</div>}
+  </div>
 }
 
 function Kanca({ metin, boyut, renk = R.beyaz, stil }) {

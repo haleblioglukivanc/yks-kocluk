@@ -41,8 +41,8 @@ def gun_bul(tarih):
             g['etiket'] = {k: v[:-1] + x.get('etiket', []) + v[-1:] for k, v in g['etiket'].items()}
             print('>> Gündem içeriği kullanılıyor:', x['baslik'])
     # Sınav Psikolojisi: uzman imzası
-    if g['seri'] == 'Sınav Psikolojisi' and EKIP['uzman']['ad']:
-        g['imza'] = f"{EKIP['uzman']['unvan']} {EKIP['uzman']['ad']}"
+    if g['seri'] == 'Sınav Psikolojisi' and (EKIP['uzman']['ad'] or EKIP['uzman']['unvan']):
+        g['imza'] = ' '.join(x for x in (EKIP['uzman']['unvan'], EKIP['uzman']['ad']) if x)
     return g
 
 
