@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 16 Eylül 2026 (Tur 0 makine denetimi)
+Son güncelleme: 18 Eylül 2026 (tasarım turu, 1. adım)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu, 1. adım: ortak bileşenler + koçun öğrenci ekranı
+
+- Kurallar: `TASARIM-KURALLARI.md` (10 görsel kural, "bir düzeltme her yere" mekanizması, uygulama sırası).
+  Mokap: https://claude.ai/artifact/D85kWNPKkGaYHaohVbwCQL
+- `src/ortak/`: `UstBlok`, `Sekmeler`, `GunSeridi`, `BosDurum`, `Bolum`, `UyariSatiri` + `ortak.css` (main.jsx'te en son yüklenir).
+- Koçun öğrenci ekranı (`/ogrenci/:id`): telefonda da koyu tepe; kimlik kartı header'a bitişik tek blok,
+  sekmeler bloğun alt kenarında alt çizgili; durum hapı → nokta + düz metin; hedef kartı kartsız;
+  hafta şeridi kapsız, geçmişte bitmemiş gün sayısı kırmızı; gün başlığı ("Cuma, 18 Eylül") + kartsız boş durum
+  + tek düğme; "Hafta boyu tekrarlar" `Bolum` (sarı yuvarlak artı → "+ Ekle"). Geniş ekranda şerit yapışmıyor.
+- Öğrencinin `HaftaSeridi`'si de `GunSeridi`'yi çiziyor (görünüm aynı; boş gün "—" yerine "·").
+- Yönetim sekmeleri `Sekmeler` (açık varyant) oldu.
+- Açık kalanlar (sıradaki adımlar): öğrenci Bugün'deki şeritte gün kutularının kenarlığı (`.siradaki` kapsamlı stil),
+  "Öğrencinin kaynakları" kartı, Denemeler/Konular/Kayıt sekmelerindeki kartlar, koç Bugün, Rapor/veli, yönetim alanı, denetim kontrolleri.
 
 ## 18 Eylül 2026 — Sosyal Gelen Kutusu (yönetim paneli)
 

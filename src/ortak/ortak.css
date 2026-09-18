@@ -1,0 +1,103 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Ortak bileşenler — TASARIM-KURALLARI.md'nin kodu.
+   Bu dosyadaki her sınıf src/ortak/ altındaki bir bileşene aittir.
+   Rol klasöründe (ekranlar/) bunların benzeri yazılmaz; fark prop'la gelir.
+   Hex yazılmaz: yalnız tema.css tokenları.
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── UstBlok ───────────────────────────────────────────────────────
+   Görünümü .hero-yuzey'den gelir (öğrenci başlığıyla aynı yüzey).
+   Sekmeli blok sekmelerle biter: altına dikiş kartı oturmaz, alt boşluk
+   yalnız sekme çizgisi kadar. Seçici koyu-tepe kuralından güçlü. */
+.uygulama--koyu-tepe :is(.panel, .panel > .panel, .sekme-govde) > .hero-yuzey.ust-blok--sekmeli:first-child,
+.ust-blok--sekmeli {
+  padding-bottom: 0;
+}
+.uygulama.uygulama--koyu-tepe .iki-sutun .panel > .hero-yuzey.ust-blok--sekmeli { padding-bottom: 0; }
+.ust-blok--sekmeli + * { margin-top: 0.25rem; }
+/* Blok içindeki ikon düğmeleri kutu değil: zemin yok, yalnız ikon. */
+.ust-blok :is(.kk-geri, .kk-ikon) { background: transparent; }
+@media (hover: hover) {
+  .ust-blok :is(.kk-geri, .kk-ikon):hover { background: color-mix(in srgb, var(--beyaz) 10%, transparent); }
+}
+
+/* ── Sekmeler ──────────────────────────────────────────────────────
+   Alt çizgili yazı. Kutu yok, zemin yok. */
+.alt-sekmeler {
+  display: flex; gap: 1.25rem;
+  overflow-x: auto; scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.alt-sekmeler::-webkit-scrollbar { display: none; }
+.alt-sekme {
+  flex: 0 0 auto; min-height: 44px; padding: 0;
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  background: none; border: 0; border-bottom: 3px solid transparent;
+  font: inherit; font-size: var(--punto-kucuk); font-weight: 600;
+  cursor: pointer; white-space: nowrap;
+}
+.alt-sekme:focus-visible { outline: 2px solid currentColor; outline-offset: 2px; }
+.alt-sekme[aria-current='page'] { font-weight: 700; }
+
+.alt-sekmeler--koyu { margin-top: 1rem; }
+.alt-sekmeler--koyu .alt-sekme { color: color-mix(in srgb, var(--beyaz) 68%, transparent); }
+.alt-sekmeler--koyu .alt-sekme[aria-current='page'] { color: var(--beyaz); border-bottom-color: var(--marka-koyu-amber); }
+
+.alt-sekmeler--acik { border-bottom: 1px solid var(--cizgi); }
+.alt-sekmeler--acik .alt-sekme { color: var(--grafit); margin-bottom: -1px; }
+.alt-sekmeler--acik .alt-sekme[aria-current='page'] { color: var(--murekkep); border-bottom-color: var(--serin); }
+
+/* ── UyariSatiri ───────────────────────────────────────────────────
+   Nokta + düz metin. Koyu blok içinde açık tonlar, zeminde koyu tonlar. */
+.uyari-satiri {
+  display: flex; align-items: center; gap: 0.5rem; min-width: 0;
+  margin: 0; font-size: var(--punto-kucuk); font-weight: 700; line-height: 1.35;
+}
+.uyari-satiri-nokta { flex: 0 0 auto; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+.uyari-satiri--acil { color: var(--kizil-metin); }
+.uyari-satiri--izle { color: var(--sicak-metin); }
+.uyari-satiri--iyi { color: var(--isaret-metin); }
+.uyari-satiri--notr, .uyari-satiri--kapali { color: var(--grafit); }
+.hero-yuzey .uyari-satiri--acil { color: color-mix(in srgb, var(--kizil) 45%, var(--beyaz)); }
+.hero-yuzey .uyari-satiri--izle { color: var(--marka-koyu-amber); }
+.hero-yuzey .uyari-satiri--iyi { color: color-mix(in srgb, var(--isaret) 45%, var(--beyaz)); }
+.hero-yuzey :is(.uyari-satiri--notr, .uyari-satiri--kapali) { color: color-mix(in srgb, var(--beyaz) 72%, transparent); }
+
+/* ── BosDurum ──────────────────────────────────────────────────────
+   Bir cümle, tek düğme. Kart yok. */
+.bos-durum { display: flex; flex-direction: column; gap: 0.75rem; padding: 0.25rem 0 0; }
+.bos-durum-metin { margin: 0; font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.5; }
+.bos-durum-eylem { width: 100%; min-height: 48px; }
+
+/* ── Bolum ─────────────────────────────────────────────────────────
+   Başlık satırı + açıklama + içerik. Ayırıcı çizgi ya da boşluk. */
+.bolum { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 1.5rem; }
+.bolum--cizgili { border-top: 1px solid var(--cizgi); padding-top: 1rem; }
+.bolum-basi { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; }
+.bolum-baslik {
+  margin: 0; display: flex; align-items: baseline; gap: 0.5rem;
+  font-family: var(--display); font-size: var(--punto-orta); font-weight: 700; color: var(--murekkep);
+}
+.bolum-sayi { font-family: var(--mono); font-size: var(--punto-mini); font-weight: 500; color: var(--soluk); }
+.bolum-eylem {
+  flex: 0 0 auto; min-height: 44px; padding: 0 0.25rem;
+  background: none; border: 0; cursor: pointer;
+  font: inherit; font-size: var(--punto-kucuk); font-weight: 700; color: var(--serin);
+}
+.bolum-eylem:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+.bolum-aciklama { margin: 0; font-size: var(--punto-mini); color: var(--soluk); line-height: 1.5; }
+
+/* ── GunSeridi ─────────────────────────────────────────────────────
+   Kap yok, bant yok: günler doğrudan zemine oturur, yalnız seçili gün
+   dolu. Koç ve öğrenci aynı kuralı okur. */
+.hafta-serit {
+  background: none; border: 0; padding: 0;
+}
+.hafta-kaydirak > .gun-seridi-hafta { flex: 0 0 96%; scroll-snap-align: start; min-width: 0; }
+.gun-seridi-ad {
+  display: block; margin: 0 0 0.35rem 0.15rem;
+  font-size: var(--punto-mini); font-weight: 700; color: var(--grafit);
+}
+.hafta-gun { min-height: 44px; border-radius: var(--r-buyuk); }
+.hafta-gun--geciken .hafta-gun-sayi { color: var(--kizil-metin); font-weight: 700; }
+.hafta-gun--geciken { opacity: 1; }

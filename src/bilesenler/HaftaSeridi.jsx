@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GunHedefleri from './GunHedefleri.jsx'
 import { gunEkle } from '../lib/tarih.js'
+import GunSeridi from '../ortak/GunSeridi.jsx'
 
 /**
  * Hafta şeridi: Program sekmesinin yerini aldı.
@@ -108,37 +109,15 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
   return (
     <div className="hafta-serit-kap">
       <Uyari>{hata}</Uyari>
-      <div className="hafta-kaydirak" role="tablist" aria-label="Haftanın günleri">
-        {haftalar.map((hafta7, h) => (
-          <div className="hafta-serit" key={h}>
-            {hafta7.map((t, i) => {
-              const say = sayim[t] ?? { toplam: 0, biten: 0 }
-              const bugunMu = t === bugun
-              const gecmis = t < bugun
-              const tam = say.toplam > 0 && say.biten === say.toplam
-              return (
-                <button
-                  key={t}
-                  role="tab"
-                  aria-selected={t === secili}
-                  className={`hafta-gun${t === secili ? ' hafta-gun--secili' : ''}${bugunMu ? ' hafta-gun--bugun' : ''}${gecmis ? ' hafta-gun--gecmis' : ''}`}
-                  onClick={() => onSec?.(t)}
-                >
-                  <span className="hafta-gun-ad">{KISA_GUN[i]}</span>
-                  <span className="hafta-gun-no">{Number(t.slice(8, 10))}</span>
-                  <span className="hafta-gun-sayi" aria-label={`${say.biten}/${say.toplam} iş`}>
-                    {say.toplam === 0 ? '—' : `${say.biten}/${say.toplam}`}
-                  </span>
-                  {/* Günün bütün işleri bitti: damga. Yedi öğe, 70ms kademe. */}
-                  {tam && (
-                    <span className="hafta-damga" style={{ animationDelay: `${i * 70}ms` }} aria-hidden="true">✓</span>
-                  )}
-                </button>
-              )
-            })}
-          </div>
-        ))}
-      </div>
+      {/* Şerit ortak bileşen: koçun Program sekmesi de aynısını çiziyor. */}
+      <GunSeridi
+        haftalar={haftalar.map((g, h) => ({ anahtar: String(h), gunler: g }))}
+        sayim={sayim}
+        secili={secili}
+        bugun={bugun}
+        onSec={onSec}
+        damga
+      />
     </div>
   )
 }

@@ -474,9 +474,11 @@ main {
    üst şeridin yüksekliği kadar aşağıda (--yapisma, JS ile ölçülüyor). */
 .prg-serit-kap {
   position: sticky; top: calc(var(--yapisma, 0px) + 4px); z-index: var(--kat-yapisik);
-  padding: 0.35rem 0 0.4rem;
-  background: var(--kagit);
-  box-shadow: 0 8px 14px -14px color-mix(in srgb, var(--siyah) 50%, transparent);
+  padding: 0.5rem 0 0.4rem;
+  /* Sayfanın kendi zemini ve greni: şerit ayrı bir bant gibi görünmesin. */
+  background-color: var(--kagit);
+  background-image: var(--doku-kagit);
+  background-size: 160px 160px;
 }
 /* Haftalar yan yana kayıyor; her blok bir hafta. */
 .prg-serit-kap .hafta-kaydirak > .prg-hafta-blok {
@@ -487,15 +489,15 @@ main {
   font-family: var(--mono); font-size: var(--punto-etiket); letter-spacing: 0.04em;
   color: var(--soluk);
 }
-.prg-gun {
-  margin-top: 0.875rem; overflow: hidden;
-  background: var(--yuzey); border: 1px solid var(--cizgi); border-radius: var(--r-buyuk);
-}
+.prg-gun { margin-top: 1.25rem; display: flex; flex-direction: column; gap: 0.5rem; }
+/* Kart yok (TASARIM-KURALLARI 1, 5): gün başlığı + liste ya da tek cümle. */
+.prg-gun-basi { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; min-height: 44px; }
+.prg-gun-ad-baslik { margin: 0; font-family: var(--display); font-size: var(--punto-kart); font-weight: 700; color: var(--murekkep); }
+.rutin-liste { list-style: none; margin: 0.25rem 0 0; padding: 0; display: grid; gap: 0.625rem; }
 .prg-gun-govde { padding: 0.7rem 0.85rem 0.85rem; }
 .prg-gun-bos { margin: 0.875rem 0 0; font-size: var(--punto-kucuk); color: var(--soluk); }
 /* Bugün: başlık bandı amber tona geçer. Amber geniş yüzey olmaz, bu
    yüzden yalnızca band ve kenar — gövde nötr kalıyor. */
-.prg-gun--bugun { border-color: var(--sicak-kenar); }
 /* Gün listesindeki satır: öğrenci panelindeki .gorev-satir ile aynı
    tipografi, tek fark satırın tamamının dokunulabilir olması. */
 .prg-gorev {
@@ -3005,7 +3007,8 @@ body[data-tema='panel'] {
 .kk-goz { flex: 0 0 auto; }
 /* Ölçümler (Program sekmesinin tepesi) */
 .kunye dd a { color: var(--serin); text-decoration: none; font-weight: 500; }
-.olcumler { padding-top: 0.9rem; }
+.olcumler { padding: 1rem 0 0.25rem; }
+/* Kart değil (TASARIM-KURALLARI 1–2): hedef satırları doğrudan zeminde. */
 .olcumler .olcum-hedef:first-of-type { margin-top: 0; }
 .olcum-varis { margin: 0 0 0.7rem; font-size: var(--punto-mini); color: var(--soluk); }
 .olcum-hedef { margin-top: 0.9rem; }

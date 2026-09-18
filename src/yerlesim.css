@@ -256,3 +256,9 @@
   body[data-rol='koc'] .uygulama--koyu-tepe main:has(> .panel > .iki-sutun) { padding-top: 1.1rem; }
   body[data-rol='koc'] .koc-selam { padding-right: 8rem; }
 }
+
+/* Geniş ekranda program şeridi yapışmıyor: yer bol, yapışık bant
+   pastel zeminin üstünde ayrı bir kutu gibi duruyordu (TASARIM-KURALLARI 1). */
+@media (min-width: 64rem) {
+  .prg-serit-kap { position: static; background: none; }
+}

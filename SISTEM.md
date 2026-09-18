@@ -1,5 +1,8 @@
 # Tasarım sistemi
 
+> Görsel kurallar ve ortak bileşenler: **TASARIM-KURALLARI.md**. Yeni ekran ya da düzeltme önce oraya uyar;
+> aynı kavram (şerit, sekme, boş durum, bölüm, üst blok) `src/ortak/` dışında yeniden yazılmaz.
+
 Üç katman var. Yeni bir ekran yazarken hangi katmana dokunduğunu bil.
 
 | Dosya | İşi | Ne zaman dokunulur |

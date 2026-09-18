@@ -7,6 +7,8 @@ import './tema.css'
 import './sistem.css'
 import './index.css'
 import './yerlesim.css'
+/* Ortak bileşenler en son: kurallar burada tek yerde. */
+import './ortak/ortak.css'
 
 /* Telefonda geliştirici konsolu yok. Bir bileşen patladığında React bütün
    ağacı söküyor ve geriye bembeyaz bir ekran kalıyor — "site gitti" hissi

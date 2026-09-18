@@ -378,7 +378,9 @@ export default function App() {
   /* Bugün ekranında koyu başlık üst şeritle birleşip tepeye yapışır. */
   const koyuTepe =
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || (genis && Boolean(ogrenciId)))) ||
+    /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
+       bitişik tek parça (TASARIM-KURALLARI 3). */
+    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 

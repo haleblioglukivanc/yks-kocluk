@@ -10,6 +10,7 @@ import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
 import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
+import Sekmeler from '../ortak/Sekmeler.jsx'
 import { kullaniciSil } from '../lib/hesap.js'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
@@ -67,26 +68,24 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         onGeri={onGeri}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
-      />
+      >
+        {/* Sekmeler üst bloğun içinde, alt kenarda (TASARIM-KURALLARI 3–4).
+            Eskiden bloğun altında dört ayrı kutu düğmeydi. */}
+        <Sekmeler
+          varyant="koyu"
+          etiket="Öğrenci bölümleri"
+          deger={sekme}
+          onSec={setSekme}
+          secenekler={[
+            { k: 'program', ad: 'Program' },
+            { k: 'denemeler', ad: 'Denemeler' },
+            { k: 'konular', ad: 'Konular' },
+            { k: 'kayit', ad: 'Kayıt' },
+          ]}
+        />
+      </OgrenciKimlikKarti>
 
       <div className="sekme-govde" style={aksanStili()}>
-      <nav className="sekmeler sekmeler--genis">
-        {[
-          ['program', 'Program'],
-          ['denemeler', 'Denemeler'],
-          ['konular', 'Konular'],
-          ['kayit', 'Kayıt'],
-        ].map(([k, e]) => (
-          <button
-            key={k}
-            className={sekme === k ? 'sekme sekme--etkin' : 'sekme'}
-            onClick={() => setSekme(k)}
-          >
-            {e}
-          </button>
-        ))}
-      </nav>
-
       {sekme === 'program' && (
         <>
           <KimlikOlcumleri ogrenci={ogrenci} netDurumu={netDurumu} />

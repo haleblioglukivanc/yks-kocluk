@@ -1,4 +1,5 @@
 import Sayan from '../bilesenler/Sayan.jsx'
+import Sekmeler from '../ortak/Sekmeler.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -703,23 +704,23 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {/* Tek uzun sayfaydı; dokuz kart alt alta diziliyordu. Yönetim
               ayda bir açılan yoğun bir ekran, sekme onu okunur kılıyor. */}
-          <nav className="sekmeler sekmeler--genis" aria-label="Yönetim bölümleri">
-            {SEKMELER.map(([k, ad]) => (
-              <button
-                key={k}
-                className={sekme === k ? 'sekme sekme--etkin' : 'sekme'}
-                onClick={() => setSekme(k)}
-              >
-                {ad}
-                {k === 'sosyal' && sosyal?.bekleyen > 0 && (
+          <Sekmeler
+            varyant="acik"
+            etiket="Yönetim bölümleri"
+            deger={sekme}
+            onSec={setSekme}
+            secenekler={SEKMELER.map(([k, ad]) => ({
+              k,
+              ad,
+              rozet:
+                k === 'sosyal' && sosyal?.bekleyen > 0 ? (
                   <span className={sosyal.acil ? 'sekme-rozet sekme-rozet--acil' : 'sekme-rozet'}
                     aria-label={`${sosyal.bekleyen} bekleyen${sosyal.acil ? `, ${sosyal.acil} acil` : ''}`}>
                     {sosyal.bekleyen}
                   </span>
-                )}
-              </button>
-            ))}
-          </nav>
+                ) : null,
+            }))}
+          />
 
           {sekme === 'koclar' && (
             <>

@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import UyariSatiri from '../ortak/UyariSatiri.jsx'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
@@ -42,6 +44,7 @@ export default function OgrenciKimlikKarti({
   onMesaj,
   onGozuyle,
   onEk,
+  children,
 }) {
   /* Aynı kart, iki farklı okuyucu. Görsel dil ortak; içerik değil.
      Öğrenci kendi kartında erişim anahtarını, düzenleme çarkını ve risk
@@ -118,7 +121,11 @@ export default function OgrenciKimlikKarti({
      durum + eylem. Geri düğmesi de kartın içine alındı; üstünde ayrı bir
      "← Öğrenci listesi" satırı duruyordu. */
   return (
-      <div className={`hero-yuzey kimlik-kart kk-sade${kapaliSinifi(kocGorunumu, aktif)}`}>
+      <UstBlok
+        sinif={`kimlik-kart kk-sade${kapaliSinifi(kocGorunumu, aktif)}`}
+        etiket={ad}
+        sekmeli={Boolean(children)}
+      >
         <div className="kk-ust">
           {onGeri && (
             <button className="kk-geri" onClick={onGeri} aria-label="Öğrenci listesine dön">
@@ -168,17 +175,15 @@ export default function OgrenciKimlikKarti({
             Eylem düğmesi de bu satırın sağında: kendi satırını yemiyor. */}
         {kocGorunumu && (
           <div className="kk-son-satir">
+            {/* Kural 7: durum hapın içinde değil, nokta + düz metin. */}
             {!aktif ? (
-              <span className="kk-durum-cip kk-durum-cip--kapali">
-                <i className="kk-nokta" aria-hidden="true" />
-                Uygulama erişimi kapalı
-              </span>
+              <UyariSatiri durum="kapali">Uygulama erişimi kapalı</UyariSatiri>
             ) : riskSeviyesi ? (
-              <span className={`kk-durum-cip kk-durum-cip--${riskSeviyesi}`}>
-                <i className="kk-nokta" aria-hidden="true" />
-                {RISK_ADI[riskSeviyesi] ?? riskSeviyesi}
-                {uyariVar && uyari ? ` · ${uyari.toLocaleLowerCase('tr-TR')}` : ''}
-              </span>
+              <UyariSatiri durum={riskSeviyesi}>
+                {uyariVar && uyari
+                  ? `${riskSeviyesi === 'acil' ? '' : `${RISK_ADI[riskSeviyesi] ?? riskSeviyesi} · `}${uyari}`
+                  : (RISK_ADI[riskSeviyesi] ?? riskSeviyesi)}
+              </UyariSatiri>
             ) : (
               <span />
             )}
@@ -192,7 +197,9 @@ export default function OgrenciKimlikKarti({
             </button>
           </div>
         )}
-      </div>
+        {/* Sekmeler bloğun alt kenarına oturur (kural 3–4). */}
+        {children}
+      </UstBlok>
   )
 }
 
@@ -233,7 +240,7 @@ export function KimlikOlcumleri({ ogrenci, netDurumu }) {
   if (!varis && hedefler.length === 0) return null
 
   return (
-    <section className="kart olcumler">
+    <section className="olcumler">
       {varis && <p className="olcum-varis">{varis}</p>}
 
       {hedefler.map((h) => (
