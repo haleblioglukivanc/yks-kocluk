@@ -3328,13 +3328,15 @@ body[data-tema='panel'] {
   /* Üst şerit her zaman en üstte kalmalı: vekalet bandı (z-index 10)
      top:0'a yapışınca zilin ve hesap ikonunun üstüne biniyor, tıklamayı
      yutuyordu. Band artık şeridin altından başlıyor. */
-  /* top:-1px + yukarı gölge: iOS Safari kaydırırken şeritle tarayıcı
-     tepesi arasında 1px aralık bırakıp krem zemini gösteriyordu. */
-  position: sticky; top: -1px; z-index: var(--kat-tepe);
+  position: sticky; top: 0; z-index: var(--kat-tepe);
   background: var(--tepe-ust);
-  padding-top: calc(env(safe-area-inset-top) + 1px);
-  box-shadow: 0 -12px 0 var(--tepe-ust);
+  padding-top: env(safe-area-inset-top);
 }
+/* iOS Safari yapışkan şeridi ayrı katmanda çizer ve piksele yuvarlarken
+   şeritle altındaki koyu başlık arasında 1px krem dikiş bırakıyordu.
+   Şerit kendi renginde 2px aşağı taşar; başlık da aynı renkte başladığı
+   için görünmez, dikişi örter. */
+.uygulama--koyu-tepe .ust-serit { box-shadow: 0 2px 0 var(--tepe-ust); }
 .ust-cubuk {
   max-width: 44rem; margin-inline: auto;
   display: flex; align-items: center; justify-content: space-between;
