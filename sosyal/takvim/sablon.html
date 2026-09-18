@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kıvanç Hoca · Bir yıllık içerik takvimi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=Karla:wght@400;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--zemin:#f6f1e8;--kart:#fffdf8;--murekkep:#101a38;--soluk:#5d6780;--cizgi:#e3dccd;--turuncu:#f26a1b;--mercan:#e0284f;--lacivert:#0b1230;
+--s0:#2f5bd3;--s1:#0e9f8a;--s2:#e0284f;--s3:#8a5cd6;--s4:#d99a00;--s5:#f26a1b;--s6:#4a6b8a;--oz:#101a38;
+--baslik:'Bricolage Grotesque',system-ui,sans-serif;--govde:'Karla',system-ui,sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--zemin:#070b18;--kart:#0f1733;--murekkep:#eef1fb;--soluk:#8b98ad;--cizgi:#24336a;--oz:#eef1fb;--s6:#8aa6c4}}
+:root[data-theme="dark"]{--zemin:#070b18;--kart:#0f1733;--murekkep:#eef1fb;--soluk:#8b98ad;--cizgi:#24336a;--oz:#eef1fb;--s6:#8aa6c4}
+*{box-sizing:border-box}body{margin:0;background:var(--zemin);color:var(--murekkep);font-family:var(--govde);font-size:16px;line-height:1.45}
+.sar{max-width:1240px;margin:0 auto;padding:28px 20px 60px}
+.ust{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+.etk{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--turuncu)}
+h1{font-family:var(--baslik);font-weight:800;font-size:clamp(30px,5vw,54px);line-height:1;letter-spacing:-.03em;margin:8px 0 0}
+.ozet{display:flex;gap:26px;flex-wrap:wrap}.ozet b{display:block;font-family:var(--baslik);font-size:30px;letter-spacing:-.02em}.ozet span{font-family:var(--mono);font-size:11px;color:var(--soluk);text-transform:uppercase;letter-spacing:.08em}
+.egri{margin:26px 0 8px;background:var(--kart);border:1px solid var(--cizgi);border-radius:20px;padding:16px 18px 8px;overflow-x:auto}
+.egri h2,.bolum h2{font-family:var(--baslik);font-size:18px;margin:0 0 4px;letter-spacing:-.01em}.egri p{margin:0 0 8px;color:var(--soluk);font-size:14px}
+.cipler{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}
+.cip{border:1.5px solid var(--cizgi);background:var(--kart);color:var(--murekkep);border-radius:99px;padding:6px 12px;font:600 13px var(--govde);cursor:pointer;display:flex;gap:7px;align-items:center}
+.cip i{width:10px;height:10px;border-radius:3px;display:inline-block}.cip[aria-pressed="false"]{opacity:.4}
+.duzen{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:22px;align-items:start}
+@media (max-width:960px){.duzen{grid-template-columns:1fr}}
+.aylar{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.ay{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:12px 12px 14px}
+.ay h3{margin:0 0 2px;font-family:var(--baslik);font-size:17px;display:flex;justify-content:space-between;align-items:baseline}
+.ay h3 small{font:400 11px var(--mono);color:var(--soluk)}.ay .ruh{font-size:12px;color:var(--soluk);margin:0 0 8px;min-height:32px}
+.izgara{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}.izgara .bg{font:500 10px var(--mono);color:var(--soluk);text-align:center}
+.g{aspect-ratio:1;border-radius:8px;border:0;cursor:pointer;font:600 12px var(--mono);color:#fff;position:relative;padding:0}
+.g.bos{visibility:hidden}.g.hassas{background:transparent!important;color:var(--murekkep);outline:1.5px dashed var(--soluk);outline-offset:-2px}
+.g.ozel::after{content:"";position:absolute;top:3px;right:3px;width:6px;height:6px;border-radius:50%;background:#fff;box-shadow:0 0 0 1.5px var(--oz)}
+.g.tatil{box-shadow:inset 0 -4px 0 rgba(255,255,255,.55)}.g.ramazan{background-image:radial-gradient(circle at 70% 30%,rgba(255,255,255,.35) 0 3px,transparent 4px)}
+.g.soluk{opacity:.18}.g.secili{outline:3px solid var(--murekkep);outline-offset:1px;z-index:1}
+.panel{position:sticky;top:16px;background:var(--kart);border:1px solid var(--cizgi);border-radius:22px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.telefon{background:var(--lacivert);border-radius:18px;aspect-ratio:9/12;padding:22px 20px;display:flex;flex-direction:column;justify-content:space-between;color:#fff;position:relative;overflow:hidden}
+.telefon::before{content:"";position:absolute;inset:0;background:radial-gradient(420px 300px at 90% 0%,rgba(30,79,208,.45),transparent 70%),radial-gradient(300px 260px at 0% 100%,rgba(242,106,27,.22),transparent 70%)}
+.telefon>*{position:relative}.telefon .ti{font:500 11px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:#ff9a5c}
+.telefon .ka{font:800 clamp(22px,2.6vw,28px)/1.1 var(--baslik);letter-spacing:-.02em;margin-top:10px}
+.telefon .al{font:400 11px var(--mono);color:#c9d6ff;display:flex;justify-content:space-between}
+.sat{display:grid;grid-template-columns:110px 1fr;gap:6px 10px;font-size:14px}.sat dt{font:500 11px var(--mono);text-transform:uppercase;letter-spacing:.06em;color:var(--soluk);padding-top:2px}.sat dd{margin:0}
+.saatler{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.saatler div{border:1px solid var(--cizgi);border-radius:12px;padding:8px}.saatler b{font:600 20px var(--mono);display:block}.saatler span{font:500 10px var(--mono);color:var(--soluk);text-transform:uppercase}
+.etiket{font:400 12px var(--mono);color:var(--soluk);word-break:break-word}.etiket b{color:var(--murekkep);font-weight:500}
+.rozet{display:inline-block;font:500 10px var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:3px 7px;border-radius:6px;border:1px solid var(--cizgi);margin:0 4px 4px 0}
+.rozet.uyari{border-color:var(--mercan);color:var(--mercan)}
+.bolum{margin-top:34px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.bolum>div{background:var(--kart);border:1px solid var(--cizgi);border-radius:18px;padding:16px}.bolum p,.bolum li{font-size:14px;color:var(--soluk)}.bolum ul{padding-left:18px;margin:6px 0 0}
+.bolum li b{color:var(--murekkep)}
+.tema{border:1.5px solid var(--cizgi);background:var(--kart);color:var(--murekkep);border-radius:99px;padding:6px 12px;font:500 12px var(--mono);cursor:pointer}
+</style></head><body><div class="sar">
+<div class="ust"><div><div class="etk">● Kıvanç Hoca ile Eğitim Koçluğu · 19 Eylül 2026 → 18 Eylül 2027</div><h1>Her gün bir video.<br>Bir yıl.</h1></div>
+<div class="ozet" id="ozet"></div></div>
+<div class="egri"><h2>Işık eğrisi ve yılın ruhu</h2><p>Tarsus'ta gün batımı saati (turuncu), sınavlar, tatiller ve Ramazan. Karanlık erken çöktüğü haftalarda ton yumuşar, hedef küçülür.</p><div id="egri"></div></div>
+<div class="cipler" id="cipler"></div>
+<div class="duzen"><div class="aylar" id="aylar"></div>
+<aside class="panel" id="panel"></aside></div>
+<div class="bolum">
+<div><h2>Hesaba katılan parametreler</h2><ul>
+<li><b>Coğrafya ve ışık:</b> Tarsus koordinatlarından her günün gün batımı. Ramazanda yayın saati iftardan sonraya kayar.</li>
+<li><b>Okul takvimi (MEB, kesin):</b> ara tatiller, karne günleri, yarıyıl. Tatilde saatler geç saate kayar.</li>
+<li><b>Sınav geri sayımı:</b> 200/150/100/50/30/10 gün eşikleri. YKS ve LGS 2027 tarihleri henüz tahmini.</li>
+<li><b>Kohort değişimi:</b> YKS'den sonra etiketler #yks2027'den #yks2028'e geçer, içerik 11. sınıflara döner.</li>
+<li><b>Haftanın ritmi:</b> pazartesi plan, cumartesi deneme sabahı, pazar akşamı kaygısı.</li>
+<li><b>Kitle:</b> öğrenci ve veli farklı saatlerde bakar. Perşembe veli günü, saati ona göre.</li>
+<li><b>Hassas günler:</b> 10 Kasım, 6 Şubat, 15 Temmuz. Müzik yok, etiket yok, satış çağrısı yok.</li>
+<li><b>Mevsimlik konular:</b> kış karanlığı kışın, bahar yorgunluğu baharda, tercih temmuzda çıkar.</li></ul></div>
+<div><h2>Haftanın serileri</h2><ul id="seriler"></ul></div>
+<div><h2>Varsayım olanlar</h2><ul>
+<li><b>Yayın saatleri</b> başlangıç tahmini. İlk 4 haftanın Buffer ölçümleriyle kanal kanal ayarlanacak.</li>
+<li><b>YKS 19–20 Haziran, LGS 13 Haziran 2027:</b> resmi takvim gelince tek satır değişir, bütün geri sayım kendiliğinden düzelir.</li>
+<li><b>Ramazan 8 Şubat–8 Mart, Kurban 16–19 Mayıs:</b> Diyanet takvimiyle teyit edilecek.</li>
+<li><b>Etiketler</b> sabit liste değil; ilk ayın ölçümlerinde zayıf kalan değişecek.</li></ul>
+<p style="margin-top:12px"><button class="tema" id="tema">Açık / koyu</button></p></div>
+</div></div>
+<script>
+const V = /*VERI*/[];
+const SERI = {"Haftanın Planı":["var(--s0)","Pazartesi · öğrenci · kart"],"Ders Taktiği":["var(--s1)","Salı · ders ders tek taktik"],"Aynı Hafta":["var(--s2)","Çarşamba · koç–öğrenci yazışması (marka serisi)"],"Veli Köşesi":["var(--s3)","Perşembe · veliler"],"Doğru Bilinen Yanlışlar":["var(--s4)","Cuma · efsane → gerçek"],"Deneme Günü":["var(--s5)","Cumartesi · deneme sabahından sonra"],"Pazar Akşamı":["var(--s6)","Pazar · duygu, haftayı kapatma"],"Özel Gün":["var(--oz)","Takvime bağlı günler; hassas günler kesik çerçeveli"]};
+const AYLAR="Ocak Şubat Mart Nisan Mayıs Haziran Temmuz Ağustos Eylül Ekim Kasım Aralık".split(" ");
+const acik=new Set(Object.keys(SERI));
+let secili=V[0].tarih;
+const bugun=new Date().toISOString().slice(0,10); if(V.some(v=>v.tarih===bugun)) secili=bugun;
+const sayi=(k)=>V.filter(k).length;
+document.getElementById('ozet').innerHTML=[[V.length,"video"],[sayi(v=>v.seri==="Özel Gün"),"özel gün"],[sayi(v=>v.tatil),"tatil günü"],[sayi(v=>v.kesinlik==="tahmini"),"tahmini tarih"]].map(([a,b])=>`<div><b>${a}</b><span>${b}</span></div>`).join("");
+document.getElementById('seriler').innerHTML=Object.entries(SERI).map(([k,[r,a]])=>`<li><b style="color:${r}">■</b> <b>${k}:</b> ${a}</li>`).join("");
+const cip=document.getElementById('cipler');
+cip.innerHTML=Object.entries(SERI).map(([k,[r]])=>`<button class="cip" aria-pressed="true" data-s="${k}"><i style="background:${r}"></i>${k}</button>`).join("");
+cip.onclick=e=>{const b=e.target.closest('.cip');if(!b)return;const s=b.dataset.s;acik.has(s)?acik.delete(s):acik.add(s);b.setAttribute('aria-pressed',acik.has(s));ciz();};
+function ciz(){
+  const gruplar={};V.forEach(v=>{const k=v.tarih.slice(0,7);(gruplar[k]=gruplar[k]||[]).push(v)});
+  document.getElementById('aylar').innerHTML=Object.entries(gruplar).map(([k,g])=>{
+    const [y,m]=k.split('-').map(Number);const ilk=new Date(y,m-1,1).getDay();const bosluk=(ilk+6)%7;
+    const onceki=Number(g[0].tarih.slice(8))-1;
+    let h=`<div class="ay"><h3>${AYLAR[m-1]} ${y}<small>${g[0].mevsim}</small></h3><p class="ruh">${g[0].ruh_hali}</p><div class="izgara">`+"Pt Sa Ça Pe Cu Ct Pz".split(" ").map(x=>`<span class="bg">${x}</span>`).join("");
+    for(let i=0;i<bosluk+onceki;i++)h+=`<span class="g bos"></span>`;
+    g.forEach(v=>{const c=[v.hassas?"hassas":"",v.seri==="Özel Gün"?"ozel":"",v.tatil?"tatil":"",v.ramazan?"ramazan":"",acik.has(v.seri)?"":"soluk",v.tarih===secili?"secili":""].join(" ");
+      h+=`<button class="g ${c}" style="background:${SERI[v.seri][0]}" data-t="${v.tarih}" title="${v.tarih} · ${v.baslik}">${Number(v.tarih.slice(8))}</button>`});
+    return h+"</div></div>"}).join("");
+  panel();
+}
+document.getElementById('aylar').onclick=e=>{const b=e.target.closest('.g');if(!b||!b.dataset.t)return;secili=b.dataset.t;ciz();if(innerWidth<960)document.getElementById('panel').scrollIntoView({behavior:'smooth'})};
+function panel(){
+  const v=V.find(x=>x.tarih===secili);const d=new Date(v.tarih+"T12:00");
+  const gun=d.toLocaleDateString('tr-TR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  const roz=[v.kitle,v.gun_turu,v.hassas?"hassas gün":"",v.kesinlik==="tahmini"?"tarih tahmini":"",v.ramazan&&v.gun_turu!=="ramazan"?"ramazan":"",v.muzik?"müzikli":"müziksiz"].filter(Boolean).map(r=>`<span class="rozet ${r==='hassas gün'||r==='tarih tahmini'?'uyari':''}">${r}</span>`).join("");
+  const et=(a)=>a.length?a.map(x=>`<b>${x}</b>`).join(" "):"— (etiket yok)";
+  document.getElementById('panel').innerHTML=`
+  <div class="telefon"><div><div class="ti">${v.seri}${v.ders?" · "+v.ders:""}</div><div class="ka">${v.kanca}</div></div>
+  <div class="al"><span>${v.yks_kalan!=null?"YKS'ye "+v.yks_kalan+" gün":"YKS 2028 dönemi"}</span><span>khkocluk.com</span></div></div>
+  <div><div style="font:500 12px var(--mono);color:var(--soluk)">${gun}</div><div style="font:800 22px/1.15 var(--baslik);letter-spacing:-.02em;margin-top:2px">${v.baslik}</div><div style="margin-top:8px">${roz}</div></div>
+  <div class="saatler"><div><span>Instagram</span><b>${v.saat.ig}</b></div><div><span>TikTok</span><b>${v.saat.tt}</b></div><div><span>YouTube</span><b>${v.saat.yt}</b></div></div>
+  <dl class="sat"><dt>Şablon</dt><dd>${v.sablon}</dd><dt>Mevsim</dt><dd>${v.mevsim} — ${v.ruh_hali}</dd><dt>Işık</dt><dd>${v.isik}</dd>
+  <dt>Geri sayım</dt><dd>${v.yks_kalan!=null?"YKS "+v.yks_kalan+" gün":"—"}${v.lgs_kalan!=null?" · LGS "+v.lgs_kalan+" gün":""}</dd><dt>Çağrı</dt><dd>${v.cta||"— (yok)"}</dd></dl>
+  <div class="etiket">IG: ${et(v.etiket.ig)}<br>TikTok: ${et(v.etiket.tt)}<br>YouTube: ${et(v.etiket.yt)}</div>`;
+}
+function egri(){
+  const W=1180,H=190,P=34,n=V.length;const dk=V.map(v=>{const[a,b]=v.gun_batimi.split(':').map(Number);return a*60+b});
+  const mn=16*60+30,mx=20*60+30;const x=i=>P+i*(W-2*P)/(n-1),y=m=>H-26-(m-mn)*(H-60)/(mx-mn);
+  let s=`<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" role="img" aria-label="Gün batımı eğrisi" style="display:block;min-width:720px;width:100%;height:auto">`;
+  // şeritler
+  const serit=(f,renk,op)=>{let bas=null;V.forEach((v,i)=>{if(f(v)&&bas===null)bas=i;if((!f(v)||i===n-1)&&bas!==null){const son=f(v)?i:i-1;s+=`<rect x="${x(bas)}" y="18" width="${Math.max(2,x(son)-x(bas))}" height="${H-44}" fill="${renk}" opacity="${op}"/>`;bas=null}})};
+  serit(v=>v.tatil,"var(--s1)",.12);serit(v=>v.ramazan,"var(--s3)",.18);
+  for(let h=17;h<=20;h++)s+=`<line x1="${P}" x2="${W-P}" y1="${y(h*60)}" y2="${y(h*60)}" stroke="var(--cizgi)"/><text x="4" y="${y(h*60)+4}" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--soluk)">${h}:00</text>`;
+  s+=`<polyline fill="none" stroke="var(--turuncu)" stroke-width="3" stroke-linecap="round" points="${dk.map((m,i)=>x(i)+","+y(m)).join(" ")}"/>`;
+  V.forEach((v,i)=>{if(v.tarih.slice(8)==="01")s+=`<text x="${x(i)}" y="${H-6}" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--soluk)">${AYLAR[Number(v.tarih.slice(5,7))-1].slice(0,3)}</text>`});
+  const isaret=(t,etiket,dy=0)=>{const i=V.findIndex(v=>v.tarih===t);if(i<0)return;s+=`<line x1="${x(i)}" x2="${x(i)}" y1="14" y2="${H-26}" stroke="var(--mercan)" stroke-dasharray="3 3"/><text x="${x(i)+4}" y="${14+dy}" font-family="JetBrains Mono,monospace" font-size="10" fill="var(--mercan)">${etiket}</text>`};
+  isaret("2026-12-21","en uzun gece");isaret("2027-03-11","100 gün");isaret("2027-06-13","LGS");isaret("2027-06-19","YKS",12);
+  document.getElementById('egri').innerHTML=s+"</svg><p style='font:400 11px JetBrains Mono,monospace;color:var(--soluk);margin:4px 0 0'>yeşil şerit: tatil · mor şerit: Ramazan · kırmızı: eşikler</p>";
+}
+document.getElementById('tema').onclick=()=>{const r=document.documentElement;const koyu=r.dataset.theme?r.dataset.theme==="dark":matchMedia('(prefers-color-scheme:dark)').matches;r.dataset.theme=koyu?"light":"dark"};
+egri();ciz();
+</script></body></html>
