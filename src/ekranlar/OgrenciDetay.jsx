@@ -11,6 +11,8 @@ import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlik
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import Sekmeler from '../ortak/Sekmeler.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
 import { kullaniciSil } from '../lib/hesap.js'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
 import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplari.js'
@@ -101,13 +103,12 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           müşteri kartı gibi), düzenleme formu, veli bağları, koç notları. */}
       {sekme === 'kayit' && (
         <>
-          <Kart
+          {/* Kayıt sekmesi: beş kart yerine çizgiyle ayrılan beş bölüm
+              (TASARIM-KURALLARI 1, 8). */}
+          <Bolum
             baslik="Bilgiler"
-            eylem={
-              <Dugme tur="ikincil" onClick={() => setDuzenle((v) => !v)}>
-                {duzenle ? 'Vazgeç' : 'Düzenle'}
-              </Dugme>
-            }
+            eylem={duzenle ? 'Vazgeç' : 'Düzenle'}
+            onEylem={() => setDuzenle((v) => !v)}
           >
             {duzenle ? (
               <BilgiFormu
@@ -121,7 +122,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
             ) : (
               <Kunye ogrenci={ogrenci} />
             )}
-          </Kart>
+          </Bolum>
           <Odemeler ogrenci={ogrenci} />
           <Veliler ogrenci={ogrenci} />
           <Notlar ogrenci={ogrenci} />
@@ -362,12 +363,11 @@ function TehlikeliBolge({ ogrenci, onSilindi }) {
   }
 
   return (
-    <Kart baslik="Tehlikeli bölge" sinif="tehlike-kart">
-      <p className="tehlike-not">
-        Öğrenci koçluktan ayrıldıysa önce pasife almayı dene. Pasif öğrenci listede
-        soluk durur, verisi korunur. Silmek geri alınamaz.
+    <Bolum cizgili baslik="Tehlikeli bölge" sinif="tehlike-bolum">
+      <p className="bolum-aciklama">
+        Öğrenci ayrıldıysa önce pasife almayı dene; verisi korunur. Silmek geri alınamaz.
       </p>
-      <button className="dugme dugme--tehlike" onClick={() => setAcik(true)}>
+      <button className="tehlike-yazi-dugme" onClick={() => setAcik(true)}>
         Öğrenciyi kalıcı olarak sil
       </button>
 
@@ -418,7 +418,7 @@ function TehlikeliBolge({ ogrenci, onSilindi }) {
           </div>
         </AltSayfa>
       )}
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -867,7 +867,7 @@ function Konular({ ogrenci }) {
       .then(({ data }) => setDersler(data ?? []))
   }, [ogrenci.katalog_id])
 
-  if (dersler === null) return <Kart baslik="Konular"><Yukleniyor /></Kart>
+  if (dersler === null) return <Bolum baslik="Konu yolu"><Yukleniyor /></Bolum>
 
   /* Katalogda TYT Matematik ve AYT Matematik iki ayrı satır. Ekranda tek
      ders: "Matematik" açılınca ikisinin konuları alt alta, kapsam
@@ -878,9 +878,9 @@ function Konular({ ogrenci }) {
   /* Öğrencinin gördüğü yolun aynısı; fark eylemler: koç durum seçer ve onaylar.
      Onay verilince öğrencinin haritasında durak yeşile döner. */
   return (
-    <Kart baslik="Konu yolu" altBaslik={ogrenci.kataloglar?.ad}>
+    <Bolum baslik="Konu yolu" aciklama={ogrenci.kataloglar?.ad}>
       {gruplar.length === 0 ? (
-        <Bos baslik="Katalog atanmamış" aciklama="Bilgileri düzenleyip bir katalog seçin." />
+        <BosDurum metin="Katalog atanmamış. Kayıt sekmesinde bilgileri düzenleyip bir katalog seç." />
       ) : (
         <ul className="ders-liste">
           {gruplar.map((g) => {
@@ -914,7 +914,7 @@ function Konular({ ogrenci }) {
           })}
         </ul>
       )}
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -983,8 +983,8 @@ function Notlar({ ogrenci }) {
   }
 
   return (
-    <Kart baslik="Notlar" altBaslik="Her notta kimin göreceğini sen seçersin">
-      <div className="form-kutu">
+    <Bolum cizgili baslik="Notlar" aciklama="Her notta kimin göreceğini sen seçersin.">
+      <div className="form-kutu form-kutu--duz">
         <Alan etiket="Yeni not">
           <textarea
             rows={3}
@@ -1013,7 +1013,7 @@ function Notlar({ ogrenci }) {
       {liste === null ? (
         <Yukleniyor />
       ) : liste.length === 0 ? (
-        <Bos baslik="Henüz not yok" aciklama="İlk notu yukarıdan ekleyebilirsin." />
+        <BosDurum metin="Henüz not yok." />
       ) : (
         <ul className="liste">
           {liste.map((n) => (
@@ -1030,7 +1030,7 @@ function Notlar({ ogrenci }) {
           ))}
         </ul>
       )}
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -1120,17 +1120,15 @@ function Veliler({ ogrenci }) {
   }
 
   return (
-    <Kart
+    <Bolum
+      cizgili
       baslik="Veli"
-      altBaslik="Veliye yalnızca senin onayladığın haftalık özet SMS olarak gider"
-      eylem={
-        <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-          {formAcik ? 'Kapat' : 'Veli ekle'}
-        </Dugme>
-      }
+      aciklama="Veliye yalnız senin onayladığın haftalık özet SMS olarak gider."
+      eylem={formAcik ? 'Kapat' : '+ Veli ekle'}
+      onEylem={() => setFormAcik((v) => !v)}
     >
       {formAcik && (
-        <div className="form-kutu">
+        <div className="form-kutu form-kutu--duz">
           <Alan etiket="Ad soyad">
             <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} placeholder="Örn. Ayşe Yılmaz" />
           </Alan>
@@ -1175,10 +1173,7 @@ function Veliler({ ogrenci }) {
       {liste === null ? (
         <Yukleniyor />
       ) : liste.length === 0 ? (
-        <Bos
-          baslik="Kayıtlı veli yok"
-          aciklama="Veli eklersen haftalık özeti onaylayıp SMS ile gönderebilirsin."
-        />
+        <BosDurum metin="Kayıtlı veli yok. Veli eklersen haftalık özeti onaylayıp SMS ile gönderebilirsin." />
       ) : (
         <ul className="liste">
           {liste.map((v) => (
@@ -1197,7 +1192,7 @@ function Veliler({ ogrenci }) {
           ))}
         </ul>
       )}
-    </Kart>
+    </Bolum>
   )
 }
 
@@ -1428,17 +1423,15 @@ function Odemeler({ ogrenci }) {
   const taksitler = ozet?.taksitler ?? []
 
   return (
-    <Kart
+    <Bolum
+      cizgili
       baslik="Ödeme"
-      altBaslik="Geciken taksit karar kuyruğuna düşer"
-      eylem={
-        <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-          {formAcik ? 'Kapat' : 'Ödeme planı kur'}
-        </Dugme>
-      }
+      aciklama="Geciken taksit karar kuyruğuna düşer."
+      eylem={formAcik ? 'Kapat' : '+ Plan kur'}
+      onEylem={() => setFormAcik((v) => !v)}
     >
       {formAcik && (
-        <div className="form-kutu">
+        <div className="form-kutu form-kutu--duz">
           <div className="ucul">
             <Alan etiket="Aylık tutar">
               <input
@@ -1481,10 +1474,7 @@ function Odemeler({ ogrenci }) {
       {ozet === null ? (
         <Yukleniyor />
       ) : taksitler.length === 0 ? (
-        <Bos
-          baslik="Ödeme planı yok"
-          aciklama="Aylık tutarı ve ay sayısını girersen taksitleri sistem yazar."
-        />
+        <BosDurum metin="Ödeme planı yok. Aylık tutarı ve ay sayısını girersen taksitleri sistem yazar." />
       ) : (
         <>
           <div className="odeme-sayilar">
@@ -1526,6 +1516,6 @@ function Odemeler({ ogrenci }) {
           </ul>
         </>
       )}
-    </Kart>
+    </Bolum>
   )
 }

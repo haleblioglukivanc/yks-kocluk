@@ -1,11 +1,21 @@
 # Proje Durumu
 
-Son güncelleme: 18 Eylül 2026 (tasarım turu, 2. adım)
+Son güncelleme: 18 Eylül 2026 (tasarım turu, 3. adım)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 18 Eylül 2026 — tasarım turu, 3. adım: koçun öğrenci ekranı, kalan sekmeler
+
+- Mokap: https://claude.ai/artifact/B98gZ1ueHHUdTrbWC2gDrW (Bekir onayladı).
+- `Bolum` artık `sag` (serbest içerik) ve `sinif` alıyor. `Kart` → `Bolum` dönüşümü:
+  Denemeler (`DenemePaneli`: boş hâl tek cümle + tek düğme, dolu hâlde dört bölüm), Konular (Konu yolu),
+  Kayıt (Bilgiler, Ödeme, Veli, Notlar, Tehlikeli bölge — çizgiyle ayrılan bölümler, eylemler yazı düğmesi,
+  boş durumlar tek cümle, formlar kutusuz `form-kutu--duz`, künye iki sütun), Program altı "Öğrencinin kaynakları".
+- `DenemePaneli` öğrencinin Denemeler ekranıyla ortak: öğrencide de aynı sade boş hâl görünüyor (tek bileşen kuralı).
+- Açık: öğrencinin Bugün'deki "Kaynaklarım" kartı (öğrenci turu), Denemeler'deki hedef net kartı (`HedefNet`).
 
 ## 18 Eylül 2026 — tasarım turu, 2. adım: koç Bugün + renk dili
 

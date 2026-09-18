@@ -52,7 +52,7 @@ ama Sistem'in cron listesi ve KPI kartları kart dizisi. Kıvanç hesabıyla ayr
 ## Önerilen sıra
 
 1. ✓ Koç · Bugün (18 Eylül 2026; renk dili de güncellendi: koç lacivert, öğrenci koyu amber)
-2. Koç · öğrenci ekranının kalan sekmeleri (Denemeler, Konular, Kayıt, kaynaklar kartı)
+2. ✓ Koç · öğrenci ekranının kalan sekmeleri (18 Eylül 2026)
 3. Koç · Raporlar
 4. Öğrenci · Bugün şeridi + Yol (küçük)
 5. Koç · Kaynaklar

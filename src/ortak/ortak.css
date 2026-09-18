@@ -112,3 +112,24 @@
 .hafta-gun { min-height: 44px; border-radius: var(--r-buyuk); }
 .hafta-gun--geciken .hafta-gun-sayi { color: var(--kizil-metin); font-weight: 700; }
 .hafta-gun--geciken { opacity: 1; }
+
+/* ── Bolum içindeki formlar ve künye ───────────────────────────────
+   Form bölümün içinde kutu açmaz (kural 1); künye iki sütunlu satırlar. */
+.form-kutu.form-kutu--duz { background: none; border: 0; padding: 0; box-shadow: none; margin-top: 0.5rem; }
+.bolum .kunye { grid-template-columns: minmax(7rem, 9rem) 1fr; gap: 0; margin-top: 0.25rem; }
+.bolum .kunye > div { display: contents; }
+.bolum .kunye dt {
+  padding: 0.55rem 0; border-bottom: 1px solid var(--cizgi);
+  font-size: var(--punto-kucuk); text-transform: none; letter-spacing: 0; color: var(--grafit);
+}
+.bolum .kunye dd { margin: 0; padding: 0.55rem 0; border-bottom: 1px solid var(--cizgi); font-size: var(--punto-kucuk); overflow-wrap: anywhere; }
+.bolum .kunye > div:last-child :is(dt, dd) { border-bottom: 0; }
+/* Tehlikeli eylem: kırmızı yazı düğmesi, kutu yok. */
+.tehlike-yazi-dugme {
+  align-self: flex-start; min-height: 44px; padding: 0; margin-top: 0.25rem;
+  background: none; border: 0; cursor: pointer;
+  font: inherit; font-size: var(--punto-kucuk); font-weight: 700; color: var(--kizil-metin);
+}
+.tehlike-yazi-dugme:focus-visible { outline: 2px solid var(--kizil); outline-offset: 2px; }
+/* Bölüm içindeki listeler zemine oturur. */
+.bolum > .liste { margin-top: 0.25rem; }

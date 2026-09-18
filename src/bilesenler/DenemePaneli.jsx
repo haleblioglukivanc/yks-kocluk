@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Dugme, Kart, Uyari, Yukleniyor } from './Ortak.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
 import { useSayarak } from '../lib/canli.js'
 import DenemeFormu from './DenemeFormu.jsx'
 
@@ -156,16 +158,13 @@ export default function DenemePaneli({
   if (veri === null) return <Yukleniyor />
 
   if (denemeler.length === 0) {
+    /* Boş: kart ve Çizbi yok; bir cümle, tek düğme (TASARIM-KURALLARI 5).
+       Eskiden başlıkta da "Deneme ekle" vardı: aynı iş için iki düğme. */
     return (
-      <Kart
+      <Bolum
         baslik="Denemeler"
-        eylem={
-          duzenlenebilir ? (
-            <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-              {formAcik ? 'Kapat' : 'Deneme ekle'}
-            </Dugme>
-          ) : null
-        }
+        eylem={duzenlenebilir && formAcik ? 'Kapat' : null}
+        onEylem={() => setFormAcik(false)}
       >
         <Uyari>{hata}</Uyari>
         {formAcik ? (
@@ -180,18 +179,17 @@ export default function DenemePaneli({
           />
           </div>
         ) : (
-          <Bos
-            ruh="fikir"
-            baslik="Net çizgin burada başlayacak"
-            aciklama={
+          <BosDurum
+            metin={
               duzenlenebilir
-                ? 'İlk denemeni ekleyince çizgi başlar. Nereden başladığın önemli değil, yön önemli.'
+                ? 'Henüz deneme yok. İlk deneme eklenince net çizgisi burada başlar; nereden başladığı değil, yönü önemli.'
                 : 'Deneme girildiğinde net gelişimi burada görünecek.'
             }
-            eylem={duzenlenebilir ? <Dugme onClick={() => setFormAcik(true)}>İlk denemeyi ekle</Dugme> : null}
+            eylem={duzenlenebilir ? '+ İlk denemeyi ekle' : null}
+            onEylem={() => setFormAcik(true)}
           />
         )}
-      </Kart>
+      </Bolum>
     )
   }
 
@@ -204,10 +202,10 @@ export default function DenemePaneli({
 
   return (
     <>
-      <Kart
+      <Bolum
         baslik="Net gelişimi"
-        altBaslik={`${TUR_ADI[seciliTur] ?? seciliTur} · son ${suzulmus.length} deneme`}
-        eylem={
+        aciklama={`${TUR_ADI[seciliTur] ?? seciliTur} · son ${suzulmus.length} deneme`}
+        sag={
           turler.length > 1 ? (
             <div className="tur-secim">
               {turler.map((t) => (
@@ -236,16 +234,17 @@ export default function DenemePaneli({
           )}
         </div>
         <NetCizgisi seri={seri} />
-      </Kart>
+      </Bolum>
 
-      <Kart
+      <Bolum
+        cizgili
         baslik="Ders bazında"
-        altBaslik={`Son deneme · ${new Date(son.tarih).toLocaleDateString('tr-TR')}${
+        aciklama={`Son deneme · ${new Date(son.tarih).toLocaleDateString('tr-TR')}${
           son.yayin ? ` · ${son.yayin}` : ''
         }`}
       >
         {son.dersler.length === 0 ? (
-          <Bos ruh={null} baslik="Ders ders sonuç yok" aciklama="Bu denemede sadece toplam net var. Bir dahakine ders ders girersen hangi taraf zorlamış görürüz." />
+          <BosDurum metin="Bu denemede yalnız toplam net var. Bir dahakine ders ders girersen hangi taraf zorlamış görürüz." />
         ) : (
           <>
             <div className="net-kutular">
@@ -264,19 +263,19 @@ export default function DenemePaneli({
             <p className="kart-alt">Net = doğru − yanlış ÷ 4</p>
           </>
         )}
-      </Kart>
+      </Bolum>
 
-      <Kart
+      <Bolum
+        cizgili
         baslik="Bir daha bakılacak konular"
-        altBaslik="Denemelerde hata çıkan başlıklar"
+        aciklama="Denemelerde hata çıkan başlıklar"
       >
         {zayif.length === 0 ? (
-          <Bos
-            baslik="Henüz işaretli konu yok"
-            aciklama={
+          <BosDurum
+            metin={
               duzenlenebilir
-                ? 'Denemenin yanındaki “Hata konuları”ndan işaretledikçe burada toplanır. Hata, nereye bakacağını söyler.'
-                : 'Denemelerde hata çıkan konular işaretlendikçe burası dolacak.'
+                ? 'Henüz işaretli konu yok. Denemenin yanındaki “Hata konuları”ndan işaretledikçe burada toplanır.'
+                : 'Henüz işaretli konu yok. Denemelerde hata çıkan konular işaretlendikçe burası dolacak.'
             }
           />
         ) : (
@@ -294,18 +293,14 @@ export default function DenemePaneli({
             ))}
           </ul>
         )}
-      </Kart>
+      </Bolum>
 
-      <Kart
+      <Bolum
+        cizgili
         baslik="Tüm denemeler"
-        altBaslik={`${denemeler.length} kayıt`}
-        eylem={
-          duzenlenebilir ? (
-            <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
-              {formAcik ? 'Kapat' : 'Deneme ekle'}
-            </Dugme>
-          ) : null
-        }
+        sayi={denemeler.length}
+        eylem={duzenlenebilir ? (formAcik ? 'Kapat' : '+ Deneme ekle') : null}
+        onEylem={() => setFormAcik((v) => !v)}
       >
         <Uyari>{hata}</Uyari>
 
@@ -357,7 +352,7 @@ export default function DenemePaneli({
             </li>
           ))}
         </ul>
-      </Kart>
+      </Bolum>
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
+import Bolum from '../ortak/Bolum.jsx'
 import { supabase } from '../lib/supabase.js'
 import { Bos, Kart, Yukleniyor } from './Ortak.jsx'
 import { FAZ_ADI } from '../lib/kaynak.js'
@@ -102,9 +103,9 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
 
   if (liste === null) {
     return (
-      <Kart baslik={baslik}>
+      <Bolum cizgili baslik={baslik}>
         <Yukleniyor satir={2} />
-      </Kart>
+      </Bolum>
     )
   }
 
@@ -164,29 +165,25 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
     )
   }
 
+  /* Koç: kart değil bölüm (TASARIM-KURALLARI 8). Katlanma korunuyor:
+     liste uzun olabilir, başlığın sağındaki yazı düğmesi açıp kapatır. */
+  const sayi = gosterilen?.length ?? 0
   return (
-    <section className="kart kaynak-kart">
-      <button
-        className="kaynak-basi"
-        aria-expanded={acik}
-        onClick={() => setAcik((a) => !a)}
-      >
-        <span className="kaynak-emoji" aria-hidden="true">📚</span>
-        <span className="kaynak-ad">
-          Öğrencinin kaynakları
-          <small>Verdiğin görevlerden birikenler</small>
-        </span>
-        <span className="kaynak-sayi">{gosterilen?.length ?? 0}</span>
-        <svg className={acik ? 'kaynak-ok kaynak-ok--acik' : 'kaynak-ok'} viewBox="0 0 24 24"
-             width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
-             strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-          <path d="m6 9 6 6 6-6" />
-        </svg>
-      </button>
-
-      {acik && (liste.length === 0 ? (
-        <p className="kaynak-bos-satir">Göreve kaynak iliştirdiğinde kitap burada birikir.</p>
-      ) : (
+    <Bolum
+      cizgili
+      baslik="Öğrencinin kaynakları"
+      sayi={sayi}
+      aciklama={
+        liste.length === 0
+          ? 'Göreve kaynak iliştirdiğinde kitap burada birikir.'
+          : acik
+            ? null
+            : 'Verdiğin görevlerden birikenler.'
+      }
+      eylem={liste.length > 0 ? (acik ? 'Gizle' : 'Göster') : null}
+      onEylem={() => setAcik((a) => !a)}
+    >
+      {acik && liste.length > 0 && (
       <ul className="liste">
         {gosterilen.map((k) => {
           const alt = [
@@ -211,7 +208,7 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
           )
         })}
       </ul>
-      ))}
-    </section>
+      )}
+    </Bolum>
   )
 }
