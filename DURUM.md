@@ -1,11 +1,20 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (İletişim sekmesi)
+Son güncelleme: 19 Eylül 2026 (İçerik sekmesi)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 5: İçerik sekmesi
+
+- Haftalık ilham takvimi (`HaftalikTakvim.jsx`) yeni dilde: kart değil `Bolum`, 12 hafta tek beyaz yüzeyde çizgiyle,
+  düzenleme alanı satırın içinde açılıyor, "elle" hap değil yazı, "Otomatiğe dön" yazı düğmesi.
+- "Platform ayarları" → **Kütüphane ve katalog** (Konu öncelikleri, Kaynaklar).
+- Karar: Kaynaklar ve Konu öncelikleri koçun hesap menüsünden **kaldırılmadı**. Koç kendi kaynağını ekleyip
+  kaldırabiliyor ve Konular ekranında toplu görev atıyor; taşımak bu koç işlerini koparırdı. Yönetici İçerik'ten açıyor.
+- Sıradaki (TESPIT-YONETIM.md 5): öğrenci/veli yönetimi ve KVKK kayıtları.
 
 ## 19 Eylül 2026 — Yönetim işlevleri 4: İletişim (başvurular, sosyal, SMS)
 

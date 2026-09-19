@@ -546,7 +546,7 @@ const AYARLAR = [
 
 function Ayarlar({ onGit }) {
   return (
-    <Bolum cizgili baslik="Platform ayarları" aciklama="Koç ekranında görünmez.">
+    <Bolum cizgili baslik="Kütüphane ve katalog" aciklama="Kurum geneli içerik. Koçlar da hesap menüsünden açabilir; kendi eklediklerini yönetir.">
       <ul className="liste">
         {AYARLAR.map(([yol, ad, not]) => (
           <li key={yol} className="liste-satir">

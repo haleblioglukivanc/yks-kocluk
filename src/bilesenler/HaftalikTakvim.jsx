@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Bos, Dugme, Kart, Rozet, Uyari, Yukleniyor } from './Ortak.jsx'
+import { Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
+import Bolum from '../ortak/Bolum.jsx'
+import BosDurum from '../ortak/BosDurum.jsx'
 
 /* ═══════════════════════════════════════════════════════════════
    Haftalık ilham takvimi — yalnızca koç/yönetici görür.
@@ -100,19 +102,19 @@ export default function HaftalikTakvim() {
   }
 
   return (
-    <Kart
+    /* Kart değil bölüm; haftalar tek beyaz yüzeyde çizgiyle ayrılır
+       (TASARIM-KURALLARI 1). Elle seçilen hafta hap değil düz yazı. */
+    <Bolum
       baslik="Haftalık ilham takvimi"
-      altBaslik="Önümüzdeki 12 hafta. Bir haftaya dokunup değiştirebilirsin."
+      sayi={haftalar?.length || null}
+      aciklama="Önümüzdeki 12 hafta. Bir haftaya dokunup kitabı ya da sözü değiştirebilirsin."
     >
       <Uyari>{hata}</Uyari>
 
       {haftalar === null ? (
         <Yukleniyor />
       ) : haftalar.length === 0 ? (
-        <Bos
-          baslik="Takvim boş"
-          aciklama="Kitap ve söz havuzunda aktif kayıt yok gibi görünüyor."
-        />
+        <BosDurum metin="Takvim boş: kitap ve söz havuzunda aktif kayıt yok gibi görünüyor." />
       ) : (
         <ul className="liste hit-liste">
           {haftalar.map((h, i) => {
@@ -139,7 +141,7 @@ export default function HaftalikTakvim() {
                       <span aria-hidden="true">{h.soz_emoji}</span> {h.soz_metin}
                     </span>
                   </span>
-                  {h.elle_secildi && <Rozet ton="notr">elle</Rozet>}
+                  {h.elle_secildi && <span className="durum-yazi" data-durum="izle">elle</span>}
                 </button>
 
                 {acik === anahtar && (
@@ -180,9 +182,9 @@ export default function HaftalikTakvim() {
                         Kaydet
                       </Dugme>
                       {h.elle_secildi && (
-                        <Dugme tur="ikincil" bekliyor={bekliyor} onClick={() => otomatigeDon(h)}>
+                        <button type="button" className="metin-dugme" disabled={bekliyor} onClick={() => otomatigeDon(h)}>
                           Otomatiğe dön
-                        </Dugme>
+                        </button>
                       )}
                     </div>
                   </div>
@@ -192,6 +194,6 @@ export default function HaftalikTakvim() {
           })}
         </ul>
       )}
-    </Kart>
+    </Bolum>
   )
 }

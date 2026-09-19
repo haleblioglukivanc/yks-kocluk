@@ -4731,3 +4731,9 @@ body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); 
 .basvuru-eylem { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-top: 0.25rem; }
 .sms-sag { display: flex; flex-direction: column; align-items: flex-end; gap: 0.1rem; flex: 0 0 auto; }
 .bolum--cizgili-ust { border-top: 1px solid var(--cizgi); margin-top: 1.5rem; }
+/* Haftalık ilham takvimi: tek beyaz yüzey, haftalar çizgiyle (Yönetim → İçerik). */
+.bolum > .hit-liste { display: block; padding: 0.25rem 0; margin-top: 0.5rem; background: var(--yuzey); border-radius: var(--r-buyuk); }
+.bolum > .hit-liste > .hit-satir { border: 0; border-radius: 0; border-bottom: 1px solid var(--cizgi); }
+.bolum > .hit-liste > .hit-satir:last-child { border-bottom: 0; }
+.bolum > .hit-liste .hit-bas { padding-inline: 1rem; }
+.bolum > .hit-liste .hit-duzen { background: var(--kagit); border-radius: var(--r-orta); margin: 0 0.75rem 0.75rem; }
