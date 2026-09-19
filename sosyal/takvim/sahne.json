@@ -1,0 +1,10 @@
+{
+  "_not": "Günün sahne yönü: kurgu (metafor, dev, bolunmus, harita, masa, yazisma), zemin (krem, kum, murekkep, nane, seftali, gok), cizim (Cizimler.jsx). Olmayan günlerde seriye göre varsayılan seçilir.",
+  "2026-09-21": { "kurgu": "dev", "zemin": "murekkep", "sayi": "3", "ek": "iş.", "ust": "Bu hafta her şeyi yapmayacaksın." },
+  "2026-09-22": { "kurgu": "metafor", "zemin": "nane", "cizim": "buyutec-kitap" },
+  "2026-09-23": { "kurgu": "yazisma", "zemin": "seftali" },
+  "2026-09-24": { "kurgu": "masa", "zemin": "kum", "cizim": "ev-kalp" },
+  "2026-09-25": { "kurgu": "bolunmus", "zemin": "seftali" },
+  "2026-09-26": { "kurgu": "harita", "zemin": "gok" },
+  "2026-09-27": { "kurgu": "metafor", "zemin": "murekkep", "cizim": "kavanoz-yildiz" }
+}

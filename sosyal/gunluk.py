@@ -72,12 +72,18 @@ def render(g, govde, cikti):
         subprocess.run(['npx', 'remotion', 'bundle', 'src/index.js', f'--out-dir={paket}', '--log=error'],
                        cwd=video, check=True)
     props = {'gun': g, 'govde': govde, 'muzik': f"muzik/{MUZIK[g['seri']]}.mp3" if g.get('muzik') else None}
+    # Sahne yönü olan gün yeni sahne sistemiyle (kurgu + zemin + çizim) üretilir; hassas günler sade kalır
+    sp = KOK / 'takvim' / 'sahne.json'
+    sahne = json.loads(sp.read_text(encoding='utf-8')).get(g['tarih']) if sp.exists() else None
+    kompozisyon = 'Sahne' if sahne and not g['hassas'] else 'Gunluk'
+    if kompozisyon == 'Sahne':
+        props['sahne'] = sahne
     pf = video / '.props.json'
     pf.write_text(json.dumps(props, ensure_ascii=False), encoding='utf-8')
     cikti.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(['npx', 'remotion', 'render', str(paket), 'Gunluk', str(cikti), f'--props={pf}',
+    subprocess.run(['npx', 'remotion', 'render', str(paket), kompozisyon, str(cikti), f'--props={pf}',
                     '--crf=20', '--log=error'], cwd=video, check=True)
-    subprocess.run(['npx', 'remotion', 'still', str(paket), 'Gunluk', str(cikti.with_suffix('.png')),
+    subprocess.run(['npx', 'remotion', 'still', str(paket), kompozisyon, str(cikti.with_suffix('.png')),
                     f'--props={pf}', '--frame=0', '--log=error'], cwd=video, check=True)
     pf.unlink()
 
