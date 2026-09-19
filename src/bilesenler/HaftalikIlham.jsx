@@ -41,6 +41,9 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
   const [tur, setTur] = useState(0)
   const [bekliyor, setBekliyor] = useState(false)
   const [haber, setHaber] = useState('')
+  const [ilerleme, setIlerleme] = useState(null)
+  const [puanlanacak, setPuanlanacak] = useState(null) // { id, ad }
+  const [puan, setPuan] = useState(0)
 
   /* Öğrenci "Bitirdim" der: kitap geçmişe yazılır, sıradaki kitap sunucuda
      atanır, koça haber gider. Yeni kitap aynı kutuda yerini alır. */
@@ -54,8 +57,29 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
       return
     }
     setHaber(`${data?.biten ?? 'Kitap'} bitti · koçuna haber verildi`)
+    setPuanlanacak({ id: veri.kitap_id, ad: data?.biten ?? veri.kitap_ad })
+    setPuan(0)
     setTur((t) => t + 1)
+    window.dispatchEvent(new CustomEvent('okuma-degisti'))
   }
+
+  /* Bitirdikten sonra isteğe bağlı yıldız; atlanırsa hiçbir şey olmaz. */
+  async function puanla(v) {
+    if (!puanlanacak) return
+    setPuan(v)
+    const { error } = await supabase.rpc('ogrenci_kitap_puanla', { p_kitap_id: puanlanacak.id, p_puan: v })
+    if (!error) window.dispatchEvent(new CustomEvent('okuma-degisti'))
+  }
+
+  /* Okunan sayfa (Günü tamamla'da girilir) kutuda ilerleme olarak görünür. */
+  useEffect(() => {
+    if (!ogrenciId) return undefined
+    const yukle = () =>
+      supabase.rpc('ogrenci_okuma_ozeti', { p_ogrenci: ogrenciId }).then(({ data }) => setIlerleme(data?.simdiki ?? null))
+    yukle()
+    window.addEventListener('okuma-degisti', yukle)
+    return () => window.removeEventListener('okuma-degisti', yukle)
+  }, [ogrenciId, tur])
 
   useEffect(() => {
     let iptal = false
@@ -76,6 +100,10 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
      kaybolmak sayfayı zıplatır; bu kutu kritik bilgi değil, sessizce
      gelsin. */
   if (!veri) return null
+
+  const okunan = ilerleme && ilerleme.kitap_id === veri.kitap_id ? ilerleme.okunan ?? 0 : 0
+  const sayfa = veri.kitap_sayfa ?? 0
+  const bittiGibi = sayfa > 0 && okunan >= sayfa
 
   const uzunluk = uzunlukEtiketi(veri.kitap_etiket)
 
@@ -128,12 +156,45 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
               )}
             </div>
 
+            {ogrenciId && okunan > 0 && (
+              <div className="hi-ilerleme" aria-label={`${okunan} / ${sayfa} sayfa okundu`}>
+                <div className="hi-cubuk">
+                  <i style={{ width: `${sayfa ? Math.min(100, Math.round((okunan / sayfa) * 100)) : 0}%` }} />
+                </div>
+                <small>
+                  {sayfa ? `${Math.min(okunan, sayfa)}/${sayfa} sayfa` : `${okunan} sayfa`}
+                </small>
+              </div>
+            )}
+
             {bitirilebilir && (
-              <button className="dugme dugme--ikincil hi-bitir" disabled={bekliyor} onClick={bitir}>
+              <button
+                className={`dugme ${bittiGibi ? 'dugme--birincil' : 'dugme--ikincil'} hi-bitir`}
+                disabled={bekliyor}
+                onClick={bitir}
+              >
                 {bekliyor ? 'Bir saniye…' : 'Bitirdim'}
               </button>
             )}
             {haber && <p className="hi-haber" role="status">{haber}</p>}
+            {bitirilebilir && puanlanacak && (
+              <div className="hi-puan">
+                <span>{puanlanacak.ad} nasıldı?</span>
+                <span className="hi-yildizlar" role="group" aria-label="Kitaba puan ver">
+                  {[1, 2, 3, 4, 5].map((v) => (
+                    <button
+                      key={v}
+                      className={v <= puan ? 'hi-yildiz hi-yildiz--dolu' : 'hi-yildiz'}
+                      aria-label={`${v} yıldız`}
+                      aria-pressed={v <= puan}
+                      onClick={() => puanla(v)}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </span>
+              </div>
+            )}
           </div>
         </article>
       )}

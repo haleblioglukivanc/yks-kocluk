@@ -5129,3 +5129,27 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 
 .hi-bitir { margin-top: 0.8rem; min-height: 2.75rem; width: 100%; }
 .hi-haber { margin: 0.5rem 0 0; font-size: var(--punto-mini); color: var(--g-yesil-metin); }
+
+/* ── Okuma takibi (19 Eylül 2026) ── */
+.hi-ilerleme { margin-top: 0.7rem; }
+.hi-cubuk { height: 6px; border-radius: 3px; background: var(--yuzey-2); overflow: hidden; }
+.hi-cubuk i { display: block; height: 100%; background: var(--marka-koyu-amber, var(--marka-amber)); border-radius: 3px; }
+.hi-ilerleme small { display: block; margin-top: 0.3rem; font-size: var(--punto-mini); color: var(--soluk); }
+.hi-puan { margin-top: 0.6rem; display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.6rem; font-size: var(--punto-mini); color: var(--soluk); }
+.hi-yildizlar { display: inline-flex; }
+.hi-yildiz { font-size: 1.5rem; line-height: 1; min-width: 2.75rem; min-height: 2.75rem; padding: 0; border: 0; background: none; color: var(--cizgi); cursor: pointer; }
+.hi-yildiz--dolu { color: var(--marka-amber); }
+.okuma-giris { display: flex; align-items: center; gap: 0.8rem; }
+.okuma-sayi { width: 5rem; box-sizing: border-box; font: inherit; font-size: 1.25rem; font-weight: 700; text-align: center; padding: 0.5rem; border: 1px solid var(--cizgi); border-radius: var(--r-kart); background: var(--yuzey); color: var(--murekkep); }
+.okuma-kitap { display: flex; flex-direction: column; min-width: 0; }
+.okuma-kitap small { font-size: var(--punto-mini); color: var(--soluk); }
+.okuduklarim { margin-top: 0.75rem; }
+.okuduklarim-liste { list-style: none; margin: 0.4rem 0 0; padding: 0; }
+.okuduklarim-liste li { display: flex; gap: 0.7rem; align-items: center; padding: 0.6rem 0; border-top: 1px solid var(--cizgi); }
+.okuduklarim-liste li:first-child { border-top: 0; }
+.okuduklarim-em { font-size: 1.3rem; width: 1.8rem; text-align: center; }
+.okuduklarim-ad { display: block; font-weight: 600; }
+.okuduklarim-liste small { font-size: var(--punto-mini); color: var(--soluk); }
+.okuduklarim-puan { color: var(--marka-amber); }
+.okuduklarim-bos { color: var(--cizgi); }
+.okuma-giris .okuma-sayi { flex: 0 0 5.5rem; width: 5.5rem; max-width: 5.5rem; }

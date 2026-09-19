@@ -45,7 +45,15 @@ Bugün'ünün sonunda, sözün altında sabit (gün kapansa da durur). `ogrenci_
 kitap aynı kalır"). Öğrenci "Bitirdim" (`ogrenci_kitap_bitir`) → kitap geçmişe, sıradaki kitap öneriden hemen atanır,
 koçun iyi haber şeridine tebrik (tip `tebrik`, kaynak `öğrenci|kitap:id`, mevcut tebrik akışı) ve bildirim kutusuna
 not. Ayrı akış yok (tanışma kartı, rutin satırı, ilerleme işareti istenmedi). Migration: `20260919_okunan_kitap.sql`.
-**Açık:** Kıvanç'ın Excel'indeki kitap sekmesi `ogrenci_okuma`'ya (durum bitti) aktarılmadı.
+**Okuma takibi (aynı gün, Bekir onayladı):** Kıvanç'ın Excel'indeki kitap sekmesinin (günlük sayfa takvimi,
+başlama/bitirme, puan, sayaçlar) uyarlaması. Günü tamamla 2. adımda çözülen sorunun altında "Bugün kaç sayfa okudun?"
+(`BugunOkuma`, `ogrenci_sayfa_kaydet`, tablo `ogrenci_okuma_gunluk`; boş bırakılabilir, son 7 gün yazılabilir).
+İlk sayfa girilen gün `ogrenci_okuma.basladi`. Bugün'deki kitap kutusunda ilerleme çubuğu (x/y sayfa); sayfa kitap
+uzunluğuna ulaşınca "Bitirdim" birincil olur. Bitirdim'den sonra isteğe bağlı 1–5 yıldız (`ogrenci_kitap_puanla`).
+Yol'un sonunda Okuduklarım (`Okuduklarim`, `ogrenci_okuma_ozeti`): kitap, sayfa, kaç günde, yıldız; toplam kitap/sayfa.
+Koçun Cuma kartında okuyan öğrencinin satırı "Okuyor · bu hafta 45 sayfa · 45/100" ya da "N gündür sayfa yok".
+Excel'deki kitap sekmesi boş şablondu; veri alınmadı (Bekir'in kararı). Migration: `20260919_okuma_sayfa.sql`.
+**Açık:** veli raporunda okuma satırı yok.
 
 ## 19 Eylül 2026 — Temiz başlangıç: bütün test verisi silindi
 

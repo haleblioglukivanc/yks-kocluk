@@ -16,6 +16,7 @@ import HedefNet from '../bilesenler/HedefNet.jsx'
 import RaporTepesi from '../bilesenler/RaporTepesi.jsx'
 import SekmeTepesi from '../bilesenler/SekmeTepesi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
+import Okuduklarim from '../bilesenler/Okuduklarim.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -245,6 +246,7 @@ export default function OgrenciPaneli({
           <KonuHaritasi profilId={kayit.id} odakDers={odakDers} sekmeYuvasi={dersYuvasi} />
           {/* Yol uzun vadeli bakış: seri. Kitap Bugün'e taşındı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
+          <Okuduklarim ogrenciId={kayit.id} />
         </>
       ) : (
         <>

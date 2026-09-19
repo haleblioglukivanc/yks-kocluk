@@ -5,6 +5,7 @@ import { Uyari } from './Ortak.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import GunlukRutinler from './GunlukRutinler.jsx'
 import BugunCozulen from './BugunCozulen.jsx'
+import BugunOkuma from './BugunOkuma.jsx'
 
 /**
  * Günü kapat — "kaydet" katmanı.
@@ -131,14 +132,19 @@ export default function GunuKapat({ acik, onKapat, onTamamlandi, ogrenciId, kata
             />
           )}
           {adim === 1 && ozet?.bugun && (
-            <BugunCozulen
-              ogrenciId={ogrenciId}
-              katalogId={katalogId}
-              kayitlar={ozet?.bugunSoru}
-              tarih={ozet.bugun}
-              onDegisti={onDegisti}
-              saltOkunur={saltOkunur}
-            />
+            <>
+              <BugunCozulen
+                ogrenciId={ogrenciId}
+                katalogId={katalogId}
+                kayitlar={ozet?.bugunSoru}
+                tarih={ozet.bugun}
+                onDegisti={onDegisti}
+                saltOkunur={saltOkunur}
+              />
+              {/* Okuma: tek sayı, boş bırakılabilir (Kıvanç'ın Excel'indeki
+                  günlük sayfa takvimi, 19 Eylül 2026). */}
+              <BugunOkuma ogrenciId={ogrenciId} tarih={ozet.bugun} saltOkunur={saltOkunur} />
+            </>
           )}
           {son && (
             <div className="kapanis-ozet">
