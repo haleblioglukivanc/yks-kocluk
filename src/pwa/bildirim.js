@@ -25,6 +25,18 @@ const iosMu = () =>
 const platform = () =>
   iosMu() ? 'ios' : /android/i.test(navigator.userAgent) ? 'android' : 'masaustu'
 
+/* Kullanıcı Hesap'tan bilerek kapattıysa kendiliğinden yeniden açmayız. */
+const KAPATTI = 'bildirim-kullanici-kapatti'
+const kapattiMi = () => {
+  try { return window.localStorage.getItem(KAPATTI) === '1' } catch { return false }
+}
+const kapattiYaz = (evet) => {
+  try {
+    if (evet) window.localStorage.setItem(KAPATTI, '1')
+    else window.localStorage.removeItem(KAPATTI)
+  } catch { /* depolama kapalı */ }
+}
+
 /* VAPID genel anahtarı base64url → Uint8Array (PushManager bunu ister) */
 function anahtarBaytlari(b64) {
   const dolgu = '='.repeat((4 - (b64.length % 4)) % 4)
@@ -53,8 +65,9 @@ export async function bildirimDurumu() {
 
 /** İzin ister ve bu cihazı hesaba bağlar. Bir düğme tıklamasından çağrılmalı
     (iPhone izni ancak kullanıcı dokununca sorar). Yeni durumu döndürür. */
-export async function bildirimiAc() {
+export async function bildirimiAc({ taze = false } = {}) {
   if (!destekli()) return 'yok'
+  kapattiYaz(false)
   const izin = await Notification.requestPermission()
   if (izin === 'denied') return 'engelli'
   if (izin !== 'granted') return 'kapali'
@@ -64,6 +77,12 @@ export async function bildirimiAc() {
 
   const k = await kayit()
   let abone = await k.pushManager.getSubscription()
+  // Sunucu bu aboneliği ölü bulup sildiyse (Google/Apple "artık yok" dedi)
+  // aynı adresi yeniden kaydetmek işe yaramaz: yenisini al.
+  if (abone && taze) {
+    await abone.unsubscribe().catch(() => {})
+    abone = null
+  }
   if (!abone) {
     abone = await k.pushManager.subscribe({
       userVisibleOnly: true,
@@ -84,6 +103,7 @@ export async function bildirimiAc() {
 /** Bu cihazı hesaptan ayırır (bildirim kapat ve çıkış yap). */
 export async function bildirimiKapat() {
   if (!destekli()) return
+  kapattiYaz(true)
   try {
     const k = await navigator.serviceWorker.getRegistration()
     const abone = k && (await k.pushManager.getSubscription())
@@ -111,14 +131,27 @@ export async function cihaziHesaptanAyir() {
   ikonRakami(0)
 }
 
-/** Giriş yapılmış ve izin varsa cihaz kaydını tazeler: aynı telefonda başka
-    hesaba geçildiyse cihaz yeni hesaba bağlanır, silinmişse geri gelir. */
+/** Uygulama her açılışta ve öne her gelişte çağırır. İzin verilmişse bu
+    cihazın sunucuda bu hesaba kayıtlı olduğundan emin olur; değilse onarır:
+    - başka hesaptan çıkılıp girildiyse aynı abonelik yeni hesaba bağlanır,
+    - sunucu aboneliği ölü bulup sildiyse (Android'de 19 Eylül'de oldu)
+      yeni abonelik alınır.
+    Kullanıcı Hesap'tan bilerek kapattıysa dokunmaz. */
 export async function bildirimKaydiniTazele() {
-  if ((await bildirimDurumu()) !== 'acik') return
+  if (!destekli() || kapattiMi()) return
+  if (Notification.permission !== 'granted') return
+  if (iosMu() && !kuruluMu()) return
   try {
-    await bildirimiAc()
+    const k = await navigator.serviceWorker.getRegistration()
+    if (!k) return
+    const abone = await k.pushManager.getSubscription()
+    if (abone) {
+      const { data: kayitli } = await supabase.rpc('bildirim_cihaz_kayitli_mi', { p_endpoint: abone.endpoint })
+      if (kayitli) return
+    }
+    await bildirimiAc({ taze: Boolean(abone) })
   } catch {
-    /* sessizce geç */
+    /* sessizce geç; bir sonraki açılışta yeniden dener */
   }
 }
 

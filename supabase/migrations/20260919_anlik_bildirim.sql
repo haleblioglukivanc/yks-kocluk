@@ -44,3 +44,12 @@ $$;
 --   private.basvuru_uygulama_bildir + tetikleyici  yeni başvuru koça (Telegram/e-posta aynen)
 --   public.plan_taslagini_uygula                   plan onaylanınca öğrenciye 'plan'
 --   cron 'bildirim-gorev-hatirlat' (20:00 dürtme) ve private.bildirim_gorev_hatirlat kaldırıldı
+
+-- Ek (19 Eylül 2026, "bildirim_cihaz_kayitli_mi"): uygulama her açılışta bu cihazın sunucuda kayıtlı
+-- olduğunu sorar; değilse (hesap değişti ya da gönderici ölü aboneliği sildi) yeni abonelik alır.
+create or replace function public.bildirim_cihaz_kayitli_mi(p_endpoint text)
+returns boolean language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.bildirim_abonelikleri where endpoint = p_endpoint and profil_id = auth.uid())
+$$;
+revoke all on function public.bildirim_cihaz_kayitli_mi(text) from public, anon;
+grant execute on function public.bildirim_cihaz_kayitli_mi(text) to authenticated;

@@ -287,7 +287,11 @@ export default function App() {
      hesap değiştiyse bildirimler yeni hesaba gelsin). */
   const profilId = profil?.id ?? null
   useEffect(() => {
-    if (profilId) bildirimKaydiniTazele()
+    if (!profilId) return
+    bildirimKaydiniTazele()
+    const one = () => { if (document.visibilityState === 'visible') bildirimKaydiniTazele() }
+    document.addEventListener('visibilitychange', one)
+    return () => document.removeEventListener('visibilitychange', one)
   }, [profilId])
 
   /* Giriş yapılınca adres /giris'te kalmasın: uygulama ana ekranı '/'.

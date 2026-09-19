@@ -35,9 +35,9 @@ function yetkiliMi(req: Request): boolean {
   }
 }
 
-async function gunluk(mesaj: string, ayrinti: unknown = null) {
+async function gunluk(mesaj: string, ayrinti: unknown = null, seviye = "hata") {
   try {
-    await db.rpc("bildirim_gunluk_yaz", { p_mesaj: mesaj, p_seviye: "hata", p_ayrinti: ayrinti });
+    await db.rpc("bildirim_gunluk_yaz", { p_mesaj: mesaj, p_seviye: seviye, p_ayrinti: ayrinti });
   } catch { /* günlük yazılamazsa gönderim durmasın */ }
 }
 
@@ -115,8 +115,11 @@ Deno.serve(async (req: Request) => {
       } catch (e: any) {
         const kod = Number(e?.statusCode ?? 0);
         if (kod === 404 || kod === 410) {
+          // Telefonun bildirim servisi aboneliği artık tanımıyor. Kayıt silinir;
+          // uygulama bir sonraki açılışta yenisini alır (bildirimKaydiniTazele).
           await db.from("bildirim_abonelikleri").delete().eq("id", c.id);
           ozet.silinenCihaz++;
+          await gunluk("Ölü cihaz aboneliği silindi", { kod, profil: k.alici_id, servis: new URL(c.endpoint).host }, "bilgi");
         } else {
           hatalar.push(`${kod}: ${String(e?.body ?? e?.message ?? e).slice(0, 120)}`);
           await db.from("bildirim_abonelikleri").update({ hata_sayisi: (c.hata_sayisi ?? 0) + 1 }).eq("id", c.id);
