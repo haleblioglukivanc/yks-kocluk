@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Avatar } from './Fotograf.jsx'
 import { kurulumuGoster, useKurulum } from '../pwa/KurulumDaveti.jsx'
 import { kur, yenidenYukle } from '../pwa/pwa.js'
+import { useBildirim } from '../pwa/bildirim.js'
 
 /**
  * Alttan açılan Hesap yaprağı.
@@ -35,6 +36,15 @@ export default function HesapYapragi({
   onGit,
 }) {
   const kurulum = useKurulum()
+  const bildirim = useBildirim()
+  /* Bildirim satırının sağındaki durum ve dokununca ne olacağı */
+  const BILDIRIM = {
+    acik: ['Açık', () => bildirim.kapat()],
+    kapali: ['Kapalı', () => bildirim.ac()],
+    engelli: ['Telefon ayarlarından aç', null],
+    kurulum: ['Önce ana ekrana ekle', () => { onKapat(); kurulumuGoster() }],
+  }
+  const bildirimSatiri = profil?.rol !== 'veli' && BILDIRIM[bildirim.durum]
 
   useEffect(() => {
     if (!acik) return
@@ -115,6 +125,18 @@ export default function HesapYapragi({
             <span>Şifremi değiştir</span>
             <em>›</em>
           </button>
+          {bildirimSatiri && (
+            <button
+              type="button"
+              className="hesap-satir"
+              disabled={bildirim.mesgul || !bildirimSatiri[1]}
+              onClick={bildirimSatiri[1] ?? undefined}
+            >
+              <svg {...ikon}><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+              <span>Bildirimler</span>
+              <em>{bildirimSatiri[0]}</em>
+            </button>
+          )}
           {/* Uygulama: kurulu değilse yükle; her zaman "yenile" (beyaz ekran
               ya da eski sürüm takılı kaldığında adres yazmadan çıkış yolu). */}
           {kurulum.kurulabilir && (

@@ -57,7 +57,9 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,woff2}', 'favicon.svg', 'icon-*.png', 'apple-touch-icon.png'],
-        globIgnores: ['gizlilik.html'],
+        globIgnores: ['gizlilik.html', 'bildirim-sw.js'],
+        // Anlık bildirim dinleyicileri (public/bildirim-sw.js)
+        importScripts: [taban + 'bildirim-sw.js'],
         navigateFallback: taban + 'index.html',
         // Dosya isteklerine (uzantili yollar) asla index.html donmesin.
         navigateFallbackDenylist: [/\/[^/?]+\.[^/?]+$/],

@@ -28,6 +28,8 @@ import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './pwa/KurulumDaveti.jsx'
 import { durumCubugu, kuruluMu } from './pwa/pwa.js'
+import BildirimDaveti from './pwa/BildirimDaveti.jsx'
+import { bildirimKaydiniTazele, cihaziHesaptanAyir, ikonRakami } from './pwa/bildirim.js'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
@@ -226,7 +228,11 @@ export default function App() {
           .eq('alici_id', kullaniciId)
           .eq('okundu_mu', false),
       ])
-      if (!iptal) setOkunmamisMesaj((mesaj.count ?? 0) + (bildirim.count ?? 0))
+      if (iptal) return
+      const toplam = (mesaj.count ?? 0) + (bildirim.count ?? 0)
+      setOkunmamisMesaj(toplam)
+      // Ana ekran ikonundaki rakam uygulamadaki rozetle aynı (bildirim-gonder de aynı hesabı yapar)
+      ikonRakami(toplam)
     }
 
     say()
@@ -276,6 +282,13 @@ export default function App() {
     else delete document.body.dataset.rol
     return () => { delete document.body.dataset.rol }
   }, [ogrenciDunyasi, Boolean(profil)])
+
+  /* Bildirim izni olan cihaz her girişte bu hesaba bağlanır (aynı telefonda
+     hesap değiştiyse bildirimler yeni hesaba gelsin). */
+  const profilId = profil?.id ?? null
+  useEffect(() => {
+    if (profilId) bildirimKaydiniTazele()
+  }, [profilId])
 
   /* Giriş yapılınca adres /giris'te kalmasın: uygulama ana ekranı '/'.
      Kurulu uygulama /giris'ten açılıyor (manifest start_url). */
@@ -341,6 +354,7 @@ export default function App() {
           <button
             className="dugme dugme--ikincil"
             onClick={async () => {
+              await cihaziHesaptanAyir()
               await cikisYap()
               git('/')
             }}
@@ -667,6 +681,7 @@ export default function App() {
         onSapka={(s) => git(s === 'yonetici' ? '/yonetim' : '/')}
         onCikis={async () => {
           setHesapAcik(false)
+          await cihaziHesaptanAyir()
           await cikisYap()
           git('/')
         }}
@@ -674,6 +689,7 @@ export default function App() {
       />
 
       <KurulumDaveti />
+      <BildirimDaveti rol={profil?.rol} />
     </div>
   )
 }

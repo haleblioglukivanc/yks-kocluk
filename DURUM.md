@@ -23,8 +23,28 @@ erişim günlüğü; başvuru takibi; SMS kaydı; KVKK talepleri ve veri indirme
 **Bekir'in kararları (19 Eylül)**: Demo Koç yönetici kalıyor (şimdilik). Hesap açma/silmede günlükte "sistem" yazması
 kabul. **SMS kapandı**: kendi başlık alınmayacak; veli özetleri kalıcı olarak koçun WhatsApp'ından.
 
-**Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; anlık bildirim (web push, PWA'nın üstüne ayrı iş); koç masaüstünde
+**Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; anlık bildirimin telefonda denenmesi; koç masaüstünde
 "Excel gibi" öğrenci × gün tablosu (Kıvanç'ın isteği); `denetim/`'e tasarım kuralı kontrolleri (TASARIM-KURALLARI C.7).
+
+## 19 Eylül 2026 — Anlık bildirim (web push)
+
+Gelen kutusu (`bildirim_kuyrugu`) aynen duruyor; her satır için "telefona da gitsin mi" kararı tek kuralda:
+`private.anlik_mi`. Telefona gitmeyenler `durum='kutu'` (yalnız uygulamadaki gelen kutusunda).
+
+- **Telefona gidenler** (Bekir onayı): koç — mesaj, acil görüşme, ek süre / mazeret, blok 15 dk başlamadı, yeni
+  başvuru. Öğrenci — mesaj (randevu mesajı dahil), **ders 15 dk kala** (`ders-yaklasiyor` cron, her dakika, görev
+  başına bir kez), haftalık plan onaylandı. Veli yok. Dürtme/motivasyon/Çizbi yok; 20:00 "görev açık" cron'u silindi.
+- **Sessiz saatler** 23:00–07:00 (sabaha kayar); acil görüşme ve ders hatırlatması beklemez. Vakti geçen ders
+  hatırlatması gönderilmez (`son_gecerlilik`).
+- **İkon rakamı** = okunmamış mesaj + okunmamış bildirim (`bildirim_rozet`), uygulamadaki rozetle aynı. iPhone ve
+  bilgisayarda görünür; Android'de telefon kendisi yönetir.
+- **Gönderici** `bildirim-gonder` (v5, repoda `supabase/functions/bildirim-gonder`) yeniden yazıldı.
+- **İstemci**: `src/pwa/bildirim.js` (izin, cihaz kaydı `bildirim_cihaz_kaydet`, ikon rakamı), `public/bildirim-sw.js`
+  (service worker'a `importScripts` ile; göster + dokununca ilgili ekran). Davet şeridi yalnız kurulu uygulamada
+  (`BildirimDaveti`, rolüne göre metin, bir kez). Hesap → "Bildirimler: Açık/Kapalı". Çıkışta cihaz hesaptan ayrılır,
+  izin telefonda kalır; aynı cihazda kim girerse bildirim ona bağlanır.
+- Doğrulama: kural tablosu, boru hattı (tetik → kuyruk → gönderici → web-push) ve SW gösterimi test edildi. Gerçek
+  telefon aboneliği sandbox'ta denenemedi. Kıvanç'ın 4 Eylül denemesinden kalma iPhone kaydı duruyor: koç olayları ona gider.
 
 ## 19 Eylül 2026 — PWA sıfırdan
 
