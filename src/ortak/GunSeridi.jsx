@@ -43,7 +43,7 @@ export default function GunSeridi({
               const eksik = gecmis && s.toplam > s.biten
               const geciken = gecikmeVurgusu && eksik
               const oran = s.toplam > 0 ? Math.round((100 * s.biten) / s.toplam) : 0
-              const cubuk = s.toplam === 0 ? '' : tam ? ' hafta-cubuk--tam' : eksik ? ' hafta-cubuk--eksik' : ''
+              const cubuk = s.toplam === 0 ? ' hafta-cubuk--bos' : tam ? ' hafta-cubuk--tam' : eksik ? ' hafta-cubuk--eksik' : ''
               return (
                 <button
                   key={t}

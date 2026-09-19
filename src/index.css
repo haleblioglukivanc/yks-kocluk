@@ -4899,3 +4899,4 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
   background: none; color: color-mix(in srgb, var(--beyaz) 70%, transparent); display: grid; place-items: center;
 }
 @media (prefers-reduced-motion: reduce) { .obs-cizbi { transition: none; } }
+.hafta-cubuk--bos { visibility: hidden; }
