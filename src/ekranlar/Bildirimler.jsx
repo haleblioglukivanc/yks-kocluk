@@ -116,7 +116,7 @@ export default function Bildirimler({ profil, onGit }) {
   return (
     <div className="panel">
       <div className="ekran-basi">
-        <h1>Bildirimler</h1>
+        <h1>{profil.rol === 'ogrenci' ? 'Gelen kutusu' : 'Bildirimler'}</h1>
         {liste && liste.length > 0 && (
           <p className="ekran-basi-alt">Senden bir şey bekleyen {liste.length} olay var.</p>
         )}

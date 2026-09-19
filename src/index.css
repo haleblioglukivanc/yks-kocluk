@@ -4911,3 +4911,45 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .sb-bitenler-ac[aria-expanded='true'] .sb-ok { transform: rotate(90deg); }
 .sb-bitenler li { padding-left: 1.9rem; }
 .siradaki-bolum { margin-bottom: 0.75rem; }
+
+/* ═══ Öğrenci Bugün — Plan B (19 Eylül 2026) ═══
+   Tepe: Merhaba + tarih + hafta şeridi. Çizbi sağ alt köşede konuşur. */
+.hero-yuzey.ob--b { display: flex; flex-direction: column; gap: 0.9rem; }
+.ob--b .hafta-serit-kap { margin: 0; }
+.ob--b .hafta-kaydirak { margin: 0; padding: 0; }
+.ob--b .hafta-serit { background: transparent; border: 0; padding: 0; gap: 4px; }
+.ob--b .hafta-gun { background: transparent; border: 2px solid transparent; color: var(--beyaz); opacity: 1; }
+.ob--b .hafta-gun--gecmis { opacity: 0.85; }
+.ob--b .hafta-gun-ad { color: color-mix(in srgb, var(--beyaz) 70%, transparent); }
+.ob--b .hafta-gun-no { color: var(--beyaz); }
+.ob--b .hafta-gun-sayi { color: color-mix(in srgb, var(--beyaz) 72%, transparent); }
+.ob--b .hafta-gun-sayi--tam { color: color-mix(in srgb, var(--marka-yesil-acik) 55%, var(--beyaz)); }
+.ob--b .hafta-gun--eksik .hafta-gun-sayi { color: color-mix(in srgb, var(--k-amber) 80%, var(--beyaz)); }
+.ob--b .hafta-gun--eksik::after { background: var(--k-amber); }
+.ob--b .hafta-gun--bugun { background: color-mix(in srgb, var(--beyaz) 8%, transparent); border-color: color-mix(in srgb, var(--k-amber) 45%, transparent); }
+.ob--b .hafta-gun--bugun .hafta-gun-ad, .ob--b .hafta-gun--bugun .hafta-gun-no, .ob--b .hafta-gun--bugun .hafta-gun-sayi { color: var(--beyaz); }
+.ob--b .hafta-gun--secili, .uygulama .ob--b .hafta-gun--secili { background: color-mix(in srgb, var(--beyaz) 14%, transparent); border-color: var(--k-amber); }
+.ob--b .hafta-gun--secili .hafta-gun-no, .ob--b .hafta-gun--secili .hafta-gun-ad, .ob--b .hafta-gun--secili .hafta-gun-sayi { color: var(--beyaz); opacity: 1; }
+.ob--b .hafta-cubuk { background: color-mix(in srgb, var(--beyaz) 18%, transparent); }
+.ob--b .hafta-cubuk > span { background: var(--k-amber); }
+.ob--b .hafta-cubuk--tam > span { background: color-mix(in srgb, var(--marka-yesil-acik) 70%, var(--beyaz)); }
+
+/* Köşedeki Çizbi: koç mesajı dokunulana kadar kalır, kendi gözlemi çekilir. */
+.cizbi-kose {
+  position: fixed; right: 0.75rem; bottom: calc(5.25rem + env(safe-area-inset-bottom)); z-index: var(--kat-cizbi);
+  display: flex; align-items: flex-end; gap: 0.35rem; max-width: min(22rem, calc(100vw - 1.5rem));
+  animation: kart-gir 260ms cubic-bezier(.2, .8, .2, 1) both;
+}
+.cizbi-kose-balon {
+  flex: 1; min-width: 0; padding: 0.8rem 0.9rem; border-radius: 18px 18px 4px 18px;
+  background: var(--yuzey); color: var(--murekkep); box-shadow: var(--golge-kalkik);
+}
+.cizbi-kose-kim { margin: 0; font-size: var(--punto-mini); font-weight: 700; color: var(--sicak-metin); }
+.cizbi-kose-metin { margin: 0.2rem 0 0; font-size: var(--punto-kucuk); line-height: 1.4; color: var(--murekkep); overflow-wrap: anywhere; }
+.cizbi-kose-dugmeler { display: flex; gap: 0.4rem; margin-top: 0.6rem; }
+.cizbi-kose-dugmeler .ob-tamam { background: var(--yuzey-2); color: var(--grafit); padding-inline: 0.9rem; }
+.cizbi-kose-kalem { flex: none; line-height: 0; }
+@media (min-width: 64rem) { .cizbi-kose { bottom: 1.5rem; right: 1.5rem; } }
+
+/* Gelen kutusu rozeti amber; kırmızı yalnız acil içindir. */
+.ust-ikon .ust-rozet--amber { background: var(--k-amber); color: var(--g-murekkep); }

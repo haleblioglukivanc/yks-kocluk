@@ -162,7 +162,23 @@ export default function OgrenciPaneli({
         onSekme={setSekme}
         kocMesaji={kocMesaji}
         onGit={onGit}
-      />
+        tarihMetni={gunBasligi(seciliGun ?? ozet?.bugun)}
+      >
+        {/* Plan B (19 Eylül 2026): hafta şeridi tepede, Merhaba'nın altında.
+            Bugünün ilerlemesi de şeritteki bugün hücresinde. */}
+        {ozetGeldi && (
+          <HaftaSeridi
+            ogrenciId={kayit.id}
+            haftaBasi={ozet?.haftaBasi}
+            bugun={ozet?.bugun}
+            bugunGorevler={ozet?.gorevler}
+            onDegisti={yenile}
+            secili={seciliGun ?? ozet?.bugun ?? null}
+            onSec={setSeciliGun}
+            onListe={setGunVerisi}
+          />
+        )}
+      </OgrenciBasligi>
       )}
 
       <div className="sekme-govde" style={aksanStili()}>
@@ -175,21 +191,6 @@ export default function OgrenciPaneli({
       ) : sekme === 'bugun' ? (
         <>
           <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
-          {/* Gün başlığı ve şerit zeminde; günün içeriği altındaki beyaz
-              yüzeyde (TASARIM-KURALLARI 1). Şerit eskiden kartın içindeydi. */}
-          <section className="ogr-gun">
-            <h3 className="bolum-baslik">{gunBasligi(seciliGun ?? ozet?.bugun)}</h3>
-            <HaftaSeridi
-              ogrenciId={kayit.id}
-              haftaBasi={ozet?.haftaBasi}
-              bugun={ozet?.bugun}
-              bugunGorevler={ozet?.gorevler}
-              onDegisti={yenile}
-              secili={seciliGun ?? ozet?.bugun ?? null}
-              onSec={setSeciliGun}
-              onListe={setGunVerisi}
-            />
-          </section>
           <SiradakiKart
             gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
             bugunMu={gunVerisi?.bugunMu !== false}

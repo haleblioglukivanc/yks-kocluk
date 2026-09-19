@@ -571,6 +571,7 @@ export default function App() {
           profil={profil}
           rozet={bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
           zilEtkin={bildirimlerdeMi}
+          gelenKutusu={profil.rol === 'ogrenci'}
           hesapEtkin={hesapAcik}
           onGeri={gozuyleId ? () => git('/ogrenciler') : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}

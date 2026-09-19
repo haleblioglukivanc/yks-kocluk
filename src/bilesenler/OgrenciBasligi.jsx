@@ -5,8 +5,7 @@ import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { kuralMesaji } from '../lib/kalem-kurallari.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
-import { bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
-import { dersGorunumu } from '../lib/dersGorunum.js'
+import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
 import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 
 /**
@@ -28,31 +27,6 @@ import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 /** Bugünün ilk bitmemiş görevi. Sıra zaten durum + id'ye göre geliyor. */
 function siradakiIs(ozet) {
   return (ozet?.gorevler ?? []).find((g) => g.durum !== 'tamamlandi') ?? null
-}
-
-/* Günün ilerlemesi: tepede ders renkli şerit ve Çizbi'nin şeritteki yeri.
-   Her iş kendi dersinin renginde bir parça, genişliği süresi kadar. */
-function ilerlemeHesapla(gorevler) {
-  /* Bitenler solda: Çizbi bitenlerin bittiği yerde durur, dolu kısım
-     hep onun arkasında kalır. Sıra liste sırasına göre korunur. */
-  const hepsi = (gorevler ?? []).filter((g) => g.tur !== 'gorusme')
-  const isler = [
-    ...hepsi.filter((g) => g.durum === 'tamamlandi'),
-    ...hepsi.filter((g) => g.durum !== 'tamamlandi'),
-  ]
-  const biten = isler.filter((g) => g.durum === 'tamamlandi').length
-  const ilkBekleyen = isler.find((g) => g.durum !== 'tamamlandi')
-  const toplamDk = isler.reduce((t, g) => t + varsayilanDk(g.tur), 0)
-  const kalanDk = isler.filter((g) => g.durum !== 'tamamlandi').reduce((t, g) => t + varsayilanDk(g.tur), 0)
-  const sa = Math.floor(kalanDk / 60)
-  const dk = kalanDk % 60
-  return {
-    isler,
-    biten,
-    ilkBekleyenId: ilkBekleyen?.id ?? null,
-    oran: toplamDk ? (toplamDk - kalanDk) / toplamDk : 0,
-    kalanMetni: kalanDk === 0 ? '' : `kalan yaklaşık ${sa ? `${sa} sa` : ''}${sa && dk ? ' ' : ''}${dk ? `${dk} dk` : ''}`,
-  }
 }
 
 /* Çizbi'nin kendi cümlesi yoksa sıradaki işi söyler. Ses tonu kuralları
@@ -87,10 +61,11 @@ function varsayilanSoz(ozet, saat) {
   return { ruh: 'fikir', mesaj: `Sırada ${baslik}${adet}.` }
 }
 
-export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit }) {
+export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme, vekaleten = false, kocMesaji = null, onGit, tarihMetni = null, children = null }) {
   const [olay, setOlay] = useState(null)
-  /* Balonu öğrenci açıp kapattıysa onun tercihi; yoksa kendiliğinden. */
-  const [balonTercih, setBalonTercih] = useState(null)
+  /* Çizbi'nin kendi gözlemi köşede birkaç saniye görünüp çekilir; koçun
+     mesajı ise öğrenci dokunana kadar kalır (kaçırılmasın). */
+  const [gozlemGizli, setGozlemGizli] = useState(false)
   /* Cümle üç adımda değişiyordu: önce varsayılan, sonra veri gelince
      güncellenmiş varsayılan, sonra motorun cümlesi. Konuşurken yazının
      altından kayması kötü; motor cevap verene kadar hiçbir şey
@@ -181,104 +156,31 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const yazilan = useYazarak(metin)
   const sallaniyor = useCizbiKutlama()
 
-  /* Sade tepe (B, 19 Eylül 2026): bugünün ilerlemesinin tek yeri burası.
-     Çizbi şeridin üstünde, iş bittikçe ilerler; cümlesi küçük balonda. */
-  const ilerleme = ilerlemeHesapla(ozet?.gorevler)
-  const planVar = ilerleme.isler.length > 0
-  /* Balon yalnız ekranda olmayan bir şey varsa kendiliğinden açılır: koçun
-     mesajı ya da kural motorunun gözlemi. "Sırada X" kartta, geçmişten kalan
-     iş hafta şeridinde yazıyor; onlar için Çizbi sessizce şeritte yürür. */
-  const kendiliginden = kocKonusuyor || Boolean(olay)
-  const balonAcik = balonTercih ?? kendiliginden
-
-  function balonuKapat() {
-    if (olay && !kocKonusuyor) kapat()
-    setBalonTercih(false)
-  }
+  /* Plan B (19 Eylül 2026): tepe = Merhaba + tarih + hafta şeridi. Çizbi
+     tepede değil; söyleyecek bir şeyi olunca sağ alt köşede konuşur. */
+  const gozlemVar = !kocKonusuyor && Boolean(olay) && !gozlemGizli
+  useEffect(() => {
+    if (!gozlemVar) return undefined
+    const z = setTimeout(() => setGozlemGizli(true), 8000)
+    return () => clearTimeout(z)
+  }, [gozlemVar])
+  const koseAcik = kocKonusuyor || gozlemVar
 
   return (
-    <section className="hero-yuzey ob ob--sade" aria-label={`${KALEM_ADI} ve bugünün durumu`}>
+    <>
+    <section className="hero-yuzey ob ob--b" aria-label="Bugün">
       <div className="obs-ust">
         <div className="obs-baslik">
-          <h1 className="obs-sayi">
-            {/* Özet gelmeden bir şey yazılmaz: önce "Merhaba" yazıp sonra
-                "0 / 3 bitti"ye dönmek göz kırpması gibi görünüyordu. */}
-            {!ozet ? '\u00a0' : planVar ? `${ilerleme.biten} / ${ilerleme.isler.length} bitti` : ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}
-          </h1>
-          <p className="obs-kalan">{!ozet ? '\u00a0' : planVar ? ilerleme.kalanMetni || 'Bugünün hepsi bitti' : tarih}</p>
+          <h1 className="obs-sayi">{ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}</h1>
+          <p className="obs-kalan">{tarihMetni ?? tarih}</p>
         </div>
-        {/* Acil görüşme sağ üst köşede. Vekalette görünür ama salt okunur. */}
+        {/* Acil görüşme Merhaba'nın yanında. Vekalette görünür ama salt okunur. */}
         <div className="ob-acil-kose">
           <AcilGorusme ogrenciId={profil?.id} saltOkunur={vekaleten} />
         </div>
       </div>
 
-      <div className="obs-pist" style={{ '--yol': ilerleme.oran }}>
-        <button
-          type="button"
-          className="obs-cizbi"
-          onClick={() => setBalonTercih(!balonAcik)}
-          aria-expanded={balonAcik}
-          aria-label={`${KALEM_ADI} ne diyor`}
-        >
-          <span aria-hidden="true" className={sallaniyor ? 'ob-kalem-gir ob-kalem-salla' : 'ob-kalem-gir'}>
-            <Kalem ruh={soz.ruh} boyut={34} yipranma={ozet?.yipranma ?? 0} />
-          </span>
-        </button>
-        {planVar && (
-          <div className="ob-ilerleme-serit" aria-hidden="true">
-            {ilerleme.isler.map((g) => (
-              <span
-                key={g.id}
-                className={
-                  g.durum === 'tamamlandi' ? 'ob-parca ob-parca--bitti'
-                    : g.id === ilerleme.ilkBekleyenId ? 'ob-parca ob-parca--simdi' : 'ob-parca'
-                }
-                style={{ flexGrow: varsayilanDk(g.tur), '--ders-renk': dersGorunumu(g.ders).renk }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      {balonAcik && (
-        <div className="obs-balon">
-          <div className={metin ? 'ob-soz ob-soz--dolu' : 'ob-soz'}>
-            {kocKonusuyor && <p className="ob-kim">Koçundan</p>}
-            <p className="ob-mesaj" role="status" aria-live="polite" aria-label={metin}>
-              {yazilan}
-            </p>
-            {/* Çizbi'nin kural motorundan gelen eylemi ve koçun mesajı için
-                düğmeler balonun içinde. */}
-            <div className="ob-dugmeler">
-              {kocKonusuyor && (
-                <>
-                  <button className="ob-basla" disabled={kocMesaji.kapaniyor} onClick={kocMesaji.okudum}>
-                    Okudum
-                  </button>
-                  <button className="ob-tamam" onClick={() => onGit?.('/mesajlar')}>
-                    Cevap yaz
-                  </button>
-                </>
-              )}
-              {!kocKonusuyor && olay?.eylem?.sekme && onSekme && (
-                <button
-                  className="ob-basla"
-                  onClick={() => {
-                    kapat()
-                    onSekme(olay.eylem.sekme)
-                  }}
-                >
-                  {olay.eylem.etiket}
-                </button>
-              )}
-            </div>
-          </div>
-          <button type="button" className="obs-kapat" onClick={balonuKapat} aria-label="Kapat">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-          </button>
-        </div>
-      )}
+      {children}
 
       {sayacDurumu && (
         <div className="kk-kisayol kk-kisayol--sade">
@@ -297,5 +199,47 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
         </div>
       )}
     </section>
+
+    {koseAcik && (
+      <div className="cizbi-kose" role="status" aria-live="polite">
+        <div className="cizbi-kose-balon">
+          <p className="cizbi-kose-kim">{kocKonusuyor ? 'Koçundan' : KALEM_ADI}</p>
+          <p className="cizbi-kose-metin" aria-label={metin}>{yazilan}</p>
+          <div className="cizbi-kose-dugmeler">
+            {kocKonusuyor ? (
+              <>
+                <button className="ob-basla" disabled={kocMesaji.kapaniyor} onClick={kocMesaji.okudum}>
+                  Okudum
+                </button>
+                <button className="ob-tamam" onClick={() => onGit?.('/mesajlar')}>
+                  Cevap yaz
+                </button>
+              </>
+            ) : (
+              <>
+                {olay?.eylem?.sekme && onSekme && (
+                  <button
+                    className="ob-basla"
+                    onClick={() => {
+                      kapat()
+                      onSekme(olay.eylem.sekme)
+                    }}
+                  >
+                    {olay.eylem.etiket}
+                  </button>
+                )}
+                <button className="ob-tamam" onClick={() => { kapat(); setGozlemGizli(true) }}>
+                  Tamam
+                </button>
+              </>
+            )}
+          </div>
+        </div>
+        <span className={sallaniyor ? 'cizbi-kose-kalem ob-kalem-salla' : 'cizbi-kose-kalem'} aria-hidden="true">
+          <Kalem ruh={soz.ruh} boyut={56} yipranma={ozet?.yipranma ?? 0} />
+        </span>
+      </div>
+    )}
+    </>
   )
 }
