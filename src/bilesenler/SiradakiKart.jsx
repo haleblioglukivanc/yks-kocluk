@@ -349,23 +349,22 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
      Aynı kart o günü gösterir; başla düğmesi yok, çünkü sayaç yalnız
      bugünün işine basılır. Başlık güne göre değişir ki öğrenci hangi
      güne baktığını kaybetmesin. */
-  if (!bugunMu) {
+  /* Başka bir gün seçildiyse ve o günün bekleyen işi varsa aynı büyük kart
+     açılır (19 Eylül 2026): öğrenci geçmişte kalan işi de, ilerideki işi de
+     buradan başlatıp bitirebilir. Boş ya da tamamen bitmiş gün sade kalır. */
+  if (!bugunMu && !sira) {
     return (
       <Kart
         sinif="siradaki"
         baslik={gunAdi}
-        altBaslik={
-          liste.length === 0
-            ? 'Bu gün için plan yok'
-            : `${liste.length - bekleyen.length}/${liste.length} iş`
-        }
+        altBaslik={liste.length === 0 ? 'Bu gün için plan yok' : 'Bu günün hepsi bitti'}
       >
         {serit}
         <Uyari>{hata}</Uyari>
         {liste.length === 0 ? (
           <p className="kart-alt">Koçun bu güne bir şey koymamış.</p>
         ) : (
-          <Kalanlar haric={null} />
+          <Sira haric={null} />
         )}
       </Kart>
     )
@@ -446,7 +445,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const kalipMi = sira.konu && sira.baslik && sira.baslik.trim().endsWith(`— ${sira.konu}`) &&
     kalanSoru === null
   const baslik = kalipMi ? sira.konu : tamBaslik || etiket || tur || 'Çalışma'
-  const ustEtiket = sira.baslangic_saat
+  const ustEtiket = !bugunMu ? gunAdi : sira.baslangic_saat
     ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? `–${saatKisa(sira.bitis_saat)}` : ''}`
     : secilen ? 'Seçtiğin iş' : 'Şimdi'
 
@@ -538,7 +537,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       {/* Blok saati geçtiyse öğrencinin iki çıkışı var. İkisi de koçun
           önüne düşer; öğrenci kendi başına bloğu değiştiremez ama
           sessiz de kalmak zorunda değil. */}
-      {saatli && gecikti && !talepGitti && (
+      {bugunMu && saatli && gecikti && !talepGitti && (
         <div className="blok-talep">
           {talep === null ? (
             <>

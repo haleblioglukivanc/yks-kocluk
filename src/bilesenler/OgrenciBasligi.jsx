@@ -201,9 +201,11 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
       <div className="obs-ust">
         <div className="obs-baslik">
           <h1 className="obs-sayi">
-            {planVar ? `${ilerleme.biten} / ${ilerleme.isler.length} bitti` : ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}
+            {/* Özet gelmeden bir şey yazılmaz: önce "Merhaba" yazıp sonra
+                "0 / 3 bitti"ye dönmek göz kırpması gibi görünüyordu. */}
+            {!ozet ? '\u00a0' : planVar ? `${ilerleme.biten} / ${ilerleme.isler.length} bitti` : ilkAd ? `Merhaba ${ilkAd}` : 'Merhaba'}
           </h1>
-          <p className="obs-kalan">{planVar ? ilerleme.kalanMetni || 'Bugünün hepsi bitti' : tarih}</p>
+          <p className="obs-kalan">{!ozet ? '\u00a0' : planVar ? ilerleme.kalanMetni || 'Bugünün hepsi bitti' : tarih}</p>
         </div>
         {/* Acil görüşme sağ üst köşede. Vekalette görünür ama salt okunur. */}
         <div className="ob-acil-kose">
