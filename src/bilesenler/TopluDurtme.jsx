@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Dugme, Uyari } from './Ortak.jsx'
 
@@ -30,6 +30,7 @@ export default function TopluDurtme({ ogrenciler, onKapat, onGonderildi }) {
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
   const [sonuc, setSonuc] = useState(0)
+  const gonderiliyor = useRef(false)
 
   const alicilar = ogrenciler.filter((o) => !disarida.has(o.id))
   const yetersiz = metin.trim().length < EN_AZ
@@ -39,6 +40,10 @@ export default function TopluDurtme({ ogrenciler, onKapat, onGonderildi }) {
   }
 
   async function gonder() {
+    // Çift dokunuş: iki tık aynı karede gelirse state henüz güncellenmemiş
+    // olur, bu yüzden ref ile kilitlenir.
+    if (gonderiliyor.current) return
+    gonderiliyor.current = true
     setHata('')
     setBekliyor(true)
     try {
@@ -61,6 +66,7 @@ export default function TopluDurtme({ ogrenciler, onKapat, onGonderildi }) {
     } catch (e) {
       setHata(hataMetni(e))
     } finally {
+      gonderiliyor.current = false
       setBekliyor(false)
     }
   }

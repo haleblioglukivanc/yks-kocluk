@@ -34,7 +34,10 @@ export function Alan({ etiket, ipucu, children }) {
 
 export function Dugme({ tur = 'birincil', bekliyor, children, ...kalan }) {
   return (
-    <button className={`dugme dugme--${tur}`} disabled={bekliyor || kalan.disabled} {...kalan}>
+    /* disabled yayılımdan SONRA: önce yazılınca {...kalan} içindeki
+       disabled={false} onu eziyor, "Bir saniye" yazarken düğme basılabilir
+       kalıyordu. Toplu mesaj çift dokunuşta iki kez gitti (19 Eylül 2026). */
+    <button className={`dugme dugme--${tur}`} {...kalan} disabled={bekliyor || kalan.disabled}>
       {bekliyor ? 'Bir saniye…' : children}
     </button>
   )
