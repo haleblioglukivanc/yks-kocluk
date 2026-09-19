@@ -5,7 +5,8 @@ import { dersGorunumu } from '../lib/dersGorunum.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
-import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
+import { GOREV_TUR_OGRENCI, GOREV_TUR_KISA } from '../lib/gorevTuru.js'
+import GorevSatiri from '../ortak/GorevSatiri.jsx'
 import { Kalem } from './Kalem.jsx'
 import { cizbiKutlasin, azHareket } from '../lib/canli.js'
 
@@ -192,29 +193,28 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
               <h3>Sırada</h3>
               <p>Canın hangisini çekiyorsa ona dokun</p>
             </div>
-            <ul className="sb-sira">
-              {bekleyenler.map((g, i) => {
-                const alt = [
-                  g.baslangic_saat && saatKisa(g.baslangic_saat),
-                  g.ders,
-                  GOREV_TUR_OGRENCI[g.tur],
-                  `${varsayilanDk(g.tur)}\u00a0dk`,
-                ].filter(Boolean).join(' · ')
+            <ul className="liste gorev-liste veri-yuzey">
+              {bekleyenler.map((g) => {
+                /* Koçun program listesiyle aynı satır (ortak/GorevSatiri):
+                   başlık konunun adı, çipte ders ve tür. */
+                const etiket = [g.konu ? g.ders : null, GOREV_TUR_KISA[g.tur]]
+                  .filter(Boolean)
+                  .join(' · ')
                 return (
-                  <li key={g.id} style={{ '--ders-renk': dersGorunumu(g.ders).renk }}>
-                    <button
-                      className="sb-satir"
+                  <li key={g.id}>
+                    <GorevSatiri
+                      ad={ad(g)}
+                      etiket={etiket}
+                      ders={g.ders}
+                      durum={g.durum}
+                      sag={[
+                        g.baslangic_saat && saatKisa(g.baslangic_saat),
+                        g.hedef_adet > 0 && `${g.hedef_adet} soru`,
+                      ]}
                       disabled={saltOkunur}
                       onClick={() => { setSecim(g.id); setSure(null) }}
-                      aria-label={`${ad(g)} işine geç`}
-                    >
-                      <span className="sb-no" aria-hidden="true">{i + (haric ? 2 : 1)}</span>
-                      <span className="sb-metin">
-                        <span className="sb-ad">{ad(g)}</span>
-                        <span className="sb-alt">{alt}</span>
-                      </span>
-                      <span className="sb-gec" aria-hidden="true">Buna geç</span>
-                    </button>
+                      ariaLabel={`${ad(g)} işine geç`}
+                    />
                   </li>
                 )
               })}

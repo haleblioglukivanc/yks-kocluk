@@ -5,15 +5,13 @@ import GunSeridi from '../ortak/GunSeridi.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import EylemDugmesi from '../ortak/EylemDugmesi.jsx'
+import GorevSatiri from '../ortak/GorevSatiri.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import {
   GOREV_TUR_ADI,
   GOREV_TUR_KISA,
-  GOREV_DURUM_ANLAMI,
-  GOREV_DURUM_ROZETI,
 } from '../lib/gorevTuru.js'
 import { yerelGun, haftaBasi as haftaBasiHesapla } from '../lib/tarih.js'
-import { dersGorunumu } from '../lib/dersGorunum.js'
 
 const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
 
@@ -274,7 +272,6 @@ export default function ProgramIzgarasi({
             ) : (
               <ul className="liste gorev-liste">
                 {gunListesi.map((g) => {
-                  const bitti = g.durum === 'tamamlandi'
                   /* Başlıkta "Soru çözümü — Cümlede Anlam", altındaki
                      etikette "Türkçe · Cümlede Anlam · Soru" yazıyordu:
                      konu da tür de iki kere. Başlık konunun adı, alt
@@ -290,30 +287,17 @@ export default function ProgramIzgarasi({
                      hangisi olduğu adı okumadan görünsün. Renk büyük
                      yüzey olmuyor — solda ince şerit ve etiketin soluk
                      zemini; mavi/kırmızı/yeşilin anlamı bozulmuyor. */
-                  const ders = dersGorunumu(g.dersler?.ad)
                   return (
                     <li key={g.id}>
-                      <button
-                        className={`gorev-satir prg-gorev${bitti ? ' gorev-satir--bitti' : ''}${
-                          acikGorevId === g.id ? ' prg-gorev--acik' : ''
-                        }`}
-                        data-durum={GOREV_DURUM_ANLAMI[g.durum] ?? 'notr'}
-                        style={{ '--ders-renk': ders.renk }}
+                      <GorevSatiri
+                        ad={ad}
+                        etiket={etiket}
+                        ders={g.dersler?.ad}
+                        durum={g.durum}
+                        sag={[g.hedef_adet != null && `${g.hedef_adet} soru`]}
+                        acik={acikGorevId === g.id}
                         onClick={() => gorevSec(g)}
-                      >
-                        <span className="nokta" aria-hidden="true" />
-                        <span className="gorev-govde">
-                          <span className="gorev-baslik">{ad}</span>
-                          {etiket && <span className="gorev-etiket">{etiket}</span>}
-                          {GOREV_DURUM_ROZETI[g.durum] && (
-                            <span className="rozet gorev-durum">{GOREV_DURUM_ROZETI[g.durum]}</span>
-                          )}
-                        </span>
-                        {g.hedef_adet != null && (
-                          <span className="gorev-adet">{g.hedef_adet} soru</span>
-                        )}
-                        <span className="prg-gorev-ok" aria-hidden="true">›</span>
-                      </button>
+                      />
                     </li>
                   )
                 })}

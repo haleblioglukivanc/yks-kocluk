@@ -4814,28 +4814,8 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .sb-liste-bas { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
 .sb-liste-bas h3, .sb-bitenler h3 { margin: 0; font-family: var(--display); font-size: var(--punto-orta); font-weight: 700; color: var(--murekkep); }
 .sb-liste-bas p { margin: 0; font-size: var(--punto-mini); color: var(--soluk); text-align: right; }
-.sb-sira, .sb-bitenler ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
-.sb-satir {
-  width: 100%; min-height: 64px; display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem;
-  border-radius: 16px; cursor: pointer; text-align: left; font: inherit; color: var(--murekkep);
-  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 16%, var(--yuzey));
-  border: 1px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 32%, var(--yuzey));
-  transition: transform 80ms ease;
-}
-.sb-satir:active { transform: scale(.98); }
-.sb-satir:disabled { cursor: default; }
-.sb-no {
-  flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
-  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 80%, var(--g-murekkep)); color: var(--beyaz);
-  font: 800 var(--punto-kucuk) var(--display);
-}
-.sb-metin { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
-.sb-ad { font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
-.sb-alt { font-size: var(--punto-mini); font-weight: 600; color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 70%, var(--g-murekkep)); }
-.sb-gec {
-  flex: none; padding: 0.3rem 0.75rem; border-radius: var(--r-tam); background: var(--yuzey);
-  font-size: var(--punto-mini); font-weight: 700; color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 70%, var(--g-murekkep));
-}
+.sb-bitenler ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+/* Sırada satırları ortak/GorevSatiri'den (koç programıyla aynı dil). */
 .sb-bitenler { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.75rem; }
 .sb-bitenler h3 { font-size: var(--punto-kucuk); color: var(--soluk); }
 .sb-bitenler li { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; color: var(--soluk); }
