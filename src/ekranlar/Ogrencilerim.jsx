@@ -36,8 +36,11 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
        için Kıvanç'ın listesine başka koçun öğrencileri "İsimsiz / Veri yok"
        olarak düşüyordu. Koç sekmesi her zaman kendi öğrencilerini gösterir;
        bütün öğrenciler yönetim ekranının işi. */
-    const { data: oturum } = await supabase.auth.getUser()
-    const benimId = oturum?.user?.id
+    /* getSession tarayıcıdaki oturumu okur; getUser her açılışta auth
+       sunucusuna ayrı bir gidiş-dönüş yapıyordu (listeyi yarım saniye
+       geciktiren ilk adım). Kimlik doğrulaması zaten sorgularda RLS'te. */
+    const { data: oturum } = await supabase.auth.getSession()
+    const benimId = oturum?.session?.user?.id
     if (!benimId) {
       setOgrenciler([])
       return
@@ -50,7 +53,10 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
         .order('kayit_tarihi', { ascending: false }),
       supabase
         .from('ogrenci_risk')
-        .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev, dun_tam, eksik_ust_uste'),
+        .select('ogrenci_id, risk_seviyesi, risk_ham, tamamlama_yuzdesi, gun_gecti, hic_baslamadi, gecikmis_gorev, sessiz_gun, net_farki, guncel_seri, haftalik_gorev, dun_tam, eksik_ust_uste')
+        /* Yönetici bütün öğrencileri görebiliyor; bu liste yalnız kendi
+           öğrencilerinin riskini hesaplatsın. */
+        .eq('koc_id', benimId),
       supabase
         .from('kataloglar')
         .select('id, ad, tur, seviye, alan')
