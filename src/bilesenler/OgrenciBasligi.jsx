@@ -154,8 +154,8 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
      cümlesine düşülüyor, o cümle zaten o anki veriden yazılıyor. */
   let soz = olay && tazeMetin ? { ruh: olay.ruh, mesaj: tazeMetin } : varsayilan
   if (kocKonusuyor) soz = { ruh: 'anlatiyor', mesaj: kocMesaji.mesaj.icerik }
-  else if (!olay && (ozet?.gecikmisGorev ?? 0) > 0)
-    soz = { ...soz, mesaj: `${soz.mesaj} Geçmiş günlerden ${ozet.gecikmisGorev} görev kaldı; bir tanesiyle başlamak yeter.` }
+  /* Geçmişten kalan iş cümlesi kalktı (19 Eylül 2026): hafta şeridindeki
+     amber noktalar bunu zaten söylüyor. Çizbi ekranda olanı tekrar etmez. */
 
 
   function kapat() {
@@ -175,14 +175,14 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
   const yazilan = useYazarak(metin)
   const sallaniyor = useCizbiKutlama()
 
-  /* Sade tepe (B, 19 Eylül 2026): tepe yalnız günün ilerlemesini taşır.
-     Çizbi şeridin üstünde, iş bittikçe ilerler; cümlesi küçük balonda.
-     Balon Çizbi'nin söyleyecek bir şeyi olduğunda kendiliğinden açık
-     (koçun mesajı, kural motoru, geçmişten kalan iş, plansız gün); yalnız
-     "Sırada X" diyecekse kapalı, çünkü kart zaten hemen altta. */
+  /* Sade tepe (B, 19 Eylül 2026): bugünün ilerlemesinin tek yeri burası.
+     Çizbi şeridin üstünde, iş bittikçe ilerler; cümlesi küçük balonda. */
   const ilerleme = ilerlemeHesapla(ozet?.gorevler)
   const planVar = ilerleme.isler.length > 0
-  const kendiliginden = kocKonusuyor || Boolean(olay) || !planVar || (ozet?.gecikmisGorev ?? 0) > 0
+  /* Balon yalnız ekranda olmayan bir şey varsa kendiliğinden açılır: koçun
+     mesajı ya da kural motorunun gözlemi. "Sırada X" kartta, geçmişten kalan
+     iş hafta şeridinde yazıyor; onlar için Çizbi sessizce şeritte yürür. */
+  const kendiliginden = kocKonusuyor || Boolean(olay)
   const balonAcik = balonTercih ?? kendiliginden
 
   function balonuKapat() {

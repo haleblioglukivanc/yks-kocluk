@@ -117,6 +117,7 @@ export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler
         bugun={bugun}
         onSec={onSec}
         damga
+        bugunSade
       />
     </div>
   )

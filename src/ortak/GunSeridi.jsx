@@ -9,6 +9,8 @@
  * gecikmeVurgusu:  geçmişte bitmemiş iş kalan günün sayısı kırmızı yazılır
  *                  (koç görünümü; öğrenciye suçlayıcı sinyal verilmez)
  * damga:           günün bütün işleri bitince ✓ damgası
+ * bugunSade:       bugünün hücresinde sayı ve çubuk yok; bugünün ilerlemesi
+ *                  öğrencide tepede tek yerde (19 Eylül 2026)
  *
  * Doluluk çubuğu (19 Eylül 2026, Bekir "B ok"): her günün altında o günün
  * ne kadarının bittiğini gösteren küçük çubuk. Tam biten gün yeşil; geçmişte
@@ -26,6 +28,7 @@ export default function GunSeridi({
   onSec,
   gecikmeVurgusu = false,
   damga = false,
+  bugunSade = false,
   kaydirakRef,
   etiket = 'Haftanın günleri',
 }) {
@@ -43,7 +46,8 @@ export default function GunSeridi({
               const eksik = gecmis && s.toplam > s.biten
               const geciken = gecikmeVurgusu && eksik
               const oran = s.toplam > 0 ? Math.round((100 * s.biten) / s.toplam) : 0
-              const cubuk = s.toplam === 0 ? ' hafta-cubuk--bos' : tam ? ' hafta-cubuk--tam' : eksik ? ' hafta-cubuk--eksik' : ''
+              const sadeBugun = bugunSade && bugunMu
+              const cubuk = s.toplam === 0 || sadeBugun ? ' hafta-cubuk--bos' : tam ? ' hafta-cubuk--tam' : eksik ? ' hafta-cubuk--eksik' : ''
               return (
                 <button
                   key={t}
@@ -68,7 +72,7 @@ export default function GunSeridi({
                     <span style={{ width: `${oran}%` }} />
                   </span>
                   <span
-                    className={`hafta-gun-sayi${damga && tam ? ' hafta-gun-sayi--tam' : ''}`}
+                    className={`hafta-gun-sayi${damga && tam ? ' hafta-gun-sayi--tam' : ''}${sadeBugun ? ' hafta-gun-sayi--gizli' : ''}`}
                     aria-label={`${s.biten}/${s.toplam} iş`}
                   >
                     {/* Tik eskiden gün adının üstüne biniyordu; artık sayının yanında. */}

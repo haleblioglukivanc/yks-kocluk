@@ -4900,3 +4900,13 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 }
 @media (prefers-reduced-motion: reduce) { .obs-cizbi { transition: none; } }
 .hafta-cubuk--bos { visibility: hidden; }
+/* Bugünün hücresi öğrencide sade: ilerleme tepede (19 Eylül 2026). */
+.hafta-gun-sayi--gizli { visibility: hidden; }
+/* Bitenler tek satır */
+.sb-bitenler-ac {
+  display: flex; align-items: center; gap: 0.6rem; min-height: 44px; padding: 0; border: 0; background: none;
+  cursor: pointer; font: 700 var(--punto-kucuk) var(--govde); color: var(--grafit);
+}
+.sb-bitenler-ac .sb-ok { transition: transform 150ms ease; color: var(--soluk); }
+.sb-bitenler-ac[aria-expanded='true'] .sb-ok { transform: rotate(90deg); }
+.sb-bitenler li { padding-left: 1.9rem; }

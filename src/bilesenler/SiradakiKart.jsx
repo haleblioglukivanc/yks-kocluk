@@ -83,6 +83,8 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* Kartta süre önce seçilir, büyük düğme o süreyle başlatır. Seçim işe
      bağlı: başka işe geçince o işin varsayılan süresine döner. */
   const [sure, setSure] = useState(null)
+  /* Bitenler tek satır; dokununca açılır (geri almak için). */
+  const [bitenAcik, setBitenAcik] = useState(false)
 
   /* Bugün sayaç çalıştırılmış ama görev işaretlenmemiş olabilir; öyle bir
      günü "hiç çalışılmadı" saymak haksızlık olur. Onun için oturumlara da
@@ -221,23 +223,33 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         )}
         {bitenler.length > 0 && (
           <div className="sb-bitenler">
-            <h3>Bitenler</h3>
-            <ul>
-              {bitenler.map((g) => (
-                <li key={g.id}>
-                  <span className="sb-bitti-ikon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
-                  </span>
-                  <span className="sb-bitti-ad">{ad(g)}</span>
-                  {g.koc_isaretledi && <span className="sk-koc">Koçun işaretledi</span>}
-                  {!saltOkunur && (
-                    <button className="sb-geri" onClick={() => durumYaz(g, false)} aria-label={`${ad(g)} geri al`}>
-                      Geri al
-                    </button>
-                  )}
-                </li>
-              ))}
-            </ul>
+            <button
+              type="button"
+              className="sb-bitenler-ac"
+              aria-expanded={bitenAcik}
+              onClick={() => setBitenAcik((a) => !a)}
+            >
+              <span className="sb-bitti-ikon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+              </span>
+              <span>Bitenler · {bitenler.length}</span>
+              <svg className="sb-ok" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+            </button>
+            {bitenAcik && (
+              <ul>
+                {bitenler.map((g) => (
+                  <li key={g.id}>
+                    <span className="sb-bitti-ad">{ad(g)}</span>
+                    {g.koc_isaretledi && <span className="sk-koc">Koçun işaretledi</span>}
+                    {!saltOkunur && (
+                      <button className="sb-geri" onClick={() => durumYaz(g, false)} aria-label={`${ad(g)} geri al`}>
+                        Geri al
+                      </button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
         )}
       </div>
