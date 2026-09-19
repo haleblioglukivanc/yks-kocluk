@@ -1,5 +1,6 @@
 import { createPortal } from 'react-dom'
 import { Kalem } from './Kalem'
+import { useSurukleKapat } from '../lib/surukleKapat.js'
 /* `duz`: kenarı ve zemini olmayan, kâğıda doğrudan yazılmış kart.
    Bilgi gösteren yardımcı bloklar için; karar isteyen kartlar kaldırılmış kalır. */
 /* `kaldirilmis`: ekranın tek yükselmiş kâğıdı; karar isteyen ana kart.
@@ -98,9 +99,11 @@ export function Rozet({ children, ton = 'notr' }) {
  *  içinden açılırsa açılsın overflow/filter/z-index katmanlarına takılmaz.
  *  Safari'de kart içinden position:fixed güvenilir değil. */
 export function AltSayfa({ etiket, baslik, altBaslik, sinif = '', rol = 'dialog', onKapat, children, dugmeler }) {
+  const surukle = useSurukleKapat(onKapat)
   return createPortal(
     <div className="alt-sayfa-perde" onClick={onKapat} role="presentation">
       <div
+        ref={surukle}
         className={`alt-sayfa${sinif ? ` ${sinif}` : ''}`}
         role={rol}
         aria-modal={rol === 'dialog' ? 'true' : undefined}

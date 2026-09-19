@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
+import { useSurukleKapat } from '../lib/surukleKapat.js'
 import { Uyari } from './Ortak.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import GunlukRutinler from './GunlukRutinler.jsx'
@@ -46,6 +47,7 @@ function ozetCumlesi(ozet) {
    ekranını açıyor, v1 bu proptan habersiz çalışmaya devam ediyor. */
 export default function GunuKapat({ acik, onKapat, onTamamlandi, ogrenciId, katalogId, ozet, onDegisti, saltOkunur = false }) {
   const [adim, setAdim] = useState(0)
+  const surukle = useSurukleKapat(onKapat)
   const [hata, setHata] = useState('')
   const [bekliyor, setBekliyor] = useState(false)
 
@@ -97,6 +99,7 @@ export default function GunuKapat({ acik, onKapat, onTamamlandi, ogrenciId, kata
   return (
     <div className="alt-sayfa-perde" onClick={onKapat} role="presentation">
       <section
+        ref={surukle}
         className="alt-sayfa"
         role="dialog"
         aria-modal="true"

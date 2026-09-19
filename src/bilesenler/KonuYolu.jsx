@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
+import { useSurukleKapat } from '../lib/surukleKapat.js'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
@@ -86,6 +87,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const [yol, setYol] = useState(null)
   const [hata, setHata] = useState('')
   const [secili, setSecili] = useState(null)
+  const surukle = useSurukleKapat(() => kapat())
   const [balon, setBalon] = useState({ olay: null, durak: null, bolge: null })
   const [ruh, setRuh] = useState('anlatiyor')
   const [patlayan, setPatlayan] = useState(null)
@@ -356,7 +358,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
       {secili && (
         <>
           <div className="yol-perde" onClick={kapat} />
-          <section className="yol-sayfa" role="dialog" aria-modal="true" aria-label={secili.ad}>
+          <section ref={surukle} className="yol-sayfa" role="dialog" aria-modal="true" aria-label={secili.ad}>
             <div className="yol-tutamac" />
             <h3>{secili.ad}</h3>
             <div className={`yol-durum yol-durum--${secili.yol}`}>● {ETIKET[secili.yol]}</div>

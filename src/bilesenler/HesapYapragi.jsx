@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useSurukleKapat } from '../lib/surukleKapat.js'
 import { Avatar } from './Fotograf.jsx'
 import { kurulumuGoster, useKurulum } from '../pwa/KurulumDaveti.jsx'
 import { kur, yenidenYukle } from '../pwa/pwa.js'
@@ -36,6 +37,7 @@ export default function HesapYapragi({
   onGit,
 }) {
   const kurulum = useKurulum()
+  const surukle = useSurukleKapat(onKapat)
   const bildirim = useBildirim()
   /* Bildirim satırının sağındaki durum ve dokununca ne olacağı */
   const BILDIRIM = {
@@ -59,6 +61,7 @@ export default function HesapYapragi({
   return (
     <div className="yaprak-arka" onClick={onKapat}>
       <div
+        ref={surukle}
         className="yaprak"
         role="dialog"
         aria-modal="true"
