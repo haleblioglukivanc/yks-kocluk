@@ -4329,13 +4329,19 @@ body[data-rol='ogrenci'] .siradaki-odak .siradaki-ikincil .metin-dugme { color: 
 }
 /* Günün geri kalanı: dersin açık tonunda satırlar, dokununca ezilir. */
 body[data-rol='ogrenci'] .siradaki-kalanlar { border-top: 0; padding-top: 0.5rem; }
-body[data-rol='ogrenci'] .sk-satir {
+/* Satırın kendisi dersin renginde: sol şerit + gri kenar yuvarlak köşede
+   kıvrılıp satırın arkasında ayrı bir renkli kart varmış gibi duruyordu
+   (Bekir, 19 Eylül 2026). Şerit yok; zemin ve ince kenar dersin tonunda. */
+body[data-rol='ogrenci'] .sk-satir,
+body[data-rol='ogrenci'] .sk-satir:not(.sk-satir--bitti) {
   padding: 0.6rem 0.75rem; margin-bottom: 6px; border-radius: 14px;
-  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 10%, var(--yuzey));
+  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 16%, var(--yuzey));
+  border: 1px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 32%, var(--yuzey));
+  box-shadow: none;
   transition: transform 80ms ease;
 }
 body[data-rol='ogrenci'] .sk-satir:active { transform: scale(.98); }
-body[data-rol='ogrenci'] .sk-satir--bitti { background: var(--isaret-zemin); }
+body[data-rol='ogrenci'] .sk-satir.sk-satir--bitti { background: var(--isaret-zemin); border-color: transparent; }
 /* Sayaç: halkanın yanında çalışan Çizbi */
 .sayac-halka { align-items: center; gap: 0.75rem; }
 .sayac-cizbi { display: block; transform-origin: bottom center; }
