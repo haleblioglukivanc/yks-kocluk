@@ -69,15 +69,45 @@ export function Cizim({ ad, f, gen, zemin, bas = 0, kalem = 6, suz = true, style
   </svg>
 }
 
-// Arka planda süzülen küçük artı ve noktalar (mokaptaki gibi, yazıyla yarışmaz)
-const SUS = [[0.84, 0.13, 'arti'], [0.1, 0.36, 'nokta'], [0.9, 0.58, 'nokta'], [0.14, 0.72, 'arti'], [0.78, 0.8, 'arti']]
-export function Susler({ f, renk: r }) {
+// Arka plan süsleri: her gün farklı. Güne özel tohumla seçilir — kaç tane (bazı günler hiç),
+// hangi iki şekil ailesi, nerede, hangi renkte. Yalnız içeriğin olmadığı boşluklara düşer,
+// birbirine yaklaşmaz. Böylece hiçbir iki video aynı "süs kalıbından" çıkmış gibi durmaz.
+const SEKIL = {
+  arti: (x, y, b) => `M${x - b} ${y} h${2 * b} M${x} ${y - b} v${2 * b}`,
+  carpi: (x, y, b) => `M${x - b * 0.7} ${y - b * 0.7} l${b * 1.4} ${b * 1.4} M${x + b * 0.7} ${y - b * 0.7} l${-b * 1.4} ${b * 1.4}`,
+  kivilcim: (x, y, b) => `M${x} ${y - b} v${b * 0.6} M${x + b} ${y - b * 0.2} h${-b * 0.6} M${x - b * 0.8} ${y - b * 0.6} l${b * 0.45} ${b * 0.4}`,
+  dalga: (x, y, b) => `M${x - b * 1.6} ${y} q${b * 0.4} ${-b * 0.7} ${b * 0.8} 0 t${b * 0.8} 0 t${b * 0.8} 0 t${b * 0.8} 0`,
+  yay: (x, y, b) => `M${x - b} ${y + b * 0.4} q${b} ${-b * 1.4} ${b * 2} 0`,
+  yildiz: (x, y, b) => `M${x} ${y - b} q${b * 0.15} ${b * 0.85} ${b} ${b} q${-b * 0.85} ${b * 0.15} ${-b} ${b} q${-b * 0.15} ${-b * 0.85} ${-b} ${-b} q${b * 0.85} ${-b * 0.15} ${b} ${-b} z`,
+}
+const AILE = Object.keys(SEKIL)
+
+function tohumla(metin) {                    // metinden sabit sayı → aynı gün hep aynı süs
+  let h = 2166136261
+  for (const c of metin) h = Math.imul(h ^ c.codePointAt(0), 16777619)
+  return () => { h = Math.imul(h ^ (h >>> 15), 2246822507); h = Math.imul(h ^ (h >>> 13), 3266489909); return ((h ^= h >>> 16) >>> 0) / 4294967296 }
+}
+
+export function Susler({ f, tarih, dolu = [], renk: r, vurgu }) {
+  const rnd = tohumla(tarih)
+  if (rnd() < 0.18) return null                              // her beş günden biri süssüz
+  const adet = 2 + Math.floor(rnd() * 4)                     // 2–5
+  const aileler = [AILE[Math.floor(rnd() * AILE.length)], AILE[Math.floor(rnd() * AILE.length)]]
+  const bos = (x, y) => !dolu.some(([x1, y1, x2, y2]) => x > x1 - 40 && x < x2 + 40 && y > y1 - 40 && y < y2 + 40)
+  const nok = []
+  for (let den = 0; den < 300 && nok.length < adet; den++) {
+    const x = 50 + rnd() * 980, y = 150 + rnd() * 1330   // alt yazı alanına düşmesin, görünür kalsın
+    if (bos(x, y) && nok.every((n) => Math.hypot(n.x - x, n.y - y) > 240)) {
+      nok.push({ x, y, t: aileler[nok.length % 2], b: 11 + rnd() * 12, a: rnd() * 40 - 20, v: rnd() < 0.3, h: 0.6 + rnd() * 0.8 })
+    }
+  }
   return <svg viewBox="0 0 1080 1920" width={1080} height={1920} style={{ position: 'absolute', inset: 0 }}>
-    {SUS.map(([x, y, t], i) => {
-      const X = x * 1080 + Math.sin(f / 40 + i) * 12, Y = y * 1920 + Math.cos(f / 50 + i * 2) * 16
-      return t === 'arti'
-        ? <path key={i} d={`M${X - 14} ${Y} h28 M${X} ${Y - 14} v28`} stroke={r} strokeWidth={5} strokeLinecap="round" opacity={0.55} />
-        : <circle key={i} cx={X} cy={Y} r={7} fill={r} opacity={0.4} />
+    {nok.map((n, i) => {
+      const x = n.x + Math.sin(f / (36 * n.h) + i) * 10, y = n.y + Math.cos(f / (48 * n.h) + i * 2) * 14
+      const dolgulu = n.t === 'yildiz'
+      return <path key={i} d={SEKIL[n.t](x, y, n.b)} transform={`rotate(${n.a + Math.sin(f / 60 + i) * 6} ${x} ${y})`}
+        stroke={n.v ? vurgu : r} strokeWidth={5} strokeLinecap="round" strokeLinejoin="round"
+        fill={dolgulu ? (n.v ? vurgu : 'none') : 'none'} opacity={n.v ? 0.9 : 0.5} />
     })}
   </svg>
 }
