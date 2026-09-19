@@ -80,6 +80,9 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
      gelir. Veri yazımı uçuşun sonuna denk gelir ki liste boşluk atlamasın. */
   const [ucan, setUcan] = useState(null)
   const [tik, setTik] = useState(0)
+  /* Kartta süre önce seçilir, büyük düğme o süreyle başlatır. Seçim işe
+     bağlı: başka işe geçince o işin varsayılan süresine döner. */
+  const [sure, setSure] = useState(null)
 
   /* Bugün sayaç çalıştırılmış ama görev işaretlenmemiş olabilir; öyle bir
      günü "hiç çalışılmadı" saymak haksızlık olur. Onun için oturumlara da
@@ -171,6 +174,76 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* Gunun butun isleri, sirada duran haric. Hem sira varken hem de gun
      bittiginde ayni liste ciziliyor: eskiden "hepsi bitti" hali listeyi
      hic gostermiyordu ve bitirilen isler ekrandan kayboluyordu. */
+  /* Bugün (B tasarımı, 19 Eylül 2026): sıradaki işler numaralı, tiksiz.
+     Bir işin bittiğini yalnız üstteki kart söyler; listeden yapmadan tik
+     atma kapısı kapalı. Bitenler altta, geri alınabilir. */
+  function Sira({ haric }) {
+    const bekleyenler = bekleyen.filter((g) => g.id !== haric)
+    const bitenler = liste.filter((g) => g.durum === 'tamamlandi')
+    if (bekleyenler.length === 0 && bitenler.length === 0) return null
+    const ad = (g) => g.konu || g.baslik || GOREV_TUR_OGRENCI[g.tur] || 'Çalışma'
+    return (
+      <div className="sb-liste">
+        {bekleyenler.length > 0 && (
+          <>
+            <div className="sb-liste-bas">
+              <h3>Sırada</h3>
+              <p>Canın hangisini çekiyorsa ona dokun</p>
+            </div>
+            <ul className="sb-sira">
+              {bekleyenler.map((g, i) => {
+                const alt = [
+                  g.baslangic_saat && saatKisa(g.baslangic_saat),
+                  g.ders,
+                  GOREV_TUR_OGRENCI[g.tur],
+                  `${varsayilanDk(g.tur)} dk`,
+                ].filter(Boolean).join(' · ')
+                return (
+                  <li key={g.id} style={{ '--ders-renk': dersGorunumu(g.ders).renk }}>
+                    <button
+                      className="sb-satir"
+                      disabled={saltOkunur}
+                      onClick={() => { setSecim(g.id); setSure(null) }}
+                      aria-label={`${ad(g)} işine geç`}
+                    >
+                      <span className="sb-no" aria-hidden="true">{i + (haric ? 2 : 1)}</span>
+                      <span className="sb-metin">
+                        <span className="sb-ad">{ad(g)}</span>
+                        <span className="sb-alt">{alt}</span>
+                      </span>
+                      <span className="sb-gec" aria-hidden="true">Buna geç</span>
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </>
+        )}
+        {bitenler.length > 0 && (
+          <div className="sb-bitenler">
+            <h3>Bitenler</h3>
+            <ul>
+              {bitenler.map((g) => (
+                <li key={g.id}>
+                  <span className="sb-bitti-ikon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+                  </span>
+                  <span className="sb-bitti-ad">{ad(g)}</span>
+                  {g.koc_isaretledi && <span className="sk-koc">Koçun işaretledi</span>}
+                  {!saltOkunur && (
+                    <button className="sb-geri" onClick={() => durumYaz(g, false)} aria-label={`${ad(g)} geri al`}>
+                      Geri al
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    )
+  }
+
   function Kalanlar({ haric }) {
     const satirlar = liste.filter((g) => g.id !== haric)
     if (satirlar.length === 0) return null
@@ -289,12 +362,28 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   /* ── Serbest: görev yok ya da hepsi bitti ── */
   if (!sira) {
     const hepsiBitti = liste.length > 0
+    if (hepsiBitti) {
+      return (
+        <section className="siradaki-bolum" aria-label="Bugünün hedefi">
+          {serit}
+          <Uyari>{hata}</Uyari>
+          <div className="siradaki-odak siradaki-odak--b siradaki-odak--bitti siradaki-odak--gir">
+            <div className="sb-ust"><span className="sb-simdi">Bugün</span></div>
+            <h2 className="siradaki-baslik">Bugünün hepsi bitti.</h2>
+            <p className="siradaki-alt">İstersen serbest çalış, sayaç sayar. Sonra günü tamamla.</p>
+            <div className="sb-secenek">
+              {SAYAC_SURELERI.map((dk) => (
+                <button key={dk} className="sb-cip" onClick={() => sayac?.basla(dk)}>{`${dk} dk`}</button>
+              ))}
+            </div>
+          </div>
+          <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
+          <Sira haric={null} />
+        </section>
+      )
+    }
     return (
-      <Kart
-        sinif="siradaki"
-        baslik={hepsiBitti ? 'Bugünün hepsi bitti' : 'Bugün için plan yok'}
-        altBaslik={hepsiBitti ? 'İstersen serbest çalış, sayaç sayar.' : 'Sayaçla serbest çalışabilirsin.'}
-      >
+      <Kart sinif="siradaki" baslik="Bugün için plan yok" altBaslik="Sayaçla serbest çalışabilirsin.">
         {serit}
         {/* Sayaç seçenekleri başlığın yanında sıkışmıyor; açıklamanın altında
             saat ikonlu ikincil düğmeler (TASARIM-KURALLARI 6). */}
@@ -304,9 +393,6 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           ))}
         </div>
         <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
-        {/* Gün bitince de liste duruyor: bitirilen işler ekrandan
-            kaybolmuyor, tikine tekrar dokunup geri alınabiliyor. */}
-        <Kalanlar haric={null} />
       </Kart>
     )
   }
@@ -334,15 +420,23 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
   const suresiDoldu = bitDk !== null && simdiDk > bitDk
   const gecikti = basSaatiGecti
   const varsayilan = varsayilanDk(sira.tur)
-  const digerler = SAYAC_SURELERI.filter((dk) => dk !== varsayilan)
+  const seciliDk = sure?.id === sira.id ? sure.dk : varsayilan
   const etiket = [sira.ders, sira.konu].filter(Boolean).join(' · ')
   const tur = GOREV_TUR_OGRENCI[sira.tur]
   const kalanSoru =
     sira.hedef_adet && sira.hedef_adet > 0
       ? Math.max(0, sira.hedef_adet - (sira.yapilan_adet ?? 0))
       : null
-  const baslik =
+  const tamBaslik =
     sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
+  /* Başlık "Tür — Konu" kalıbındaysa kartta büyük yazı konu olur, tür
+     sağ üstte zaten yazıyor. Koçun kendi yazdığı başlık olduğu gibi kalır. */
+  const kalipMi = sira.konu && sira.baslik && sira.baslik.trim().endsWith(`— ${sira.konu}`) &&
+    kalanSoru === null
+  const baslik = kalipMi ? sira.konu : tamBaslik || etiket || tur || 'Çalışma'
+  const ustEtiket = sira.baslangic_saat
+    ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? `–${saatKisa(sira.bitis_saat)}` : ''}`
+    : secilen ? 'Seçtiğin iş' : 'Şimdi'
 
   /* Teklif akşam saatinde, o gün hiçbir işaret yokken ve yapılacak iş
      dururken çıkar. Sayaç çalışıyorsa zaten çalışılıyor demektir. */
@@ -354,13 +448,16 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     !liste.some((g) => g.durum === 'tamamlandi')
 
   return (
-    <section sinif="siradaki" aria-label="Bugünün hedefi">
+    <section className="siradaki-bolum" aria-label="Bugünün hedefi">
       {serit}
       <Uyari>{hata}</Uyari>
       <Uyari tur="bilgi">{sayac?.uyari}</Uyari>
+      {/* B tasarımı (19 Eylül 2026): kartın tamamı dersin koyu renginde,
+          öğrenci okumadan "şimdi Felsefe" der. Büyük yuvarlak düğme seçili
+          süreyle başlatır; süre yanında küçük seçenek. */}
       <div
         key={sira.id}
-        className={`siradaki-odak${ucan === sira.id ? ' siradaki-odak--ucus' : ' siradaki-odak--gir'}`}
+        className={`siradaki-odak siradaki-odak--b${ucan === sira.id ? ' siradaki-odak--ucus' : ' siradaki-odak--gir'}`}
         style={{ '--ders-renk': dersGorunumu(sira.ders).renk }}
       >
       {tik > 0 && (
@@ -371,16 +468,12 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           ))}
         </span>
       )}
-      {sira.ders && <span className="sira-ders-cip">{[sira.ders, sira.konu].filter(Boolean).join(' · ')}</span>}
-      <p className="siradaki-sira">
-        {sira.baslangic_saat
-          ? `${saatKisa(sira.baslangic_saat)}${sira.bitis_saat ? ` – ${saatKisa(sira.bitis_saat)}` : ''}`
-          : secilen ? 'Seçtiğin iş' : 'Sırada'}
-      </p>
+      <div className="sb-ust">
+        <span className="sb-simdi">{[ustEtiket, sira.ders].filter(Boolean).join(' · ')}</span>
+        {tur && <span className="sb-tur">{tur}</span>}
+      </div>
       <h2 className="siradaki-baslik">{baslik}</h2>
-      {(etiket || tur) && (
-        <p className="siradaki-alt">{(sira.ders ? [tur] : [etiket, tur]).filter(Boolean).join(' · ')}</p>
-      )}
+      {!sira.ders && etiket && <p className="siradaki-alt">{etiket}</p>}
       <GorevKaynagi gorev={sira} />
       {sira.aciklama && <p className="siradaki-not">{sira.aciklama}</p>}
 
@@ -403,25 +496,31 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
           </div>
         </div>
       ) : (
-      <div className="siradaki-eylem">
+      <div className="sb-baslat">
         <button
-          className="dugme dugme--birincil siradaki-basla"
+          className="sb-oynat"
           disabled={saltOkunur}
-          onClick={() => sayac?.basla(varsayilan, sira.id)}
+          onClick={() => sayac?.basla(seciliDk, sira.id)}
+          aria-label={`Çalışmaya başla, ${seciliDk} dakika`}
         >
-          ▶ Çalışmaya başla · {varsayilan} dk
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="currentColor" aria-hidden="true"><path d="M8 4.5v15l12-7.5z" /></svg>
         </button>
-        {digerler.map((dk) => (
-          <button
-            key={dk}
-            className="dugme dugme--ikincil dugme--ufak"
-            disabled={saltOkunur}
-            onClick={() => sayac?.basla(dk, sira.id)}
-            aria-label={`${dk} dakika başla`}
-          >
-            {dk}
-          </button>
-        ))}
+        <div className="sb-sure">
+          <p className="sb-sure-metin">{seciliDk} dakika</p>
+          <div className="sb-secenek" role="group" aria-label="Süre">
+            {SAYAC_SURELERI.map((dk) => (
+              <button
+                key={dk}
+                className={dk === seciliDk ? 'sb-cip sb-cip--secili' : 'sb-cip'}
+                aria-pressed={dk === seciliDk}
+                disabled={saltOkunur}
+                onClick={() => setSure({ id: sira.id, dk })}
+              >
+                {dk}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
       )}
       {/* Blok saati geçtiyse öğrencinin iki çıkışı var. İkisi de koçun
@@ -484,20 +583,22 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
       )}
       {talepGitti && <p className="blok-talep-bilgi">Koçuna iletildi.</p>}
 
-      <div className="siradaki-ikincil">
-        <button className="metin-dugme" disabled={saltOkunur} onClick={() => tamamlaKutla(sira)}>
-          ✓ Tamamla
+      <div className="sb-alt-eylem">
+        <button className="sb-hafif" disabled={saltOkunur} onClick={() => tamamlaKutla(sira)}>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5" /></svg>
+          Bitirdim
         </button>
-        {/* Atla saatli günde de açık: sıra artık kilitli değil. */}
+        {/* Sonraya bırakmak saatli günde de açık: sıra kilitli değil. */}
         {bekleyen.length > 1 && (
-          <button className="metin-dugme" onClick={() => { setSecim(null); setAtlanan((a) => [...a, sira.id]) }}>
-            Atla ›
+          <button className="sb-hafif" onClick={() => { setSecim(null); setSure(null); setAtlanan((a) => [...a, sira.id]) }}>
+            Sonra yaparım
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
           </button>
         )}
       </div>
       </div>
 
-      <Kalanlar haric={sira.id} />
+      <Sira haric={sira.id} />
     </section>
   )
 }

@@ -4753,3 +4753,108 @@ body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); 
 .yk-toplu-dugmeler, .kvkk-eylem { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .kvkk-eylem { margin-top: 0.5rem; }
 .kvkk-satir { align-items: flex-start; }
+
+/* ═══════════════════════════════════════════════════════════════
+   ÖĞRENCİ GÖREV KARTI — B tasarımı (Bekir onayı, 19 Eylül 2026)
+   Kart dersin koyu renginde, beyaz yazı; büyük yuvarlak başla düğmesi,
+   süre yanında küçük seçenek; sırada numaralı, tiksiz; bitenler altta.
+   Koyu ton dersin renginden türetilir (beyaz yazıyla okunur kalsın).
+   ═══════════════════════════════════════════════════════════════ */
+.siradaki-odak--b {
+  --ders-koyu: color-mix(in srgb, var(--ders-renk, var(--murekkep)) 70%, var(--g-murekkep));
+  --b-hafif: color-mix(in srgb, var(--beyaz) 18%, transparent);
+  display: flex; flex-direction: column; gap: 0.75rem;
+  padding: 1.25rem; border: 0; border-radius: 24px;
+  background: var(--ders-koyu); color: var(--beyaz);
+  box-shadow: 0 16px 30px -18px var(--ders-koyu);
+}
+body[data-rol='ogrenci'] .siradaki-odak.siradaki-odak--b { background: var(--ders-koyu); color: var(--beyaz); border: 0; border-radius: 24px; box-shadow: 0 16px 30px -18px var(--ders-koyu); }
+.siradaki-odak--bitti { --ders-koyu: var(--isaret); }
+.sb-ust { display: flex; align-items: center; justify-content: space-between; gap: 0.5rem; }
+.sb-simdi { padding: 0.3rem 0.75rem; border-radius: var(--r-tam); background: var(--b-hafif); font-size: var(--punto-mini); font-weight: 700; }
+.sb-tur { font-size: var(--punto-mini); color: color-mix(in srgb, var(--beyaz) 80%, transparent); text-align: right; }
+body[data-rol='ogrenci'] .siradaki-odak--b .siradaki-baslik {
+  margin: 0; color: var(--beyaz); font-size: 1.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.025em;
+}
+body[data-rol='ogrenci'] .siradaki-odak--b .siradaki-alt,
+body[data-rol='ogrenci'] .siradaki-odak--b .siradaki-not { margin: 0; color: color-mix(in srgb, var(--beyaz) 85%, transparent); }
+body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak,
+body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: color-mix(in srgb, var(--beyaz) 88%, transparent); }
+.sb-baslat { display: flex; align-items: center; gap: 0.9rem; margin-top: 0.35rem; }
+.sb-oynat {
+  flex: none; width: 76px; height: 76px; border-radius: 50%; border: 0; cursor: pointer;
+  display: grid; place-items: center; background: var(--beyaz); color: var(--ders-koyu);
+  box-shadow: 0 0 0 6px var(--b-hafif); transition: transform 80ms ease;
+}
+.sb-oynat:active { transform: scale(.94); }
+.sb-oynat svg { margin-left: 4px; }
+.sb-sure { display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
+.sb-sure-metin { margin: 0; font-family: var(--display); font-weight: 700; font-size: 1.375rem; line-height: 1; }
+.sb-secenek { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.sb-cip {
+  min-width: 48px; min-height: 40px; padding: 0 0.75rem; border: 0; border-radius: var(--r-tam); cursor: pointer;
+  background: color-mix(in srgb, var(--beyaz) 16%, transparent); color: var(--beyaz); font: 700 var(--punto-kucuk) var(--govde);
+}
+.sb-cip--secili { background: var(--beyaz); color: var(--ders-koyu); }
+.sb-alt-eylem { display: flex; gap: 0.5rem; padding-top: 0.85rem; border-top: 1px solid color-mix(in srgb, var(--beyaz) 20%, transparent); }
+.sb-hafif {
+  flex: 1 1 0; min-height: 46px; border: 0; border-radius: var(--r-tam); cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  background: var(--b-hafif); color: var(--beyaz); font: 700 var(--punto-kucuk) var(--govde);
+}
+.sb-oynat:disabled, .sb-cip:disabled, .sb-hafif:disabled { cursor: default; opacity: 0.7; }
+/* Karttaki gecikme ve beş dakika teklifleri koyu zeminde okunsun. */
+.siradaki-odak--b .blok-talep, .siradaki-odak--b .mikro { color: var(--beyaz); border-top-color: color-mix(in srgb, var(--beyaz) 20%, transparent); }
+.siradaki-odak--b .blok-talep-soru, .siradaki-odak--b .mikro-soru, .siradaki-odak--b .mikro-not, .siradaki-odak--b .blok-talep-bilgi { color: var(--beyaz); }
+.siradaki-odak--b .dugme--ikincil, body[data-rol='ogrenci'] .siradaki-odak--b .dugme--ikincil { background: var(--b-hafif); border-color: transparent; color: var(--beyaz); }
+.siradaki-odak--b .metin-dugme { color: var(--beyaz); }
+
+/* Sırada: dersin açık tonunda numaralı satırlar, satırın tamamı dokunulur. */
+.sb-liste { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1.25rem; }
+.sb-liste-bas { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.sb-liste-bas h3, .sb-bitenler h3 { margin: 0; font-family: var(--display); font-size: var(--punto-orta); font-weight: 700; color: var(--murekkep); }
+.sb-liste-bas p { margin: 0; font-size: var(--punto-mini); color: var(--soluk); text-align: right; }
+.sb-sira, .sb-bitenler ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.sb-satir {
+  width: 100%; min-height: 64px; display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem;
+  border-radius: 16px; cursor: pointer; text-align: left; font: inherit; color: var(--murekkep);
+  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 16%, var(--yuzey));
+  border: 1px solid color-mix(in srgb, var(--ders-renk, var(--cizgi)) 32%, var(--yuzey));
+  transition: transform 80ms ease;
+}
+.sb-satir:active { transform: scale(.98); }
+.sb-satir:disabled { cursor: default; }
+.sb-no {
+  flex: none; width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+  background: color-mix(in srgb, var(--ders-renk, var(--soluk)) 80%, var(--g-murekkep)); color: var(--beyaz);
+  font: 800 var(--punto-kucuk) var(--display);
+}
+.sb-metin { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.sb-ad { font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+.sb-alt { font-size: var(--punto-mini); font-weight: 600; color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 70%, var(--g-murekkep)); }
+.sb-gec {
+  flex: none; padding: 0.3rem 0.75rem; border-radius: var(--r-tam); background: var(--yuzey);
+  font-size: var(--punto-mini); font-weight: 700; color: color-mix(in srgb, var(--ders-renk, var(--grafit)) 70%, var(--g-murekkep));
+}
+.sb-bitenler { display: flex; flex-direction: column; gap: 0.35rem; margin-top: 0.75rem; }
+.sb-bitenler h3 { font-size: var(--punto-kucuk); color: var(--soluk); }
+.sb-bitenler li { display: flex; align-items: center; gap: 0.6rem; min-height: 44px; color: var(--soluk); }
+.sb-bitti-ikon { flex: none; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; background: var(--isaret); color: var(--beyaz); }
+.sb-bitti-ad { flex: 1; min-width: 0; text-decoration: line-through; }
+.sb-geri { flex: none; min-height: 44px; padding: 0 0.5rem; border: 0; background: none; cursor: pointer; color: var(--soluk); font: 600 var(--punto-mini) var(--govde); }
+
+/* Tepedeki ilerleme şeridi */
+.ob-ilerleme { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.9rem; }
+.ob-ilerleme-serit { display: flex; gap: 6px; }
+.ob-parca { height: 8px; border-radius: var(--r-tam); background: color-mix(in srgb, var(--beyaz) 18%, transparent); }
+.ob-parca--simdi { background: color-mix(in srgb, var(--beyaz) 55%, transparent); }
+.ob-parca--bitti { background: var(--ders-renk); }
+.ob-ilerleme-metin { margin: 0; font-size: var(--punto-mini); color: color-mix(in srgb, var(--beyaz) 78%, transparent); }
+
+/* Günü tamamla: işler bitmeden sade, bitince dolu. */
+.uygulama .gunu-kapat-dugme--sade { background: var(--yuzey); border: 1px solid var(--cizgi); }
+.uygulama .gunu-kapat-dugme--sade strong { color: var(--murekkep); }
+.uygulama .gunu-kapat-dugme--sade span { color: var(--soluk); }
+/* Kart kendi yüzeyini taşıyor; saran bölüm zeminde, kapsız (kart içinde kart yok). */
+.siradaki-bolum { display: flex; flex-direction: column; gap: 0.75rem; }
+.siradaki-bolum > .sb-liste { margin-top: 0.5rem; }

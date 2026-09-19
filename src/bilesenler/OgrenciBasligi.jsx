@@ -5,7 +5,8 @@ import { Kalem, KALEM_ADI } from './Kalem.jsx'
 import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 import { kuralMesaji } from '../lib/kalem-kurallari.js'
 import { maskotuDevral } from '../lib/maskotNobeti.js'
-import { bicimle, kalanMs, useSayac, useSayacTiki } from '../lib/sayac.jsx'
+import { bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
+import { dersGorunumu } from '../lib/dersGorunum.js'
 import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 
 /**
@@ -27,6 +28,39 @@ import { GOREV_TUR_OGRENCI } from '../lib/gorevTuru.js'
 /** Bugünün ilk bitmemiş görevi. Sıra zaten durum + id'ye göre geliyor. */
 function siradakiIs(ozet) {
   return (ozet?.gorevler ?? []).find((g) => g.durum !== 'tamamlandi') ?? null
+}
+
+/* Günün ilerleme şeridi (B tasarımı, 19 Eylül 2026): her iş kendi
+   dersinin renginde bir parça, genişliği süresi kadar. Biten dolu,
+   sıradaki yarı, bekleyen soluk. Altında kaç işin bittiği ve kalan süre. */
+function GunSeridiIlerleme({ gorevler }) {
+  const isler = (gorevler ?? []).filter((g) => g.tur !== 'gorusme')
+  if (isler.length === 0) return null
+  const biten = isler.filter((g) => g.durum === 'tamamlandi').length
+  const ilkBekleyen = isler.find((g) => g.durum !== 'tamamlandi')
+  const kalanDk = isler
+    .filter((g) => g.durum !== 'tamamlandi')
+    .reduce((t, g) => t + varsayilanDk(g.tur), 0)
+  const sa = Math.floor(kalanDk / 60)
+  const dk = kalanDk % 60
+  const kalanMetni = kalanDk === 0 ? '' : ` · kalan yaklaşık ${sa ? `${sa} sa ` : ''}${dk ? `${dk} dk` : ''}`.trimEnd()
+  return (
+    <div className="ob-ilerleme">
+      <div className="ob-ilerleme-serit" aria-hidden="true">
+        {isler.map((g) => (
+          <span
+            key={g.id}
+            className={
+              g.durum === 'tamamlandi' ? 'ob-parca ob-parca--bitti'
+                : g.id === ilkBekleyen?.id ? 'ob-parca ob-parca--simdi' : 'ob-parca'
+            }
+            style={{ flexGrow: varsayilanDk(g.tur), '--ders-renk': dersGorunumu(g.ders).renk }}
+          />
+        ))}
+      </div>
+      <p className="ob-ilerleme-metin">{`${biten} / ${isler.length} bitti${kalanMetni}`}</p>
+    </div>
+  )
 }
 
 /* Çizbi'nin kendi cümlesi yoksa sıradaki işi söyler. Ses tonu kuralları
@@ -214,6 +248,8 @@ export default function OgrenciBasligi({ profil, ogrenciId, ozet, sekme, onSekme
           </div>
         </div>
       </div>
+
+      <GunSeridiIlerleme gorevler={ozet?.gorevler} />
 
       {/* Acil görüşme: Çizbi'nin cümlesinden sonra gelen eylem satırı.
           Vekalette de görünür — koç öğrencinin gördüğü ekranın aynısını

@@ -200,7 +200,10 @@ export default function OgrenciPaneli({
               Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
           {ozet?.bugun && (
             <button
-              className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
+              /* İşler bitmeden sade durur, bitince dolar: ekranda iki dolu
+                 düğme olmasın (B tasarımı). Kapatmak her zaman mümkün. */
+              className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}${
+                !ozet.gunKapandi && (ozet.bugunToplamGorev ?? 0) > (ozet.bugunTamamlanan ?? 0) ? ' gunu-kapat-dugme--sade' : ''}`}
               onClick={() => setKapatAcik(true)}
             >
               {ozet.gunKapandi ? (
