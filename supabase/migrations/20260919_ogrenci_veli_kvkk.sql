@@ -1,0 +1,4 @@
+-- Kayıt amaçlı: yayındaki migration "ogrenci_veli_yonetimi_kvkk" (19 Eylül 2026).
+-- public.kvkk_talepleri (RLS: yalnız yönetici) — tur, kisi_ad, ogrenci_id, kanal, not, durum, sonuç.
+-- RPC (yalnız yönetici): yonetici_veli_listesi, yonetici_ogrenci_erisim(uuid[], bool),
+--   yonetici_veli_izin_geri_cek(bigint), yonetici_ogrenci_disa_aktar(uuid) — hepsi erisim_gunlugu'na yazar.

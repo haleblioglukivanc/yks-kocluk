@@ -4746,3 +4746,10 @@ body[data-rol='veli'] .ob-tamam { background: transparent; color: var(--beyaz); 
 .bolum > .hit-liste > .hit-satir:last-child { border-bottom: 0; }
 .bolum > .hit-liste .hit-bas { padding-inline: 1rem; }
 .bolum > .hit-liste .hit-duzen { background: var(--kagit); border-radius: var(--r-orta); margin: 0 0.75rem 0.75rem; }
+/* Öğrenciler ve veliler: toplu işlem ve KVKK */
+.yk-satir-kapali td { opacity: 0.6; }
+.yk-toplu { margin-top: 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.yk-toplu-aktar { display: flex; align-items: flex-end; }
+.yk-toplu-dugmeler, .kvkk-eylem { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.kvkk-eylem { margin-top: 0.5rem; }
+.kvkk-satir { align-items: flex-start; }

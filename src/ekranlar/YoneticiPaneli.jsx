@@ -9,6 +9,10 @@ import Entegrasyonlar from '../bilesenler/Entegrasyonlar.jsx'
 import ErisimGunlugu from '../bilesenler/ErisimGunlugu.jsx'
 import Basvurular from '../bilesenler/Basvurular.jsx'
 import SmsKaydi from '../bilesenler/SmsKaydi.jsx'
+import Veliler from '../bilesenler/Veliler.jsx'
+import KvkkTalepleri from '../bilesenler/KvkkTalepleri.jsx'
+import EylemDugmesi from '../ortak/EylemDugmesi.jsx'
+import { ogrenciVerisiniIndir } from '../lib/disaAktar.js'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -568,8 +572,17 @@ function Ayarlar({ onGit }) {
    sınırlı; burası kurumun tamamı, koç filtresiyle. */
 const RISK_ADI = { acil: 'Önce bunlar', izle: 'İzle', iyi: 'Yolunda', pasif: 'Pasif' }
 
-function Ogrenciler({ liste, onOgrenciAc }) {
+/* Kurumun bütün öğrencileri. "Seç" ile toplu işlem: koça aktar, erişimi
+   kapat/aç, (tek öğrenci) KVKK verisini indir (TESPIT-YONETIM.md 2.3). */
+function Ogrenciler({ liste, koclar, onOgrenciAc, onDegisti }) {
   const [koc, setKoc] = useState('')
+  const [secim, setSecim] = useState(false)
+  const [secili, setSecili] = useState([])
+  const [hedef, setHedef] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+  const [bilgi, setBilgi] = useState('')
+
   if (!liste?.length) {
     return (
       <Bolum baslik="Öğrenciler">
@@ -577,37 +590,87 @@ function Ogrenciler({ liste, onOgrenciAc }) {
       </Bolum>
     )
   }
-  const koclar = [...new Set(liste.map((o) => o.koc))].sort()
+  const kocAdlari = [...new Set(liste.map((o) => o.koc))].sort()
   const suzulmus = koc ? liste.filter((o) => o.koc === koc) : liste
+  const sec = (id) => setSecili((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]))
+  const hedefler = (koclar ?? []).filter((k) => k.durum !== 'ayrildi')
+
+  async function calistir(is) {
+    setHata('')
+    setBilgi('')
+    setBekliyor(true)
+    try {
+      if (is === 'aktar') {
+        const { data, error } = await supabase.rpc('yonetici_ogrenci_aktar', { p_ogrenciler: secili, p_hedef: hedef })
+        if (error) throw error
+        setBilgi(`${data} öğrenci aktarıldı.`)
+      } else if (is === 'kapat' || is === 'ac') {
+        const { data, error } = await supabase.rpc('yonetici_ogrenci_erisim', { p_ogrenciler: secili, p_acik: is === 'ac' })
+        if (error) throw error
+        setBilgi(`${data} öğrencinin erişimi ${is === 'ac' ? 'açıldı' : 'kapatıldı'}.`)
+      } else if (is === 'indir') {
+        await ogrenciVerisiniIndir(secili[0])
+        setBilgi('Veri dosyası indirildi (erişim günlüğüne yazıldı).')
+      }
+      if (is !== 'indir') {
+        setSecili([])
+        await onDegisti?.()
+      }
+    } catch (e) {
+      setHata(hataMetni(e))
+    } finally {
+      setBekliyor(false)
+    }
+  }
 
   return (
     <Bolum
       baslik="Öğrenciler"
       sayi={suzulmus.length}
-      aciklama="Kurumun tamamı · satıra dokun, öğrenciye git."
+      aciklama={secim ? 'İşlem yapılacak öğrencileri seç.' : 'Kurumun tamamı · satıra dokun, öğrenciye git.'}
       sag={
-        koclar.length > 1 ? (
+        kocAdlari.length > 1 ? (
           <select className="yk-koc-suz" value={koc} onChange={(e) => setKoc(e.target.value)} aria-label="Koça göre süz">
             <option value="">Tüm koçlar</option>
-            {koclar.map((k) => (
+            {kocAdlari.map((k) => (
               <option key={k} value={k}>{k}</option>
             ))}
           </select>
         ) : null
       }
+      eylem={secim ? 'Vazgeç' : 'Seç'}
+      onEylem={() => { setSecim((v) => !v); setSecili([]); setBilgi(''); setHata('') }}
     >
+      <Uyari>{hata}</Uyari>
+      <Uyari tur="bilgi">{bilgi}</Uyari>
       <div className="yk-tablo-kap">
         <table className="yk-tablo">
           <thead>
             <tr>
+              {secim && <th><span className="gorsel-gizli">Seç</span></th>}
               <th>Öğrenci</th><th>Koç</th><th>Tamamlama</th><th>Son net</th>
               <th>Gecikmiş</th><th>Ödeme</th><th>Durum</th>
             </tr>
           </thead>
           <tbody>
             {suzulmus.map((o) => (
-              <tr key={o.ogrenciId} onClick={() => onOgrenciAc?.(o.ogrenciId)} tabIndex={0}
-                  onKeyDown={(e) => e.key === 'Enter' && onOgrenciAc?.(o.ogrenciId)}>
+              <tr
+                key={o.ogrenciId}
+                className={o.aktif === false ? 'yk-satir-kapali' : undefined}
+                onClick={() => (secim ? sec(o.ogrenciId) : onOgrenciAc?.(o.ogrenciId))}
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && (secim ? sec(o.ogrenciId) : onOgrenciAc?.(o.ogrenciId))}
+              >
+                {secim && (
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      aria-label={`${o.ad} seç`}
+                      checked={secili.includes(o.ogrenciId)}
+                      onChange={() => sec(o.ogrenciId)}
+                    />
+                  </td>
+                )}
                 <td>{o.ad}</td>
                 <td className="yk-sonuk">{o.koc}</td>
                 <td className="yk-sayi">{o.tamamlama == null ? '—' : `%${o.tamamlama}`}</td>
@@ -618,21 +681,52 @@ function Ogrenciler({ liste, onOgrenciAc }) {
                     ? `${new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(o.gecikenTutar)} ₺`
                     : '—'}
                 </td>
-                <td><span className="durum-yazi" data-durum={o.risk === 'acil' ? 'uyari' : o.risk === 'izle' ? 'izle' : 'iyi'}>
-                  {RISK_ADI[o.risk] ?? o.risk}
-                </span></td>
+                <td>
+                  {o.aktif === false ? (
+                    <span className="durum-yazi" data-durum="sonuk">Erişim kapalı</span>
+                  ) : (
+                    <span className="durum-yazi" data-durum={o.risk === 'acil' ? 'uyari' : o.risk === 'izle' ? 'izle' : 'iyi'}>
+                      {RISK_ADI[o.risk] ?? o.risk}
+                    </span>
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
+      {secim && secili.length > 0 && (
+        <div className="form-kutu form-kutu--duz yk-toplu">
+          <p className="liste-ad">{secili.length} öğrenci seçili</p>
+          <div className="alan-ikili">
+            <Alan etiket="Başka koça aktar">
+              <select value={hedef} onChange={(e) => setHedef(e.target.value)}>
+                <option value="">Koç seç</option>
+                {hedefler.map((k) => (
+                  <option key={k.koc_id} value={k.koc_id}>{k.ad_soyad}</option>
+                ))}
+              </select>
+            </Alan>
+            <div className="yk-toplu-aktar">
+              <EylemDugmesi ikon="ok" onClick={() => calistir('aktar')} disabled={!hedef || bekliyor}>Aktar</EylemDugmesi>
+            </div>
+          </div>
+          <div className="yk-toplu-dugmeler">
+            <EylemDugmesi ikon="kapat" onClick={() => calistir('kapat')} disabled={bekliyor}>Erişimi kapat</EylemDugmesi>
+            <EylemDugmesi ikon="ok" onClick={() => calistir('ac')} disabled={bekliyor}>Erişimi aç</EylemDugmesi>
+            {secili.length === 1 && (
+              <EylemDugmesi ikon="kopya" onClick={() => calistir('indir')} disabled={bekliyor}>Verisini indir (KVKK)</EylemDugmesi>
+            )}
+          </div>
+        </div>
+      )}
     </Bolum>
   )
 }
 
 const SEKMELER = [
   ['koclar', 'Koçlar'],
-  ['ogrenciler', 'Öğrenciler'],
+  ['ogrenciler', 'Öğrenciler ve veliler'],
   ['tahsilat', 'Tahsilat'],
   ['iletisim', 'İletişim'],
   ['icerik', 'İçerik'],
@@ -734,8 +828,10 @@ export default function YoneticiPaneli({ profil, onOgrenciAc, onGit }) {
 
           {sekme === 'ogrenciler' && (
             <>
-              <Ogrenciler liste={veri.ogrenciler} onOgrenciAc={onOgrenciAc} />
+              <Ogrenciler liste={veri.ogrenciler} koclar={veri.koclar} onOgrenciAc={onOgrenciAc} onDegisti={yukle} />
               <Risk liste={veri.risk} onOgrenciAc={onOgrenciAc} />
+              <Veliler />
+              <KvkkTalepleri ogrenciler={veri.ogrenciler} />
             </>
           )}
 

@@ -15,6 +15,10 @@ const OLAY = {
   yetki_alindi: 'Yönetici yetkisi alındı',
   koc_durumu: 'Koç durumu değişti',
   ogrenci_aktarildi: 'Öğrenci aktarıldı',
+  erisim_acildi: 'Erişim açıldı',
+  erisim_kapandi: 'Erişim kapatıldı',
+  izin_geri_cekildi: 'Veli SMS izni geri çekildi',
+  veri_disa_aktarildi: 'Verisi dışa aktarıldı (KVKK)',
 }
 const DURUM = { aktif: 'Aktif', izinde: 'İzinde', ayrildi: 'Ayrıldı' }
 

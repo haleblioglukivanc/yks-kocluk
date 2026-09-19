@@ -1,11 +1,25 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (İçerik sekmesi)
+Son güncelleme: 19 Eylül 2026 (öğrenci/veli yönetimi, KVKK)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## 19 Eylül 2026 — Yönetim işlevleri 6: öğrenci/veli yönetimi ve KVKK
+
+- Sekme adı **Öğrenciler ve veliler**. Öğrenci tablosunda "Seç" → toplu: başka koça aktar, erişimi kapat/aç,
+  (tek öğrenci) **verisini indir** (KVKK; tüm tablolardan JSON, `yonetici_ogrenci_disa_aktar`). Erişimi kapalı satır soluk.
+- **Veliler** (`Veliler.jsx`, `yonetici_veli_listesi`): uygulama hesabı olanlar + SMS izin kaydı olanlar; izin zamanı,
+  kanalı, alan kişi; "İzni geri çek".
+- **KVKK talepleri** (`KvkkTalepleri.jsx`, tablo `kvkk_talepleri`): talep kaydet (tür, kişi, öğrenci, kanal, not),
+  açık talebin kaç gündür beklediği (25+ gün kırmızı; yasal süre 30 gün), dışa aktarma talebinde "Veriyi indir",
+  Tamamlandı / Reddet.
+- Erişim günlüğüne yeni olaylar: erişim açıldı/kapandı, SMS izni geri çekildi, veri dışa aktarıldı.
+- Denendi: Demo Öğrenci erişimi kapat → aç, veri indirme (98 KB JSON).
+- TESPIT-YONETIM.md sırası tamamlandı. Açık kalanlar: Demo Koç'un yönetici yetkisi (gerçek veriden önce geri alınmalı),
+  `kullanici-olustur`/`kullanici-sil` yapanı günlüğe yazmıyor, SMS başlık onayı.
 
 ## 19 Eylül 2026 — Yönetim işlevleri 5: İçerik sekmesi
 

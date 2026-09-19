@@ -79,4 +79,4 @@ Bugün "Sistem" sekmesinde içerikle karışık duruyor. Önerilen **Teknik** se
 3. ✓ **Teknik sekmesi** (19 Eylül 2026) ayrımı + entegrasyon durumları + erişim günlüğü.
 4. ✓ **Başvurular** listesi (İletişim) (19 Eylül 2026).
 5. ✓ **İçerik** sekmesi (19 Eylül 2026; Kaynaklar/Konu öncelikleri koçta da kaldı — koç işleri kopmasın diye).
-6. Öğrenci/veli yönetimi ve KVKK kayıtları.
+6. ✓ Öğrenci/veli yönetimi ve KVKK kayıtları (19 Eylül 2026).
