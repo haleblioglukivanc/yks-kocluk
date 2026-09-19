@@ -98,7 +98,12 @@ Deno.serve(async (req: Request) => {
     const ttl = k.son_gecerlilik
       ? Math.max(60, Math.floor((new Date(k.son_gecerlilik).getTime() - simdi.getTime()) / 1000))
       : 60 * 60 * 12;
-    const aciliyet = k.tip === "gorusme" || k.tip === "ders_yaklasiyor" ? "high" : "normal";
+    // Hepsi "high": Android uyku kipindeyken (ekran kapalı, uygulama kapalı)
+    // "normal" öncelikli bildirimi telefon uyanana kadar bekletiyor; Bekir'in
+    // Android'ine mesaj bildirimi ancak uygulama açılınca düşüyordu (19 Eylül
+    // 2026). Gönderdiğimiz her bildirim kullanıcıya görünür ve azdır, yüksek
+    // öncelik kötüye kullanım sayılmaz. iPhone bu ayardan etkilenmiyor.
+    const aciliyet = "high";
 
     let basari = 0;
     const hatalar: string[] = [];
