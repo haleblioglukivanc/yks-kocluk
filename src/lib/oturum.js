@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import { supabase } from './supabase.js'
+import { supabase, KURTARMA_ANAHTARI } from './supabase.js'
 
 /**
  * Oturumu ve profili tek yerden yönetir.
@@ -9,6 +9,15 @@ export function useOturum() {
   const [durum, setDurum] = useState('yukleniyor')
   const [kullanici, setKullanici] = useState(null)
   const [profil, setProfil] = useState(null)
+  /* E-postadaki "şifremi unuttum" bağlantısıyla açılan oturum: kişi mevcut
+     şifresini bilmiyor, doğrudan yeni şifre belirleme ekranına gider. */
+  const [kurtarma, setKurtarma] = useState(() => {
+    try { return sessionStorage.getItem(KURTARMA_ANAHTARI) === '1' } catch { return false }
+  })
+  const kurtarmaBitti = useCallback(() => {
+    try { sessionStorage.removeItem(KURTARMA_ANAHTARI) } catch { /* gizli sekme */ }
+    setKurtarma(false)
+  }, [])
 
   const profiliCek = useCallback(async (id) => {
     const { data, error } = await supabase
@@ -73,7 +82,11 @@ export function useOturum() {
       setDurum('hazir')
     })
 
-    const { data: abone } = supabase.auth.onAuthStateChange(async (_olay, oturum) => {
+    const { data: abone } = supabase.auth.onAuthStateChange(async (olay, oturum) => {
+      if (olay === 'PASSWORD_RECOVERY') {
+        try { sessionStorage.setItem(KURTARMA_ANAHTARI, '1') } catch { /* gizli sekme */ }
+        setKurtarma(true)
+      }
       const u = oturum?.user ?? null
       if (!u) {
         setKullanici(null)
@@ -93,8 +106,10 @@ export function useOturum() {
   }, [profiliCek])
 
   const cikisYap = useCallback(async () => {
+    try { sessionStorage.removeItem(KURTARMA_ANAHTARI) } catch { /* gizli sekme */ }
+    setKurtarma(false)
     await supabase.auth.signOut()
   }, [])
 
-  return { durum, kullanici, profil, yenile, cikisYap }
+  return { durum, kullanici, profil, yenile, cikisYap, kurtarma, kurtarmaBitti }
 }

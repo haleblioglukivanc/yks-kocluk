@@ -127,13 +127,47 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           <Odemeler ogrenci={ogrenci} />
           <Veliler ogrenci={ogrenci} />
           <Notlar ogrenci={ogrenci} />
-          <Bolum cizgili baslik="Hesap" aciklama="Öğrenci şifresini unuttuysa yeni geçici şifre üret.">
-            <SifreSifirla kisiId={ogrenci.id} ad={ad} />
+          <Bolum
+            cizgili
+            baslik="Hesap"
+            aciklama="Öğrenci ve veli şifrelerini girişteki “Şifremi unuttum”dan kendileri yenileyebilir. E-postasına ulaşamayan için buradan geçici şifre üret."
+          >
+            <HesapSatiri kisiId={ogrenci.id} ad={ad} tur="öğrenci" />
+            <VeliHesaplari ogrenciId={ogrenci.id} />
           </Bolum>
           <TehlikeliBolge ogrenci={ogrenci} onSilindi={onGeri} />
         </>
       )}
       </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────── Veli hesapları ───────────────────────────
+   Veliler bölümü iletişim kaydı (telefon, izin); buradaki giriş yapan
+   veli hesapları (veli_ogrenci). Her birine aynı sıfırlama bileşeni. */
+
+function VeliHesaplari({ ogrenciId }) {
+  const [liste, setListe] = useState([])
+  useEffect(() => {
+    let iptal = false
+    supabase
+      .from('veli_ogrenci')
+      .select('veli_id, profiller:veli_id(ad_soyad)')
+      .eq('ogrenci_id', ogrenciId)
+      .then(({ data }) => { if (!iptal) setListe(data ?? []) })
+    return () => { iptal = true }
+  }, [ogrenciId])
+  return liste.map((v) => (
+    <HesapSatiri key={v.veli_id} kisiId={v.veli_id} ad={v.profiller?.ad_soyad ?? 'Veli'} tur="veli" />
+  ))
+}
+
+function HesapSatiri({ kisiId, ad, tur }) {
+  return (
+    <div className="hesap-satir">
+      <p className="liste-ad">{ad} <span className="hesap-tur">· {tur}</span></p>
+      <SifreSifirla kisiId={kisiId} ad={ad} />
     </div>
   )
 }

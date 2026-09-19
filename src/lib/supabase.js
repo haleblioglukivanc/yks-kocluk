@@ -11,6 +11,14 @@ const ANAHTAR =
   import.meta.env.VITE_SUPABASE_ANON_KEY ??
   'sb_publishable_Swk1FAALfXmSSyQKkdH7HQ_Jb6OsJVo'
 
+/* Şifre yenileme bağlantısıyla gelindi mi? Supabase adresteki #...type=recovery
+   parçasını oturuma çevirip siler; o yüzden istemci kurulmadan önce okunur.
+   Sekme yenilense de ekran kaybolmasın diye oturum deposuna da yazılır. */
+export const KURTARMA_ANAHTARI = 'sifre-kurtarma'
+try {
+  if (/type=recovery/.test(window.location.hash)) sessionStorage.setItem(KURTARMA_ANAHTARI, '1')
+} catch { /* gizli sekme */ }
+
 export const supabase = createClient(ADRES, ANAHTAR, {
   auth: {
     persistSession: true,

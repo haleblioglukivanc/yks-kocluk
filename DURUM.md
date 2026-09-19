@@ -552,3 +552,9 @@ geçersiz girdide RLS politikası içinde hata fırlatması.
 
 Ayrıca taslak metnindeki ek hatası düzeldi: "hedefinin %36'ini" → "%36 kadarını"
 (doğru ek sayının okunuşuna göre değişiyor, ek istemeyen kalıba geçildi).
+
+## 19 Eylül 2026 — Şifremi unuttum
+
+- Girişte **Şifremi unuttum**: e-posta yazılır, `resetPasswordForEmail` bağlantı yollar (adres kayıtlı olsun olmasın aynı cevap). Bağlantıyla gelen oturum (`type=recovery` / `PASSWORD_RECOVERY`) `SifreDegistir kurtarma` ekranına düşer; mevcut şifre sorulmaz. Erişim günlüğüne `sifre_degistirdi` + `ayrinti.yol = e-posta bağlantısı`.
+- Koçun öğrenci ekranı → Kayıt → Hesap: öğrencinin yanında bağlı veli hesapları da listelenir, her birine geçici şifre üretme (`sifre-sifirla` zaten veliyi destekliyordu, düğme yoktu).
+- **Panelden yapılacak (koddan yapılamıyor):** Supabase → Authentication → SMTP (varsayılan sunucu yalnız proje ekibine mail atar), URL Configuration (Site URL + yönlendirme), Emails → Reset password şablonu Türkçe.

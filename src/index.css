@@ -290,6 +290,13 @@ main {
 @media (hover: hover) { .giris-kagit .dugme--birincil:hover { background: var(--giris-mercan-h); filter: none; }
  }
 .giris-kagit .giris-not { color: var(--soluk); }
+/* Şifremi unuttum: düğmenin altında sessiz metin bağlantı, ortalı. */
+.giris-unuttum {
+  align-self: center; min-height: 44px; padding: 0 0.75rem;
+  font-size: var(--punto-mini); color: var(--soluk);
+  text-decoration: underline; text-underline-offset: 3px;
+}
+.giris-kagit .giris-not--kutu { text-align: left; color: var(--murekkep); font-size: var(--punto-kucuk); }
 .giris-kagit .giris-geri {
   position: relative; margin-top: 1.375rem;
   color: var(--beyaz); font-size: var(--punto-orta);
@@ -298,6 +305,9 @@ main {
 @media (hover: hover) { .giris-kagit .giris-geri:hover { color: var(--giris-turuncu-a); }
  }
 /* ═══════════ Öğrenci detay ═══════════ */
+.hesap-satir { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+.hesap-satir .liste-ad { margin: 0; }
+.hesap-tur { font-weight: 400; color: var(--soluk); font-size: var(--punto-mini); }
 
 .geri { margin-bottom: -0.25rem; align-self: flex-start; }
 .ogrenci-satir {

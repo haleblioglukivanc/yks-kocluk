@@ -10,9 +10,13 @@ import Bolum from '../ortak/Bolum.jsx'
  * `ilk`: hesap geçici şifreyle açıldıysa (ya da şifresi sıfırlandıysa)
  * girişte bu ekran gelir. Karar (Ağustos 2026): zorunlu değil, öneri —
  * "Sonra" ile geçilebilir; oturum boyunca bir daha sorulmaz.
+ *
+ * `kurtarma`: e-postadaki "şifremi unuttum" bağlantısıyla gelindi. Kişi
+ * mevcut şifreyi bilmiyor; bağlantı yeni bir giriş sayıldığı için Supabase
+ * mevcut şifre istemeden değişime izin verir. "Sonra" yok.
  * (TESPIT-YONETIM.md 2.1: bu ekran bir temizlik turunda silinmişti.)
  */
-export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
+export default function SifreDegistir({ ilk = false, kurtarma = false, onSonra, onBitti }) {
   const [mevcut, setMevcut] = useState('')
   const [sifre, setSifre] = useState('')
   const [tekrar, setTekrar] = useState('')
@@ -23,7 +27,7 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
 
   async function kaydet() {
     setHata('')
-    if (!mevcut) return setHata(ilk ? 'Sana verilen geçici şifreyi yaz.' : 'Mevcut şifreni yaz.')
+    if (!kurtarma && !mevcut) return setHata(ilk ? 'Sana verilen geçici şifreyi yaz.' : 'Mevcut şifreni yaz.')
     if (sifre.length < 8) return setHata('Şifre en az 8 karakter olmalı.')
     if (!/[A-Za-zÇĞİÖŞÜçğıöşü]/.test(sifre) || !/\d/.test(sifre)) {
       return setHata('Şifrede en az bir harf ve bir rakam olsun.')
@@ -32,7 +36,9 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
     setBekliyor(true)
     /* Supabase'de "şifre değişiminde mevcut şifre" ayarı açık: yeni şifre
        mevcut şifreyle birlikte gönderilir. */
-    const { data: u, error } = await supabase.auth.updateUser({ password: sifre, current_password: mevcut })
+    const { data: u, error } = await supabase.auth.updateUser(
+      kurtarma ? { password: sifre } : { password: sifre, current_password: mevcut },
+    )
     if (error) {
       setBekliyor(false)
       const m = error.message ?? ''
@@ -53,6 +59,7 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
       await supabase.from('erisim_gunlugu').insert({
         yapan_id: u.user.id, hedef_id: u.user.id, olay: 'sifre_degistirdi',
         hedef_ad: ben?.ad_soyad ?? null,
+        ...(kurtarma ? { ayrinti: { yol: 'e-posta bağlantısı' } } : {}),
       })
     }
     setBekliyor(false)
@@ -65,9 +72,11 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
   return (
     <>
       <SekmeTepesi
-        baslik={ilk ? 'Kendi şifreni belirle' : 'Şifremi değiştir'}
+        baslik={kurtarma ? 'Yeni şifreni belirle' : ilk ? 'Kendi şifreni belirle' : 'Şifremi değiştir'}
         altBaslik={
-          ilk
+          kurtarma
+            ? 'E-postandaki bağlantıyla geldin. Eski şifreni bilmen gerekmiyor.'
+            : ilk
             ? 'Hesabın geçici bir şifreyle açıldı. Yalnız senin bildiğin bir şifre belirle.'
             : 'Yeni şifre bu cihazda ve diğerlerinde bir sonraki girişte geçerli olur.'
         }
@@ -76,19 +85,23 @@ export default function SifreDegistir({ ilk = false, onSonra, onBitti }) {
         {tamam ? (
           <div className="veri-yuzey sifre-tamam">
             <p className="liste-ad">Şifren değişti.</p>
-            <p className="liste-alt">Bir sonraki girişte yeni şifreni kullanacaksın.</p>
+            <p className="liste-alt">
+              {kurtarma ? 'Artık bu şifreyle giriş yapabilirsin.' : 'Bir sonraki girişte yeni şifreni kullanacaksın.'}
+            </p>
             <Dugme onClick={onBitti}>Devam et</Dugme>
           </div>
         ) : (
           <div className="form-kutu form-kutu--duz">
-            <Alan etiket={ilk ? 'Sana verilen geçici şifre' : 'Mevcut şifre'}>
-              <input
-                type={goster ? 'text' : 'password'}
-                autoComplete="current-password"
-                value={mevcut}
-                onChange={(e) => setMevcut(e.target.value)}
-              />
-            </Alan>
+            {!kurtarma && (
+              <Alan etiket={ilk ? 'Sana verilen geçici şifre' : 'Mevcut şifre'}>
+                <input
+                  type={goster ? 'text' : 'password'}
+                  autoComplete="current-password"
+                  value={mevcut}
+                  onChange={(e) => setMevcut(e.target.value)}
+                />
+              </Alan>
+            )}
             <Alan etiket="Yeni şifre" ipucu="En az 8 karakter; en az bir harf ve bir rakam">
               <input
                 type={goster ? 'text' : 'password'}

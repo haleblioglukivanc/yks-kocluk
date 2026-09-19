@@ -165,7 +165,7 @@ export default function App() {
      da seçilen öğrenci. Aynı bileşenler, yalnız yerleşim; dar ekranda tek
      sütun ve ayrı ekranlar. Kanca koşulsuz, en üstte. */
   const genis = useGenisEkran()
-  const { durum, profil, kullanici, cikisYap } = useOturum()
+  const { durum, profil, kullanici, cikisYap, kurtarma, kurtarmaBitti } = useOturum()
   const [sifreErtelendi, setSifreErtelendi] = useState(() => {
     try { return sessionStorage.getItem('sifre-ertelendi') === '1' } catch { return false }
   })
@@ -444,6 +444,15 @@ export default function App() {
   const bildirimlerdeMi = yol === '/bildirimler'
 
   function icerik() {
+    /* "Şifremi unuttum" bağlantısıyla gelen: önce yeni şifresini belirler.
+       Mevcut şifre sorulmaz (bilmiyor); bağlantı kimliğini zaten doğruladı. */
+    if (kurtarma && !gozuyleId)
+      return (
+        <SifreDegistir
+          kurtarma
+          onBitti={() => { kurtarmaBitti(); window.location.assign('/') }}
+        />
+      )
     /* Geçici şifreyle açılan (ya da sıfırlanan) hesap: önce kendi şifresini
        belirlemesi önerilir. "Sonra" bu oturum boyunca sormaz. */
     if (profil.sifre_degistirmeli && !sifreErtelendi && !gozuyleId)
