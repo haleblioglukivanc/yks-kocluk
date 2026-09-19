@@ -196,7 +196,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                   g.baslangic_saat && saatKisa(g.baslangic_saat),
                   g.ders,
                   GOREV_TUR_OGRENCI[g.tur],
-                  `${varsayilanDk(g.tur)} dk`,
+                  `${varsayilanDk(g.tur)}\u00a0dk`,
                 ].filter(Boolean).join(' · ')
                 return (
                   <li key={g.id} style={{ '--ders-renk': dersGorunumu(g.ders).renk }}>
