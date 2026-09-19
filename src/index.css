@@ -4342,6 +4342,9 @@ body[data-rol='ogrenci'] .sk-satir:not(.sk-satir--bitti) {
 }
 body[data-rol='ogrenci'] .sk-satir:active { transform: scale(.98); }
 body[data-rol='ogrenci'] .sk-satir.sk-satir--bitti { background: var(--isaret-zemin); border-color: transparent; }
+/* Renkli satırda çip ve kutu zeminle erimesin: beyaz çip, ders tonunda kutu. */
+body[data-rol='ogrenci'] .sk-satir:not(.sk-satir--bitti) .sk-ders { background: var(--yuzey); }
+body[data-rol='ogrenci'] .sk-satir:not(.sk-satir--bitti) .sk-tik { background: var(--yuzey); border-color: color-mix(in srgb, var(--ders-renk, var(--cizgi)) 45%, var(--yuzey)); }
 /* Sayaç: halkanın yanında çalışan Çizbi */
 .sayac-halka { align-items: center; gap: 0.75rem; }
 .sayac-cizbi { display: block; transform-origin: bottom center; }
