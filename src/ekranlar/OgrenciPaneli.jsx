@@ -226,7 +226,7 @@ export default function OgrenciPaneli({
             bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
           />
           {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
-          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="soz" /></div>
+          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="soz" ogrenciId={kayit.id} /></div>
         </>
       ) : sekme === 'konular' ? (
         <>
@@ -239,7 +239,7 @@ export default function OgrenciPaneli({
           <KonuHaritasi profilId={kayit.id} odakDers={odakDers} sekmeYuvasi={dersYuvasi} />
           {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
-          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="kitap" /></div>
+          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="kitap" ogrenciId={kayit.id} /></div>
         </>
       ) : (
         <>

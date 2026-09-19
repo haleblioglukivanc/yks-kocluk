@@ -3561,6 +3561,7 @@ body[data-tema='panel'] {
 .uygulama .kuyruk-tip[data-tip='risk'], .uygulama .kuyruk-tip[data-tip='gorusme'], .uygulama .kuyruk-tip[data-tip='blok'] { background: none; color: var(--kizil-metin); }
 .uygulama .kuyruk-tip[data-tip='veli_ozet'],
 .uygulama .kuyruk-tip[data-tip='plan'],
+.uygulama .kuyruk-tip[data-tip='ilham'],
 .uygulama .kuyruk-tip[data-tip='odeme'],
 .uygulama .kuyruk-tip[data-tip='konu'],
 .uygulama .kuyruk-tip[data-tip='analiz'] { background: none; color: var(--sicak-metin); }
@@ -5084,3 +5085,44 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
    (16px) ile sekmeli bloğun +4px'i yerine. Tarih şeridi tepe kartın hemen
    altına oturur; dört ekranda (Program, Denemeler, Konular, profil) aynı. */
 .panel > .ogr-detay-govde { margin-top: -0.25rem; }
+/* ── Haftanın kitabı ve sözü kartı (koç kuyruğu) ──
+   Satırlar kart içinde kutu değil, çizgiyle ayrılır (iki katman kuralı). */
+.ilham-liste { list-style: none; margin: 0.75rem 0 0; padding: 0; }
+.ilham-satir { padding: 0.7rem 0; border-top: 1px solid var(--cizgi); }
+.ilham-satir[data-bitti] .ilham-govde { opacity: 0.55; }
+.ilham-ust { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 0.7rem; align-items: start; }
+.ilham-kimlik { padding: 0; border: 0; background: none; cursor: pointer; }
+.ilham-govde { display: flex; flex-direction: column; gap: 0.15rem; min-width: 0; }
+.ilham-kitap { font-size: var(--punto-kucuk); line-height: 1.4; overflow-wrap: anywhere; }
+.ilham-neden { font-size: var(--punto-mini); color: var(--soluk); }
+.ilham-soz {
+  align-self: flex-start; margin-top: 0.3rem; font: inherit; font-size: var(--punto-mini);
+  padding: 0.2rem 0.6rem; border-radius: 999px; border: 1px solid var(--cizgi);
+  background: var(--yuzey-2); color: var(--murekkep); cursor: pointer;
+}
+.ilham-soz[aria-expanded='true'] { border-color: currentColor; }
+.ilham-soz-neden { color: var(--soluk); }
+.ilham-eylem { display: flex; gap: 0.4rem; }
+.ilham-eylem .dugme { min-height: 2.75rem; padding-inline: 0.8rem; }
+.ilham-onay { min-width: 2.75rem; }
+.ilham-tamam { font-weight: 700; color: var(--g-yesil-metin); padding: 0.4rem 0.6rem; }
+.ilham-secici { margin-top: 0.6rem; padding: 0.6rem; border-radius: var(--r-kart); background: var(--yuzey-2); }
+.ilham-ara { width: 100%; box-sizing: border-box; font: inherit; font-size: var(--punto-kucuk); padding: 0.55rem 0.7rem; border: 1px solid var(--cizgi); border-radius: var(--r-kart); background: var(--yuzey); color: var(--murekkep); }
+.ilham-temalar { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+.ilham-temalar .sure-dugme { flex: none; padding-inline: 0.7rem; }
+.ilham-secenekler { list-style: none; margin: 0.5rem 0 0; padding: 0; max-height: 18rem; overflow-y: auto; }
+.ilham-secenek {
+  width: 100%; display: flex; justify-content: space-between; gap: 0.6rem; text-align: left;
+  font: inherit; font-size: var(--punto-kucuk); padding: 0.6rem 0.3rem; min-height: 2.75rem;
+  border: 0; border-bottom: 1px solid var(--cizgi); background: none; color: var(--murekkep); cursor: pointer;
+}
+.ilham-secenek:hover { background: var(--yuzey); }
+.ilham-secenek[data-gecmis] { opacity: 0.6; }
+/* Telefonda düğmeler kitap bilgisinin altına iner; yoksa ad ve kitap
+   kelime kelime kırılıyordu (19 Eylül 2026). */
+@media (max-width: 40rem) {
+  .ilham-ust { grid-template-columns: auto minmax(0, 1fr); }
+  .ilham-eylem, .ilham-tamam { grid-column: 2; justify-self: start; }
+  .ilham-eylem .ilham-degistir { min-width: 7rem; }
+}
+.ilham-soz { max-width: 100%; text-align: left; border-radius: var(--r-kart); }

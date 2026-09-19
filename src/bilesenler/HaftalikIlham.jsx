@@ -10,9 +10,9 @@ import { supabase } from '../lib/supabase.js'
    değişkenleri yeniden tanımladığı için ayrı bir koyu sürüm yazmaya
    gerek yok — bir düzelttiğimizde hepsi bir anda düzelir.
 
-   Seçimi sunucu yapar: public.haftalik_ilham() ISO hafta numarasından
-   deterministik olarak seçer, yani sayfa yenilendiğinde değişmez ve
-   bütün öğrenciler aynı haftada aynı şeyi görür.
+   Seçimi sunucu yapar: koçun o hafta öğrenci için onayladığı kitap/söz
+   varsa o gelir (ogrenci_ilham), yoksa ISO hafta numarasından herkes için
+   aynı genel seçim. Veli ve tanıtım yalnız genel seçimi görür.
    ═══════════════════════════════════════════════════════════════ */
 
 /** Toplam okuma süresini "günde 15 dk ile kaç gün" hâline çevirir. */
@@ -34,20 +34,23 @@ function uzunlukEtiketi(etiketler) {
 
 /* goster: 'hepsi' | 'kitap' | 'soz'. Öğrencide söz Bugün'ün sonunda,
    kitap Yol'un sonunda; veli, rapor ve tanıtım ikisini birlikte gösterir. */
-export default function HaftalikIlham({ goster = 'hepsi' }) {
+export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null }) {
   const [veri, setVeri] = useState(null)
 
   useEffect(() => {
     let iptal = false
     ;(async () => {
-      const { data, error } = await supabase.rpc('haftalik_ilham')
+      const { data, error } = await supabase.rpc(
+        'haftalik_ilham',
+        ogrenciId ? { p_ogrenci: ogrenciId } : {},
+      )
       if (iptal || error) return
       if (data && data.length) setVeri(data[0])
     })()
     return () => {
       iptal = true
     }
-  }, [])
+  }, [ogrenciId])
 
   /* Veri gelmeden hiç yer kaplamıyoruz. İskelet gösterip sonra
      kaybolmak sayfayı zıplatır; bu kutu kritik bilgi değil, sessizce

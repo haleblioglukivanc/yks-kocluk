@@ -26,6 +26,22 @@ kabul. **SMS kapandı**: kendi başlık alınmayacak; veli özetleri kalıcı ol
 **Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; anlık bildirimin telefonda denenmesi; koç masaüstünde
 "Excel gibi" öğrenci × gün tablosu (Kıvanç'ın isteği); `denetim/`'e tasarım kuralı kontrolleri (TASARIM-KURALLARI C.7).
 
+## 19 Eylül 2026 — Haftanın kitabı ve sözü öğrenciye özel
+
+Bekir'in isteği, mokap onaylı. **Nasıl çalışır:** `private.ilham_onerisi(öğrenci, hafta)` her öğrenci için kitap ve söz
+önerir. Kitap: seviye (sınıf ≤ 8 → LGS, değilse YKS; `haftalik_kitap.seviye` lgs/yks/ikisi), haftanın yükü (tatil →
+uzun, risk acil/izle ya da hedef ≥ 30 saat → kısa), alan (sayısal → bilim, sözel/EA → Türk edebiyatı/felsefe);
+daha önce önerilen (`ogrenci_ilham`) ve okunan (`ogrenci_okuma`) atlanır. Söz teması durumdan: tatil → dinlenme,
+yeni → başlangıç, net düştü → hata, sessiz/acil → başlangıç, izle → öz şefkat, ≥ %90 → süreklilik, değilse döner.
+**Koç:** kuyrukta haftada tek kart (`tip = 'ilham'`, Cuma–Pazar gelecek hafta, hafta içi bu hafta), öğrenci başına
+satır; kitabı kütüphaneden arayarak, sözü temaya göre değiştirir; satır satır ya da "Hepsini onayla"
+(`koc_ilham_onayla`). **Öğrenci:** `haftalik_ilham(p_tarih, p_ogrenci)` önce onaylı kişisel seçimi, yoksa genel seçimi
+verir; koç öğrenci ekranına girdiğinde öğrencinin kimliği geçilir. Veli, rapor ve tanıtım genel seçimi görür (genel
+havuz LGS'ye özel kitapları atlar). **Kütüphane:** 28 → 81 kitap (dünya klasikleri, Türk edebiyatı, bilim/düşünce,
+LGS düzeyi), 26 → 44 söz; yeni etiketler `bilim`, `psikoloji`. Migration'lar: `20260919_ogrenci_ilham.sql`,
+`20260919_kutuphane_genisleme.sql`, `20260919_kuyruk_ilham.sql`. **Açık:** Kıvanç'ın Excel'indeki kitap sekmesi
+`ogrenci_okuma`'ya aktarılmadı; öğrencinin "okuyorum / bitirdim" işareti yok.
+
 ## 19 Eylül 2026 — Temiz başlangıç: bütün test verisi silindi
 
 Bekir'in isteğiyle bütün demo/test hesapları ve bağlı veriler silindi: Demo Koç/Öğrenci/Veli, 3 demo koç, 34 demo

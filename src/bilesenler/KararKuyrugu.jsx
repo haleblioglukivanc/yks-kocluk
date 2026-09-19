@@ -27,6 +27,7 @@ const TIP_ETIKET = {
   veli_ozet: 'Veli özeti',
   hedef: 'Hedef ayarı',
   tebrik: 'Tebrik',
+  ilham: 'Kitap ve söz',
 }
 
 const SEGMENT_ETIKET = { acil: 'Acil', pencere: 'Süreli', bugun: 'Bugün', hafta: 'Bu hafta' }
@@ -163,6 +164,14 @@ export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
 
       {odak.tip === 'gorusme' ? (
         <GorusmeKarti
+          key={anahtar(odak)}
+          kart={odak}
+          onOgrenciAc={onOgrenciAc}
+          onBitti={(sayildi) => bittiIsaretle(odak, sayildi)}
+          onHata={setHata}
+        />
+      ) : odak.tip === 'ilham' ? (
+        <IlhamKarti
           key={anahtar(odak)}
           kart={odak}
           onOgrenciAc={onOgrenciAc}
@@ -645,6 +654,244 @@ function PlanKarti({ kart, onOgrenciAc, onBitti, onHata }) {
         </div>
       </div>
     </Kart>
+  )
+}
+
+/* ══ Haftanın kitabı ve sözü ══
+   Haftada tek kart, bütün öğrenciler satır satır. Sistem her öğrenciye
+   kendi haftasına göre öneri getirir; koç tek dokunuşla hepsini onaylar
+   ya da satırda kitabı/sözü kütüphaneden değiştirir. Onaylanmayan haftada
+   öğrenci genel seçimi görür, ekran boş kalmaz. */
+
+const TEMA_ETIKET = {
+  odak: 'odak', sabir: 'sabır', emek: 'emek', merak: 'merak', cesaret: 'cesaret',
+  baslangic: 'başlangıç', sureklilik: 'süreklilik', hata: 'hata', dinlenme: 'dinlenme',
+  oz_sefkat: 'öz şefkat',
+}
+const ETIKET_AD = {
+  kisa: 'kısa', orta: 'orta', uzun: 'uzun', tek_oturusta: 'tek oturuş', dunya_klasigi: 'dünya klasiği',
+  turk_edebiyati: 'Türk edebiyatı', felsefe: 'felsefe', oyku: 'öykü', bilim: 'bilim',
+  psikoloji: 'psikoloji', tatil_icin: 'tatil',
+}
+const kucuk = (m) => String(m ?? '').toLocaleLowerCase('tr-TR')
+
+function IlhamKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+  const hafta = kart.ek?.hafta_basi
+  const [satirlar, setSatirlar] = useState(() =>
+    (kart.ek?.satirlar ?? []).map((r) => ({ ...r, koc: false, bitti: false })),
+  )
+  const [acik, setAcik] = useState(null) // { id, tur: 'kitap' | 'soz' }
+  const [bekliyor, setBekliyor] = useState(false)
+  const kalan = satirlar.filter((r) => !r.bitti)
+
+  async function onayla(liste) {
+    setBekliyor(true)
+    onHata('')
+    const { error } = await supabase.rpc('koc_ilham_onayla', {
+      p_hafta_basi: hafta,
+      p_secimler: liste.map((r) => ({
+        ogrenci_id: r.ogrenci_id,
+        kitap_id: r.kitap?.id ?? null,
+        soz_id: r.soz?.id ?? null,
+        koc: r.koc,
+      })),
+    })
+    setBekliyor(false)
+    if (error) {
+      onHata(hataMetni(error))
+      return
+    }
+    const idler = new Set(liste.map((r) => r.ogrenci_id))
+    const yeni = satirlar.map((r) => (idler.has(r.ogrenci_id) ? { ...r, bitti: true } : r))
+    setSatirlar(yeni)
+    setAcik(null)
+    if (yeni.every((r) => r.bitti)) onBitti(true)
+  }
+
+  function degistir(id, alan, deger) {
+    setSatirlar((l) =>
+      l.map((r) => (r.ogrenci_id === id ? { ...r, [alan]: deger, [`${alan}_gerekce`]: 'Koç seçti', koc: true } : r)),
+    )
+    setAcik(null)
+  }
+
+  return (
+    <Kart kaldirilmis>
+      <div className="kuyruk-ust">
+        <span className="kuyruk-tip" data-tip="ilham">{TIP_ETIKET.ilham}</span>
+        <span className="kuyruk-sayac">{kart.baglam}</span>
+      </div>
+      <p className="kuyruk-oneri">{kart.oneri}</p>
+
+      <ul className="ilham-liste">
+        {satirlar.map((r) => {
+          const kitapAcik = acik?.id === r.ogrenci_id && acik.tur === 'kitap'
+          const sozAcik = acik?.id === r.ogrenci_id && acik.tur === 'soz'
+          return (
+            <li key={r.ogrenci_id} className="ilham-satir" data-bitti={r.bitti || undefined}>
+              <div className="ilham-ust">
+                <button className="ilham-kimlik" onClick={() => onOgrenciAc?.(r.ogrenci_id)} title="Öğrenciyi aç">
+                  <Avatar yol={r.fotograf_yolu} ad={r.ad} boyut="kucuk" />
+                </button>
+                <div className="ilham-govde">
+                  <span className="liste-ad">{r.ad}</span>
+                  <span className="ilham-kitap">
+                    {r.kitap ? (
+                      <>
+                        <i>{r.kitap.ad}</i> — {r.kitap.yazar}
+                        {r.kitap.sayfa ? ` · ${r.kitap.sayfa} sayfa` : ''}
+                      </>
+                    ) : (
+                      'Uygun kitap kalmadı, listeden seç'
+                    )}
+                  </span>
+                  {r.kitap_gerekce && <span className="ilham-neden">{r.kitap_gerekce}</span>}
+                  <button
+                    className="ilham-soz"
+                    disabled={r.bitti}
+                    aria-expanded={sozAcik}
+                    onClick={() => setAcik(sozAcik ? null : { id: r.ogrenci_id, tur: 'soz' })}
+                    title={r.soz?.metin}
+                  >
+                    Söz · {TEMA_ETIKET[r.soz?.tema] ?? 'seç'}
+                    {r.soz_gerekce ? <span className="ilham-soz-neden"> · {kucuk(r.soz_gerekce)}</span> : null}
+                  </button>
+                </div>
+                {r.bitti ? (
+                  <span className="ilham-tamam" aria-label="Onaylandı">✓</span>
+                ) : (
+                  <div className="ilham-eylem">
+                    <button
+                      className="dugme dugme--ikincil ilham-degistir"
+                      aria-expanded={kitapAcik}
+                      onClick={() => setAcik(kitapAcik ? null : { id: r.ogrenci_id, tur: 'kitap' })}
+                    >
+                      Değiştir
+                    </button>
+                    <button
+                      className="dugme dugme--ikincil ilham-onay"
+                      aria-label={`${r.ad} için onayla`}
+                      disabled={bekliyor || !r.kitap}
+                      onClick={() => onayla([r])}
+                    >
+                      ✓
+                    </button>
+                  </div>
+                )}
+              </div>
+              {kitapAcik && (
+                <KitapSecici ogrenciId={r.ogrenci_id} seciliId={r.kitap?.id} onSec={(k) => degistir(r.ogrenci_id, 'kitap', k)} />
+              )}
+              {sozAcik && <SozSecici seciliId={r.soz?.id} onSec={(s) => degistir(r.ogrenci_id, 'soz', s)} />}
+            </li>
+          )
+        })}
+      </ul>
+
+      <div className="kuyruk-dugmeler">
+        <Dugme bekliyor={bekliyor} disabled={kalan.some((r) => !r.kitap)} onClick={() => onayla(kalan)}>
+          {kalan.length === satirlar.length ? 'Hepsini onayla' : `Kalan ${kalan.length} öğrenciyi onayla`}
+        </Dugme>
+      </div>
+    </Kart>
+  )
+}
+
+/* Kütüphane küçük (yüz kitap civarı); bir kez çekilir, arama tarayıcıda. */
+let kutuphaneOnbellek = null
+function useKutuphane() {
+  const [veri, setVeri] = useState(kutuphaneOnbellek)
+  useEffect(() => {
+    if (kutuphaneOnbellek) return
+    Promise.all([
+      supabase.from('haftalik_kitap').select('id, ad, yazar, sayfa, etiket, seviye, emoji').eq('aktif', true).order('ad'),
+      supabase.from('haftalik_soz').select('id, metin, tema').eq('aktif', true).order('tema'),
+    ]).then(([k, s]) => {
+      kutuphaneOnbellek = { kitaplar: k.data ?? [], sozler: s.data ?? [] }
+      setVeri(kutuphaneOnbellek)
+    })
+  }, [])
+  return veri
+}
+
+function KitapSecici({ ogrenciId, seciliId, onSec }) {
+  const kut = useKutuphane()
+  const [ara, setAra] = useState('')
+  const [gecmis, setGecmis] = useState(new Set())
+  useEffect(() => {
+    Promise.all([
+      supabase.from('ogrenci_ilham').select('kitap_id').eq('ogrenci_id', ogrenciId),
+      supabase.from('ogrenci_okuma').select('kitap_id').eq('ogrenci_id', ogrenciId),
+    ]).then(([a, b]) => setGecmis(new Set([...(a.data ?? []), ...(b.data ?? [])].map((x) => x.kitap_id))))
+  }, [ogrenciId])
+
+  const liste = useMemo(() => {
+    if (!kut) return []
+    const q = kucuk(ara).trim()
+    return kut.kitaplar
+      .filter((k) => k.id !== seciliId)
+      .filter((k) => !q || kucuk(`${k.ad} ${k.yazar} ${(k.etiket ?? []).map((e) => ETIKET_AD[e] ?? e).join(' ')}`).includes(q))
+      .sort((a, b) => Number(gecmis.has(a.id)) - Number(gecmis.has(b.id)))
+  }, [kut, ara, seciliId, gecmis])
+
+  return (
+    <div className="ilham-secici">
+      <input
+        className="ilham-ara"
+        value={ara}
+        onChange={(e) => setAra(e.target.value)}
+        placeholder="Kitap, yazar ya da tür ara: bilim, öykü, kısa"
+        aria-label="Kütüphanede ara"
+        autoFocus
+      />
+      {!kut ? (
+        <p className="ilham-neden">Kütüphane geliyor…</p>
+      ) : (
+        <ul className="ilham-secenekler">
+          {liste.slice(0, 40).map((k) => (
+            <li key={k.id}>
+              <button className="ilham-secenek" onClick={() => onSec(k)} data-gecmis={gecmis.has(k.id) || undefined}>
+                <span>
+                  <i>{k.ad}</i> <span className="ilham-neden">— {k.yazar}{k.sayfa ? ` · ${k.sayfa} s.` : ''}</span>
+                </span>
+                <span className="ilham-neden">
+                  {gecmis.has(k.id) ? 'daha önce verildi' : k.seviye === 'lgs' ? 'LGS' : ''}
+                </span>
+              </button>
+            </li>
+          ))}
+          {liste.length === 0 && <li className="ilham-neden">Bu aramaya uyan kitap yok.</li>}
+        </ul>
+      )}
+    </div>
+  )
+}
+
+function SozSecici({ seciliId, onSec }) {
+  const kut = useKutuphane()
+  const [tema, setTema] = useState(null)
+  if (!kut) return <p className="ilham-neden">Sözler geliyor…</p>
+  const temalar = [...new Set(kut.sozler.map((s) => s.tema).filter(Boolean))]
+  const liste = kut.sozler.filter((s) => s.id !== seciliId && (!tema || s.tema === tema))
+  return (
+    <div className="ilham-secici">
+      <div className="ilham-temalar" role="group" aria-label="Söz teması">
+        {temalar.map((t) => (
+          <button key={t} className="sure-dugme" aria-pressed={t === tema} onClick={() => setTema(t === tema ? null : t)}>
+            {TEMA_ETIKET[t] ?? t}
+          </button>
+        ))}
+      </div>
+      <ul className="ilham-secenekler">
+        {liste.map((s) => (
+          <li key={s.id}>
+            <button className="ilham-secenek" onClick={() => onSec(s)}>
+              <span>{s.metin}</span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 
