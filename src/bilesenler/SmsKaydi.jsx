@@ -35,7 +35,7 @@ export default function SmsKaydi() {
       cizgili
       baslik="SMS kaydı"
       sayi={liste?.length || null}
-      aciklama="Veliye giden haftalık özetler."
+      aciklama="Veliye giden haftalık özetler. SMS gönderimi başlık onayına kadar uykuda; bekleyenler koçun Bugün ekranındaki “Veliye iletilecek” kutusunda, WhatsApp ile iletilir."
       eylem={liste && liste.length > 5 ? (hepsi ? 'Kısalt' : `Tümü · ${liste.length}`) : null}
       onEylem={() => setHepsi((v) => !v)}
     >

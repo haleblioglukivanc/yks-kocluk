@@ -16,8 +16,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
   yönetici okur/günceller; RPC `basvuru_isle`.
 - **SMS kaydı** (`bilesenler/SmsKaydi.jsx`, RPC `yonetici_sms_kaydi`, `yonetici_sms_iptal`): kuyruk durumu, bekleyen/hatalı iptal.
   Teknik'te görülen 2 bekleyen SMS silinmiş örnek öğrencilerdendi (alıcısı yok) → iptal edildi.
-- **Açık bulgu**: `sms_kuyrugu`'nu boşaltan bir cron yok; kayıtlar deneme 0'da kalıyordu. Gerçek veli özeti gönderimi
-  başlamadan kuyruk işleyicisi (ya da doğrudan gönderim akışı) doğrulanmalı.
+- **Düzeltme**: "SMS kuyruğunu boşaltan cron yok" bir hata değil, 16 Eylül 2026 kararı (`sms-gonder/README.md`): onaylı
+  başlık başka firmanın (FIRATILTSM), kendi başlığımız onay bekliyor; koç veli özetini Bugün'deki "Veliye iletilecek"
+  kutusundan WhatsApp'la iletiyor. Entegrasyon satırı artık "Uykuda" gösteriyor. Başlık onaylanınca tek satır:
+  `select cron.schedule('sms-kuyrugu-bosalt', '*/2 * * * *', $$ select private.sms_gondericiyi_durt() $$);`
+  (Entegrasyon RPC'sine `sms.cron` bayrağı eklenecek; o gelene kadar satır "Uykuda" varsayar.)
 
 ## 19 Eylül 2026 — Yönetim işlevleri 3: Teknik ve İçerik sekmeleri
 
