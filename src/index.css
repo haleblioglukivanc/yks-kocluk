@@ -4910,3 +4910,4 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .sb-bitenler-ac .sb-ok { transition: transform 150ms ease; color: var(--soluk); }
 .sb-bitenler-ac[aria-expanded='true'] .sb-ok { transform: rotate(90deg); }
 .sb-bitenler li { padding-left: 1.9rem; }
+.siradaki-bolum { margin-bottom: 0.75rem; }
