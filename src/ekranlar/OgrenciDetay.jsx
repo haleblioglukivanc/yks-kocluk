@@ -119,7 +119,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         />
       </OgrenciKimlikKarti>
 
-      <div className="sekme-govde" style={aksanStili()}>
+      <div className="sekme-govde ogr-detay-govde" style={aksanStili()}>
       {sekme === 'program' && (
         <>
           <Program ogrenci={ogrenci} />
@@ -186,7 +186,7 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
         </div>
       </UstBlok>
 
-      <div className="sekme-govde profil-govde" style={aksanStili()}>
+      <div className="sekme-govde ogr-detay-govde profil-govde" style={aksanStili()}>
         <Bolum baslik="İletişim" kartli {...kalem('iletisim')}>
           {duzenlenen === 'iletisim' ? (
             <KimlikFormu ogrenci={ogrenci} onKaydedildi={kaydedildi} onVazgec={() => setDuzenlenen(null)} />

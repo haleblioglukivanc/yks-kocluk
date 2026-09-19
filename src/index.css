@@ -5069,3 +5069,14 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .grafik-hedef text { fill: var(--sicak-metin); font-size: 10px; font-weight: 700; font-family: var(--govde, inherit); }
 .bolum-kart > .net-cizgi:last-child { margin-bottom: 0.75rem; }
 @media (prefers-reduced-motion: reduce) { .hedef-cubuk > span { transition: none; } }
+
+/* ─── Koçun öğrenci ekranı: tepenin altındaki ilk içerik (19 Eylül 2026) ───
+   Program, Denemeler, Konular ve profil aynı mesafeden başlar; boşluk
+   sekmenin ilk bloğundan değil gövdeden gelir. Böylece bir sekmeden blok
+   kalkınca boşluk asılı kalmaz, sekmeler arasında içerik zıplamaz.
+   Tepe → gövde arası: .panel gap + .ust-blok--sekmeli + * (≈20px). */
+.ogr-detay-govde > :first-child { margin-top: 0; }
+.ogr-detay-govde > .bolum--cizgili:first-child { border-top: 0; padding-top: 0; }
+/* Hafta şeridinin kabı yapışkan olduğu için kendi üst dolgusunu taşır;
+   Bölüm başlıkları da 44px'lik satırda ortalandığı için ilk yazıları
+   biraz aşağıda durur. İkisi kendiliğinden aynı hizaya geliyor. */
