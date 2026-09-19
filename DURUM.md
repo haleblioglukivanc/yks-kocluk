@@ -53,8 +53,11 @@ Gelen kutusu (`bildirim_kuyrugu`) aynen duruyor; her satır için "telefona da g
   (service worker'a `importScripts` ile; göster + dokununca ilgili ekran). Davet şeridi yalnız kurulu uygulamada
   (`BildirimDaveti`, rolüne göre metin, bir kez). Hesap → "Bildirimler: Açık/Kapalı". Çıkışta cihaz hesaptan ayrılır,
   izin telefonda kalır; aynı cihazda kim girerse bildirim ona bağlanır.
-- Doğrulama: kural tablosu, boru hattı (tetik → kuyruk → gönderici → web-push) ve SW gösterimi test edildi. Gerçek
-  telefon aboneliği sandbox'ta denenemedi. Kıvanç'ın 4 Eylül denemesinden kalma iPhone kaydı duruyor: koç olayları ona gider.
+- Doğrulama: kural tablosu, boru hattı (tetik → kuyruk → gönderici → web-push) ve SW gösterimi test edildi.
+  **Gerçek telefonda doğrulandı (19 Eylül 2026, Bekir):** iPhone (Kıvanç) acil görüşme bildirimi aldı; Android
+  (Bekir, öğrenci) deneme bildirimi ve Kıvanç'ın görev bildirimini aldı. Android'de ilk abonelik FCM'den 410 aldı;
+  bunun üzerine cihaz kaydı kendini onarır hale getirildi (`bildirimKaydiniTazele`, `bildirim_cihaz_kayitli_mi`,
+  aynı anda tek onarım) ve ölü abonelik günlüğe yazılıyor. Kıvanç'ın 4 Eylül denemesinden kalma iPhone kaydı duruyor: koç olayları ona gider.
 
 ## 19 Eylül 2026 — PWA sıfırdan
 
