@@ -32,8 +32,8 @@ Bekir'in isteğiyle bütün demo/test hesapları ve bağlı veriler silindi: Dem
 öğrenci (Kıvanç'a bağlı gerçek hesap Roşin Alp dahil, Bekir'in kararı), 6 demo veli; görevler, denemeler, mesajlar,
 sözleşme/tahsilat, görüşme talepleri, bildirimler; başvurular, sosyal yanıt denemeleri, mail/SMS kuyrukları, Çizbi
 olayları. Kalanlar: Kıvanç'ın hesabı ve ayarları, müfredat (ders/konu/katalog), kaynaklar, haftalık söz/kitap, günlükler.
-Demo Koç'un geçici yönetici yetkisi hesapla birlikte gitti. Yeni test hesabı: **Bekir Yılmaz, koç + yönetici**
-(`bekiryilmaz@msn.com`). Öğrenci ve veliyi Bekir kendisi ekleyip baştan test edecek. Bu belgedeki demo hesap
+Demo Koç'un geçici yönetici yetkisi hesapla birlikte gitti. Yeni test hesabı: **Bekir Yılmaz, Kıvanç'ın öğrencisi**
+(`bekiryilmaz@msn.com`; sınav türü/alan/sınıf boş, Kayıt'tan seçilecek). Bu belgedeki demo hesap
 adları artık yok.
 
 ## 19 Eylül 2026 — Anlık bildirim (web push)
