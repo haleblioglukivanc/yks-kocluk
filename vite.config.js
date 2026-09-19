@@ -43,6 +43,12 @@ export default defineConfig({
         theme_color: LACIVERT,
         background_color: IKON_ZEMIN,
         categories: ['education'],
+        /* İkona basılı tutunca çıkan kısayollar. Her rolde var olan
+           ekranlar: koça ve öğrenciye ayrı kısayol verilemiyor. */
+        shortcuts: [
+          { name: 'Mesajlar', url: taban + 'mesajlar', icons: [{ src: taban + 'icon-192.png', sizes: '192x192' }] },
+          { name: 'Bildirimler', url: taban + 'bildirimler', icons: [{ src: taban + 'icon-192.png', sizes: '192x192' }] },
+        ],
         icons: [
           { src: taban + 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
           { src: taban + 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },

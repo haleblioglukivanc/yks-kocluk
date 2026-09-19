@@ -46,6 +46,9 @@ Eski PWA kurulmuyor, kurulunca beyaz ekranda kalabiliyordu. Katman sıfırdan ya
   Uzantılı yollara `index.html` dönmez.
 - **Durum çubuğu** rolün `--tepe-ust`'u: öğrenci koyu amber, koç/veli lacivert (eski `--durum-cubugu-panel` kalktı).
 - Apple ikonu köşesiz (iOS kendi yuvarlar; şeffaf köşeyi siyaha boyuyordu).
+- Rötuşlar: kurulu uygulamada çıkış yapmış kullanıcı tanıtımı hiç görmez, doğrudan giriş (geri düğmesi yok, `/randevu`
+  hariç); girişten sonra adres `/giris`'ten `/`'a döner (geçmişe kayıt eklemeden); manifest kısayolları Mesajlar ve
+  Bildirimler (her rolde var olan iki ekran; koça ve öğrenciye ayrı kısayol verilemiyor).
 - Doğrulama: Chromium kurulabilirlik hatası yok, manifest hatası yok, çevrimdışı açılıyor, `?sifirla=1` temizliyor.
   iPhone'da gerçek kurulum elle denenmeli.
 

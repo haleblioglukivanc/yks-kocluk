@@ -27,7 +27,7 @@ import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './pwa/KurulumDaveti.jsx'
-import { durumCubugu } from './pwa/pwa.js'
+import { durumCubugu, kuruluMu } from './pwa/pwa.js'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
@@ -81,7 +81,13 @@ function useYol() {
     document.startViewTransition(() => flushSync(uygula))
   }
 
-  return [yol, git]
+  /* Geçmişe kayıt eklemeden adresi değiştirir (geri tuşu eski adrese dönmesin). */
+  const degistir = (hedef) => {
+    window.history.replaceState({}, '', TABAN + hedef)
+    setYol(hedef)
+  }
+
+  return [yol, git, degistir]
 }
 
 const ikonOzellik = {
@@ -165,7 +171,7 @@ export default function App() {
   })
   const [hesapAcik, setHesapAcik] = useState(false)
   const [bekleyenKarar, setBekleyenKarar] = useState(0)
-  const [yol, git] = useYol()
+  const [yol, git, degistir] = useYol()
 
   /* Her sayfanın canonical'ı kendi adresi. index.html tek dosya olduğu için
      statik etiket hep ana sayfayı gösteriyordu; arama motoru /giris ve
@@ -271,6 +277,13 @@ export default function App() {
     return () => { delete document.body.dataset.rol }
   }, [ogrenciDunyasi, Boolean(profil)])
 
+  /* Giriş yapılınca adres /giris'te kalmasın: uygulama ana ekranı '/'.
+     Kurulu uygulama /giris'ten açılıyor (manifest start_url). */
+  const girisli = durum === 'hazir' && Boolean(profil)
+  useEffect(() => {
+    if (girisli && yol === '/giris') degistir('/')
+  }, [girisli, yol])
+
   /* Durum çubuğu (telefonda saat/pil şeridi, kurulu uygulamada pencere
      başlığı) ekranın tepesiyle aynı renkte: öğrencide koyu amber, koç ve
      velide lacivert. Renk tema.css'te rolün --tepe-ust'u; data-rol yukarıda
@@ -291,6 +304,9 @@ export default function App() {
 
   // Giriş yapılmamış: tanıtım veya giriş
   if (durum === 'cikis') {
+    /* Ana ekrandan açılan uygulama tanıtım sayfası göstermez: girişe
+       gider, geri düğmesi olmaz. Randevu formu yine açılabilir. */
+    if (kuruluMu() && yol !== '/randevu') return <Giris />
     if (yol === '/giris') return <Giris onGeri={() => git('/')} />
     if (yol === '/randevu') return <Randevu onGeri={() => git('/')} />
     return <Tanitim onGiris={() => git('/giris')} onRandevu={() => git('/randevu')} />
