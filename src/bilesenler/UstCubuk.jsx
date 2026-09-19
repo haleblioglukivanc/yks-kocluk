@@ -42,7 +42,7 @@ function CizbiYuz() {
   )
 }
 
-export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, onGeri = null, zilEtkin, hesapEtkin, gelenKutusu = false }) {
+export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, onGeri = null, zilEtkin, hesapEtkin, gelenKutusu = false, hesapGizli = false }) {
   return (
     <div className="ust-cubuk">
       <button type="button" className="ust-logo" onClick={onLogo} aria-label="Ana ekran">
@@ -85,6 +85,9 @@ export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, on
             </span>
           )}
         </button>
+        {/* Vekalette hesap düğmesi yok: yeri "Yönetime dön"ün, telefonda üçü
+            birden sığmıyor, koçun avatarı da öğrencinin ekranında yabancı. */}
+        {!hesapGizli && (
         <button
           type="button"
           className={hesapEtkin ? 'ust-ikon ust-ikon--hesap ust-ikon--etkin' : 'ust-ikon ust-ikon--hesap'}
@@ -94,6 +97,7 @@ export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, on
         >
           <Avatar yol={profil?.fotograf_yolu} ad={profil?.ad_soyad} boyut="orta" />
         </button>
+        )}
       </div>
     </div>
   )

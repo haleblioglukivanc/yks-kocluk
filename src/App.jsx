@@ -406,7 +406,9 @@ export default function App() {
     (anaEkranda && kocMu) ||
     (profil.rol === 'ogrenci' && (anaEkranda || yol === '/yol')) ||
     (profil.rol === 'veli' && anaEkranda) ||
-    (Boolean(gozuyleId) && gozuyleSekme !== 'denemeler') ||
+    /* Vekalette köşe Çizbi'si hiç yok: giriş yapan koç olduğu için koçun
+       cümlelerini söylüyor ve olay kaydını koçun satırına yazıyordu. */
+    Boolean(gozuyleId) ||
     yol === '/yonetim'
 
   /* Çizbi'nin köşeden gelen sözleri ekrana bağlı; yolun ilk parçası ekran adı. */
@@ -623,13 +625,17 @@ export default function App() {
       <header className="ust-serit">
         <UstCubuk
           profil={profil}
-          rozet={bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
+          /* Vekalette tepe öğrencinin tepesi: Çizbi yüzlü gelen kutusu,
+             koçun zili ve karar sayısı yok. Dokununca o öğrenciyle
+             yazışma açılır — öğrencinin gelen kutusunun koçtaki karşılığı. */
+          rozet={gozuyleId || bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
           zilEtkin={bildirimlerdeMi}
-          gelenKutusu={profil.rol === 'ogrenci'}
+          gelenKutusu={profil.rol === 'ogrenci' || Boolean(gozuyleId)}
+          hesapGizli={Boolean(gozuyleId)}
           hesapEtkin={hesapAcik}
           onGeri={gozuyleId ? () => git('/ogrenciler') : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
-          onZil={() => git(bildirimlerdeMi ? '/' : '/bildirimler')}
+          onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : '/bildirimler')}
           onHesap={() => setHesapAcik(true)}
         />
       </header>

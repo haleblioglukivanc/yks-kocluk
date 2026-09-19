@@ -7,7 +7,9 @@ import { supabase } from '../lib/supabase.js'
    öğrenci zaten kutuya bakmayan öğrenci. Okundu işaretlenince başlık
    Çizbi'ye döner; mesaj kutuda kalmaya devam eder. */
 
-export function useKocMesaji(ogrenciId, etkin = true) {
+/* salt: vekalette koç öğrencinin ekranını görür; mesaj balonu öğrencideki
+   gibi çıkar ama kapatmak yalnız ekrandan kaldırır, okundu işaretlemez. */
+export function useKocMesaji(ogrenciId, etkin = true, salt = false) {
   const [mesaj, setMesaj] = useState(null)
   const [kapaniyor, setKapaniyor] = useState(false)
 
@@ -32,10 +34,10 @@ export function useKocMesaji(ogrenciId, etkin = true) {
   const okudum = useCallback(async () => {
     if (!mesaj) return
     setKapaniyor(true)
-    await supabase.from('mesajlar').update({ okundu_mu: true }).eq('id', mesaj.id)
+    if (!salt) await supabase.from('mesajlar').update({ okundu_mu: true }).eq('id', mesaj.id)
     setMesaj(null)
     setKapaniyor(false)
-  }, [mesaj])
+  }, [mesaj, salt])
 
   return mesaj ? { mesaj, okudum, kapaniyor } : null
 }

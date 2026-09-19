@@ -620,3 +620,7 @@ Ayrıca taslak metnindeki ek hatası düzeldi: "hedefinin %36'ini" → "%36 kada
 - Girişte **Şifremi unuttum**: e-posta yazılır, `resetPasswordForEmail` bağlantı yollar (adres kayıtlı olsun olmasın aynı cevap). Bağlantıyla gelen oturum (`type=recovery` / `PASSWORD_RECOVERY`) `SifreDegistir kurtarma` ekranına düşer; mevcut şifre sorulmaz. Erişim günlüğüne `sifre_degistirdi` + `ayrinti.yol = e-posta bağlantısı`.
 - Koçun öğrenci ekranı → Kayıt → Hesap: öğrencinin yanında bağlı veli hesapları da listelenir, her birine geçici şifre üretme (`sifre-sifirla` zaten veliyi destekliyordu, düğme yoktu).
 - **Panelden yapılacak (koddan yapılamıyor):** Supabase → Authentication → SMTP (varsayılan sunucu yalnız proje ekibine mail atar), URL Configuration (Site URL + yönlendirme), Emails → Reset password şablonu Türkçe.
+
+## 19 Eylül 2026 — vekalet kabuğu öğrenci gibi
+
+Göz ikonu (`/gozuyle/:id`) zaten öğrencinin kendi `OgrenciPaneli`ni açıyordu; fark kabuktaydı (giriş yapan koça göre çiziliyordu). Düzeltme: vekalette üst şeritte Çizbi yüzlü gelen kutusu (dokununca o öğrenciyle yazışma), koçun zil/karar sayısı ve hesap düğmesi yok, yalnız "Yönetime dön"; köşe Çizbi'si koçun cümlelerini söylediği için vekalette hiç yok; koç mesajı balonu öğrencideki gibi görünür ama kapatmak okundu işaretlemez. Bilerek kapalı kalanlar: kutlama/konfeti, kitap "Bitirdim", acil görüşme (üçü de öğrencinin kendi eylemi). Playwright 390px ile öğrenci ve vekalet ekranı karşılaştırıldı.

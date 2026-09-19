@@ -80,8 +80,9 @@ export default function OgrenciPaneli({
   const [seciliGun, setSeciliGun] = useState(null)
   const [dersYuvasi, setDersYuvasi] = useState(null)
   const [gunVerisi, setGunVerisi] = useState(null)
-  /* Koçun okunmamış mesajı başlıkta çıkar; vekalette koç kendi mesajını görmesin. */
-  const kocMesaji = useKocMesaji(hedefId, !vekaleten)
+  /* Koçun okunmamış mesajı başlıkta çıkar. Vekalette de görünür (koç
+     öğrencinin ne gördüğünü görsün) ama kapatmak okundu işaretlemez. */
+  const kocMesaji = useKocMesaji(hedefId, true, vekaleten)
 
   /* Kutlama, ilk açılışta değil yalnızca bir eylemden sonra bakılır.
      Bayrak yenile() ile kalkar, özet tazelendikten sonra tüketilir —
