@@ -29,7 +29,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
   const [profil, setProfil] = useState(false)
-  const [duzenle, setDuzenle] = useState(false)
   const [hata, setHata] = useState('')
 
   const yukle = useCallback(async () => {
@@ -71,7 +70,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
   // kurulmuyor; açık kalan profil/sekme önceki öğrenciden taşınmasın.
   useEffect(() => {
     setProfil(false)
-    setDuzenle(false)
     setSekme('program')
   }, [ogrenciId])
 
@@ -85,10 +83,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       <ProfilSayfasi
         ogrenci={ogrenci}
         kataloglar={kataloglar}
-        duzenle={duzenle}
-        setDuzenle={setDuzenle}
         yukle={yukle}
-        onKapat={() => { setProfil(false); setDuzenle(false) }}
+        onKapat={() => setProfil(false)}
         onSilindi={onGeri}
       />
     )
@@ -146,14 +142,30 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
    ekranda başka yerde görünmeyenler yazılır: sınıf/alan kimlik kartında,
    hedef ve hedef netler Program'da; Düzenle formunda hepsi var. */
 
-function ProfilSayfasi({ ogrenci, kataloglar, duzenle, setDuzenle, yukle, onKapat, onSilindi }) {
+function ProfilSayfasi({ ogrenci, kataloglar, yukle, onKapat, onSilindi }) {
+  /* Her kart kendi alanlarını gösterir ve kendi kalemiyle yalnız onları
+     düzenler (mokap v2, 19 Eylül 2026). Tek dev form, neyin düzenlendiğini
+     belirsizleştiriyordu. Aynı anda tek kart düzenlenir. */
+  const [duzenlenen, setDuzenlenen] = useState(null)
   const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
-  const kayit = ogrenci.kayit_tarihi
-    ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
-    : null
-  const altSatir = [kayit && `Kayıt ${kayit}`, ogrenci.aktif ? 'erişim açık' : 'erişim kapalı']
+  const kayit = ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi) : null
+  const gun = kayit ? Math.max(0, Math.floor((Date.now() - kayit.getTime()) / 864e5)) : null
+  const altSatir = [
+    kayit && `Kayıt ${kayit.toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })}`,
+    gun != null && (gun === 0 ? 'bugün katıldı' : `${gun} gündür bizde`),
+    !ogrenci.aktif && 'erişim kapalı',
+  ]
     .filter(Boolean)
     .join(' · ')
+
+  const kalem = (k) => ({
+    eylem: duzenlenen === k ? 'Vazgeç' : 'Düzenle',
+    onEylem: () => setDuzenlenen((v) => (v === k ? null : k)),
+  })
+  const kaydedildi = async () => {
+    setDuzenlenen(null)
+    await yukle()
+  }
 
   return (
     <div className="panel">
@@ -174,40 +186,111 @@ function ProfilSayfasi({ ogrenci, kataloglar, duzenle, setDuzenle, yukle, onKapa
       </UstBlok>
 
       <div className="sekme-govde profil-govde" style={aksanStili()}>
-        <Bolum baslik="İletişim">
-          <IletisimSatiri etiket="Öğrenci" telefon={ogrenci.profiller?.telefon} />
-          <Veliler ogrenci={ogrenci} />
-        </Bolum>
-
-        <Bolum
-          cizgili
-          baslik="Bilgiler"
-          eylem={duzenle ? 'Vazgeç' : 'Düzenle'}
-          onEylem={() => setDuzenle((v) => !v)}
-        >
-          {duzenle ? (
-            <BilgiFormu
-              ogrenci={ogrenci}
-              kataloglar={kataloglar}
-              onKaydedildi={async () => {
-                setDuzenle(false)
-                await yukle()
-              }}
-            />
+        <Bolum baslik="İletişim" kartli {...kalem('iletisim')}>
+          {duzenlenen === 'iletisim' ? (
+            <KimlikFormu ogrenci={ogrenci} onKaydedildi={kaydedildi} onVazgec={() => setDuzenlenen(null)} />
           ) : (
-            <Kunye ogrenci={ogrenci} />
+            <>
+              <IletisimSatiri etiket="Öğrenci" telefon={ogrenci.profiller?.telefon} />
+              <Veliler ogrenci={ogrenci} />
+            </>
           )}
         </Bolum>
-        <Odemeler ogrenci={ogrenci} />
-        <Bolum
-          cizgili
-          baslik="Hesap"
-          aciklama="Öğrenci ve veli şifrelerini girişteki “Şifremi unuttum”dan kendileri yenileyebilir. E-postasına ulaşamayan için buradan geçici şifre üret."
-        >
+
+        <Bolum baslik="Sınav ve hedef" kartli {...kalem('hedef')}>
+          {duzenlenen === 'hedef' ? (
+            <HedefFormu
+              ogrenci={ogrenci}
+              kataloglar={kataloglar}
+              onKaydedildi={kaydedildi}
+              onVazgec={() => setDuzenlenen(null)}
+            />
+          ) : (
+            <HedefGorunumu ogrenci={ogrenci} />
+          )}
+        </Bolum>
+
+        <Odemeler ogrenci={ogrenci} kartli />
+
+        <Bolum baslik="Hesap" kartli>
+          <ErisimSatiri ogrenci={ogrenci} onDegisti={yukle} />
           <HesapSatiri kisiId={ogrenci.id} ad={ad} tur="öğrenci" />
           <VeliHesaplari ogrenciId={ogrenci.id} />
         </Bolum>
+
         <TehlikeliBolge ogrenci={ogrenci} onSilindi={onSilindi} />
+      </div>
+    </div>
+  )
+}
+
+/* Sınav tarihi boşsa veritabanı (private.ogrenci_sinav_tarihi) sınıfa göre
+   sıradaki LGS/YKS'yi kullanır; burada aynısını yıl olarak yazıyoruz. */
+function sinavYazisi(ogrenci) {
+  if (ogrenci.sinav_tarihi) {
+    return new Date(ogrenci.sinav_tarihi).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+  }
+  const bugun = new Date()
+  const yil = bugun.getMonth() >= 6 ? bugun.getFullYear() + 1 : bugun.getFullYear()
+  return `${(ogrenci.sinif ?? 12) <= 8 ? 'LGS' : 'YKS'} ${yil}`
+}
+
+function HedefGorunumu({ ogrenci }) {
+  const hedef = [ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ')
+  const net = (v) => (v != null ? Number(v).toFixed(2).replace(/\.00$/, '') : null)
+  const hucreler = [
+    ['Sınıf', ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null],
+    ['Alan', ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null],
+    ['Sınav', sinavYazisi(ogrenci)],
+    ['Konu kataloğu', ogrenci.kataloglar?.ad ?? null],
+    ['Hedef', hedef || null, true],
+    ['TYT hedef net', net(ogrenci.hedef_tyt_net)],
+    ['AYT hedef net', net(ogrenci.hedef_ayt_net)],
+  ]
+  return (
+    <dl className="profil-izgara">
+      {hucreler.map(([k, v, tam]) => (
+        <div key={k} className={tam ? 'profil-hucre profil-hucre--tam' : 'profil-hucre'}>
+          <dt>{k}</dt>
+          <dd className={v ? '' : 'bos'}>{v ?? 'Girilmemiş'}</dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
+
+function ErisimSatiri({ ogrenci, onDegisti }) {
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+  async function degistir() {
+    setHata('')
+    setBekliyor(true)
+    const { error } = await supabase.from('ogrenciler').update({ aktif: !ogrenci.aktif }).eq('id', ogrenci.id)
+    setBekliyor(false)
+    if (error) setHata(hataMetni(error))
+    else await onDegisti()
+  }
+  return (
+    <div className="iletisim-satir">
+      <div className="iletisim-bilgi">
+        <span className="iletisim-deger">Uygulamaya erişim</span>
+        <span className="iletisim-etiket">
+          {ogrenci.aktif ? 'Açık · öğrenci giriş yapabiliyor' : 'Kapalı · verisi duruyor, giriş yapamaz'}
+        </span>
+        <Uyari>{hata}</Uyari>
+      </div>
+      <div className="iletisim-eylem">
+        <label className="anahtar anahtar--acik-zemin">
+          <input
+            type="checkbox"
+            role="switch"
+            checked={Boolean(ogrenci.aktif)}
+            onChange={degistir}
+            disabled={bekliyor}
+            aria-label="Uygulamaya erişim"
+          />
+          <span className="anahtar-kizak" />
+        </label>
       </div>
     </div>
   )
@@ -280,48 +363,32 @@ function VeliHesaplari({ ogrenciId }) {
 
 function HesapSatiri({ kisiId, ad, tur }) {
   return (
-    <div className="hesap-satir">
-      <p className="liste-ad">{ad} <span className="hesap-tur">· {tur}</span></p>
-      <SifreSifirla kisiId={kisiId} ad={ad} />
+    <div className="iletisim-satir">
+      <div className="iletisim-bilgi">
+        <span className="iletisim-deger">Şifre <span className="hesap-tur">· {ad} ({tur})</span></span>
+        <span className="iletisim-etiket">Unutan “Şifremi unuttum”dan kendisi yeniler</span>
+      </div>
+      <div className="iletisim-eylem">
+        <SifreSifirla kisiId={kisiId} ad={ad} />
+      </div>
     </div>
   )
 }
 
-/* ─────────────────────────── Künye ─────────────────────────── */
+/* ─────────────────────────── Profil formları ─────────────────────────── */
 
-function Kunye({ ogrenci }) {
-  /* Telefon İletişim'de; sınıf/alan kimlik kartında; hedef ve hedef
-     netler Program'da; erişim tepede. Burada yalnız geri kalanlar. */
-  const satirlar = [
-    ['Katalog', ogrenci.kataloglar?.ad ?? '—'],
-    ['Kayıt tarihi', ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR') : '—'],
-  ]
+function FormEylem({ bekliyor, onKaydet, onVazgec }) {
   return (
-    <dl className="kunye">
-      {satirlar.map(([k, v]) => (
-        <div key={k}>
-          <dt>{k}</dt>
-          <dd>{v}</dd>
-        </div>
-      ))}
-    </dl>
+    <div className="form-eylem">
+      <Dugme onClick={onKaydet} bekliyor={bekliyor}>Kaydet</Dugme>
+      <button type="button" className="metin-dugme" onClick={onVazgec}>Vazgeç</button>
+    </div>
   )
 }
 
-/* ─────────────────────────── Bilgi düzenleme ─────────────────────────── */
-
-function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
+function KimlikFormu({ ogrenci, onKaydedildi, onVazgec }) {
   const [ad, setAd] = useState(ogrenci.profiller?.ad_soyad ?? '')
   const [telefon, setTelefon] = useState(ogrenci.profiller?.telefon ?? '')
-  const [katalogId, setKatalogId] = useState(ogrenci.katalog_id ? String(ogrenci.katalog_id) : '')
-  const [sinif, setSinif] = useState(ogrenci.sinif ? String(ogrenci.sinif) : '')
-  const [alan, setAlan] = useState(ogrenci.alan ?? '')
-  const [sinavTarihi, setSinavTarihi] = useState(ogrenci.sinav_tarihi ?? '')
-  const [uni, setUni] = useState(ogrenci.hedef_universite ?? '')
-  const [bolum, setBolum] = useState(ogrenci.hedef_bolum ?? '')
-  const [tytNet, setTytNet] = useState(ogrenci.hedef_tyt_net ?? '')
-  const [aytNet, setAytNet] = useState(ogrenci.hedef_ayt_net ?? '')
-  const [aktif, setAktif] = useState(ogrenci.aktif)
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
 
@@ -331,6 +398,51 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
       setHata('Ad soyad en az 2 karakter olmalı.')
       return
     }
+    setBekliyor(true)
+    const { error } = await supabase
+      .from('profiller')
+      .update({ ad_soyad: ad.trim(), telefon: telefon.trim() || null })
+      .eq('id', ogrenci.id)
+    setBekliyor(false)
+    if (error) setHata(hataMetni(error))
+    else await onKaydedildi()
+  }
+
+  return (
+    <div className="form-kutu form-kutu--duz profil-form">
+      <FotografYukle
+        ogrenciId={ogrenci.id}
+        mevcutYol={ogrenci.profiller?.fotograf_yolu}
+        ad={ad}
+        onDegisti={onKaydedildi}
+      />
+      <Alan etiket="Ad soyad">
+        <input value={ad} onChange={(e) => setAd(e.target.value)} />
+      </Alan>
+      <Alan etiket="Telefon" ipucu="İsteğe bağlı">
+        <input type="tel" inputMode="tel" value={telefon} onChange={(e) => setTelefon(e.target.value)}
+               placeholder="05XX XXX XX XX" />
+      </Alan>
+      <Uyari>{hata}</Uyari>
+      <FormEylem bekliyor={bekliyor} onKaydet={kaydet} onVazgec={onVazgec} />
+    </div>
+  )
+}
+
+function HedefFormu({ ogrenci, kataloglar, onKaydedildi, onVazgec }) {
+  const [katalogId, setKatalogId] = useState(ogrenci.katalog_id ? String(ogrenci.katalog_id) : '')
+  const [sinif, setSinif] = useState(ogrenci.sinif ? String(ogrenci.sinif) : '')
+  const [alan, setAlan] = useState(ogrenci.alan ?? '')
+  const [sinavTarihi, setSinavTarihi] = useState(ogrenci.sinav_tarihi ?? '')
+  const [uni, setUni] = useState(ogrenci.hedef_universite ?? '')
+  const [bolum, setBolum] = useState(ogrenci.hedef_bolum ?? '')
+  const [tytNet, setTytNet] = useState(ogrenci.hedef_tyt_net ?? '')
+  const [aytNet, setAytNet] = useState(ogrenci.hedef_ayt_net ?? '')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  async function kaydet() {
+    setHata('')
     if (tytNet !== '' && (Number(tytNet) < 0 || Number(tytNet) > 120)) {
       setHata('Hedef TYT net 0 ile 120 arasında olmalı.')
       return
@@ -340,83 +452,53 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
       return
     }
     setBekliyor(true)
-    try {
-      const { error: pHata } = await supabase
-        .from('profiller')
-        .update({ ad_soyad: ad.trim(), telefon: telefon.trim() || null })
-        .eq('id', ogrenci.id)
-      if (pHata) throw pHata
-
-      const { error: oHata } = await supabase
-        .from('ogrenciler')
-        .update({
-          katalog_id: katalogId ? Number(katalogId) : null,
-          sinif: sinif ? Number(sinif) : null,
-          alan: alan || null,
-          sinav_tarihi: sinavTarihi || null,
-          hedef_universite: uni.trim() || null,
-          hedef_bolum: bolum.trim() || null,
-          hedef_tyt_net: tytNet === '' ? null : Number(tytNet),
-          hedef_ayt_net: aytNet === '' ? null : Number(aytNet),
-          aktif,
-        })
-        .eq('id', ogrenci.id)
-      if (oHata) throw oHata
-
-      await onKaydedildi()
-    } catch (e) {
-      setHata(hataMetni(e))
-    } finally {
-      setBekliyor(false)
-    }
+    const { error } = await supabase
+      .from('ogrenciler')
+      .update({
+        katalog_id: katalogId ? Number(katalogId) : null,
+        sinif: sinif ? Number(sinif) : null,
+        alan: alan || null,
+        sinav_tarihi: sinavTarihi || null,
+        hedef_universite: uni.trim() || null,
+        hedef_bolum: bolum.trim() || null,
+        hedef_tyt_net: tytNet === '' ? null : Number(tytNet),
+        hedef_ayt_net: aytNet === '' ? null : Number(aytNet),
+      })
+      .eq('id', ogrenci.id)
+    setBekliyor(false)
+    if (error) setHata(hataMetni(error))
+    else await onKaydedildi()
   }
 
   return (
-    <div className="form-kutu">
-      <FotografYukle
-        ogrenciId={ogrenci.id}
-        mevcutYol={ogrenci.profiller?.fotograf_yolu}
-        ad={ad}
-        onDegisti={onKaydedildi}
-      />
-
-      <Alan etiket="Ad soyad">
-        <input value={ad} onChange={(e) => setAd(e.target.value)} />
-      </Alan>
-      <Alan etiket="Telefon" ipucu="İsteğe bağlı">
-        <input value={telefon} onChange={(e) => setTelefon(e.target.value)} placeholder="05XX XXX XX XX" />
+    <div className="form-kutu form-kutu--duz profil-form">
+      <div className="ikili">
+        <Alan etiket="Sınıf">
+          <select value={sinif} onChange={(e) => setSinif(e.target.value)}>
+            <option value="">Belirtilmedi</option>
+            {[8, 9, 10, 11, 12].map((x) => (
+              <option key={x} value={x}>{x}. sınıf</option>
+            ))}
+            <option value="13">Mezun</option>
+          </select>
+        </Alan>
+        <Alan etiket="Alan">
+          <select value={alan} onChange={(e) => setAlan(e.target.value)}>
+            <option value="">Belirtilmedi</option>
+            {Object.entries(ALAN_ADI).map(([k, v]) => (
+              <option key={k} value={k}>{v}</option>
+            ))}
+          </select>
+        </Alan>
+      </div>
+      <Alan etiket="Sınav tarihi" ipucu="Boş kalırsa sınıfa göre varsayılan kullanılır">
+        <input type="date" value={sinavTarihi} onChange={(e) => setSinavTarihi(e.target.value)} />
       </Alan>
       <Alan etiket="Konu kataloğu">
         <select value={katalogId} onChange={(e) => setKatalogId(e.target.value)}>
           <option value="">Seçilmedi</option>
           {kataloglar.map((k) => (
-            <option key={k.id} value={k.id}>
-              {k.ad}
-            </option>
-          ))}
-        </select>
-      </Alan>
-      <Alan etiket="Sınıf">
-        <select value={sinif} onChange={(e) => setSinif(e.target.value)}>
-          <option value="">Belirtilmedi</option>
-          {[8, 9, 10, 11, 12].map((s) => (
-            <option key={s} value={s}>
-              {s}. sınıf
-            </option>
-          ))}
-          <option value="13">Mezun</option>
-        </select>
-      </Alan>
-      <Alan etiket="Sınav tarihi" ipucu="Boş bırakılırsa sınıfa göre varsayılan kullanılır">
-        <input type="date" value={sinavTarihi} onChange={(e) => setSinavTarihi(e.target.value)} />
-      </Alan>
-      <Alan etiket="Alan">
-        <select value={alan} onChange={(e) => setAlan(e.target.value)}>
-          <option value="">Belirtilmedi</option>
-          {Object.entries(ALAN_ADI).map(([k, v]) => (
-            <option key={k} value={k}>
-              {v}
-            </option>
+            <option key={k.id} value={k.id}>{k.ad}</option>
           ))}
         </select>
       </Alan>
@@ -426,29 +508,18 @@ function BilgiFormu({ ogrenci, kataloglar, onKaydedildi }) {
       <Alan etiket="Hedef bölüm">
         <input value={bolum} onChange={(e) => setBolum(e.target.value)} placeholder="İsteğe bağlı" />
       </Alan>
-
       <div className="ikili">
-        <Alan etiket="Hedef TYT net" ipucu="0 – 120">
+        <Alan etiket="TYT hedef net" ipucu="0–120">
           <input type="number" min="0" max="120" step="0.25" inputMode="decimal"
                  value={tytNet} onChange={(e) => setTytNet(e.target.value)} placeholder="Örn. 105" />
         </Alan>
-        <Alan etiket="Hedef AYT net" ipucu="0 – 80">
+        <Alan etiket="AYT hedef net" ipucu="0–80">
           <input type="number" min="0" max="80" step="0.25" inputMode="decimal"
                  value={aytNet} onChange={(e) => setAytNet(e.target.value)} placeholder="Örn. 62" />
         </Alan>
       </div>
-      <label className="onay">
-        <input type="checkbox" checked={aktif} onChange={(e) => setAktif(e.target.checked)} />
-        <span>
-          Aktif öğrenci
-          <em>Pasife alınan öğrenci listede soluk görünür, verisi silinmez.</em>
-        </span>
-      </label>
-
       <Uyari>{hata}</Uyari>
-      <Dugme onClick={kaydet} bekliyor={bekliyor}>
-        Değişiklikleri kaydet
-      </Dugme>
+      <FormEylem bekliyor={bekliyor} onKaydet={kaydet} onVazgec={onVazgec} />
     </div>
   )
 }
@@ -506,11 +577,11 @@ function TehlikeliBolge({ ogrenci, onSilindi }) {
   }
 
   return (
-    <Bolum cizgili baslik="Tehlikeli bölge" sinif="tehlike-bolum">
-      <p className="bolum-aciklama">
-        Öğrenci ayrıldıysa önce pasife almayı dene; verisi korunur. Silmek geri alınamaz.
+    <Bolum baslik="Tehlikeli bölge" sinif="tehlike-bolum" kartli>
+      <p className="tehlike-metin">
+        Öğrenci ayrıldıysa önce Hesap'tan erişimi kapat, verisi korunur. Silmek geri alınamaz.
       </p>
-      <button className="tehlike-yazi-dugme" onClick={() => setAcik(true)}>
+      <button className="tehlike-dolu-dugme" onClick={() => setAcik(true)}>
         Öğrenciyi kalıcı olarak sil
       </button>
 
@@ -1191,10 +1262,15 @@ const ILISKI = [
    hangi yolla alındığı kaydediliyor. */
 
 /* +905321112233 okunmuyor; listede 0532 111 22 33 gösteriliyor. */
-const telYaz = (t) =>
-  /^\+90\d{10}$/.test(t ?? '')
-    ? `0${t.slice(3, 6)} ${t.slice(6, 9)} ${t.slice(9, 11)} ${t.slice(11)}`
+/** +905372574462, 05372574462, 5372574462, "0537 257 44 62" → 0537 257 44 62 */
+const telYaz = (t) => {
+  let r = String(t ?? '').replace(/\D/g, '')
+  if (r.startsWith('90') && r.length === 12) r = r.slice(2)
+  if (r.startsWith('0') && r.length === 11) r = r.slice(1)
+  return r.length === 10
+    ? `0${r.slice(0, 3)} ${r.slice(3, 6)} ${r.slice(6, 8)} ${r.slice(8)}`
     : (t ?? '')
+}
 
 const IZIN_KANALI = [
   ['sozlesme', 'Koçluk sözleşmesinde'],
@@ -1516,7 +1592,7 @@ const TAKSIT_ETIKET = {
 const tlYaz = (n) =>
   new Intl.NumberFormat('tr-TR', { maximumFractionDigits: 0 }).format(Number(n ?? 0))
 
-function Odemeler({ ogrenci }) {
+function Odemeler({ ogrenci, kartli = false }) {
   const [ozet, setOzet] = useState(null)
   const [formAcik, setFormAcik] = useState(false)
   const [tutar, setTutar] = useState('')
@@ -1565,6 +1641,7 @@ function Odemeler({ ogrenci }) {
 
   return (
     <Bolum
+      kartli={kartli}
       cizgili
       baslik="Ödeme"
       aciklama="Geciken taksit karar kuyruğuna düşer."

@@ -6,7 +6,7 @@ import EylemDugmesi from './EylemDugmesi.jsx'
  * cizgili: üstünde ince ayırıcı çizgi.
  * sag: başlığın sağına serbest içerik (seçim şeridi gibi); eylem yazı düğmesidir.
  */
-export default function Bolum({ baslik, sayi, aciklama, eylem, onEylem, sag = null, cizgili = false, sinif = '', children }) {
+export default function Bolum({ baslik, sayi, aciklama, eylem, onEylem, sag = null, cizgili = false, kartli = false, sinif = '', children }) {
   return (
     <section className={`bolum${cizgili ? ' bolum--cizgili' : ''}${sinif ? ` ${sinif}` : ''}`}>
       <header className="bolum-basi">
@@ -18,7 +18,7 @@ export default function Bolum({ baslik, sayi, aciklama, eylem, onEylem, sag = nu
         {eylem && onEylem && <EylemDugmesi onClick={onEylem}>{eylem}</EylemDugmesi>}
       </header>
       {aciklama && <p className="bolum-aciklama">{aciklama}</p>}
-      {children}
+      {kartli ? <div className="bolum-kart">{children}</div> : children}
     </section>
   )
 }

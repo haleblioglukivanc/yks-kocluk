@@ -5002,3 +5002,40 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .iletisim-ikon:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
 .iletisim-ekle { padding-top: 0.5rem; }
 .form-eylem { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+/* ─── Öğrenci profili v2 (19 Eylül 2026) ───
+   Her bölüm aynı kalıp: başlık kâğıtta, veri beyaz kartta. Profil
+   sayfasında bölümler kartla ayrıldığı için ayırıcı çizgi yok. */
+.bolum-kart {
+  background: var(--yuzey); border-radius: var(--r-buyuk);
+  padding: 0.15rem 1rem; margin-top: 0.35rem; box-shadow: var(--golge-kart);
+}
+.bolum-kart > .bos-durum { padding: 0.85rem 0; }
+.profil-govde .bolum--cizgili { border-top: 0; padding-top: 0; }
+.profil-govde .bolum-kart .iletisim-satir:last-child { border-bottom: 0; }
+.profil-form { padding: 0.85rem 0 1rem; margin-top: 0; }
+.profil-form .ikili { display: flex; gap: 0.75rem; }
+.profil-form .ikili > * { flex: 1; min-width: 0; }
+
+.profil-izgara { display: grid; grid-template-columns: 1fr 1fr; margin: 0; }
+.profil-hucre { padding: 0.75rem 0; border-top: 1px solid var(--cizgi); min-width: 0; }
+.profil-hucre:nth-child(-n+2) { border-top: 0; }
+.profil-hucre--tam { grid-column: 1 / -1; }
+.profil-hucre dt { font-size: var(--punto-mini); color: var(--soluk); }
+.profil-hucre dd { margin: 0.1rem 0 0; font-weight: 600; overflow-wrap: anywhere; }
+.profil-hucre dd.bos { font-weight: 400; color: var(--soluk); }
+
+/* Açık zeminde anahtar: kapalıyken gri kızak, açıkken yeşil (yolunda). */
+.anahtar--acik-zemin .anahtar-kizak { background: var(--cizgi-2); }
+.anahtar--acik-zemin input:checked + .anahtar-kizak { background: var(--isaret-metin); }
+.anahtar--acik-zemin input:focus-visible + .anahtar-kizak { outline-color: var(--serin); }
+
+.tehlike-bolum .bolum-baslik { color: var(--kizil-metin); }
+.tehlike-bolum .bolum-kart { background: color-mix(in srgb, var(--kizil-zemin) 35%, var(--yuzey)); box-shadow: none; border: 1px solid color-mix(in srgb, var(--kizil-metin) 22%, transparent); }
+.tehlike-metin { margin: 0; padding: 0.85rem 0 0.6rem; font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.5; }
+.tehlike-dolu-dugme {
+  min-height: 44px; padding: 0 1rem; margin-bottom: 0.9rem;
+  background: var(--kizil-zemin); color: var(--kizil-metin); border: 0; border-radius: var(--r-kart);
+  font: inherit; font-size: var(--punto-kucuk); font-weight: 700; cursor: pointer;
+}
+.tehlike-dolu-dugme:focus-visible { outline: 2px solid var(--kizil-metin); outline-offset: 2px; }
