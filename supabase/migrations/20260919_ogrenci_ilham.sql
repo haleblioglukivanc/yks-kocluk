@@ -17,8 +17,10 @@ create table if not exists public.ogrenci_ilham (
   primary key (ogrenci_id, hafta_basi)
 );
 alter table public.ogrenci_ilham enable row level security;
+-- Politikalar yalnız authenticated: anon'a açık olsaydı tanıtım sayfasındaki
+-- haftalik_ilham() ogrencim_mi yetkisine takılıp kutuyu boş bırakıyordu.
 drop policy if exists ogrenci_ilham_okuma on public.ogrenci_ilham;
-create policy ogrenci_ilham_okuma on public.ogrenci_ilham for select
+create policy ogrenci_ilham_okuma on public.ogrenci_ilham for select to authenticated
   using (ogrenci_id = auth.uid() or private.ogrencim_mi(ogrenci_id));
 
 -- Daha önce okunmuş kitaplar (Kıvanç'ın Excel'indeki kitap sekmesi buraya
@@ -32,10 +34,10 @@ create table if not exists public.ogrenci_okuma (
 );
 alter table public.ogrenci_okuma enable row level security;
 drop policy if exists ogrenci_okuma_okuma on public.ogrenci_okuma;
-create policy ogrenci_okuma_okuma on public.ogrenci_okuma for select
+create policy ogrenci_okuma_okuma on public.ogrenci_okuma for select to authenticated
   using (ogrenci_id = auth.uid() or private.ogrencim_mi(ogrenci_id));
 drop policy if exists ogrenci_okuma_koc on public.ogrenci_okuma;
-create policy ogrenci_okuma_koc on public.ogrenci_okuma for all
+create policy ogrenci_okuma_koc on public.ogrenci_okuma for all to authenticated
   using (private.ogrencim_mi(ogrenci_id)) with check (private.ogrencim_mi(ogrenci_id));
 
 -- Kararlı karıştırma: aynı öğrenci + hafta her çağrıda aynı sonucu verir.
