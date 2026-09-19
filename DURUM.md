@@ -39,8 +39,13 @@ satır; kitabı kütüphaneden arayarak, sözü temaya göre değiştirir; satı
 verir; koç öğrenci ekranına girdiğinde öğrencinin kimliği geçilir. Veli, rapor ve tanıtım genel seçimi görür (genel
 havuz LGS'ye özel kitapları atlar). **Kütüphane:** 28 → 81 kitap (dünya klasikleri, Türk edebiyatı, bilim/düşünce,
 LGS düzeyi), 26 → 44 söz; yeni etiketler `bilim`, `psikoloji`. Migration'lar: `20260919_ogrenci_ilham.sql`,
-`20260919_kutuphane_genisleme.sql`, `20260919_kuyruk_ilham.sql`. **Açık:** Kıvanç'ın Excel'indeki kitap sekmesi
-`ogrenci_okuma`'ya aktarılmadı; öğrencinin "okuyorum / bitirdim" işareti yok.
+`20260919_kutuphane_genisleme.sql`, `20260919_kuyruk_ilham.sql`. **Okunan kitap öğrenciye bağlı (aynı gün, Bekir'in isteği):** kitap Yol'un sonunda kayboluyordu; artık öğrencinin
+Bugün'ünün sonunda, sözün altında sabit (gün kapansa da durur). `ogrenci_okuma.durum` okuyor/bitti; koç onayı
+`private.kitap_ata` ile okunan kitabı atar; okuyan öğrenciye Cuma kartında yeni kitap önerilmez ("Okuyor · N gündür,
+kitap aynı kalır"). Öğrenci "Bitirdim" (`ogrenci_kitap_bitir`) → kitap geçmişe, sıradaki kitap öneriden hemen atanır,
+koçun iyi haber şeridine tebrik (tip `tebrik`, kaynak `öğrenci|kitap:id`, mevcut tebrik akışı) ve bildirim kutusuna
+not. Ayrı akış yok (tanışma kartı, rutin satırı, ilerleme işareti istenmedi). Migration: `20260919_okunan_kitap.sql`.
+**Açık:** Kıvanç'ın Excel'indeki kitap sekmesi `ogrenci_okuma`'ya (durum bitti) aktarılmadı.
 
 ## 19 Eylül 2026 — Temiz başlangıç: bütün test verisi silindi
 

@@ -225,8 +225,14 @@ export default function OgrenciPaneli({
             rol="ogrenci"
             bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
           />
-          {/* Gün işle biter, söz en sonda tek kutu; kitap burada değil, Yol'da. */}
-          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="soz" ogrenciId={kayit.id} /></div>
+          {/* Gün işle biter: en sonda söz, altında okuduğu kitap. Kitap
+              "Bitirdim" deyene kadar burada sabit (Bekir, 19 Eylül 2026). */}
+          <div className="veri-yuzey ogr-soz">
+            <HaftalikIlham
+              ogrenciId={kayit.id}
+              bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'}
+            />
+          </div>
         </>
       ) : sekme === 'konular' ? (
         <>
@@ -237,9 +243,8 @@ export default function OgrenciPaneli({
             <div className="ob-sekme-yuvasi" ref={setDersYuvasi} />
           </UstBlok>
           <KonuHaritasi profilId={kayit.id} odakDers={odakDers} sekmeYuvasi={dersYuvasi} />
-          {/* Yol uzun vadeli bakış: seri ve haftanın kitabı. Rozetler koçta. */}
+          {/* Yol uzun vadeli bakış: seri. Kitap Bugün'e taşındı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
-          <div className="veri-yuzey ogr-soz"><HaftalikIlham goster="kitap" ogrenciId={kayit.id} /></div>
         </>
       ) : (
         <>

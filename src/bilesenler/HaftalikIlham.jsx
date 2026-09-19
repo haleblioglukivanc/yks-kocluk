@@ -32,10 +32,30 @@ function uzunlukEtiketi(etiketler) {
   return null
 }
 
-/* goster: 'hepsi' | 'kitap' | 'soz'. Öğrencide söz Bugün'ün sonunda,
-   kitap Yol'un sonunda; veli, rapor ve tanıtım ikisini birlikte gösterir. */
-export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null }) {
+/* goster: 'hepsi' | 'kitap' | 'soz'. Öğrencide ikisi Bugün'ün sonunda: söz,
+   altında okuduğu kitap. Kitap haftaya değil öğrenciye bağlı; "Bitirdim"
+   deyene kadar aynı kalır (ogrenci_okuma). Veli, rapor ve tanıtım genel
+   seçimi görür. */
+export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, bitirilebilir = false }) {
   const [veri, setVeri] = useState(null)
+  const [tur, setTur] = useState(0)
+  const [bekliyor, setBekliyor] = useState(false)
+  const [haber, setHaber] = useState('')
+
+  /* Öğrenci "Bitirdim" der: kitap geçmişe yazılır, sıradaki kitap sunucuda
+     atanır, koça haber gider. Yeni kitap aynı kutuda yerini alır. */
+  async function bitir() {
+    if (!veri?.kitap_id) return
+    setBekliyor(true)
+    const { data, error } = await supabase.rpc('ogrenci_kitap_bitir', { p_kitap_id: veri.kitap_id })
+    setBekliyor(false)
+    if (error) {
+      setHaber('Kaydedilemedi, birazdan tekrar dene.')
+      return
+    }
+    setHaber(`${data?.biten ?? 'Kitap'} bitti · koçuna haber verildi`)
+    setTur((t) => t + 1)
+  }
 
   useEffect(() => {
     let iptal = false
@@ -50,7 +70,7 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null }) {
     return () => {
       iptal = true
     }
-  }, [ogrenciId])
+  }, [ogrenciId, tur])
 
   /* Veri gelmeden hiç yer kaplamıyoruz. İskelet gösterip sonra
      kaybolmak sayfayı zıplatır; bu kutu kritik bilgi değil, sessizce
@@ -61,13 +81,28 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null }) {
 
   return (
     <section className="haftalik-ilham" aria-label="Haftanın kitabı ve sözü">
+      {/* Söz önce, kitap altında (Bekir, 19 Eylül 2026). */}
+      {goster !== 'kitap' && veri.soz_metin && (
+        <article className="hi-kutu hi-kutu--soz">
+          <span className="hi-em" aria-hidden="true">
+            {veri.soz_emoji}
+          </span>
+          <div className="hi-govde">
+            <p className="hi-etiket">Haftanın sözü</p>
+            <blockquote className="hi-soz">{veri.soz_metin}</blockquote>
+            {/* Kaynak yalnızca atfı doğrulanmışsa geliyor; sunucu
+                doğrulanmamış sözlerde null döndürüyor. */}
+            {veri.soz_kaynak && <cite className="hi-kaynak">{veri.soz_kaynak}</cite>}
+          </div>
+        </article>
+      )}
       {goster !== 'soz' && veri.kitap_ad && (
         <article className="hi-kutu hi-kutu--kitap">
           <span className="hi-em" aria-hidden="true">
             {veri.kitap_emoji}
           </span>
           <div className="hi-govde">
-            <p className="hi-etiket">Haftanın kitabı</p>
+            <p className="hi-etiket">{ogrenciId ? 'Okuduğun kitap' : 'Haftanın kitabı'}</p>
 
             {veri.kitap_kapak_url && (
               <img className="hi-kapak" src={veri.kitap_kapak_url} alt="" loading="lazy" />
@@ -92,24 +127,17 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null }) {
                 </span>
               )}
             </div>
+
+            {bitirilebilir && (
+              <button className="dugme dugme--ikincil hi-bitir" disabled={bekliyor} onClick={bitir}>
+                {bekliyor ? 'Bir saniye…' : 'Bitirdim'}
+              </button>
+            )}
+            {haber && <p className="hi-haber" role="status">{haber}</p>}
           </div>
         </article>
       )}
 
-      {goster !== 'kitap' && veri.soz_metin && (
-        <article className="hi-kutu hi-kutu--soz">
-          <span className="hi-em" aria-hidden="true">
-            {veri.soz_emoji}
-          </span>
-          <div className="hi-govde">
-            <p className="hi-etiket">Haftanın sözü</p>
-            <blockquote className="hi-soz">{veri.soz_metin}</blockquote>
-            {/* Kaynak yalnızca atfı doğrulanmışsa geliyor; sunucu
-                doğrulanmamış sözlerde null döndürüyor. */}
-            {veri.soz_kaynak && <cite className="hi-kaynak">{veri.soz_kaynak}</cite>}
-          </div>
-        </article>
-      )}
     </section>
   )
 }
