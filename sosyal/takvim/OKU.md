@@ -72,3 +72,12 @@ Takvime bağlı 41 gün ("Özel Gün") serinin yerini alır. Hassas günlerde
   yeni takvimle çalışır. Yayınlanmış/planlanmış günler değişmez.
 - LGS için MEB'in okunabilir bir takvimi yok: haberlerde tarih görülürse yalnız öneri
   yazılır; `sinavlar.json`'da `lgs.tarih` elle güncellenir.
+
+## Sahne sistemi (19 Eylül 2026)
+
+Her günün görsel yönü `sahne.json`'da: **kurgu** (metafor, dev, bolunmus, harita, masa, yazisma),
+**zemin** (krem, kum, murekkep, nane, seftali, gok), **çizim** (`video/src/sahne/Cizimler.jsx`, 34 çizim)
+ve **vurgu** (başlıkta altı kalemle çizilen kelime). `python3 sosyal/takvim/sahne.py` yılı yeniden kurar:
+art arda iki gün aynı kurgu/zemin gelmez, çizim anahtar kelimeden seçilir ve 10 gün içinde tekrar etmez.
+Bir günü elle yönetmek için o güne `"elle": true` yaz; betik ona dokunmaz. Hassas günlerin sahnesi yoktur,
+sade kartla üretilir. Çizim kataloğu: `npx remotion still Katalog` (sosyal/video içinde).

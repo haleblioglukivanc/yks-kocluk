@@ -1,10 +1,2221 @@
 {
-  "_not": "Günün sahne yönü: kurgu (metafor, dev, bolunmus, harita, masa, yazisma), zemin (krem, kum, murekkep, nane, seftali, gok), cizim (Cizimler.jsx). Olmayan günlerde seriye göre varsayılan seçilir.",
-  "2026-09-21": { "kurgu": "dev", "zemin": "murekkep", "sayi": "3", "ek": "iş.", "ust": "Bu hafta her şeyi yapmayacaksın." },
-  "2026-09-22": { "kurgu": "metafor", "zemin": "nane", "cizim": "buyutec-kitap" },
-  "2026-09-23": { "kurgu": "yazisma", "zemin": "seftali" },
-  "2026-09-24": { "kurgu": "masa", "zemin": "kum", "cizim": "ev-kalp" },
-  "2026-09-25": { "kurgu": "bolunmus", "zemin": "seftali" },
-  "2026-09-26": { "kurgu": "harita", "zemin": "gok" },
-  "2026-09-27": { "kurgu": "metafor", "zemin": "murekkep", "cizim": "kavanoz-yildiz" }
+ "_not": "Günün sahne yönü: kurgu (metafor, dev, bolunmus, harita, masa, yazisma), zemin (krem, kum, murekkep, nane, seftali, gok), cizim (Cizimler.jsx). Olmayan günlerde seriye göre varsayılan seçilir.",
+ "2026-09-19": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "filiz",
+  "vurgu": "Harita"
+ },
+ "2026-09-20": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ay-bulut",
+  "vurgu": "değilsin"
+ },
+ "2026-09-21": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "sayi": "3",
+  "ek": "iş.",
+  "ust": "Bu hafta her şeyi yapmayacaksın.",
+  "elle": true,
+  "cizim": "takvim",
+  "vurgu": "yapacaksın"
+ },
+ "2026-09-22": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "buyutec-kitap",
+  "elle": true,
+  "vurgu": "kazanırsın"
+ },
+ "2026-09-23": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "elle": true,
+  "cizim": "dusunce-balonu",
+  "vurgu": "kazanamadım"
+ },
+ "2026-09-24": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ev-kalp",
+  "elle": true,
+  "vurgu": "hata."
+ },
+ "2026-09-25": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "elle": true,
+  "cizim": "dugum",
+  "vurgu": "ucuz"
+ },
+ "2026-09-26": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "elle": true,
+  "cizim": "optik",
+  "vurgu": "harita."
+ },
+ "2026-09-27": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kavanoz-yildiz",
+  "elle": true,
+  "vurgu": "yeter"
+ },
+ "2026-09-28": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "verdiğin"
+ },
+ "2026-09-29": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "ampul",
+  "vurgu": "denklem"
+ },
+ "2026-09-30": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "filiz",
+  "vurgu": "başlamak"
+ },
+ "2026-10-01": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "zarf",
+  "vurgu": "yılında"
+ },
+ "2026-10-02": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "devam"
+ },
+ "2026-10-03": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kahve",
+  "vurgu": "kalem"
+ },
+ "2026-10-04": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "yaprak",
+  "vurgu": "Normal"
+ },
+ "2026-10-05": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "takvim",
+  "vurgu": "küçülür"
+ },
+ "2026-10-06": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kitap-yigini",
+  "vurgu": "çözülür"
+ },
+ "2026-10-07": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "kum-saati",
+  "vurgu": "kalmıyor"
+ },
+ "2026-10-08": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ev-kalp",
+  "vurgu": "çakışınca"
+ },
+ "2026-10-09": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kronometre",
+  "vurgu": "Yanlış"
+ },
+ "2026-10-10": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "bulut-yagmur",
+  "vurgu": "Konuşulur"
+ },
+ "2026-10-11": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "ayna",
+  "vurgu": "arkadaşına"
+ },
+ "2026-10-12": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "yapmamak"
+ },
+ "2026-10-13": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "buyutec-kitap",
+  "vurgu": "tutmuyor"
+ },
+ "2026-10-14": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "dusunce-balonu",
+  "vurgu": "yapayım"
+ },
+ "2026-10-15": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "zarf",
+  "vurgu": "sormak"
+ },
+ "2026-10-16": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kalem-silgi",
+  "vurgu": "Yanlış"
+ },
+ "2026-10-17": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "tabela",
+  "vurgu": "sabitle"
+ },
+ "2026-10-18": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "filiz",
+  "vurgu": "Gerçek"
+ },
+ "2026-10-19": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "pil",
+  "vurgu": "yüksekken"
+ },
+ "2026-10-20": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kitap-yigini",
+  "vurgu": "molden"
+ },
+ "2026-10-21": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "grafik-cubuk",
+  "vurgu": "gitti"
+ },
+ "2026-10-22": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "bulut-yagmur",
+  "vurgu": "cümleniz"
+ },
+ "2026-10-23": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kulaklik",
+  "vurgu": "yanlış"
+ },
+ "2026-10-24": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "optik",
+  "vurgu": "İkinci"
+ },
+ "2026-10-25": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "takvim",
+  "vurgu": "kaldığın"
+ },
+ "2026-10-26": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kronometre",
+  "vurgu": "oturmak"
+ },
+ "2026-10-27": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "buyutec-kitap",
+  "vurgu": "bölünmesini"
+ },
+ "2026-10-28": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "zarf",
+  "vurgu": "çalışıyor"
+ },
+ "2026-10-29": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "bayrak",
+  "vurgu": "kutlu"
+ },
+ "2026-10-30": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ay-bulut",
+  "vurgu": "yanılsama"
+ },
+ "2026-10-31": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "sayi": "20",
+  "ek": "dakika.",
+  "ust": "Deneme bitti."
+ },
+ "2026-11-01": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kar-tanesi",
+  "vurgu": "Masaya"
+ },
+ "2026-11-02": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "gunes",
+  "vurgu": "Bilerek"
+ },
+ "2026-11-03": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kitap-yigini",
+  "vurgu": "ezberle"
+ },
+ "2026-11-04": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "dusunce-balonu",
+  "vurgu": "planladığımın"
+ },
+ "2026-11-05": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ev-kalp",
+  "vurgu": "yaşatmalı"
+ },
+ "2026-11-06": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "Işığı"
+ },
+ "2026-11-07": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kalem-silgi",
+  "vurgu": "Başka"
+ },
+ "2026-11-08": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "bulut-yagmur",
+  "vurgu": "çalışacak"
+ },
+ "2026-11-09": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kronometre",
+  "vurgu": "Planı"
+ },
+ "2026-11-11": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "tabela",
+  "vurgu": "kararınca"
+ },
+ "2026-11-12": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "terazi",
+  "vurgu": "kazandırmadı"
+ },
+ "2026-11-13": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "kahve",
+  "sayi": "9",
+  "ek": "günlük.",
+  "ust": ""
+ },
+ "2026-11-14": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "indiysen"
+ },
+ "2026-11-15": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "zafer"
+ },
+ "2026-11-16": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "takvim",
+  "vurgu": "gider"
+ },
+ "2026-11-17": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "ampul",
+  "vurgu": "Atlası"
+ },
+ "2026-11-18": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "ay-bulut",
+  "vurgu": "kalkamıyorum"
+ },
+ "2026-11-19": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "damla",
+  "vurgu": "kızmadan"
+ },
+ "2026-11-20": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "kitap-yigini",
+  "vurgu": "İzlediğini"
+ },
+ "2026-11-21": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "cizim": "kronometre",
+  "sayi": "2",
+  "ek": "dakikayı.",
+  "ust": ""
+ },
+ "2026-11-22": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "filiz",
+  "vurgu": "yeter"
+ },
+ "2026-11-23": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "merdiven",
+  "vurgu": "nereden"
+ },
+ "2026-11-24": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "zarf",
+  "vurgu": "değiştirebilir"
+ },
+ "2026-11-25": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "bulut-yagmur",
+  "vurgu": "Matematiğe"
+ },
+ "2026-11-26": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "tabela",
+  "vurgu": "birlikte"
+ },
+ "2026-11-27": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "sınavıdır"
+ },
+ "2026-11-28": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "grafik-cubuk",
+  "vurgu": "önemli"
+ },
+ "2026-11-29": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kahve",
+  "vurgu": "suçluluk"
+ },
+ "2026-11-30": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kalem-silgi",
+  "vurgu": "yanlış"
+ },
+ "2026-12-01": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "cizim": "kum-saati",
+  "sayi": "200",
+  "ek": "gün.",
+  "ust": "Haftada 7 gün değil, haftada 6 iyi gün."
+ },
+ "2026-12-02": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "kalp-atisi",
+  "vurgu": "oturamadım"
+ },
+ "2026-12-03": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kulaklik",
+  "vurgu": "Çocuğunuzun"
+ },
+ "2026-12-04": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "merdiven",
+  "vurgu": "kalınca"
+ },
+ "2026-12-05": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "optik",
+  "vurgu": "kaydırmak"
+ },
+ "2026-12-06": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "terazi",
+  "vurgu": "dünkü"
+ },
+ "2026-12-07": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kronometre",
+  "vurgu": "dakika"
+ },
+ "2026-12-08": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "buyutec-kitap",
+  "vurgu": "sorulanın"
+ },
+ "2026-12-09": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "telefon-kilit",
+  "vurgu": "geçiyor"
+ },
+ "2026-12-10": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "ev-kalp",
+  "vurgu": "yılında"
+ },
+ "2026-12-11": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ay-bulut",
+  "vurgu": "azaltır"
+ },
+ "2026-12-12": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "grafik-cubuk",
+  "vurgu": "sabah"
+ },
+ "2026-12-13": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "pusula",
+  "vurgu": "Kâğıda"
+ },
+ "2026-12-14": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kitap-yigini",
+  "vurgu": "haftayı"
+ },
+ "2026-12-15": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kalem-silgi",
+  "vurgu": "yanlışı"
+ },
+ "2026-12-16": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "dusunce-balonu",
+  "vurgu": "çözdüğümü"
+ },
+ "2026-12-17": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "zarf",
+  "vurgu": "Yanındayım"
+ },
+ "2026-12-18": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "çıkarmak"
+ },
+ "2026-12-19": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kronometre",
+  "vurgu": "görünür"
+ },
+ "2026-12-20": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "bulut-yagmur",
+  "vurgu": "değilsin"
+ },
+ "2026-12-21": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kar-tanesi",
+  "vurgu": "Yarından"
+ },
+ "2026-12-22": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "buyutec-kitap",
+  "vurgu": "aritmetik"
+ },
+ "2026-12-23": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "tabela",
+  "vurgu": "Bıraksam"
+ },
+ "2026-12-24": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "ev-kalp",
+  "vurgu": "hangisi"
+ },
+ "2026-12-25": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ampul",
+  "vurgu": "Yani"
+ },
+ "2026-12-26": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "optik",
+  "vurgu": "sıralaman"
+ },
+ "2026-12-27": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "kalp-atisi",
+  "vurgu": "bacaklarla"
+ },
+ "2026-12-28": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "telefon-kilit",
+  "vurgu": "masada"
+ },
+ "2026-12-29": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "grafik-cubuk",
+  "vurgu": "tablosu"
+ },
+ "2026-12-30": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "dugum",
+  "vurgu": "anlamadım"
+ },
+ "2026-12-31": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "ay-bulut",
+  "vurgu": "sınav"
+ },
+ "2027-01-01": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "takvim",
+  "vurgu": "sakin"
+ },
+ "2027-01-02": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "dönemin"
+ },
+ "2027-01-03": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "ayna",
+  "vurgu": "değerini"
+ },
+ "2027-01-04": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "cümle"
+ },
+ "2027-01-05": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kitap-yigini",
+  "vurgu": "Tablo"
+ },
+ "2027-01-06": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "pil",
+  "vurgu": "oturayım"
+ },
+ "2027-01-07": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "zarf",
+  "vurgu": "bakarken"
+ },
+ "2027-01-08": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "roket",
+  "vurgu": "Motivasyonu"
+ },
+ "2027-01-09": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "optik",
+  "vurgu": "genel"
+ },
+ "2027-01-10": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "bulut-yagmur",
+  "vurgu": "Yarına"
+ },
+ "2027-01-11": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "merdiven",
+  "vurgu": "Adıyla"
+ },
+ "2027-01-12": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ampul",
+  "vurgu": "sorusunda"
+ },
+ "2027-01-13": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "takvim",
+  "vurgu": "yetişemiyorum"
+ },
+ "2027-01-14": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "konuşur"
+ },
+ "2027-01-15": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "bitmiş"
+ },
+ "2027-01-16": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "saniye"
+ },
+ "2027-01-17": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ev-kalp",
+  "vurgu": "teşekkür"
+ },
+ "2027-01-18": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "damla",
+  "vurgu": "Gerisi"
+ },
+ "2027-01-19": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "pusula",
+  "vurgu": "elektronegatiflik"
+ },
+ "2027-01-20": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "kum-saati",
+  "sayi": "150",
+  "ek": "gün.",
+  "ust": "Panik değil, tempo."
+ },
+ "2027-01-21": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "Kazanırsan"
+ },
+ "2027-01-22": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "filiz",
+  "vurgu": "çocuğunuzun"
+ },
+ "2027-01-23": {
+  "kurgu": "harita",
+  "zemin": "seftali",
+  "cizim": "grafik-cubuk",
+  "vurgu": "kolay"
+ },
+ "2027-01-24": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "zarf",
+  "vurgu": "teşekkürle"
+ },
+ "2027-01-25": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "ayna",
+  "sayi": "16",
+  "ek": "gün.",
+  "ust": "Yılın en değerli bloğu başladı."
+ },
+ "2027-01-26": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kitap-yigini",
+  "vurgu": "sabit"
+ },
+ "2027-01-27": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "kronometre",
+  "vurgu": "okuyamıyorum"
+ },
+ "2027-01-28": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kalp-atisi",
+  "vurgu": "kahvaltısı"
+ },
+ "2027-01-29": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kahve",
+  "vurgu": "düzenli"
+ },
+ "2027-01-30": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "takvim",
+  "vurgu": "mayısta"
+ },
+ "2027-01-31": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "bulut-yagmur",
+  "vurgu": "olmayacak"
+ },
+ "2027-02-01": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "pil",
+  "vurgu": "iptal"
+ },
+ "2027-02-02": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "buyutec-kitap",
+  "vurgu": "kesinlikle"
+ },
+ "2027-02-03": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "filiz",
+  "vurgu": "hiçbiri"
+ },
+ "2027-02-04": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "terazi",
+  "vurgu": "gezmesi"
+ },
+ "2027-02-05": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "grafik-cubuk",
+  "vurgu": "film"
+ },
+ "2027-02-07": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "olmalı"
+ },
+ "2027-02-08": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kronometre",
+  "vurgu": "Ramazanda"
+ },
+ "2027-02-09": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "kitap-yigini",
+  "vurgu": "kuraldan"
+ },
+ "2027-02-10": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "merdiven",
+  "vurgu": "soru"
+ },
+ "2027-02-11": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "gunes",
+  "vurgu": "bırakmayın"
+ },
+ "2027-02-12": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ampul",
+  "vurgu": "sıralama"
+ },
+ "2027-02-13": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "pil",
+  "vurgu": "Enerji"
+ },
+ "2027-02-14": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "saat"
+ },
+ "2027-02-15": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "takvim",
+  "vurgu": "Deneme"
+ },
+ "2027-02-16": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "dugum",
+  "vurgu": "paralel"
+ },
+ "2027-02-17": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "zarf",
+  "vurgu": "kalmıyor"
+ },
+ "2027-02-18": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ev-kalp",
+  "vurgu": "öğretmenle"
+ },
+ "2027-02-19": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "takip"
+ },
+ "2027-02-20": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "terazi",
+  "vurgu": "Arkadaşınla"
+ },
+ "2027-02-21": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "bulut-yagmur",
+  "vurgu": "çalıştığın"
+ },
+ "2027-02-22": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "merdiven",
+  "vurgu": "karıştırma"
+ },
+ "2027-02-23": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "buyutec-kitap",
+  "vurgu": "Karmaşa"
+ },
+ "2027-02-24": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "kulaklik",
+  "vurgu": "çalışacak"
+ },
+ "2027-02-25": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "telefon-kilit",
+  "vurgu": "Saatli"
+ },
+ "2027-02-26": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kalem-silgi",
+  "vurgu": "sonraki"
+ },
+ "2027-02-27": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "grafik-cubuk",
+  "vurgu": "dikkatsizlik"
+ },
+ "2027-02-28": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "pil",
+  "vurgu": "Bırakmamak"
+ },
+ "2027-03-01": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "takvim",
+  "vurgu": "dilimdesin"
+ },
+ "2027-03-02": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "sebebi"
+ },
+ "2027-03-03": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "gunes",
+  "vurgu": "çalışmazsam"
+ },
+ "2027-03-04": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "terazi",
+  "vurgu": "sorusundan"
+ },
+ "2027-03-05": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ampul",
+  "vurgu": "dönmemek"
+ },
+ "2027-03-06": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "tatilin"
+ },
+ "2027-03-07": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "merdiven",
+  "vurgu": "durmaktan"
+ },
+ "2027-03-08": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "cizim": "damla",
+  "sayi": "1",
+  "ek": "saat.",
+  "ust": "Bayram ve ara tatil birleşti."
+ },
+ "2027-03-09": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "Bayramınız"
+ },
+ "2027-03-10": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "kum-saati",
+  "vurgu": "yetişmeyecek"
+ },
+ "2027-03-11": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kitap-yigini",
+  "vurgu": "başlıyor"
+ },
+ "2027-03-12": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ay-bulut",
+  "vurgu": "kaydedildiği"
+ },
+ "2027-03-13": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "kronometre",
+  "vurgu": "ettin"
+ },
+ "2027-03-14": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ayna",
+  "vurgu": "yapmadıkların"
+ },
+ "2027-03-15": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "takvim",
+  "vurgu": "Taşınır"
+ },
+ "2027-03-16": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ampul",
+  "vurgu": "Felsefede"
+ },
+ "2027-03-17": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "tabela",
+  "vurgu": "gitmeli"
+ },
+ "2027-03-18": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "hedefiniz"
+ },
+ "2027-03-19": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "verimli"
+ },
+ "2027-03-20": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "grafik-cubuk",
+  "vurgu": "Herkes"
+ },
+ "2027-03-21": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "gunes",
+  "vurgu": "senden"
+ },
+ "2027-03-22": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kahve",
+  "vurgu": "kazancı"
+ },
+ "2027-03-23": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "filiz",
+  "vurgu": "refleks"
+ },
+ "2027-03-24": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "zarf",
+  "vurgu": "utanıyorum"
+ },
+ "2027-03-25": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "bulut-yagmur",
+  "vurgu": "diyeceksiniz"
+ },
+ "2027-03-26": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "buyutec-kitap",
+  "vurgu": "antrenman"
+ },
+ "2027-03-27": {
+  "kurgu": "harita",
+  "zemin": "nane",
+  "cizim": "kronometre",
+  "vurgu": "paragrafa"
+ },
+ "2027-03-28": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "ay-bulut",
+  "vurgu": "Yarının"
+ },
+ "2027-03-29": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "cizim": "kalem-silgi",
+  "sayi": "10",
+  "ek": "dakika.",
+  "ust": ""
+ },
+ "2027-03-30": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kitap-yigini",
+  "vurgu": "çizgiyi"
+ },
+ "2027-03-31": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "grafik-cubuk",
+  "vurgu": "Artmıyor"
+ },
+ "2027-04-01": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "takvim",
+  "vurgu": "deneme"
+ },
+ "2027-04-02": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kum-saati",
+  "vurgu": "içindir"
+ },
+ "2027-04-03": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "filiz",
+  "vurgu": "cumartesi"
+ },
+ "2027-04-04": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "gunes",
+  "vurgu": "saat"
+ },
+ "2027-04-05": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "damla",
+  "vurgu": "çözdükçe"
+ },
+ "2027-04-06": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "dugum",
+  "vurgu": "sadeleşir"
+ },
+ "2027-04-07": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "pil",
+  "vurgu": "oturmak"
+ },
+ "2027-04-08": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "terazi",
+  "vurgu": "denge"
+ },
+ "2027-04-09": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "tekrarı"
+ },
+ "2027-04-10": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "söylemek"
+ },
+ "2027-04-11": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "hızda"
+ },
+ "2027-04-12": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "grafik-cubuk",
+  "vurgu": "gerçek"
+ },
+ "2027-04-13": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "kitap-yigini",
+  "vurgu": "molekülden"
+ },
+ "2027-04-14": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "ev-kalp",
+  "vurgu": "kıyaslıyor"
+ },
+ "2027-04-15": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "çalıştın"
+ },
+ "2027-04-16": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "telefon-kilit",
+  "vurgu": "medyadaki"
+ },
+ "2027-04-17": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "optik",
+  "vurgu": "yorgunluğu"
+ },
+ "2027-04-18": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "ayna",
+  "vurgu": "Kendinle"
+ },
+ "2027-04-19": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kahve",
+  "vurgu": "çalışırsın"
+ },
+ "2027-04-20": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "buyutec-kitap",
+  "vurgu": "yürütme"
+ },
+ "2027-04-21": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "pil",
+  "vurgu": "yetmiyor"
+ },
+ "2027-04-22": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kulaklik",
+  "vurgu": "sorularla"
+ },
+ "2027-04-23": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "bayrak",
+  "vurgu": "çocuklarımıza"
+ },
+ "2027-04-24": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kalem-silgi",
+  "vurgu": "kullanacağını"
+ },
+ "2027-04-25": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "terazi",
+  "vurgu": "gerçek"
+ },
+ "2027-04-26": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "ay-bulut",
+  "vurgu": "planın"
+ },
+ "2027-04-27": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "grafik-cubuk",
+  "vurgu": "grafiğinde"
+ },
+ "2027-04-28": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "aklım"
+ },
+ "2027-04-29": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "zarf",
+  "vurgu": "yapar"
+ },
+ "2027-04-30": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "kum-saati",
+  "sayi": "50",
+  "ek": "gün.",
+  "ust": "Her gün bir deneme değil, her gün bir analiz."
+ },
+ "2027-05-01": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "Süre"
+ },
+ "2027-05-02": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "damla",
+  "vurgu": "gider"
+ },
+ "2027-05-03": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "merdiven",
+  "vurgu": "olabilir"
+ },
+ "2027-05-04": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "buyutec-kitap",
+  "vurgu": "kelime"
+ },
+ "2027-05-05": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "kahve",
+  "vurgu": "erteliyorum"
+ },
+ "2027-05-06": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "gunes",
+  "vurgu": "bölmek"
+ },
+ "2027-05-07": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "takvim",
+  "vurgu": "büyütür"
+ },
+ "2027-05-08": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "grafik-cubuk",
+  "sayi": "3",
+  "ek": "eksik.",
+  "ust": ""
+ },
+ "2027-05-09": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "ev-kalp",
+  "vurgu": "anneler"
+ },
+ "2027-05-10": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "plana"
+ },
+ "2027-05-11": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "ayna",
+  "vurgu": "değerde"
+ },
+ "2027-05-12": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "bulut-yagmur",
+  "vurgu": "işaretlemiyorum"
+ },
+ "2027-05-13": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "kronometre",
+  "vurgu": "dinlemek"
+ },
+ "2027-05-14": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "Önemsiz"
+ },
+ "2027-05-15": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kitap-yigini",
+  "vurgu": "düzenli"
+ },
+ "2027-05-16": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "Bayramınız"
+ },
+ "2027-05-17": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "ay-bulut",
+  "vurgu": "dakikalık"
+ },
+ "2027-05-18": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "buyutec-kitap",
+  "vurgu": "Diyalogda"
+ },
+ "2027-05-19": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "bayrak",
+  "vurgu": "yılınız"
+ },
+ "2027-05-20": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "kum-saati",
+  "sayi": "30",
+  "ek": "gün.",
+  "ust": "Uyku saatini sınav saatine göre ayarla."
+ },
+ "2027-05-21": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "strateji"
+ },
+ "2027-05-22": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "filiz",
+  "vurgu": "deneme"
+ },
+ "2027-05-23": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "grafik-cubuk",
+  "vurgu": "kazandırıyor"
+ },
+ "2027-05-24": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kahve",
+  "vurgu": "satırıdır"
+ },
+ "2027-05-25": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kronometre",
+  "vurgu": "gördüysen"
+ },
+ "2027-05-26": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "ayna",
+  "vurgu": "başlayayım"
+ },
+ "2027-05-27": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "tabela",
+  "vurgu": "İkisi"
+ },
+ "2027-05-28": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kitap-yigini",
+  "vurgu": "kalıcı"
+ },
+ "2027-05-29": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "bulut-yagmur",
+  "vurgu": "antrenman"
+ },
+ "2027-05-30": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "dusunce-balonu",
+  "vurgu": "sakin"
+ },
+ "2027-05-31": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "merdiven",
+  "sayi": "10",
+  "ek": "kolay.",
+  "ust": "Motor ısınsın."
+ },
+ "2027-06-01": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "ampul",
+  "vurgu": "integral"
+ },
+ "2027-06-02": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "pil",
+  "vurgu": "hissediyorum"
+ },
+ "2027-06-03": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ev-kalp",
+  "vurgu": "yapmamalı"
+ },
+ "2027-06-04": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kahve",
+  "vurgu": "alıyor"
+ },
+ "2027-06-05": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "grafik-cubuk",
+  "vurgu": "yoruldun"
+ },
+ "2027-06-06": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "zarf",
+  "vurgu": "konuşmadan"
+ },
+ "2027-06-07": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "takvim",
+  "vurgu": "söylemek"
+ },
+ "2027-06-08": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kalem-silgi",
+  "vurgu": "sorusunda"
+ },
+ "2027-06-09": {
+  "kurgu": "dev",
+  "zemin": "murekkep",
+  "cizim": "kum-saati",
+  "sayi": "10",
+  "ek": "gün.",
+  "ust": "Yeni hiçbir şey. Sadece bildiklerin."
+ },
+ "2027-06-10": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "terazi",
+  "vurgu": "değiştirir"
+ },
+ "2027-06-11": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "bulut-yagmur",
+  "vurgu": "değildir"
+ },
+ "2027-06-12": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "erken"
+ },
+ "2027-06-13": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "filiz",
+  "vurgu": "yanlarındayız"
+ },
+ "2027-06-14": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "merdiven",
+  "vurgu": "Sıra"
+ },
+ "2027-06-15": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "vurgu": "ivmedir"
+ },
+ "2027-06-16": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "telefon-kilit",
+  "vurgu": "paylaşıyor"
+ },
+ "2027-06-17": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "kalp-atisi",
+  "vurgu": "buradan"
+ },
+ "2027-06-18": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "çalışma"
+ },
+ "2027-06-19": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "gunes",
+  "vurgu": "sırayla"
+ },
+ "2027-06-20": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "ev-kalp",
+  "vurgu": "Babalar"
+ },
+ "2027-06-21": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "grafik-cubuk",
+  "vurgu": "beklemek"
+ },
+ "2027-06-22": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ampul",
+  "vurgu": "sorusunda"
+ },
+ "2027-06-23": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "bulut-yagmur",
+  "vurgu": "şimdiden"
+ },
+ "2027-06-24": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "terazi",
+  "vurgu": "cevap"
+ },
+ "2027-06-25": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "filiz",
+  "vurgu": "2028'e"
+ },
+ "2027-06-26": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "tabela",
+  "vurgu": "sıranı"
+ },
+ "2027-06-27": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "dediğin"
+ },
+ "2027-06-28": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kitap-yigini",
+  "vurgu": "bitsin"
+ },
+ "2027-06-29": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "buyutec-kitap",
+  "vurgu": "sorularını"
+ },
+ "2027-06-30": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "zarf",
+  "vurgu": "kazanamazsam"
+ },
+ "2027-07-01": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "ev-kalp",
+  "vurgu": "sınıf"
+ },
+ "2027-07-02": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "merdiven",
+  "vurgu": "zamanlı"
+ },
+ "2027-07-03": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "gunes",
+  "vurgu": "formu"
+ },
+ "2027-07-04": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "ayna",
+  "vurgu": "kelimeyle"
+ },
+ "2027-07-05": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "kronometre",
+  "sayi": "1",
+  "ek": "saat.",
+  "ust": "Yaz tatili dinlenmek için."
+ },
+ "2027-07-06": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ampul",
+  "vurgu": "Kongrelerin"
+ },
+ "2027-07-07": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "dusunce-balonu",
+  "vurgu": "yalnızım"
+ },
+ "2027-07-08": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "grafik-cubuk",
+  "vurgu": "konuşulur"
+ },
+ "2027-07-09": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "tabela",
+  "vurgu": "yapmamaktan"
+ },
+ "2027-07-10": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "kahve",
+  "vurgu": "yiyeceksin"
+ },
+ "2027-07-11": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "takvim",
+  "vurgu": "üzerinden"
+ },
+ "2027-07-12": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kitap-yigini",
+  "vurgu": "bitireceğin"
+ },
+ "2027-07-13": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "buyutec-kitap",
+  "vurgu": "birleştirmek"
+ },
+ "2027-07-14": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "bulut-yagmur",
+  "vurgu": "Bekleme"
+ },
+ "2027-07-16": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "Formül"
+ },
+ "2027-07-17": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "sonraki"
+ },
+ "2027-07-18": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "kronometre",
+  "vurgu": "işliyor"
+ },
+ "2027-07-19": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "damla",
+  "vurgu": "yapıyorsun"
+ },
+ "2027-07-20": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "grafik-cubuk",
+  "vurgu": "sayıdan"
+ },
+ "2027-07-21": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "pusula",
+  "vurgu": "yazacağımı"
+ },
+ "2027-07-22": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ev-kalp",
+  "vurgu": "listesi"
+ },
+ "2027-07-23": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "varsın"
+ },
+ "2027-07-24": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "kalp-atisi",
+  "vurgu": "Nefes"
+ },
+ "2027-07-25": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "pil",
+  "vurgu": "yorgunsa"
+ },
+ "2027-07-26": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "Planını"
+ },
+ "2027-07-27": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "filiz",
+  "vurgu": "sırayla"
+ },
+ "2027-07-28": {
+  "kurgu": "yazisma",
+  "zemin": "seftali",
+  "cizim": "zarf",
+  "vurgu": "yapamazsın"
+ },
+ "2027-07-29": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "kulaklik",
+  "vurgu": "kahvaltı"
+ },
+ "2027-07-30": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "merdiven",
+  "vurgu": "puanını"
+ },
+ "2027-07-31": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "optik",
+  "sayi": "10",
+  "ek": "soruda.",
+  "ust": "Optiği sonda mı dolduruyorsun?"
+ },
+ "2027-08-01": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "takvim",
+  "vurgu": "plansız"
+ },
+ "2027-08-02": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "damla",
+  "vurgu": "çöker"
+ },
+ "2027-08-03": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "buyutec-kitap",
+  "vurgu": "düşünce"
+ },
+ "2027-08-04": {
+  "kurgu": "yazisma",
+  "zemin": "kum",
+  "cizim": "dusunce-balonu",
+  "vurgu": "bütün"
+ },
+ "2027-08-05": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kitap-yigini",
+  "vurgu": "kazandırır"
+ },
+ "2027-08-06": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "ampul",
+  "vurgu": "düzensiz"
+ },
+ "2027-08-07": {
+  "kurgu": "dev",
+  "zemin": "krem",
+  "cizim": "kronometre",
+  "sayi": "5",
+  "ek": "dakika.",
+  "ust": ""
+ },
+ "2027-08-08": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "bulut-yagmur",
+  "vurgu": "dileğin"
+ },
+ "2027-08-09": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "filiz",
+  "vurgu": "alışkanlık"
+ },
+ "2027-08-10": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "ampul",
+  "vurgu": "Araçlar"
+ },
+ "2027-08-11": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "grafik-cubuk",
+  "vurgu": "üstüne"
+ },
+ "2027-08-12": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "zarf",
+  "vurgu": "yanında"
+ },
+ "2027-08-13": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "dugum",
+  "vurgu": "Fazlası"
+ },
+ "2027-08-14": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "değişecek"
+ },
+ "2027-08-15": {
+  "kurgu": "metafor",
+  "zemin": "krem",
+  "cizim": "ay-bulut",
+  "vurgu": "başlarız"
+ },
+ "2027-08-16": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "takvim",
+  "vurgu": "saatin"
+ },
+ "2027-08-17": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "kitap-yigini",
+  "vurgu": "nüfus"
+ },
+ "2027-08-18": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "kronometre",
+  "vurgu": "çalışsam"
+ },
+ "2027-08-19": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "ev-kalp",
+  "vurgu": "kaybolur"
+ },
+ "2027-08-20": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "kahve",
+  "vurgu": "deneme"
+ },
+ "2027-08-21": {
+  "kurgu": "harita",
+  "zemin": "gok",
+  "cizim": "optik",
+  "vurgu": "çözmemek"
+ },
+ "2027-08-22": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "filiz",
+  "vurgu": "çıkardığın"
+ },
+ "2027-08-23": {
+  "kurgu": "dev",
+  "zemin": "gok",
+  "cizim": "bulut-yagmur",
+  "sayi": "20",
+  "ek": "soru.",
+  "ust": ""
+ },
+ "2027-08-24": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "ampul",
+  "vurgu": "zaman"
+ },
+ "2027-08-25": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "dugum",
+  "vurgu": "uğraşıyorum"
+ },
+ "2027-08-26": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "grafik-cubuk",
+  "vurgu": "sonraki"
+ },
+ "2027-08-27": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "takvim",
+  "vurgu": "esnemeyen"
+ },
+ "2027-08-28": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "merdiven",
+  "vurgu": "bırak"
+ },
+ "2027-08-29": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "zarf",
+  "vurgu": "okuyacağın"
+ },
+ "2027-08-30": {
+  "kurgu": "dev",
+  "zemin": "nane",
+  "cizim": "bayrak",
+  "sayi": "30",
+  "ek": "Ağustos.",
+  "ust": ""
+ },
+ "2027-08-31": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "buyutec-kitap",
+  "vurgu": "gerisi"
+ },
+ "2027-09-01": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "kalem-silgi",
+  "vurgu": "yapıyorum"
+ },
+ "2027-09-02": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "telefon-kilit",
+  "vurgu": "Çocuğunuzun"
+ },
+ "2027-09-03": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "tabela",
+  "vurgu": "çalışmaktan"
+ },
+ "2027-09-04": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "pil",
+  "vurgu": "içtin"
+ },
+ "2027-09-05": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "filiz",
+  "vurgu": "Devam"
+ },
+ "2027-09-06": {
+  "kurgu": "masa",
+  "zemin": "gok",
+  "cizim": "ay-bulut",
+  "vurgu": "bitti"
+ },
+ "2027-09-07": {
+  "kurgu": "metafor",
+  "zemin": "nane",
+  "cizim": "kronometre",
+  "vurgu": "zehir"
+ },
+ "2027-09-08": {
+  "kurgu": "yazisma",
+  "zemin": "gok",
+  "cizim": "dugum",
+  "vurgu": "Denemenin"
+ },
+ "2027-09-09": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "bulut-yagmur",
+  "vurgu": "çocuğunuza"
+ },
+ "2027-09-10": {
+  "kurgu": "metafor",
+  "zemin": "murekkep",
+  "cizim": "kulaklik",
+  "vurgu": "Gürültüye"
+ },
+ "2027-09-11": {
+  "kurgu": "masa",
+  "zemin": "kum",
+  "cizim": "hedef-tahtasi",
+  "vurgu": "indiysen"
+ },
+ "2027-09-12": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "kavanoz-yildiz",
+  "vurgu": "edebilirsin"
+ },
+ "2027-09-13": {
+  "kurgu": "masa",
+  "zemin": "krem",
+  "cizim": "gunes",
+  "vurgu": "başlıyor"
+ },
+ "2027-09-14": {
+  "kurgu": "metafor",
+  "zemin": "seftali",
+  "cizim": "kitap-yigini",
+  "vurgu": "seferinde"
+ },
+ "2027-09-15": {
+  "kurgu": "yazisma",
+  "zemin": "nane",
+  "cizim": "ayna",
+  "vurgu": "Kendime"
+ },
+ "2027-09-16": {
+  "kurgu": "metafor",
+  "zemin": "gok",
+  "cizim": "grafik-cubuk",
+  "vurgu": "söyleyebiliyor"
+ },
+ "2027-09-17": {
+  "kurgu": "bolunmus",
+  "zemin": "seftali",
+  "cizim": "buyutec-kitap",
+  "vurgu": "Paragrafın"
+ },
+ "2027-09-18": {
+  "kurgu": "metafor",
+  "zemin": "kum",
+  "cizim": "ay-bulut",
+  "vurgu": "yorgun"
+ }
 }

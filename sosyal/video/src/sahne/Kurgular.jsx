@@ -1,6 +1,6 @@
 // Kurgu tipleri. Seri içeriği belirler, kurgu sahneyi. Her kurgunun 0. karesi eksiksiz kapaktır.
 import { AbsoluteFill } from 'remotion'
-import { BASLIK, GOVDE, EL, P, G, GEN, SON, SATIR, KAPANIS, yay, ara, gel, elCemberi, elCizgisi, punto } from './ortak.js'
+import { BASLIK, GOVDE, EL, P, G, GEN, SON, SATIR, KAPANIS, ZEMIN, yay, ara, gel, elCemberi, elCizgisi, punto, tohumla } from './ortak.js'
 import { Cizim, CIZIM } from './Cizimler.jsx'
 
 // ── Ortak parçalar ───────────────────────────────────────────────
@@ -10,9 +10,25 @@ export function Ust({ gun, z, stil }) {
     color: z.etiket, ...stil }}>{gun.seri}{ek}</div>
 }
 
-export function Baslik({ metin, boyut, renk, stil }) {
+const sade = (k) => k.toLocaleLowerCase('tr').replace(/[^a-zçğıöşü0-9]/g, '')
+export function Baslik({ metin, boyut, renk, stil, vurgu, f = 0, cizgi = P.amber }) {
+  const cek = ara(f, 3, 24)
+  let bulundu = false
   return <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: boyut, lineHeight: 1.0, letterSpacing: '-0.035em',
-    color: renk, textWrap: 'balance', ...stil }}>{metin}</div>
+    color: renk, textWrap: 'balance', ...stil }}>
+    {metin.split(' ').map((k, i) => {
+      const bu = !bulundu && vurgu && sade(k) === sade(vurgu)
+      if (bu) bulundu = true
+      return <span key={i}>{i ? ' ' : ''}{bu
+        ? <span style={{ position: 'relative', display: 'inline-block' }}>{k}
+            <svg viewBox="0 0 100 20" preserveAspectRatio="none" style={{ position: 'absolute', left: '-2%', width: '104%', bottom: '-0.2em',
+              height: '0.28em', overflow: 'visible', clipPath: `inset(-50% ${(1 - cek) * 100}% -50% -5%)` }}>
+              <path d={elCizgisi(0, 10, 100, 4, 2)} stroke={cizgi} fill="none" strokeLinecap="round" vectorEffect="non-scaling-stroke"
+                style={{ strokeWidth: boyut * 0.1 }} />
+            </svg></span>
+        : k}</span>
+    })}
+  </div>
 }
 
 export function Logo({ boyut = 56, renk, vurgu = P.amber }) {
@@ -23,15 +39,12 @@ export function Logo({ boyut = 56, renk, vurgu = P.amber }) {
 }
 
 export function Kunye({ f, z }) {
-  return <div style={{ position: 'absolute', left: G.sol, right: G.sag, top: SON - 56, display: 'flex', justifyContent: 'space-between',
-    alignItems: 'center', opacity: 1 - ara(f, KAPANIS - 10, KAPANIS), fontFamily: GOVDE, fontWeight: 600, fontSize: 30, color: z.yazi }}>
-    <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}><Logo boyut={40} renk={z.yazi} />Kıvanç Hoca</span>
-    <span style={{ color: z.soluk }}>@khkocluk</span>
-  </div>
+  return <div style={{ position: 'absolute', left: G.sol, top: SON - 50, opacity: 0.85 * (1 - ara(f, KAPANIS - 10, KAPANIS)) }}>
+    <Logo boyut={42} renk={z.yazi} /></div>
 }
 
 // Gövde satırları tek tek, aynı yerde: her satır bir öncekinin yerini alır, ekranda hep tek fikir durur.
-export function Yuva({ f, govde, z, boyut = 54, stil }) {
+export function Yuva({ f, govde, z, boyut = 64, stil }) {
   return <div style={{ position: 'relative', ...stil }}>
     {govde.map((s, i) => {
       const gir = yay(f, SATIR[i]), cik = i < govde.length - 1 ? ara(f, SATIR[i + 1] - 8, SATIR[i + 1] + 6) : 0
@@ -51,15 +64,15 @@ export function Metafor({ f, gun, govde, z, s }) {
   const cg = Math.min(s.cizimGen || 680, (520 * w) / h)
   const govdeGeldi = yay(f, SATIR[0] - 20)
   return <AbsoluteFill>
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', right: G.sag + 10, top: G.ust + 70,
       transform: `translate(${govdeGeldi * 40}px, ${-govdeGeldi * 40}px) scale(${1 - govdeGeldi * 0.28})`, transformOrigin: 'right top' }}>
       <Cizim ad={s.cizim} f={f} gen={cg} zemin={z} />
     </div>
     <div style={{ position: 'absolute', left: G.sol, width: GEN - 40, top: 880 - govdeGeldi * 170 }}>
-      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 104)} renk={z.yazi} />
+      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 104)} renk={z.yazi} vurgu={s.vurgu} f={f} cizgi={z.koyu ? P.amber : z.vurguCizgi} />
     </div>
-    <Yuva f={f} govde={govde} z={z} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 1150 }} />
+    <Yuva f={f} govde={govde} z={z} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 1130 }} />
   </AbsoluteFill>
 }
 
@@ -67,7 +80,7 @@ export function Metafor({ f, gun, govde, z, s }) {
 export function DevTipo({ f, gun, govde, z, s }) {
   const liste = yay(f, SATIR[0] - 15)
   return <AbsoluteFill>
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 64, fontFamily: GOVDE, fontSize: 50, lineHeight: 1.25, color: z.soluk }}>{s.ust}</div>
     <div style={{ position: 'absolute', left: G.sol - 10, top: 470, transform: `scale(${1 - liste * 0.3})`, transformOrigin: 'left top' }}>
       <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: 620, lineHeight: 0.82, letterSpacing: '-0.06em', color: z.yazi,
@@ -78,7 +91,7 @@ export function DevTipo({ f, gun, govde, z, s }) {
       <div style={{ position: 'absolute', left: 430, top: 300, fontFamily: BASLIK, fontWeight: 800, fontSize: 170, color: z.yazi,
         letterSpacing: '-0.04em' }}>{s.ek}</div>
     </div>
-    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 980, display: 'flex', flexDirection: 'column', gap: 40 }}>
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 980, display: 'flex', flexDirection: 'column', gap: 34 }}>
       {govde.map((t, i) => {
         const p = yay(f, SATIR[i]), tik = ara(f, SATIR[i] + 40, SATIR[i] + 58)
         return <div key={i} style={{ ...gel(p, 40), display: 'flex', gap: 30, alignItems: 'flex-start' }}>
@@ -86,7 +99,7 @@ export function DevTipo({ f, gun, govde, z, s }) {
             <rect x="6" y="6" width="52" height="52" rx="12" stroke={tik > 0 ? P.amber : z.soluk} strokeWidth="6" />
             <path d="M18 34 l10 10 l20 -24" stroke={P.amber} strokeWidth="7" pathLength={1} strokeDasharray={1} strokeDashoffset={1 - tik} />
           </svg>
-          <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 46, lineHeight: 1.28, color: z.yazi }}>{t}</div>
+          <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 52, lineHeight: 1.26, color: z.yazi }}>{t}</div>
         </div>
       })}
     </div>
@@ -100,13 +113,13 @@ export function Bolunmus({ f, gun, govde, s }) {
   if (m) { mit = `‘${m[1]}’`; hukum = m[2] } else { mit = `‘${gun.baslik}.’`; hukum = gun.kanca }
   const ust = { bg: P.seftali, yazi: P.murekkep, soluk: '#5a2e1c', etiket: '#5a2e1c', koyu: false }
   const alt = { bg: P.nane, yazi: P.murekkep, soluk: '#1f4a3c', etiket: '#1f4a3c', koyu: false }
-  const ciz = ara(f, 110, 140)
+  const ciz = ara(f, 18, 48)
   const kay = yay(f, SATIR[0] - 30, { damping: 20, stiffness: 90 })   // alt yarı yukarı kayar, gövdeye yer açar
   const sinir = 960 - kay * 260
   const pill = (t, r) => <span style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 28, letterSpacing: '.12em', background: P.murekkep,
     color: r, padding: '10px 22px', borderRadius: 999 }}>{t}</span>
   return <AbsoluteFill style={{ background: ust.bg }}>
-    <Ust gun={gun} z={ust} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={ust} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', right: G.sag - 40, top: G.ust + 40, opacity: 1 - kay * 0.9 }}>
       <Cizim ad="dugum" f={f} gen={340} zemin={ust} kalem={7} />
     </div>
@@ -124,22 +137,22 @@ export function Bolunmus({ f, gun, govde, s }) {
       </svg>
       <div style={{ position: 'absolute', left: G.sol, top: 90 }}>{pill('GERÇEK', P.nane)}</div>
       <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 170 }}>
-        <Baslik metin={hukum} boyut={punto(hukum, 96)} renk={P.murekkep} />
+        <Baslik metin={hukum} boyut={punto(hukum, 96)} renk={P.murekkep} vurgu={s.vurgu} f={f} cizgi={P.murekkep} />
       </div>
-      <Yuva f={f} govde={govde} z={alt} boyut={46} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 440 }} />
+      <Yuva f={f} govde={govde} z={alt} boyut={56} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 430 }} />
     </div>
   </AbsoluteFill>
 }
 
 // ── D · Harita / veri ────────────────────────────────────────────
-export function Harita({ f, gun, govde, z }) {
+export function Harita({ f, gun, govde, z, s }) {
   const yol = 'M40 330 C140 300 150 200 250 220 S380 330 470 250 S560 80 660 70'
-  const ilerle = ara(f, 60, 130)
-  const etiket = yay(f, 40)
+  const ilerle = ara(f, 8, 60)
+  const etiket = yay(f, 28)
   return <AbsoluteFill>
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 70 }}>
-      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 108)} renk={z.yazi} />
+      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 108)} renk={z.yazi} vurgu={s.vurgu} f={f} cizgi={P.murekkep} />
     </div>
     <svg width={GEN + 40} height={440} viewBox="0 0 720 420" style={{ position: 'absolute', left: G.sol - 20, top: 660, overflow: 'visible' }}
       fill="none" strokeLinecap="round" strokeLinejoin="round">
@@ -157,20 +170,22 @@ export function Harita({ f, gun, govde, z }) {
       transformOrigin: 'left center', opacity: Math.min(1, etiket * 1.5), background: P.amber, border: `6px solid ${P.murekkep}`,
       borderRadius: 18, padding: '10px 28px', boxShadow: `10px 10px 0 ${P.murekkep}`, fontFamily: BASLIK, fontWeight: 800,
       fontSize: 50, color: P.murekkep }}>Buradasın</div>
-    <Yuva f={f} govde={govde} z={z} boyut={48} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 1230 }} />
+    <Yuva f={f} govde={govde} z={z} boyut={58} stil={{ position: 'absolute', left: G.sol, width: GEN - 20, top: 1190 }} />
   </AbsoluteFill>
 }
 
 // ── E · Masa üstü: yapışkan notlar ───────────────────────────────
+const bastanBuyuk = (t) => t.charAt(0).toLocaleUpperCase('tr') + t.slice(1)
 export function Masa({ f, gun, govde, z, s }) {
+  const kanca = bastanBuyuk(gun.kanca.replace(/^[^:]*veli[^:]*:\s*/i, ''))   // "8. sınıf velisi:" gibi hitap önekini at (etikette zaten var)
   const notlar = [
     { r: P.seftali, x: 0, y: 0, a: -4 }, { r: P.nane, x: 150, y: 235, a: 3.5 }, { r: P.limon, x: 20, y: 470, a: -2 },
   ]
   const cizGit = yay(f, SATIR[0] - 20)
   return <AbsoluteFill>
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 70 }}>
-      <Baslik metin={gun.kanca.replace(/^[^:]+:\s*/, '')} boyut={96} renk={z.yazi} />
+      <Baslik metin={kanca} boyut={punto(kanca, 104)} renk={z.yazi} vurgu={s.vurgu} f={f} cizgi={P.amber} />
     </div>
     {s.cizim && <div style={{ position: 'absolute', right: G.sag, top: 760, opacity: 1 - cizGit, transform: `scale(${1 - cizGit * 0.2})` }}>
       <Cizim ad={s.cizim} f={f} gen={520} zemin={z} /></div>}
@@ -199,7 +214,7 @@ export function Yazisma({ f, gun, govde, z }) {
     letterSpacing: buyuk ? '-0.02em' : 0, padding: buyuk ? '30px 36px' : '20px 28px',
     borderRadius: koc ? '34px 34px 8px 34px' : '34px 34px 34px 8px' }}>{t}</div>
   return <AbsoluteFill>
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 30 }} />
     <div style={{ position: 'absolute', left: X + 18, top: Y + 18, width: W, height: H, background: z.dolgu === P.krem ? P.nane : z.dolgu, borderRadius: 70 }} />
     <div style={{ position: 'absolute', left: X, top: Y, width: W, height: H, background: P.krem, border: `10px solid ${P.murekkep}`,
       borderRadius: 70, overflow: 'hidden', transform: `rotate(${Math.sin(f / 50) * 0.6}deg)` }}>
@@ -219,27 +234,36 @@ export function Yazisma({ f, gun, govde, z }) {
   </AbsoluteFill>
 }
 
-// ── Kapanış: dairesel perdeyle zemin değişir ─────────────────────
-export function Kapanis({ f, gun, z }) {
+// ── Kapanış: günün renginde, günün çizimiyle; başlık dönüşümlü ─────
+const KAPANIS_SOZ = ['Senin sıran.', 'Sen ne dersin?', 'Yorumlarda buluşalım.', 'Bir cümle yeter.', 'Sende nasıl?']
+export function Kapanis({ f, gun, z, s }) {
   const ac = ara(f, KAPANIS, KAPANIS + 22)
   if (!ac) return null
-  const k = z.koyu ? { bg: P.krem, yazi: P.murekkep, soluk: '#4a5570' } : { bg: P.murekkep, yazi: P.krem, soluk: '#cfd6e6' }
-  const a = yay(f, KAPANIS + 14), b = yay(f, KAPANIS + 30), c = yay(f, KAPANIS + 48)
+  const rnd = tohumla(gun.tarih + 'kapanis')
+  const aday = Object.keys(ZEMIN).filter((k) => ZEMIN[k].bg !== z.bg)
+  const k = ZEMIN[aday[Math.floor(rnd() * aday.length)]]
+  const soz = gun.soru ? KAPANIS_SOZ[Math.floor(rnd() * KAPANIS_SOZ.length)] : 'Yarın yine buradayız.'
+  const koseler = ['85% 88%', '12% 90%', '88% 12%', '50% 100%']
+  const kose = koseler[Math.floor(rnd() * koseler.length)]
+  const a = yay(f, KAPANIS + 14), b = yay(f, KAPANIS + 30), c = yay(f, KAPANIS + 48), d = yay(f, KAPANIS + 24, { damping: 12, stiffness: 120 })
   const alti = ara(f, KAPANIS + 55, KAPANIS + 80)
-  return <AbsoluteFill style={{ background: k.bg, clipPath: `circle(${ac * 150}% at 85% 88%)` }}>
-    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 470 }}>
-      <div style={{ ...gel(a, 40), fontFamily: GOVDE, fontWeight: 600, fontSize: 30, letterSpacing: '.14em', color: P.amber }}>
+  const cizgi = k.koyu ? P.amber : k.vurguCizgi
+  return <AbsoluteFill style={{ background: k.bg, clipPath: `circle(${ac * 150}% at ${kose})` }}>
+    {s && s.cizim && <div style={{ position: 'absolute', right: G.sag, top: G.ust + 20, transform: `scale(${d}) rotate(${(1 - d) * -20}deg)`,
+      transformOrigin: 'center' }}><Cizim ad={s.cizim} f={f} gen={300} zemin={k} kalem={7} /></div>}
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 560 }}>
+      <div style={{ ...gel(a, 40), fontFamily: GOVDE, fontWeight: 600, fontSize: 30, letterSpacing: '.14em', color: k.etiket }}>
         {gun.soru ? 'YORUMLARA YAZ' : 'HER GÜN BİR VİDEO'}</div>
-      <Baslik metin={gun.soru ? 'Senin sıran.' : 'Yarın yine buradayız.'} boyut={132} renk={k.yazi} stil={{ ...gel(b, 50), marginTop: 20 }} />
-      {gun.soru && <div style={{ ...gel(c, 40), position: 'relative', marginTop: 50, fontFamily: EL, fontSize: 76, lineHeight: 1.1, color: k.yazi }}>
+      <Baslik metin={soz} boyut={soz.length > 16 ? 112 : 132} renk={k.yazi} stil={{ ...gel(b, 50), marginTop: 20 }} />
+      {gun.soru && <div style={{ ...gel(c, 40), position: 'relative', marginTop: 50, fontFamily: EL, fontSize: 80, lineHeight: 1.1, color: k.yazi }}>
         {gun.soru}
         <svg width={GEN} height={40} viewBox={`0 0 ${GEN} 40`} style={{ display: 'block', marginTop: 8, overflow: 'visible' }}>
-          <path d={elCizgisi(0, 20, GEN * 0.7, 6, 3)} stroke={P.amber} strokeWidth={10} fill="none" strokeLinecap="round"
+          <path d={elCizgisi(0, 20, GEN * 0.7, 6, 3)} stroke={cizgi} strokeWidth={10} fill="none" strokeLinecap="round"
             pathLength={1} strokeDasharray={1} strokeDashoffset={1 - alti} />
         </svg>
       </div>}
       {gun.yks_kalan != null && <div style={{ ...gel(c, 40), display: 'inline-block', marginTop: 50, fontFamily: GOVDE, fontWeight: 600,
-        fontSize: 32, color: k.yazi, border: `4px solid ${P.amber}`, borderRadius: 999, padding: '12px 28px' }}>YKS'ye {gun.yks_kalan} gün</div>}
+        fontSize: 32, color: k.yazi, border: `4px solid ${k.yazi}`, borderRadius: 999, padding: '12px 28px' }}>YKS'ye {gun.yks_kalan} gün</div>}
     </div>
     <div style={{ ...gel(c, 30), position: 'absolute', left: G.sol, top: SON - 130, display: 'flex', alignItems: 'center', gap: 26 }}>
       <Logo boyut={84} renk={k.yazi} />
