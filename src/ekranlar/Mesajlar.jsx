@@ -111,7 +111,7 @@ function MesajBalonu({ m, acik, onSec, onBitti }) {
   )
 }
 
-function Yazisma({ kisi, profilId, onGeri, tekMuhatap }) {
+function Yazisma({ kisi, profilId, onGeri, tekMuhatap, geriEtiketi = 'Mesajlar' }) {
   const [mesajlar, setMesajlar] = useState(null)
   const [metin, setMetin] = useState('')
   const [hata, setHata] = useState('')
@@ -182,7 +182,7 @@ function Yazisma({ kisi, profilId, onGeri, tekMuhatap }) {
       eylem={
         tekMuhatap ? null : (
           <button className='metin-dugme' onClick={onGeri}>
-            Mesajlar
+            {geriEtiketi}
           </button>
         )
       }
@@ -227,7 +227,10 @@ function Yazisma({ kisi, profilId, onGeri, tekMuhatap }) {
   )
 }
 
-export default function Mesajlar({ profil }) {
+/* kisiId verilirse liste atlanır, doğrudan o kişinin yazışması açılır
+   (koçun öğrenci kartındaki Mesaj düğmesi). Kutu herkesi — hiç yazışma
+   olmayanları da — getirdiği için ilk mesaj burada yazılabilir. */
+export default function Mesajlar({ profil, kisiId, onGeri }) {
   const [kutu, setKutu] = useState(null)
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
@@ -241,9 +244,16 @@ export default function Mesajlar({ profil }) {
       return
     }
     setKutu(data ?? [])
+    if (kisiId) {
+      const hedef = (data ?? []).find((k) => k.id === kisiId)
+      if (hedef) {
+        setSecili(hedef)
+        return
+      }
+    }
     // Öğrenci ve velinin tek muhatabı var, liste göstermek gereksiz tıklama olurdu
     if (!kocMu && (data ?? []).length === 1) setSecili(data[0])
-  }, [kocMu])
+  }, [kocMu, kisiId])
 
   useEffect(() => {
     yukle()
@@ -255,13 +265,18 @@ export default function Mesajlar({ profil }) {
         kisi={secili}
         profilId={profil.id}
         tekMuhatap={!kocMu}
+        geriEtiketi={kisiId && onGeri ? 'Geri' : 'Mesajlar'}
         onGeri={() => {
+          if (kisiId && onGeri) return onGeri()
           setSecili(null)
           yukle()
         }}
       />
     )
   }
+
+  // Doğrudan yazışma istenmişken liste bir an görünüp kaybolmasın
+  if (kisiId && kutu === null) return <Kart baslik='Mesajlar'><Yukleniyor /></Kart>
 
   return (
     <Kart baslik='Mesajlar'>

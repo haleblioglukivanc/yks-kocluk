@@ -398,7 +398,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -485,7 +485,18 @@ export default function App() {
         />
       )
     if (yol === '/sifre') return <SifreDegistir onBitti={() => git('/')} />
-    if (yol === '/mesajlar') return <Mesajlar profil={profil} />
+    if (yol === '/mesajlar') return <Mesajlar key="kutu" profil={profil} />
+    /* Doğrudan bir kişinin yazışması (öğrenci kartındaki Mesaj düğmesi).
+       Geri, geldiği yere döner; adres doğrudan açıldıysa kutuya düşer. */
+    if (yol.startsWith('/mesajlar/'))
+      return (
+        <Mesajlar
+          key={yol}
+          profil={profil}
+          kisiId={yol.slice('/mesajlar/'.length)}
+          onGeri={() => (window.history.state ? window.history.back() : git('/mesajlar'))}
+        />
+      )
     if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} />
     if (kocMu && yol === '/konular')
       return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
@@ -506,7 +517,7 @@ export default function App() {
               <OgrenciDetay
                 ogrenciId={ogrenciId}
                 onGeri={() => git('/ogrenciler')}
-                onMesaj={() => git('/mesajlar')}
+                onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
                 onGozuyle={(id) => git(`/gozuyle/${id}`)}
               />
             ) : (
@@ -549,7 +560,7 @@ export default function App() {
         <OgrenciDetay
           ogrenciId={ogrenciId}
           onGeri={() => git('/ogrenciler')}
-          onMesaj={() => git('/mesajlar')}
+          onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
         />
       )
