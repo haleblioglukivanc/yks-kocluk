@@ -1,5 +1,8 @@
 # sms-gonder
 
+> **Kapalı (19 Eylül 2026, Bekir):** kendi gönderici başlığı alınmayacak. Veli özetleri kalıcı olarak koçun
+> WhatsApp'ından gidiyor ("Veliye iletilecek" kutusu). Kod ve kuyruk yerinde; açmak gerekirse aşağıdaki cron satırı.
+
 `sms_kuyrugu` tablosunu boşaltır.
 
 > **Şu an uykuda.** `sms-kuyrugu-bosalt` cron'u 16 Eylül 2026'da kaldırıldı:

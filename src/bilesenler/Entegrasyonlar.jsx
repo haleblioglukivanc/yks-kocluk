@@ -46,9 +46,9 @@ export default function Entegrasyonlar() {
       durum: !v.has('servis_anahtari') ? ['uyari', 'Anahtar yok'] : db.eposta.hata_7g ? ['uyari', 'Hata var'] : db.eposta.bekleyen > 3 ? ['izle', 'Kuyruk birikti'] : ['iyi', 'Çalışıyor'],
     },
     {
-      /* SMS kuyruğu 16 Eylül 2026'dan beri bilerek uykuda: onaylı başlık başka
-         firmanın (FIRATILTSM), kendi başlığımız onay bekliyor. Bu arada koç veli
-         özetini Bugün'deki "Veliye iletilecek" kutusundan WhatsApp'la iletiyor.
+      /* SMS kapalı (karar 19 Eylül 2026, Bekir): kendi gönderici başlığı
+         alınmayacak. Veli özeti kalıcı olarak koçun Bugün'deki "Veliye
+         iletilecek" kutusundan WhatsApp'la gidiyor. Kod yerinde duruyor.
          Kuyruğu boşaltan cron (sms-kuyrugu-bosalt) kurulunca normal durum
          gösterilir (sms-gonder/README.md). */
       ad: 'SMS · İleti Merkezi',
@@ -60,14 +60,13 @@ export default function Entegrasyonlar() {
             db.sms.hata_7g ? `7 günde ${db.sms.hata_7g} hata` : null,
           ]
         : [
-            'kendi gönderici başlığımız onay bekliyor',
-            'veli özetleri şimdilik koçun WhatsApp’ından gidiyor',
+            'kullanılmıyor: veli özetleri koçun WhatsApp’ından gidiyor',
             db.sms.bekleyen ? `${db.sms.bekleyen} özet koçun iletme kutusunda` : null,
           ],
       durum: env.hata
         ? ['sonuk', 'Bilinmiyor']
         : !db.sms.cron
-          ? ['izle', 'Uykuda']
+          ? ['sonuk', 'Kapalı']
           : !varMi('ILETIMERKEZI_KEY', 'ILETIMERKEZI_HASH')
             ? ['uyari', 'Anahtar yok']
             : db.sms.hata_7g ? ['uyari', 'Hata var'] : ['iyi', 'Çalışıyor'],

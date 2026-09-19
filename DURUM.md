@@ -1,11 +1,30 @@
 # Proje Durumu
 
-Son güncelleme: 19 Eylül 2026 (öğrenci/veli yönetimi, KVKK)
+Son güncelleme: 19 Eylül 2026 (oturum özeti)
 
 Bu belge, çalışmaya yeni bir oturumda devam edebilmek için yazıldı. Neyin hazır
 olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığını anlatır.
 
 ---
+
+## Oturum özeti — 18–19 Eylül 2026 (tasarım turu + Yönetim paneli)
+
+**Tasarım** (`TASARIM-KURALLARI.md`, `TESPIT.md`): 11 kural, `src/ortak/` ortak bileşenleri (UstBlok, Sekmeler, GunSeridi,
+BosDurum, Bolum, UyariSatiri, EylemDugmesi). Renk dili: koç ve veli lacivert, öğrenci koyu amber; veri beyaz yüzeyde;
+ikincil düğmeler ikonlu. Bütün ekranlar yenilendi: koç Bugün, koçun öğrenci ekranı (4 sekme), Raporlar, öğrenci Bugün/Yol,
+Kaynaklar, Veli, Yönetim, Şifre ekranları.
+
+**Yönetim paneli** (`TESPIT-YONETIM.md`, 6/6 tamam): şifre değiştir/sıfırla; koç detayı, durum, kapasite, öğrenci aktarma,
+koç silme; sekmeler Koçlar · Öğrenciler ve veliler · Tahsilat · İletişim · İçerik · Teknik; entegrasyon durumları;
+erişim günlüğü; başvuru takibi; SMS kaydı; KVKK talepleri ve veri indirme.
+
+**Düzeltilen hatalar**: yönetici koç ekleyemiyordu / silemiyordu (rol → bayrak); şifre değiştirme ekranı yoktu.
+
+**Bekir'in kararları (19 Eylül)**: Demo Koç yönetici kalıyor (şimdilik). Hesap açma/silmede günlükte "sistem" yazması
+kabul. **SMS kapandı**: kendi başlık alınmayacak; veli özetleri kalıcı olarak koçun WhatsApp'ından.
+
+**Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; PWA (kurulabilir uygulama); koç masaüstünde
+"Excel gibi" öğrenci × gün tablosu (Kıvanç'ın isteği); `denetim/`'e tasarım kuralı kontrolleri (TASARIM-KURALLARI C.7).
 
 ## 19 Eylül 2026 — Yönetim işlevleri 6: öğrenci/veli yönetimi ve KVKK
 
