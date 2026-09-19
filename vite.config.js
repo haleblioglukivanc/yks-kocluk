@@ -3,10 +3,24 @@ import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
 // Cloudflare kokte yayinlar, TABAN bos kalir. Degisken yine de duruyor:
-// ileride alan adi alinip site bir alt dizine tasinirsa tek yerden ayarlanir.
+// ileride site bir alt dizine tasinirsa tek yerden ayarlanir.
 const taban = process.env.TABAN || '/'
 
 const DERLEME = new Date().toISOString().slice(0, 16).replace('T', ' ')
+
+/* PWA (19 Eylul 2026'da sifirdan yazildi).
+   Kurallar:
+   - Manifest guncel markayi tasir: "Kivanc Hoca", koyu lacivert.
+   - Acilis adresi /giris: kurulu uygulama tanitim sayfasini acmaz. Giris
+     yapmis kullanici /giris'te zaten kendi Bugun ekranina duser.
+   - id sabit: ad ya da adres degisse de telefon ayni uygulama sanir.
+   - Yon kilidi yok: koc masaustunden, ogrenci tabletten de giriyor.
+   - On bellege yalniz uygulamanin kendisi girer. Tanitim sayfasinin
+     gorselleri (seminerler, video, belgeler, portre) agdan gelir.
+   - Kayit src/pwa/pwa.js'te, elle: yeni surum sayfayi kullanim
+     ortasinda yenilemez, uygulamaya bir sonraki donuste devreye girer. */
+const LACIVERT = '#2e3a52'
+const IKON_ZEMIN = '#0f1520'
 
 export default defineConfig({
   define: { __DERLEME__: JSON.stringify(DERLEME) },
@@ -15,41 +29,32 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      injectRegister: false,
       manifest: {
-        name: 'KH Koçluk',
-        short_name: 'KH Koçluk',
-        description:
-          'Tek koç, çok öğrenci. Program, deneme takibi ve konu ilerlemesi tek yerde.',
+        id: taban,
+        name: 'Kıvanç Hoca ile koçluk',
+        short_name: 'Kıvanç Hoca',
+        description: 'YKS ve LGS koçluğu: günün programı, deneme takibi ve konu ilerlemesi.',
         lang: 'tr',
         dir: 'ltr',
-        start_url: taban,
+        start_url: taban + 'giris',
         scope: taban,
         display: 'standalone',
-        orientation: 'portrait',
-        theme_color: '#ffffff',
-        background_color: '#EDEFF3',
+        theme_color: LACIVERT,
+        background_color: IKON_ZEMIN,
+        categories: ['education'],
         icons: [
-          { src: taban + 'icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: taban + 'icon-512.png', sizes: '512x512', type: 'image/png' },
-          {
-            src: taban + 'icon-512-maskable.png',
-            sizes: '512x512',
-            type: 'image/png',
-            purpose: 'maskable',
-          },
+          { src: taban + 'icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any' },
+          { src: taban + 'icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
+          { src: taban + 'icon-512-maskable.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
-        // Belge gorselleri yalnizca tanitim sayfasinda kullaniliyor;
-        // uygulamanin calismasi icin gerekli degil. On bellege alinmazlar,
-        // ihtiyac aninda agdan cekilir.
-        globIgnores: ['**/belgeler/**'],
+        globPatterns: ['**/*.{js,css,html,woff2}', 'favicon.svg', 'icon-*.png', 'apple-touch-icon.png'],
+        globIgnores: ['gizlilik.html'],
         navigateFallback: taban + 'index.html',
-        // Yeni surum indirildigi anda devreye girsin. Bunlar olmadan eski
-        // service worker sayfayi kontrol etmeye devam eder ve kullanici
-        // butun sekmeleri kapatana kadar eski surumu gorur.
+        // Dosya isteklerine (uzantili yollar) asla index.html donmesin.
+        navigateFallbackDenylist: [/\/[^/?]+\.[^/?]+$/],
         skipWaiting: true,
         clientsClaim: true,
         cleanupOutdatedCaches: true,

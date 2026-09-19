@@ -23,8 +23,31 @@ erişim günlüğü; başvuru takibi; SMS kaydı; KVKK talepleri ve veri indirme
 **Bekir'in kararları (19 Eylül)**: Demo Koç yönetici kalıyor (şimdilik). Hesap açma/silmede günlükte "sistem" yazması
 kabul. **SMS kapandı**: kendi başlık alınmayacak; veli özetleri kalıcı olarak koçun WhatsApp'ından.
 
-**Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; PWA (kurulabilir uygulama); koç masaüstünde
+**Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; anlık bildirim (web push, PWA'nın üstüne ayrı iş); koç masaüstünde
 "Excel gibi" öğrenci × gün tablosu (Kıvanç'ın isteği); `denetim/`'e tasarım kuralı kontrolleri (TASARIM-KURALLARI C.7).
+
+## 19 Eylül 2026 — PWA sıfırdan
+
+Eski PWA kurulmuyor, kurulunca beyaz ekranda kalabiliyordu. Katman sıfırdan yazıldı (`src/pwa/`, `vite.config.js`,
+`index.html`). Bildirim bu turun dışında.
+
+- **Manifest**: ad "Kıvanç Hoca ile koçluk", ana ekranda "Kıvanç Hoca"; `id: /` sabit; açılış `/giris` (kurulu uygulama
+  tanıtımı açmaz, giriş yapmış olan Bugün'e düşer); yön kilidi kalktı; lacivert tema, ikon zemini `#0f1520`.
+- **Kurulum izni erken yakalanıyor** (`pwa.js` → `baslat`, React'ten önce). Eski kod izni girişten sonra dinliyordu;
+  Chrome/Android izni sayfa açılır açılmaz verdiği için "Ekle" düğmesi çoğu zaman hiç çıkmıyordu.
+- **Ortama göre tarif** (`ortam()`): tek tuş (Chrome/Edge/Samsung) · iPhone Safari/Chrome Paylaş → Ana Ekrana Ekle ·
+  iPhone'da diğer tarayıcı → Safari'de aç · Instagram/TikTok içi tarayıcı → "Tarayıcıda aç" · Mac Safari → Dock'a Ekle ·
+  Android menü · masaüstü adres çubuğu simgesi. Davet kendiliğinden bir kez; Hesap → "Uygulamayı yükle" her zaman açar.
+- **Kurtarma uygulama kodundan bağımsız**: `?sifirla=1` betiği `index.html`'de. Açılış yedeği: React 8 sn'de açılmazsa
+  "Açılmadı mı? Uygulamayı yenile" görünür (kurulu uygulamada adres çubuğu yok). Hesap → "Uygulamayı yenile" aynı yol.
+- **Güncelleme**: kayıt elle (`injectRegister: false`); yeni sürüm kullanım ortasında sayfayı yenilemez, uygulamaya
+  bir sonraki dönüşte devreye girer; öne her gelişte güncelleme kontrolü.
+- **Ön bellek** yalnız uygulama (12 dosya, önceden 29): tanıtım görselleri, seminer/video, `gizlilik.html` ağdan.
+  Uzantılı yollara `index.html` dönmez.
+- **Durum çubuğu** rolün `--tepe-ust`'u: öğrenci koyu amber, koç/veli lacivert (eski `--durum-cubugu-panel` kalktı).
+- Apple ikonu köşesiz (iOS kendi yuvarlar; şeffaf köşeyi siyaha boyuyordu).
+- Doğrulama: Chromium kurulabilirlik hatası yok, manifest hatası yok, çevrimdışı açılıyor, `?sifirla=1` temizliyor.
+  iPhone'da gerçek kurulum elle denenmeli.
 
 ## 19 Eylül 2026 — Yönetim işlevleri 6: öğrenci/veli yönetimi ve KVKK
 

@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { Avatar } from './Fotograf.jsx'
+import { kurulumuGoster, useKurulum } from '../pwa/KurulumDaveti.jsx'
+import { kur, yenidenYukle } from '../pwa/pwa.js'
 
 /**
  * Alttan açılan Hesap yaprağı.
@@ -32,6 +34,8 @@ export default function HesapYapragi({
   onCikis,
   onGit,
 }) {
+  const kurulum = useKurulum()
+
   useEffect(() => {
     if (!acik) return
     const tus = (e) => e.key === 'Escape' && onKapat()
@@ -110,6 +114,23 @@ export default function HesapYapragi({
             <svg {...ikon}><rect x="5" y="11" width="14" height="9" rx="2" /><path d="M8 11V8a4 4 0 0 1 8 0v3" /></svg>
             <span>Şifremi değiştir</span>
             <em>›</em>
+          </button>
+          {/* Uygulama: kurulu değilse yükle; her zaman "yenile" (beyaz ekran
+              ya da eski sürüm takılı kaldığında adres yazmadan çıkış yolu). */}
+          {kurulum.kurulabilir && (
+            <button
+              type="button"
+              className="hesap-satir"
+              onClick={() => { onKapat(); if (kurulum.istem) kur(); else kurulumuGoster() }}
+            >
+              <svg {...ikon}><rect x="6" y="2.5" width="12" height="19" rx="2.5" /><path d="M12 8v6" /><path d="m9.5 11.5 2.5 2.5 2.5-2.5" /></svg>
+              <span>Uygulamayı yükle</span>
+              <em>›</em>
+            </button>
+          )}
+          <button type="button" className="hesap-satir" onClick={yenidenYukle}>
+            <svg {...ikon}><path d="M3 12a9 9 0 0 1 15.5-6.2L21 8" /><path d="M21 3v5h-5" /><path d="M21 12a9 9 0 0 1-15.5 6.2L3 16" /><path d="M3 21v-5h5" /></svg>
+            <span>Uygulamayı yenile</span>
           </button>
           <button type="button" className="hesap-satir hesap-satir--cikis" onClick={onCikis}>
             <svg {...ikon}>

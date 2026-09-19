@@ -7,6 +7,43 @@
     <meta name="description" content="YKS ve LGS koçluğu. Haftalık program, konu takibi ve deneme analizi tek sistemde." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <!-- Ana ekrana eklenmiş uygulama (PWA). Manifest vite.config.js'te.
+         iPhone manifestteki adı her zaman okumuyor; etiket burada da var. -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kıvanç Hoca" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+
+    <!-- Kurtarma: adres ?sifirla=1 ile açılınca service worker'lar ve
+         önbellekler silinir, uygulama ağdan temiz yüklenir. Bilerek burada,
+         uygulama kodundan ayrı: beyaz ekranın sebebi bozuk/eski uygulama
+         kodu olduğunda kurtarma yolu da onunla birlikte çökmemeli. -->
+    <script>
+      (function () {
+        if (!/[?&]sifirla\b/.test(location.search)) return
+        window.__sifirlaniyor = true
+        var bitir = function () { location.replace(location.pathname) }
+        var isler = []
+        if ('serviceWorker' in navigator) {
+          isler.push(navigator.serviceWorker.getRegistrations().then(function (k) {
+            return Promise.all(k.map(function (x) { return x.unregister() }))
+          }))
+        }
+        if (window.caches) {
+          isler.push(caches.keys().then(function (a) {
+            return Promise.all(a.map(function (x) { return caches.delete(x) }))
+          }))
+        }
+        Promise.all(isler).then(bitir, bitir)
+      })()
+    </script>
+    <style>
+      .acilis { min-height: 100vh; display: grid; place-items: center; font-family: system-ui, sans-serif; }
+      .acilis p { margin: 0; color: #6b7280; font-size: 15px; opacity: 0; animation: acilis-goster 0s 8s forwards; }
+      .acilis a { color: #1f63c4; font-weight: 600; }
+      @keyframes acilis-goster { to { opacity: 1 } }
+    </style>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -31,7 +68,10 @@
     <meta name="twitter:card" content="summary_large_image" />
   </head>
   <body>
-    <div id="root"></div>
+    <!-- React açılınca bu içerik silinir. Açılmazsa 8 sn sonra kurtarma
+         bağlantısı görünür: kurulu uygulamada adres çubuğu yok, beyaz
+         ekrandan çıkmanın tek yolu bu. -->
+    <div id="root"><div class="acilis"><p>Açılmadı mı? <a href="/?sifirla=1">Uygulamayı yenile</a></p></div></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

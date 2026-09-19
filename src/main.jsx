@@ -1,6 +1,7 @@
 import { Component, StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './App.jsx'
+import { baslat, yenidenYukle } from './pwa/pwa.js'
 /* Sıra önemli: tema.css renkleri tanımlar, sistem.css o renklerin
    ne zaman kullanılacağını, index.css yalnızca yerleşimi. */
 import './tema.css'
@@ -37,9 +38,7 @@ class HataSiniri extends Component {
           </button>
           <button
             className="dugme dugme--ikincil"
-            onClick={() => {
-              window.location.search = '?sifirla=1'
-            }}
+            onClick={yenidenYukle}
           >
             Önbelleği temizle
           </button>
@@ -49,32 +48,12 @@ class HataSiniri extends Component {
   }
 }
 
-/* Kurtarma yolu: adresin sonuna ?sifirla=1 eklenince service worker'ları
-   kaldırıp bütün önbellekleri siliyoruz. Eski bir service worker artık var
-   olmayan dosyaları sunmaya çalıştığında sayfa hiç açılmıyor; telefonda
-   bunu temizlemenin başka yolu yok. */
-async function sifirla() {
-  const kok = document.getElementById('root')
-  if (kok) kok.textContent = 'Önbellek temizleniyor…'
-  try {
-    if ('serviceWorker' in navigator) {
-      const kayitlar = await navigator.serviceWorker.getRegistrations()
-      await Promise.all(kayitlar.map((k) => k.unregister()))
-    }
-    if (window.caches) {
-      const adlar = await caches.keys()
-      await Promise.all(adlar.map((a) => caches.delete(a)))
-    }
-  } catch {
-    /* Temizlik yapılamasa da yönlendirmeye devam: en kötü ihtimalle
-       kullanıcı aynı yerde kalır, daha kötü bir duruma düşmez. */
-  }
-  window.location.replace(window.location.pathname)
-}
+/* PWA React'ten önce başlar: kurulum izni çok erken geliyor (pwa.js).
+   Kurtarma (?sifirla=1) index.html'deki betikte; o çalışıyorsa uygulama
+   açılmaz, sayfa temizlenip kendini yeniden yükler. */
+baslat()
 
-if (new URLSearchParams(window.location.search).has('sifirla')) {
-  sifirla()
-} else {
+if (!window.__sifirlaniyor) {
   createRoot(document.getElementById('root')).render(
     <StrictMode>
       <HataSiniri>

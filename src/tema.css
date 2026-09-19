@@ -396,8 +396,8 @@
   --grafik-yukselen: #1f63c4;
   --grafik-dusen: #e2571f;
 
-  /* Tarayıcı durum çubuğu (meta theme-color): App.jsx okur */
-  --durum-cubugu-panel: #2e3a52;
+  /* Tarayıcı durum çubuğu (meta theme-color), panel dışı ekranlarda.
+     Panelde rolün --tepe-ust'u kullanılır (App.jsx). */
   --durum-cubugu: #ffffff;
 }
 /* Veli de yetişkinin aracı: koçla aynı lacivert tepe (Bekir, 19 Eylül 2026).

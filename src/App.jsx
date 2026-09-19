@@ -26,7 +26,8 @@ import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
-import KurulumDaveti from './bilesenler/KurulumDaveti.jsx'
+import KurulumDaveti from './pwa/KurulumDaveti.jsx'
+import { durumCubugu } from './pwa/pwa.js'
 
 /* Öğrencinin alt çubuğu ile panel sekmeleri aynı şey; yol ↔ sekme. */
 const OGRENCI_SEKME = { '/': 'bugun', '/yol': 'konular', '/denemeler': 'denemeler' }
@@ -189,18 +190,7 @@ export default function App() {
     } else {
       delete document.body.dataset.tema
     }
-    /* Telefonun durum çubuğu / tarayıcı şeridi de panelin rengini alsın.
-       Beyaz şerit + koyu başlık birleşimi "web sayfası" hissi veriyordu. */
-    const etiket = document.querySelector('meta[name="theme-color"]')
-    /* Üst şerit koyu (tema.css --tepe-ust): durum çubuğu onunla aynı
-       renkte olsun ki tepe tek parça görünsün. */
-    const token = (ad) => getComputedStyle(document.documentElement).getPropertyValue(ad).trim()
-    const renk = token(panelAcik ? '--durum-cubugu-panel' : '--durum-cubugu')
-    if (etiket) etiket.setAttribute('content', renk)
-    return () => {
-      delete document.body.dataset.tema
-      if (etiket) etiket.setAttribute('content', token('--durum-cubugu'))
-    }
+    return () => { delete document.body.dataset.tema }
   }, [panelAcik])
 
   /* Okunmamış mesaj sayısı. Rozet başlıkta durduğu için her ekranda
@@ -280,6 +270,16 @@ export default function App() {
     else delete document.body.dataset.rol
     return () => { delete document.body.dataset.rol }
   }, [ogrenciDunyasi, Boolean(profil)])
+
+  /* Durum çubuğu (telefonda saat/pil şeridi, kurulu uygulamada pencere
+     başlığı) ekranın tepesiyle aynı renkte: öğrencide koyu amber, koç ve
+     velide lacivert. Renk tema.css'te rolün --tepe-ust'u; data-rol yukarıda
+     yazıldığı için bu efekt ondan sonra gelmeli. Panel dışında (tanıtım,
+     giriş) --durum-cubugu. */
+  useLayoutEffect(() => {
+    const oku = (el, ad) => getComputedStyle(el).getPropertyValue(ad).trim()
+    durumCubugu(panelAcik ? oku(document.body, '--tepe-ust') : oku(document.documentElement, '--durum-cubugu'))
+  }, [panelAcik, ogrenciDunyasi])
 
   if (durum === 'yukleniyor') {
     return (
