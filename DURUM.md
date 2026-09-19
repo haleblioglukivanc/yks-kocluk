@@ -26,6 +26,16 @@ kabul. **SMS kapandı**: kendi başlık alınmayacak; veli özetleri kalıcı ol
 **Sıradaki olası işler**: Kıvanç'ın Yönetim turu ve geri bildirimi; anlık bildirimin telefonda denenmesi; koç masaüstünde
 "Excel gibi" öğrenci × gün tablosu (Kıvanç'ın isteği); `denetim/`'e tasarım kuralı kontrolleri (TASARIM-KURALLARI C.7).
 
+## 19 Eylül 2026 — Temiz başlangıç: bütün test verisi silindi
+
+Bekir'in isteğiyle bütün demo/test hesapları ve bağlı veriler silindi: Demo Koç/Öğrenci/Veli, 3 demo koç, 34 demo
+öğrenci (Kıvanç'a bağlı gerçek hesap Roşin Alp dahil, Bekir'in kararı), 6 demo veli; görevler, denemeler, mesajlar,
+sözleşme/tahsilat, görüşme talepleri, bildirimler; başvurular, sosyal yanıt denemeleri, mail/SMS kuyrukları, Çizbi
+olayları. Kalanlar: Kıvanç'ın hesabı ve ayarları, müfredat (ders/konu/katalog), kaynaklar, haftalık söz/kitap, günlükler.
+Demo Koç'un geçici yönetici yetkisi hesapla birlikte gitti. Yeni test hesabı: **Bekir Yılmaz, koç + yönetici**
+(`bekiryilmaz@msn.com`). Öğrenci ve veliyi Bekir kendisi ekleyip baştan test edecek. Bu belgedeki demo hesap
+adları artık yok.
+
 ## 19 Eylül 2026 — Anlık bildirim (web push)
 
 Gelen kutusu (`bildirim_kuyrugu`) aynen duruyor; her satır için "telefona da gitsin mi" kararı tek kuralda:
