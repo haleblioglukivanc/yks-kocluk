@@ -5080,3 +5080,7 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 /* Hafta şeridinin kabı yapışkan olduğu için kendi üst dolgusunu taşır;
    Bölüm başlıkları da 44px'lik satırda ortalandığı için ilk yazıları
    biraz aşağıda durur. İkisi kendiliğinden aynı hizaya geliyor. */
+/* Tepe → ilk içerik aralığı 12px (19 Eylül 2026, Bekir): .panel gap'i
+   (16px) ile sekmeli bloğun +4px'i yerine. Tarih şeridi tepe kartın hemen
+   altına oturur; dört ekranda (Program, Denemeler, Konular, profil) aynı. */
+.panel > .ogr-detay-govde { margin-top: -0.25rem; }
