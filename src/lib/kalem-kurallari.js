@@ -179,9 +179,10 @@ const KOC_KURALLARI = [
   {
     kod: 'acil_ogrenci',
     rol: 'koc', oncelik: 100, tekrar: 'gunde_bir', ruh: 'endise',
-    kosul: (b) => k(b).riskliOgrenciler.some((r) => r.seviye === 'acil'),
+    /* Koçun dokunduğu (mesaj, toplu mesaj, görüşme) öğrenci sayılmaz. */
+    kosul: (b) => k(b).riskliOgrenciler.some((r) => r.seviye === 'acil' && !['atildi', 'yanit', 'hareket', 'gorusuldu'].includes(r.temas)),
     mesaj: (b) => {
-      const a = k(b).riskliOgrenciler.filter((r) => r.seviye === 'acil');
+      const a = k(b).riskliOgrenciler.filter((r) => r.seviye === 'acil' && !['atildi', 'yanit', 'hareket', 'gorusuldu'].includes(r.temas));
       return a.length === 1
         ? `${a[0].ad} için bugün bir şey yapmak lazım.`
         : `${a.length} öğrenci acil listesinde: ${a.slice(0, 3).map((x) => x.ad).join(', ')}.`;

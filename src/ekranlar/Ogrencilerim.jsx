@@ -4,6 +4,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import OgrenciSatiri from '../bilesenler/OgrenciSatiri.jsx'
 import TopluDurtme from '../bilesenler/TopluDurtme.jsx'
+import { dokunulduMu } from '../lib/temas.js'
 import { kullaniciOlustur } from '../lib/hesap.js'
 
 
@@ -24,6 +25,7 @@ function grubu(o) {
 export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
   const [ogrenciler, setOgrenciler] = useState(null)
   const [riskler, setRiskler] = useState({})
+  const [temaslar, setTemaslar] = useState({})
   const [kataloglar, setKataloglar] = useState([])
   const [hata, setHata] = useState('')
   const [formAcik, setFormAcik] = useState(false)
@@ -45,7 +47,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
       setOgrenciler([])
       return
     }
-    const [o, r, k] = await Promise.all([
+    const [o, r, k, t] = await Promise.all([
       supabase
         .from('ogrenciler')
         .select('id, alan, sinif, aktif, katalog_id, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu), kataloglar(ad)')
@@ -62,11 +64,14 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
         .select('id, ad, tur, seviye, alan')
         .is('koc_id', null)
         .order('sira'),
+      /* Koçun son teması: mesaj, toplu mesaj, telefon, yüz yüze. */
+      supabase.rpc('koc_temas_durumlari'),
     ])
     if (o.error) setHata(hataMetni(o.error))
     setOgrenciler(o.data ?? [])
     setRiskler(Object.fromEntries((r.data ?? []).map((x) => [x.ogrenci_id, x])))
     setKataloglar(k.data ?? [])
+    setTemaslar(Object.fromEntries((t.data ?? []).map((x) => [x.ogrenci_id, x])))
   }, [])
 
   useEffect(() => {
@@ -76,9 +81,12 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
   /* risk_ham kırpılmamış skor. Eski risk_skoru 100'de tavan yaptığı için
      en kritik dört öğrenci aynı değerde toplanıp sıra rastgele kalıyordu. */
   const sirali = (ogrenciler ?? [])
-    .map((o) => ({ ...o, risk: riskler[o.id] ?? null }))
+    .map((o) => ({ ...o, risk: riskler[o.id] ?? null, temas: temaslar[o.id] ?? null }))
     .sort((a, b) => {
       if (a.aktif !== b.aktif) return a.aktif ? -1 : 1
+      /* Grup içinde önce dokunulmamışlar: koç sırada bekleyeni üstte görür. */
+      const d = Number(dokunulduMu(a.temas)) - Number(dokunulduMu(b.temas))
+      if (d !== 0) return d
       const f = (b.risk?.risk_ham ?? -1) - (a.risk?.risk_ham ?? -1)
       if (f !== 0) return f
       return (b.risk?.gecikmis_gorev ?? 0) - (a.risk?.gecikmis_gorev ?? 0)
@@ -95,14 +103,17 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
         (o.profiller?.ad_soyad ?? '').toLocaleLowerCase('tr').includes(aranan),
       )
     : null
-  /* Toplu mesajın hedefi "önce bunlar" kademesi; koçun sabah dokunduğu grup. */
-  const durtmeHedefi = kova.acil
+  /* Toplu mesajın hedefi "önce bunlar" kademesinde henüz dokunulmamış
+     öğrenciler: bugün mesaj atılan ya da görüşülen öğrenciye ikinci kez
+     gitmez. Bugün kartındaki kişisel mesaj da aynı temas kaydına düşer. */
+  const durtmeHedefi = kova.acil.filter((o) => !dokunulduMu(o.temas))
 
   const satirCiz = (o) => (
     <OgrenciSatiri
       key={o.id}
       ogrenci={o}
       risk={o.risk}
+      temas={o.temas}
       onAc={onOgrenciAc}
       secili={o.id === seciliId}
     />
@@ -160,10 +171,11 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
 
             {/* Toplu mesaj "Önce bunlar" başlığının sağındaki bağlantıdan
                 açılır; hedef kümesi her zaman o grup. */}
-            {durtmeAcik && durtmeHedefi.length > 0 && (
+            {durtmeAcik && (
               <TopluDurtme
                 ogrenciler={durtmeHedefi}
                 onKapat={() => setDurtmeAcik(false)}
+                onGonderildi={yukle}
               />
             )}
 
@@ -182,7 +194,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
                         <span className={`ogr-grup-serit ogr-grup-serit--${ton}`} aria-hidden="true" />
                         {ad}
                         <span className="ogr-grup-sayi">{kova[anahtar].length}</span>
-                        {anahtar === 'acil' && kova.acil.length > 1 && !durtmeAcik && (
+                        {anahtar === 'acil' && durtmeHedefi.length > 1 && !durtmeAcik && (
                           <button className="rehber-toplu" onClick={() => setDurtmeAcik(true)}>
                             <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor"
                                  strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

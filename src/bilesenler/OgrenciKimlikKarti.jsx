@@ -1,10 +1,13 @@
 import Sayan from './Sayan.jsx'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
 import UstBlok from '../ortak/UstBlok.jsx'
 import UyariSatiri from '../ortak/UyariSatiri.jsx'
+import { AltSayfa, Dugme, Uyari } from './Ortak.jsx'
+import { temasMetni } from '../lib/temas.js'
+import { hataMetni } from '../lib/supabase.js'
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
@@ -54,7 +57,21 @@ export default function OgrenciKimlikKarti({
      yardımcı olmaz. */
   const kocGorunumu = rol === 'koc'
   const [ek, setEk] = useState(null)
+  const [temas, setTemas] = useState(null)
+  const [gorusmeAcik, setGorusmeAcik] = useState(false)
   const aktif = ogrenci.aktif
+
+  /* Koçun son teması; liste satırıyla aynı cümle. "Görüştük" sonrası
+     yeniden okunur. */
+  const temasYukle = useCallback(async () => {
+    if (!kocGorunumu) return
+    const { data } = await supabase.rpc('koc_temas_durumlari')
+    setTemas((data ?? []).find((t) => t.ogrenci_id === ogrenci.id) ?? null)
+  }, [kocGorunumu, ogrenci.id])
+
+  useEffect(() => {
+    temasYukle()
+  }, [temasYukle])
 
   useEffect(() => {
     let iptal = false
@@ -209,11 +226,23 @@ export default function OgrenciKimlikKarti({
                 {uyariVar && uyari
                   ? `${riskSeviyesi === 'acil' ? '' : `${RISK_ADI[riskSeviyesi] ?? riskSeviyesi} · `}${uyari}`
                   : (RISK_ADI[riskSeviyesi] ?? riskSeviyesi)}
+                {temasMetni(temas) ? <span className={`kk-temas kk-temas--${temas.durum}`}>{temasMetni(temas)}</span> : null}
               </UyariSatiri>
             ) : (
               <span />
             )}
 
+            <button
+              className="kk-ikon kk-gorustuk"
+              onClick={() => setGorusmeAcik(true)}
+              aria-label="Görüştük: telefon ya da yüz yüze görüşmeyi kaydet"
+              title="Görüştük"
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
+                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
+              </svg>
+            </button>
             <button className="kk-ana-eylem" onClick={() => onMesaj?.(ogrenci.id)}>
               <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
                    strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -223,8 +252,80 @@ export default function OgrenciKimlikKarti({
             </button>
           </div>
         )}
+        {gorusmeAcik && (
+          <GorusmeKaydi
+            ogrenciId={ogrenci.id}
+            ad={ad}
+            onKapat={() => setGorusmeAcik(false)}
+            onKaydedildi={() => {
+              setGorusmeAcik(false)
+              temasYukle()
+            }}
+          />
+        )}
         {/* Sekmeler bloğun alt kenarına oturur (kural 3–4). */}
         {children}
       </UstBlok>
+  )
+}
+
+/* "Görüştük": telefon ya da yüz yüze konuşma. Sistem telefonu bilemez;
+   koç tek dokunuşla işaretler, isterse bir satır not düşer. Kayıt
+   mesajla aynı temas kaydına girer: öğrenci listede sönükleşir, Bugün'deki
+   mesaj kartı kapanır, toplu mesaj ona gitmez. */
+function GorusmeKaydi({ ogrenciId, ad, onKapat, onKaydedildi }) {
+  const [tur, setTur] = useState('telefon')
+  const [not, setNot] = useState('')
+  const [bekliyor, setBekliyor] = useState(false)
+  const [hata, setHata] = useState('')
+
+  async function kaydet() {
+    setBekliyor(true)
+    setHata('')
+    const { error } = await supabase.rpc('koc_gorustum', { p_ogrenci: ogrenciId, p_tur: tur, p_not: not })
+    setBekliyor(false)
+    if (error) {
+      setHata(hataMetni(error))
+      return
+    }
+    onKaydedildi()
+  }
+
+  return (
+    <AltSayfa
+      baslik="Görüştük"
+      altBaslik={`${ad.split(' ')[0]} ile konuştuğunu kaydet`}
+      onKapat={onKapat}
+      dugmeler={
+        <Dugme bekliyor={bekliyor} onClick={kaydet}>
+          Kaydet
+        </Dugme>
+      }
+    >
+      <Uyari>{hata}</Uyari>
+      <div className="gorusme-tur" role="radiogroup" aria-label="Görüşme türü">
+        {[['telefon', 'Telefonda'], ['yuz_yuze', 'Yüz yüze']].map(([k, etiket]) => (
+          <button
+            key={k}
+            type="button"
+            role="radio"
+            aria-checked={tur === k}
+            className={`tur-cip${tur === k ? ' tur-cip--etkin' : ''}`}
+            onClick={() => setTur(k)}
+          >
+            {etiket}
+          </button>
+        ))}
+      </div>
+      <textarea
+        className="kuyruk-alan"
+        rows={2}
+        maxLength={300}
+        value={not}
+        onChange={(e) => setNot(e.target.value)}
+        placeholder="İstersen kısa bir not (ör. hastaymış, pazartesi başlıyor)"
+        aria-label="Görüşme notu"
+      />
+    </AltSayfa>
   )
 }

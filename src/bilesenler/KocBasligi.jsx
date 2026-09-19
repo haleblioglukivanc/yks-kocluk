@@ -24,6 +24,36 @@ function varsayilanSoz(ozet) {
   const sessiz = riskli.filter((o) => (o.gunGecti ?? 0) >= 3 || o.hicBaslamadi)
   const net = ozet.sinifNetDegisimi
 
+  /* Önce bunlar grubunda koçun henüz dokunmadığı öğrenci varsa Çizbi onu
+     söyler. Eskiden yalnız sessizliğe bakıyordu; altta "Acil 2" dururken
+     "dikkat isteyen bir şey görünmüyor" diyordu (19 Eylül 2026). */
+  const bekleyen = riskli.filter(
+    (o) => o.seviye === 'acil' && (o.temas == null || o.temas === 'bekliyor' || o.temas === 'hareketsiz'),
+  )
+  const hareketsiz = bekleyen.filter((o) => o.temas === 'hareketsiz')
+  if (hareketsiz.length > 0) {
+    const ilk = hareketsiz[0].ad?.split(' ')[0]
+    return {
+      ruh: 'endise',
+      mesaj:
+        hareketsiz.length === 1
+          ? `${ilk} mesajdan sonra hâlâ hareketsiz. Bir telefon iyi gelebilir.`
+          : `${hareketsiz.length} öğrenci mesaja rağmen hareketsiz. ${ilk}'den başlamak iyi olabilir.`,
+    }
+  }
+  if (bekleyen.length > 0) {
+    const adlar = bekleyen.slice(0, 2).map((o) => o.ad?.split(' ')[0])
+    return {
+      ruh: 'dusunuyor',
+      mesaj:
+        bekleyen.length === 1
+          ? `${adlar[0]} geride kaldı, bugün henüz yazmadın.`
+          : bekleyen.length === 2
+            ? `${adlar[0]} ve ${adlar[1]} geride kaldı, bugün henüz yazmadın.`
+            : `${bekleyen.length} öğrenci geride kaldı. ${adlar[0]}'den başlamak iyi olabilir.`,
+    }
+  }
+
   if (sessiz.length > 0) {
     const ilk = sessiz[0]?.ad?.split(' ')[0]
     return {

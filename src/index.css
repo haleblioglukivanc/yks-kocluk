@@ -3103,7 +3103,7 @@ body[data-tema='panel'] {
 .analiz-dilim strong { display: block; font-family: var(--mono); font-size: var(--punto-orta); }
 .analiz-dilim--bilgi { background: var(--g-kirmizi-zemin); border-color: var(--g-kirmizi-kenar); color: var(--g-kirmizi-metin); }
 .analiz-dilim--dikkat { background: var(--g-amber-zemin);   border-color: var(--g-amber-kenar);   color: var(--g-amber-metin); }
-.analiz-dilim--sure { background: var(--g-mavi-zemin);    border-color: var(--g-mavi-kenar);    color: var(--g-mavi-metin); }
+.analiz-dilim--sure { background: var(--g-mavi-zemin);    border-color: var(--g-mavi-kenar);    color: var(--marka-mavi); }
 .analiz-oneri-baslik { margin: 0 0 0.35rem; font-size: var(--punto-mini); color: var(--soluk); }
 .analiz-oneriler { list-style: none; margin: 0 0 0.6rem; padding: 0; display: grid; gap: 0.35rem; }
 .analiz-oneri { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.6rem; border: 1px solid var(--cizgi); border-radius: var(--r-orta); background: var(--kagit); cursor: pointer; }
@@ -4482,6 +4482,20 @@ body[data-rol='koc'] .sirada-ad { flex: 0 0 auto; }
 body[data-rol='koc'] .rehber-satir { border-bottom: 0; border-radius: 14px; border-left: 4px solid var(--nokta, var(--cizgi-2)); padding: 0.55rem 0.6rem; margin-bottom: 4px; background: color-mix(in srgb, var(--nokta, var(--cizgi-2)) 7%, var(--yuzey)); transition: transform 120ms ease; }
 @media (hover: hover) { body[data-rol='koc'] .rehber-satir:hover { transform: translateX(2px); background: color-mix(in srgb, var(--nokta, var(--cizgi-2)) 12%, var(--yuzey)); } }
 
+/* Koçun son teması (mesaj, toplu mesaj, görüşme). Dokunulan öğrenci
+   grubunda kalır ama sönükleşir; ne yapıldığı üçüncü satırda yazar.
+   Mavi = eylem yapıldı; hareket yoksa yeniden alev. */
+.rehber-temas {
+  display: flex; align-items: center; gap: 0.3rem; margin-top: 0.15rem;
+  font-size: var(--punto-mini); font-weight: 600; color: var(--marka-mavi);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.rehber-temas::before { content: '✓'; font-weight: 700; }
+.rehber-temas--hareketsiz { color: var(--marka-alev); }
+.rehber-temas--hareketsiz::before { content: '!'; }
+.rehber-satir--dokunuldu .liste-ad { color: var(--soluk); }
+.rehber-satir--dokunuldu .avatar { opacity: 0.7; }
+
 @media (prefers-reduced-motion: reduce) {
   .leke, .piril, body[data-rol='koc'] .hero-yuzey.ob .ob-kalem-gir, body[data-rol='koc'] .uygulama .hero-yuzey.ob::after { animation: none !important; }
 }
@@ -5153,3 +5167,11 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .okuduklarim-puan { color: var(--marka-amber); }
 .okuduklarim-bos { color: var(--cizgi); }
 .okuma-giris .okuma-sayi { flex: 0 0 5.5rem; width: 5.5rem; max-width: 5.5rem; }
+
+/* Öğrenci kartında koçun son teması ve "Görüştük" düğmesi. */
+.kk-temas { display: block; margin-top: 0.15rem; font-weight: 600; color: var(--k-mavi-metin); }
+.kk-temas::before { content: '✓ '; }
+.kk-temas--hareketsiz { color: var(--marka-alev); }
+.kk-temas--hareketsiz::before { content: '! '; }
+.kk-son-satir .kk-gorustuk { margin-left: auto; }
+.gorusme-tur { display: flex; gap: 0.5rem; margin-bottom: 0.75rem; }

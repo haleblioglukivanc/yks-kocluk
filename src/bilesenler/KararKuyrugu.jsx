@@ -18,6 +18,7 @@ const SEBEP = { bilgi: 'bilgi eksiği', dikkat: 'dikkat', sure: 'süre' }
 
 const TIP_ETIKET = {
   risk: 'Kaybolan öğrenci',
+  hafiflet: 'Hedef ayarı',
   gorusme: 'Acil görüşme',
   blok: 'Blok',
   konu: 'Konu onayı',
@@ -117,6 +118,9 @@ export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
     if (sayildi && kart?.tip === 'veli_ozet') {
       window.dispatchEvent(new CustomEvent('veli-mesaji-eklendi'))
     }
+    /* "Görüştük" denen öğrenci için yerine hedef kartı gelebilir; kuyruğu
+       tazele ki koç aynı anda görsün. Kart geçiş animasyonu bitince. */
+    if (sayildi && kart?.tip === 'risk') setTimeout(yukle, 450)
   }
 
   if (kartlar === null) return <Yukleniyor metin="Kararlar geliyor" satir={4} />

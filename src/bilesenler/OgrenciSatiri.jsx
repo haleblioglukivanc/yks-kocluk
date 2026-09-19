@@ -1,4 +1,5 @@
 import { Avatar } from './Fotograf.jsx'
+import { dokunulduMu, temasMetni } from '../lib/temas.js'
 
 /* Bu satır koç tarafındaki her öğrenci listesinin ortak yapı taşı.
    Yeni bir listeye ihtiyaç olursa buradan beslensin; görsel bir karar
@@ -55,15 +56,23 @@ function tekSebep(r) {
   return sebepCumlesi(r).split(' · ')[0]
 }
 
-export default function OgrenciSatiri({ ogrenci, risk, onAc, secili = false }) {
+export default function OgrenciSatiri({ ogrenci, risk, temas = null, onAc, secili = false }) {
   const aktif = ogrenci.aktif !== false
   const ad = ogrenci.profiller?.ad_soyad ?? ogrenci.ad_soyad ?? 'İsimsiz'
-  const renk = aktif ? (RISK_RENK[risk?.risk_seviyesi] ?? 'var(--cizgi-2)') : 'var(--soluk)'
+  /* Koç bu öğrenciye dokunduysa (mesaj, toplu mesaj, görüşme) satır
+     sönükleşir: durum gerçek kalır ama "sırada bekliyor" değildir. */
+  const dokunuldu = aktif && dokunulduMu(temas)
+  const temasCumlesi = aktif ? temasMetni(temas) : null
+  const renk = !aktif
+    ? 'var(--soluk)'
+    : dokunuldu
+      ? 'var(--cizgi-2)'
+      : (RISK_RENK[risk?.risk_seviyesi] ?? 'var(--cizgi-2)')
 
   return (
     <li className="rehber-satir-sarmal">
       <button
-        className={`rehber-satir${aktif ? '' : ' rehber-satir--pasif'}${secili ? ' rehber-satir--secili' : ''}`}
+        className={`rehber-satir${aktif ? '' : ' rehber-satir--pasif'}${dokunuldu ? ' rehber-satir--dokunuldu' : ''}${secili ? ' rehber-satir--secili' : ''}`}
         aria-current={secili ? 'true' : undefined}
         style={{ '--nokta': renk }}
         onClick={() => onAc?.(ogrenci.id)}
@@ -72,9 +81,12 @@ export default function OgrenciSatiri({ ogrenci, risk, onAc, secili = false }) {
         <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="kucuk" />
         <div className="ok-orta">
           <span className="liste-ad">{ad}</span>
-          <span className={`rehber-sebep${tonu(risk) === 'uyari' && aktif ? ' rehber-sebep--uyari' : ''}`}>
+          <span className={`rehber-sebep${tonu(risk) === 'uyari' && aktif && !dokunuldu ? ' rehber-sebep--uyari' : ''}`}>
             {aktif ? tekSebep(risk) : 'Erişim kapalı'}
           </span>
+          {temasCumlesi && (
+            <span className={`rehber-temas rehber-temas--${temas.durum}`}>{temasCumlesi}</span>
+          )}
         </div>
         <svg className="ok-ileri" viewBox="0 0 24 24" width="16" height="16" fill="none"
              stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
