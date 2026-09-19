@@ -46,7 +46,7 @@ function SayanNet({ deger }) {
   return <span aria-label={Number(deger).toFixed(2)}>{Number(d).toFixed(2)}</span>
 }
 
-function NetCizgisi({ seri }) {
+function NetCizgisi({ seri, hedef = null }) {
   if (seri.length < 2) {
     return <Bos ruh="fikir" baslik="İkinci denemeyle çizgi başlar" aciklama="Bir deneme daha girince ilkiyle arasındaki yön burada görünür." />
   }
@@ -54,8 +54,9 @@ function NetCizgisi({ seri }) {
   const Y = 90
   const kenar = 8
   const degerler = seri.map((s) => s.net)
+  // Hedef çizgisi grafiğin içinde kalsın diye ölçek hedefi de kapsar.
   const enAz = Math.min(...degerler)
-  const enCok = Math.max(...degerler)
+  const enCok = Math.max(...degerler, hedef ?? -Infinity)
   const aralik = Math.max(1, enCok - enAz)
   const x = (i) => kenar + (i * (G - kenar * 2)) / (seri.length - 1)
   const y = (v) => Y - kenar - ((v - enAz) / aralik) * (Y - kenar * 3)
@@ -73,6 +74,12 @@ function NetCizgisi({ seri }) {
       role="img"
       aria-label={`Net gelişim grafiği, son değer ${seri[seri.length - 1].net.toFixed(2)}`}
     >
+      {hedef != null && (
+        <g className="grafik-hedef" aria-hidden="true">
+          <line x1="0" x2={G} y1={y(hedef)} y2={y(hedef)} />
+          <text x={G - 2} y={Math.max(9, y(hedef) - 5)} textAnchor="end">hedef {hedef}</text>
+        </g>
+      )}
       <path d={alan} fill="var(--dolgu)" fillOpacity="0.08" className="grafik-alan" />
       <polyline
         className="grafik-cizgi"
@@ -112,6 +119,11 @@ export default function DenemePaneli({
   ogrenciId = null,
   katalogId = null,
   duzenlenebilir = false,
+  /* Koç ekranı hedefi burada gösterir: { varis, tyt, ayt }. Öğrencinin
+     Denemeler tepesi (HedefeGoreDurum) hedefi zaten anlattığı için öğrenci
+     tarafı bunu geçmez. onHedefEkle: hedef net yoksa davet düğmesi. */
+  hedef = null,
+  onHedefEkle = null,
 }) {
   const [veri, setVeri] = useState(null)
   const [tur, setTur] = useState(null)
@@ -167,6 +179,9 @@ export default function DenemePaneli({
         onEylem={() => setFormAcik(false)}
       >
         <Uyari>{hata}</Uyari>
+        {/* Deneme yokken de hedef nerede görünsün: koç Program'dan buraya
+            taşınan satırı kaybetmesin. */}
+        {hedef?.varis && !formAcik && <p className="hedef-varis">Hedef: {hedef.varis}</p>}
         {formAcik ? (
           <div ref={formRef} className="deneme-form-kap">
           <DenemeFormu
@@ -199,10 +214,16 @@ export default function DenemePaneli({
   const onceki = seri[seri.length - 2]
   const fark = son && onceki ? son.net - onceki.net : null
   const zayif = veri.zayif ?? []
+  const hamHedef = hedef && (seciliTur === 'tyt' || seciliTur === 'ayt') ? hedef[seciliTur] : null
+  const hedefNet = hamHedef != null && Number(hamHedef) > 0 ? Number(hamHedef) : null
+  const enIyi = Math.max(...seri.map((d) => d.net))
+  const oran = (v) => (hedefNet ? Math.min(100, Math.max(0, (v / hedefNet) * 100)) : 0)
+  const hedefDavet = Boolean(onHedefEkle) && hedefNet == null && (seciliTur === 'tyt' || seciliTur === 'ayt')
 
   return (
     <>
       <Bolum
+        kartli
         baslik="Net gelişimi"
         aciklama={`${TUR_ADI[seciliTur] ?? seciliTur} · son ${suzulmus.length} deneme`}
         sag={
@@ -222,18 +243,60 @@ export default function DenemePaneli({
           ) : null
         }
       >
-        <div className="net-ozet">
-          <div>
-            <span className="net-ozet-etiket">Son net</span>
-            <strong className="net-ozet-sayi"><SayanNet deger={son.net} /></strong>
-          </div>
-          {fark !== null && (
-            <span className={`net-fark${fark >= 0 ? ' net-fark--artis' : ' net-fark--dusus'}`}>
-              {fark >= 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)}
-            </span>
-          )}
-        </div>
-        <NetCizgisi seri={seri} />
+        {hedef?.varis && (
+          <p className="hedef-varis">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.2"
+                 strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="9" /><circle cx="12" cy="12" r="5" /><circle cx="12" cy="12" r="1.5" fill="currentColor" />
+            </svg>
+            {hedef.varis}
+          </p>
+        )}
+        {hedefNet != null ? (
+          <>
+            <div className="net-ozet net-ozet--hedef">
+              <div className="net-ozet-hedef">
+                <strong className="net-ozet-sayi"><SayanNet deger={son.net} /></strong>
+                <span className="net-ozet-bolu">/ {hedefNet} hedef</span>
+              </div>
+              <span className="hedef-kalan">
+                {son.net >= hedefNet ? 'Hedefe ulaştı' : `${(hedefNet - son.net).toFixed(2)} net kaldı`}
+              </span>
+            </div>
+            <div
+              className="hedef-cubuk"
+              role="img"
+              aria-label={`${TUR_ADI[seciliTur]} hedefine yüzde ${Math.round(oran(son.net))} ulaşıldı`}
+            >
+              <span style={{ width: `${oran(son.net)}%` }} />
+              {enIyi > son.net && <i style={{ left: `${oran(enIyi)}%` }} />}
+            </div>
+            {enIyi > son.net && (
+              <p className="hedef-ipucu">Çubuk son deneme, çizgi en iyi deneme ({enIyi.toFixed(2)})</p>
+            )}
+          </>
+        ) : (
+          <>
+            <div className="net-ozet">
+              <div>
+                <span className="net-ozet-etiket">Son net</span>
+                <strong className="net-ozet-sayi"><SayanNet deger={son.net} /></strong>
+              </div>
+              {fark !== null && (
+                <span className={`net-fark${fark >= 0 ? ' net-fark--artis' : ' net-fark--dusus'}`}>
+                  {fark >= 0 ? '▲' : '▼'} {Math.abs(fark).toFixed(2)}
+                </span>
+              )}
+            </div>
+            {hedefDavet && (
+              <div className="hedef-davet">
+                <p><strong>{TUR_ADI[seciliTur]} hedef neti girilmemiş.</strong> Girersen hedefe ne kadar kaldığı burada görünür.</p>
+                <button type="button" className="eylem-dugmesi" onClick={onHedefEkle}>Ekle</button>
+              </div>
+            )}
+          </>
+        )}
+        <NetCizgisi seri={seri} hedef={hedefNet} />
       </Bolum>
 
       <Bolum

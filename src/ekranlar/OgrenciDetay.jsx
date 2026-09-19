@@ -7,7 +7,7 @@ import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
-import OgrenciKimlikKarti, { KimlikOlcumleri } from '../bilesenler/OgrenciKimlikKarti.jsx'
+import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import Sekmeler from '../ortak/Sekmeler.jsx'
@@ -28,6 +28,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
   const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
+  // false | 'acik' | 'hedef' (hedef: Sınav ve hedef kartı düzenlemede açılır)
   const [profil, setProfil] = useState(false)
   const [hata, setHata] = useState('')
 
@@ -84,6 +85,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         ogrenci={ogrenci}
         kataloglar={kataloglar}
         yukle={yukle}
+        ilkDuzenlenen={profil === 'hedef' ? 'hedef' : null}
         onKapat={() => setProfil(false)}
         onSilindi={onGeri}
       />
@@ -100,7 +102,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         onGeri={onGeri}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
-        onProfil={() => setProfil(true)}
+        onProfil={() => setProfil('acik')}
       >
         {/* Sekmeler üst bloğun içinde, alt kenarda (TASARIM-KURALLARI 3–4).
             Eskiden bloğun altında dört ayrı kutu düğmeydi. */}
@@ -120,7 +122,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       <div className="sekme-govde" style={aksanStili()}>
       {sekme === 'program' && (
         <>
-          <KimlikOlcumleri ogrenci={ogrenci} netDurumu={netDurumu} />
           <Program ogrenci={ogrenci} />
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
@@ -130,7 +131,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           <Notlar ogrenci={ogrenci} />
         </>
       )}
-      {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
+      {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} onHedefEkle={() => setProfil('hedef')} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
       </div>
     </div>
@@ -142,11 +143,11 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
    ekranda başka yerde görünmeyenler yazılır: sınıf/alan kimlik kartında,
    hedef ve hedef netler Program'da; Düzenle formunda hepsi var. */
 
-function ProfilSayfasi({ ogrenci, kataloglar, yukle, onKapat, onSilindi }) {
+function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKapat, onSilindi }) {
   /* Her kart kendi alanlarını gösterir ve kendi kalemiyle yalnız onları
      düzenler (mokap v2, 19 Eylül 2026). Tek dev form, neyin düzenlendiğini
      belirsizleştiriyordu. Aynı anda tek kart düzenlenir. */
-  const [duzenlenen, setDuzenlenen] = useState(null)
+  const [duzenlenen, setDuzenlenen] = useState(ilkDuzenlenen)
   const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
   const kayit = ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi) : null
   const gun = kayit ? Math.max(0, Math.floor((Date.now() - kayit.getTime()) / 864e5)) : null
@@ -1049,11 +1050,23 @@ function GorevFormu({ ogrenci, tarih, periyot, blok = null, onSil, onEklendi }) 
 /* ─────────────────────────── Denemeler ─────────────────────────── */
 
 
-function Denemeler({ ogrenci }) {
-  /* Koç ve öğrenci artık aynı deneme ekranını görüyor; ikisi de
-     deneme ekleyip hata konusu işaretleyebiliyor. */
+function Denemeler({ ogrenci, onHedefEkle }) {
+  /* Koç ve öğrenci aynı deneme ekranını görüyor. Hedef (üniversite/bölüm,
+     TYT/AYT hedef neti) koçta Net gelişimi kartının başında; eskiden
+     Program sekmesinin tepesindeydi. */
+  const hedef = {
+    varis: [ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ') || null,
+    tyt: ogrenci.hedef_tyt_net,
+    ayt: ogrenci.hedef_ayt_net,
+  }
   return (
-    <DenemePaneli ogrenciId={ogrenci.id} katalogId={ogrenci.katalog_id} duzenlenebilir />
+    <DenemePaneli
+      ogrenciId={ogrenci.id}
+      katalogId={ogrenci.katalog_id}
+      duzenlenebilir
+      hedef={hedef}
+      onHedefEkle={onHedefEkle}
+    />
   )
 }
 

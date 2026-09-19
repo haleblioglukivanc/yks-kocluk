@@ -5039,3 +5039,33 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
   font: inherit; font-size: var(--punto-kucuk); font-weight: 700; cursor: pointer;
 }
 .tehlike-dolu-dugme:focus-visible { outline: 2px solid var(--kizil-metin); outline-offset: 2px; }
+
+/* ─── Hedef, Net gelişimi kartında (koç, 19 Eylül 2026) ───
+   Eskiden Program sekmesinin tepesindeydi; hedefe kalan net deneme
+   verisinden doğduğu için Denemeler'e taşındı. */
+.bolum-kart > .hedef-varis:first-child { padding-top: 0.85rem; }
+.hedef-varis {
+  margin: 0; display: flex; align-items: center; gap: 0.4rem;
+  font-size: var(--punto-mini); color: var(--grafit);
+}
+.hedef-varis svg { flex: 0 0 auto; color: var(--sicak-metin); }
+.bolum-kart > .net-ozet:first-child { padding-top: 0.85rem; }
+.net-ozet--hedef { align-items: baseline; margin-top: 0.4rem; }
+.net-ozet-hedef { display: flex; align-items: baseline; gap: 0.4rem; min-width: 0; }
+.net-ozet-hedef .net-ozet-sayi { display: inline; }
+.net-ozet-bolu { color: var(--grafit); font-size: var(--punto-kucuk); white-space: nowrap; }
+.hedef-kalan { font-size: var(--punto-kucuk); font-weight: 700; color: var(--sicak-metin); white-space: nowrap; }
+.hedef-cubuk { position: relative; height: 10px; margin-top: 0.6rem; background: var(--yuzey-2); border-radius: var(--r-tam); }
+.hedef-cubuk > span { position: absolute; inset: 0 auto 0 0; background: var(--dolgu); border-radius: var(--r-tam); transition: width 0.6s cubic-bezier(0.3, 0.7, 0.2, 1); }
+.hedef-cubuk > i { position: absolute; top: -4px; width: 3px; height: 18px; margin-left: -1.5px; background: var(--murekkep); border-radius: 2px; }
+.hedef-ipucu { margin: 0.4rem 0 0; font-size: var(--punto-mini); color: var(--soluk); }
+.hedef-davet {
+  display: flex; align-items: center; gap: 0.75rem; margin-top: 0.75rem; padding: 0.75rem 0.9rem;
+  border: 1px dashed var(--cizgi-2); border-radius: var(--r-kart);
+}
+.hedef-davet p { flex: 1; margin: 0; font-size: var(--punto-kucuk); color: var(--grafit); line-height: 1.45; }
+.hedef-davet strong { color: var(--murekkep); }
+.grafik-hedef line { stroke: var(--sicak-metin); stroke-width: 1.4; stroke-dasharray: 5 5; }
+.grafik-hedef text { fill: var(--sicak-metin); font-size: 10px; font-weight: 700; font-family: var(--govde, inherit); }
+.bolum-kart > .net-cizgi:last-child { margin-bottom: 0.75rem; }
+@media (prefers-reduced-motion: reduce) { .hedef-cubuk > span { transition: none; } }
