@@ -33,7 +33,13 @@ function siradakiIs(ozet) {
 /* Günün ilerlemesi: tepede ders renkli şerit ve Çizbi'nin şeritteki yeri.
    Her iş kendi dersinin renginde bir parça, genişliği süresi kadar. */
 function ilerlemeHesapla(gorevler) {
-  const isler = (gorevler ?? []).filter((g) => g.tur !== 'gorusme')
+  /* Bitenler solda: Çizbi bitenlerin bittiği yerde durur, dolu kısım
+     hep onun arkasında kalır. Sıra liste sırasına göre korunur. */
+  const hepsi = (gorevler ?? []).filter((g) => g.tur !== 'gorusme')
+  const isler = [
+    ...hepsi.filter((g) => g.durum === 'tamamlandi'),
+    ...hepsi.filter((g) => g.durum !== 'tamamlandi'),
+  ]
   const biten = isler.filter((g) => g.durum === 'tamamlandi').length
   const ilkBekleyen = isler.find((g) => g.durum !== 'tamamlandi')
   const toplamDk = isler.reduce((t, g) => t + varsayilanDk(g.tur), 0)
