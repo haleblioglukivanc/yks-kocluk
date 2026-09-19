@@ -47,7 +47,7 @@ export default function UstCubuk({ profil, rozet = 0, onLogo, onZil, onHesap, on
     <div className="ust-cubuk">
       <button type="button" className="ust-logo" onClick={onLogo} aria-label="Ana ekran">
         <MarkaIsareti yukseklik={18} sinif="ust-logo-isaret" />
-        <span className="ust-logo-ad">Kıvanç Hoca ile koçluk</span>
+        <span className="ust-logo-ad">Kıvanç Hoca İle Koçluk</span>
       </button>
       <div className="ust-ikonlar">
         {/* Gözle bakarken koçun tek çıkış kapısı. Bant değil, köşede tek

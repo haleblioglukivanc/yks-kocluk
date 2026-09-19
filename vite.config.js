@@ -32,7 +32,7 @@ export default defineConfig({
       injectRegister: false,
       manifest: {
         id: taban,
-        name: 'Kıvanç Hoca ile koçluk',
+        name: 'Kıvanç Hoca İle Koçluk',
         short_name: 'Kıvanç Hoca',
         description: 'YKS ve LGS koçluğu: günün programı, deneme takibi ve konu ilerlemesi.',
         lang: 'tr',
