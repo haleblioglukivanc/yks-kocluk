@@ -4943,3 +4943,7 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 
 /* Gelen kutusu rozeti amber; kırmızı yalnız acil içindir. */
 .ust-ikon .ust-rozet--amber { background: var(--k-amber); color: var(--g-murekkep); }
+
+/* Katalog atanmamış öğrencide yerinde seçim (KatalogSec) */
+.katalog-sec { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-top: 0.75rem; }
+.katalog-sec .dugme { min-height: 2.75rem; }

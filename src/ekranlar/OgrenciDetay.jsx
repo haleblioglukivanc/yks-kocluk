@@ -13,6 +13,7 @@ import { aksanStili } from '../lib/sekmeAksani.js'
 import Sekmeler from '../ortak/Sekmeler.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
+import KatalogSec, { OGRENCI_GUNCELLENDI } from '../bilesenler/KatalogSec.jsx'
 import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
 import { kullaniciSil } from '../lib/hesap.js'
 import { ADETLI_TURLER, GOREV_TUR_ADI } from '../lib/gorevTuru.js'
@@ -45,6 +46,13 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       .eq('ogrenci_id', ogrenciId)
     setNetDurumu(Object.fromEntries((nd ?? []).map((x) => [x.tur, x])))
   }, [ogrenciId])
+
+  // Katalog boş durumdan seçilince öğrenciyi yeniden yükle (KatalogSec)
+  useEffect(() => {
+    const tazele = (e) => { if (e.detail === ogrenciId) yukle() }
+    window.addEventListener(OGRENCI_GUNCELLENDI, tazele)
+    return () => window.removeEventListener(OGRENCI_GUNCELLENDI, tazele)
+  }, [ogrenciId, yukle])
 
   useEffect(() => {
     yukle()
@@ -698,12 +706,7 @@ function GorevFormu({ ogrenci, tarih, periyot, blok = null, onSil, onEklendi }) 
   }
 
   if (!ogrenci.katalog_id) {
-    return (
-      <Bos
-        baslik="Katalog atanmamış"
-        aciklama="Ders atayabilmek için önce öğrenciye bir konu kataloğu seçin."
-      />
-    )
+    return <KatalogSec ogrenciId={ogrenci.id} />
   }
 
   return (
@@ -918,7 +921,9 @@ function Konular({ ogrenci }) {
   return (
     <Bolum baslik="Konu yolu" aciklama={ogrenci.kataloglar?.ad}>
       {gruplar.length === 0 ? (
-        <BosDurum metin="Katalog atanmamış. Kayıt sekmesinde bilgileri düzenleyip bir katalog seç." />
+        ogrenci.katalog_id
+          ? <BosDurum metin="Bu katalogda henüz konu yok." />
+          : <KatalogSec ogrenciId={ogrenci.id} />
       ) : (
         <ul className="ders-liste">
           {gruplar.map((g) => {
@@ -1317,7 +1322,7 @@ function RutinFormu({ ogrenci, gunler, onEklendi }) {
   }
 
   if (!ogrenci.katalog_id) {
-    return <Bos baslik="Katalog atanmamış" aciklama="Önce öğrenciye bir konu kataloğu seçin." />
+    return <KatalogSec ogrenciId={ogrenci.id} />
   }
 
   return (
