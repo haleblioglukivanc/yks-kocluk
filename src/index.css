@@ -4968,3 +4968,37 @@ body[data-rol='ogrenci'] .siradaki-odak--b .gorev-kaynak * { margin: 0; color: c
 .balon-hata { margin: 6px 0 0; font-size: var(--punto-mini); font-weight: 600; }
 .uygulama .balon--geri-alindi { background: transparent; border: 1px dashed var(--cizgi); color: var(--soluk); }
 .balon--geri-alindi .balon-metin { font-style: italic; }
+
+/* ─── Öğrenci profili (eski Kayıt sekmesi, 19 Eylül 2026) ───
+   Koç öğrencinin adına dokununca açılır. İsim bloğu düğme; › işareti
+   dokunulabildiğini söyler. */
+.kk-kimlik-dugme {
+  flex: 1; min-width: 0; display: flex; align-items: center; gap: 0.7rem;
+  margin: -0.35rem; padding: 0.35rem; border: 0; border-radius: var(--r-buyuk);
+  background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+.kk-kimlik-dugme .kk-ad { display: block; }
+.kk-kimlik-dugme .kk-alt-satir { display: flex; align-items: center; gap: 0.2rem; }
+@media (hover: hover) { .kk-kimlik-dugme:hover { background: color-mix(in srgb, var(--beyaz) 9%, transparent); } }
+.kk-kimlik-dugme:active { transform: scale(0.98); }
+.kk-kimlik-dugme:focus-visible { outline: 2px solid var(--beyaz); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .kk-kimlik-dugme { transition: none; } .kk-kimlik-dugme:active { transform: none; } }
+
+.iletisim-satir {
+  display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+  padding: 0.75rem 0; border-bottom: 1px solid var(--cizgi);
+}
+.iletisim-satir:last-of-type { border-bottom: 0; }
+.iletisim-bilgi { flex: 1 1 10rem; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.iletisim-etiket { font-size: var(--punto-mini); color: var(--soluk); }
+.iletisim-deger { font-weight: 600; overflow-wrap: anywhere; }
+.iletisim-deger--bos { font-weight: 400; color: var(--soluk); }
+.iletisim-eylem { display: flex; align-items: center; gap: 0.5rem; margin-left: auto; }
+.iletisim-ikon {
+  width: 44px; height: 44px; display: grid; place-items: center;
+  border-radius: var(--r-kart); background: var(--serin-zemin); color: var(--serin);
+}
+.iletisim-ikon:focus-visible { outline: 2px solid var(--serin); outline-offset: 2px; }
+.iletisim-ekle { padding-top: 0.5rem; }
+.form-eylem { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }

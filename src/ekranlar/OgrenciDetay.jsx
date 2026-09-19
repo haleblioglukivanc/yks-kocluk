@@ -12,6 +12,8 @@ import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import Sekmeler from '../ortak/Sekmeler.jsx'
 import Bolum from '../ortak/Bolum.jsx'
+import UstBlok from '../ortak/UstBlok.jsx'
+import { Avatar } from '../bilesenler/Fotograf.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import KatalogSec, { OGRENCI_GUNCELLENDI } from '../bilesenler/KatalogSec.jsx'
 import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
@@ -26,6 +28,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
   const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
+  const [profil, setProfil] = useState(false)
   const [duzenle, setDuzenle] = useState(false)
   const [hata, setHata] = useState('')
 
@@ -64,10 +67,32 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
       .then(({ data }) => setKataloglar(data ?? []))
   }, [yukle])
 
+  // Masaüstünde yan sütunda başka öğrenci seçilince bileşen yeniden
+  // kurulmuyor; açık kalan profil/sekme önceki öğrenciden taşınmasın.
+  useEffect(() => {
+    setProfil(false)
+    setDuzenle(false)
+    setSekme('program')
+  }, [ogrenciId])
+
   if (hata) return <Uyari>{hata}</Uyari>
   if (!ogrenci) return <Yukleniyor />
 
   const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
+
+  if (profil) {
+    return (
+      <ProfilSayfasi
+        ogrenci={ogrenci}
+        kataloglar={kataloglar}
+        duzenle={duzenle}
+        setDuzenle={setDuzenle}
+        yukle={yukle}
+        onKapat={() => { setProfil(false); setDuzenle(false) }}
+        onSilindi={onGeri}
+      />
+    )
+  }
 
   return (
     <div className="panel">
@@ -79,6 +104,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         onGeri={onGeri}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
+        onProfil={() => setProfil(true)}
       >
         {/* Sekmeler üst bloğun içinde, alt kenarda (TASARIM-KURALLARI 3–4).
             Eskiden bloğun altında dört ayrı kutu düğmeydi. */}
@@ -91,7 +117,6 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
             { k: 'program', ad: 'Program' },
             { k: 'denemeler', ad: 'Denemeler' },
             { k: 'konular', ad: 'Konular' },
-            { k: 'kayit', ad: 'Kayıt' },
           ]}
         />
       </OgrenciKimlikKarti>
@@ -104,48 +129,130 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
           <OgrenciKaynaklari ogrenciId={ogrenci.id} rol="koc" />
+          {/* Notlar koçluğun kendisi, idari değil: öğrenciye bakarken
+              yazılır. Bu yüzden profil sayfasına değil buraya alındı. */}
+          <Notlar ogrenci={ogrenci} />
         </>
       )}
       {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} />}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
-      {/* Kayıt: idari her şey tek yerde. Kimlik bilgileri (telefon dâhil,
-          müşteri kartı gibi), düzenleme formu, veli bağları, koç notları. */}
-      {sekme === 'kayit' && (
-        <>
-          {/* Kayıt sekmesi: beş kart yerine çizgiyle ayrılan beş bölüm
-              (TASARIM-KURALLARI 1, 8). */}
-          <Bolum
-            baslik="Bilgiler"
-            eylem={duzenle ? 'Vazgeç' : 'Düzenle'}
-            onEylem={() => setDuzenle((v) => !v)}
-          >
-            {duzenle ? (
-              <BilgiFormu
-                ogrenci={ogrenci}
-                kataloglar={kataloglar}
-                onKaydedildi={async () => {
-                  setDuzenle(false)
-                  await yukle()
-                }}
-              />
-            ) : (
-              <Kunye ogrenci={ogrenci} />
-            )}
-          </Bolum>
-          <Odemeler ogrenci={ogrenci} />
+      </div>
+    </div>
+  )
+}
+
+/* ─────────────────────────── Profil sayfası ───────────────────────────
+   Eski "Kayıt" sekmesi. Koç öğrencinin adına dokununca açılır. Yalnız
+   ekranda başka yerde görünmeyenler yazılır: sınıf/alan kimlik kartında,
+   hedef ve hedef netler Program'da; Düzenle formunda hepsi var. */
+
+function ProfilSayfasi({ ogrenci, kataloglar, duzenle, setDuzenle, yukle, onKapat, onSilindi }) {
+  const ad = ogrenci.profiller?.ad_soyad ?? 'İsimsiz'
+  const kayit = ogrenci.kayit_tarihi
+    ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR', { day: 'numeric', month: 'long', year: 'numeric' })
+    : null
+  const altSatir = [kayit && `Kayıt ${kayit}`, ogrenci.aktif ? 'erişim açık' : 'erişim kapalı']
+    .filter(Boolean)
+    .join(' · ')
+
+  return (
+    <div className="panel">
+      <UstBlok sinif={`kimlik-kart kk-sade${ogrenci.aktif ? '' : ' kimlik-kart--kapali'}`} etiket={`${ad} profili`}>
+        <div className="kk-ust">
+          <button className="kk-geri" onClick={onKapat} aria-label="Öğrenci ekranına dön">
+            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
+                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M15 18l-6-6 6-6" />
+            </svg>
+          </button>
+          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
+          <div className="kk-kimlik">
+            <h2 className="kk-ad">{ad}</h2>
+            <p className="kk-alt-satir">{altSatir}</p>
+          </div>
+        </div>
+      </UstBlok>
+
+      <div className="sekme-govde profil-govde" style={aksanStili()}>
+        <Bolum baslik="İletişim">
+          <IletisimSatiri etiket="Öğrenci" telefon={ogrenci.profiller?.telefon} />
           <Veliler ogrenci={ogrenci} />
-          <Notlar ogrenci={ogrenci} />
-          <Bolum
-            cizgili
-            baslik="Hesap"
-            aciklama="Öğrenci ve veli şifrelerini girişteki “Şifremi unuttum”dan kendileri yenileyebilir. E-postasına ulaşamayan için buradan geçici şifre üret."
-          >
-            <HesapSatiri kisiId={ogrenci.id} ad={ad} tur="öğrenci" />
-            <VeliHesaplari ogrenciId={ogrenci.id} />
-          </Bolum>
-          <TehlikeliBolge ogrenci={ogrenci} onSilindi={onGeri} />
-        </>
-      )}
+        </Bolum>
+
+        <Bolum
+          cizgili
+          baslik="Bilgiler"
+          eylem={duzenle ? 'Vazgeç' : 'Düzenle'}
+          onEylem={() => setDuzenle((v) => !v)}
+        >
+          {duzenle ? (
+            <BilgiFormu
+              ogrenci={ogrenci}
+              kataloglar={kataloglar}
+              onKaydedildi={async () => {
+                setDuzenle(false)
+                await yukle()
+              }}
+            />
+          ) : (
+            <Kunye ogrenci={ogrenci} />
+          )}
+        </Bolum>
+        <Odemeler ogrenci={ogrenci} />
+        <Bolum
+          cizgili
+          baslik="Hesap"
+          aciklama="Öğrenci ve veli şifrelerini girişteki “Şifremi unuttum”dan kendileri yenileyebilir. E-postasına ulaşamayan için buradan geçici şifre üret."
+        >
+          <HesapSatiri kisiId={ogrenci.id} ad={ad} tur="öğrenci" />
+          <VeliHesaplari ogrenciId={ogrenci.id} />
+        </Bolum>
+        <TehlikeliBolge ogrenci={ogrenci} onSilindi={onSilindi} />
+      </div>
+    </div>
+  )
+}
+
+/** 0532 123 45 67 → 905321234567 (wa.me biçimi) */
+function waNumarasi(tel) {
+  const r = String(tel ?? '').replace(/\D/g, '')
+  if (!r) return null
+  if (r.startsWith('90')) return r
+  if (r.startsWith('0')) return `9${r}`
+  return `90${r}`
+}
+
+function IletisimSatiri({ etiket, telefon, deger, sag = null }) {
+  const wa = waNumarasi(telefon)
+  return (
+    <div className="iletisim-satir">
+      <div className="iletisim-bilgi">
+        <span className="iletisim-etiket">{etiket}</span>
+        <span className={`iletisim-deger${telefon ? '' : ' iletisim-deger--bos'}`}>
+          {deger ?? (telefon ? telYaz(telefon) : 'Telefon girilmemiş')}
+        </span>
+      </div>
+      <div className="iletisim-eylem">
+        {telefon && (
+          <>
+            <a className="iletisim-ikon" href={`tel:${String(telefon).replace(/\s/g, '')}`} aria-label={`${etiket} ara`}>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
+                   strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2Z" />
+              </svg>
+            </a>
+            {wa && (
+              <a className="iletisim-ikon" href={`https://wa.me/${wa}`} target="_blank" rel="noopener noreferrer"
+                 aria-label={`${etiket} WhatsApp'tan yaz`}>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2"
+                     strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z" />
+                </svg>
+              </a>
+            )}
+          </>
+        )}
+        {sag}
       </div>
     </div>
   )
@@ -183,21 +290,11 @@ function HesapSatiri({ kisiId, ad, tur }) {
 /* ─────────────────────────── Künye ─────────────────────────── */
 
 function Kunye({ ogrenci }) {
-  const telefon = ogrenci.profiller?.telefon
+  /* Telefon İletişim'de; sınıf/alan kimlik kartında; hedef ve hedef
+     netler Program'da; erişim tepede. Burada yalnız geri kalanlar. */
   const satirlar = [
-    ['Telefon', telefon ? <a href={`tel:${telefon.replace(/\s/g, '')}`}>{telefon}</a> : '—'],
-    ['Sınıf', ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : '—'],
-    ['Alan', ogrenci.alan ? ALAN_ADI[ogrenci.alan] : '—'],
     ['Katalog', ogrenci.kataloglar?.ad ?? '—'],
-    ['Hedef', [ogrenci.hedef_universite, ogrenci.hedef_bolum].filter(Boolean).join(' · ') || '—'],
-    [
-      'Hedef net',
-      [ogrenci.hedef_tyt_net != null && `TYT ${Number(ogrenci.hedef_tyt_net)}`, ogrenci.hedef_ayt_net != null && `AYT ${Number(ogrenci.hedef_ayt_net)}`]
-        .filter(Boolean)
-        .join(' · ') || '—',
-    ],
-    ['Kayıt', ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR') : '—'],
-    ['Uygulama erişimi', ogrenci.aktif ? 'Açık' : 'Kapalı'],
+    ['Kayıt tarihi', ogrenci.kayit_tarihi ? new Date(ogrenci.kayit_tarihi).toLocaleDateString('tr-TR') : '—'],
   ]
   return (
     <dl className="kunye">
@@ -1162,20 +1259,41 @@ function Veliler({ ogrenci }) {
     else yukle()
   }
 
+  /* Profil sayfasında İletişim bölümünün içinde çizilir: kendi başlığı
+     yok, her veli öğrencinin telefonuyla aynı satır düzeninde. */
+  const ekleDugmesi = (
+    <Dugme tur="ikincil" onClick={() => setFormAcik((v) => !v)}>
+      {formAcik ? 'Kapat' : '+ Veli ekle'}
+    </Dugme>
+  )
   return (
-    <Bolum
-      cizgili
-      baslik="Veli"
-      aciklama="Veliye yalnız senin onayladığın haftalık özet SMS olarak gider."
-      eylem={formAcik ? 'Kapat' : '+ Veli ekle'}
-      onEylem={() => setFormAcik((v) => !v)}
-    >
+    <>
+      {liste === null ? (
+        <Yukleniyor />
+      ) : liste.length === 0 ? (
+        <IletisimSatiri etiket="Veli" deger="Kayıtlı veli yok" sag={ekleDugmesi} />
+      ) : (
+        <>
+          {liste.map((v) => (
+            <IletisimSatiri
+              key={v.id}
+              etiket={`${ILISKI.find(([k]) => k === v.iliski)?.[1] ?? v.iliski} · ${v.ad_soyad}`}
+              telefon={v.telefon}
+              sag={
+                <button type="button" className="metin-dugme" onClick={() => cikar(v.id)}>Çıkar</button>
+              }
+            />
+          ))}
+          {!formAcik && <div className="iletisim-ekle">{ekleDugmesi}</div>}
+        </>
+      )}
+
       {formAcik && (
         <div className="form-kutu form-kutu--duz">
           <Alan etiket="Ad soyad">
             <input value={adSoyad} onChange={(e) => setAdSoyad(e.target.value)} placeholder="Örn. Ayşe Yılmaz" />
           </Alan>
-          <Alan etiket="Cep telefonu" ipucu="Özet bu numaraya gider">
+          <Alan etiket="Cep telefonu">
             <input
               type="tel"
               inputMode="tel"
@@ -1193,7 +1311,7 @@ function Veliler({ ogrenci }) {
           </Alan>
           <label className="oteleme">
             <input type="checkbox" checked={izin} onChange={() => setIzin((v) => !v)} />
-            <span>Veli, haftalık özetin SMS ile gönderilmesine onay verdi</span>
+            <span>Veli, haftalık özetin kendisine iletilmesine onay verdi</span>
           </label>
           {izin ? (
             <Alan etiket="Onay nasıl alındı" ipucu="KVKK gereği kayda geçer">
@@ -1204,38 +1322,18 @@ function Veliler({ ogrenci }) {
               </select>
             </Alan>
           ) : (
-            <p className="kart-alt">Onay yoksa bu numaraya hiçbir mesaj gitmez.</p>
+            <p className="kart-alt">Onay yoksa bu veliye özet iletilmez.</p>
           )}
           <Uyari>{hata}</Uyari>
-          <Dugme onClick={ekle} bekliyor={bekliyor}>Veliyi kaydet</Dugme>
+          <div className="form-eylem">
+            <Dugme onClick={ekle} bekliyor={bekliyor}>Veliyi kaydet</Dugme>
+            <button type="button" className="metin-dugme" onClick={() => setFormAcik(false)}>Vazgeç</button>
+          </div>
         </div>
       )}
 
       {!formAcik && <Uyari>{hata}</Uyari>}
-
-      {liste === null ? (
-        <Yukleniyor />
-      ) : liste.length === 0 ? (
-        <BosDurum metin="Kayıtlı veli yok. Veli eklersen haftalık özeti onaylayıp SMS ile gönderebilirsin." />
-      ) : (
-        <ul className="liste">
-          {liste.map((v) => (
-            <li key={v.id} className="liste-satir">
-              <div>
-                <span className="liste-ad">{v.ad_soyad}</span>
-                <span className="liste-alt">
-                  {ILISKI.find(([k]) => k === v.iliski)?.[1] ?? v.iliski} · {telYaz(v.telefon)}
-                  {v.sms_izni
-                    ? ` · onaylı ${new Date(v.izin_zamani).toLocaleDateString('tr-TR')}`
-                    : ' · onay yok'}
-                </span>
-              </div>
-              <button className="metin-dugme" onClick={() => cikar(v.id)}>Çıkar</button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </Bolum>
+    </>
   )
 }
 

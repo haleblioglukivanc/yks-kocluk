@@ -43,6 +43,7 @@ export default function OgrenciKimlikKarti({
   onGeri,
   onMesaj,
   onGozuyle,
+  onProfil,
   onEk,
   children,
 }) {
@@ -135,11 +136,36 @@ export default function OgrenciKimlikKarti({
               </svg>
             </button>
           )}
-          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
-          <div className="kk-kimlik">
-            <h2 className="kk-ad">{ad}</h2>
-            <p className="kk-alt-satir">{cipler.join(' · ') || '—'}</p>
-          </div>
+          {/* Koç isme dokununca öğrencinin profil sayfası açılır (iletişim,
+              veli, bilgiler, ödeme, hesap). Eski "Kayıt" sekmesinin yeri. */}
+          {kocGorunumu && onProfil ? (
+            <button
+              type="button"
+              className="kk-kimlik-dugme"
+              onClick={onProfil}
+              aria-label={`${ad} profilini aç`}
+            >
+              <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
+              <span className="kk-kimlik">
+                <span className="kk-ad">{ad}</span>
+                <span className="kk-alt-satir">
+                  {cipler.join(' · ') || '—'}
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
+                       strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                    <path d="M9 6l6 6-6 6" />
+                  </svg>
+                </span>
+              </span>
+            </button>
+          ) : (
+            <>
+              <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
+              <div className="kk-kimlik">
+                <h2 className="kk-ad">{ad}</h2>
+                <p className="kk-alt-satir">{cipler.join(' · ') || '—'}</p>
+              </div>
+            </>
+          )}
           {kocGorunumu && (
             <button
               className="kk-ikon kk-goz"
