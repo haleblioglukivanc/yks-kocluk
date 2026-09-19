@@ -624,3 +624,10 @@ Ayrıca taslak metnindeki ek hatası düzeldi: "hedefinin %36'ini" → "%36 kada
 ## 19 Eylül 2026 — vekalet kabuğu öğrenci gibi
 
 Göz ikonu (`/gozuyle/:id`) zaten öğrencinin kendi `OgrenciPaneli`ni açıyordu; fark kabuktaydı (giriş yapan koça göre çiziliyordu). Düzeltme: vekalette üst şeritte Çizbi yüzlü gelen kutusu (dokununca o öğrenciyle yazışma), koçun zil/karar sayısı ve hesap düğmesi yok, yalnız "Yönetime dön"; köşe Çizbi'si koçun cümlelerini söylediği için vekalette hiç yok; koç mesajı balonu öğrencideki gibi görünür ama kapatmak okundu işaretlemez. Bilerek kapalı kalanlar: kutlama/konfeti, kitap "Bitirdim", acil görüşme (üçü de öğrencinin kendi eylemi). Playwright 390px ile öğrenci ve vekalet ekranı karşılaştırıldı.
+
+## 19 Eylül 2026 — koçun teması tek kayıtta
+- Temas = koçun öğrenciye mesajı (kart, toplu, tekil) veya "Görüştük" (telefon / yüz yüze, `koc_gorusmeleri`). Durum `private.temas_durumu`: bekliyor → atildi → yanit / hareket / gorusuldu; mesajdan 24 saat sonra ne yanıt ne görev varsa hareketsiz; 72 saat sonra sıfırlanır.
+- Öğrenciler: dokunulan öğrenci grubunda kalır, sönükleşir, üçüncü satırda "Mesaj atıldı · 19:20". Toplu mesaj yalnız dokunulmamışlara gider.
+- Bugün: "Kaybolan öğrenci" kartı yalnız bekliyor/hareketsiz öğrencide; "Görüştük" düğmesi eklendi. Temas kurulmuş öğrencide yalnız "Hedef ayarı" kartı (hafiflet / aynı kalsın). Hedef 7 gün içinde bir kez hafifler, 10 saatin altına inmez. Eski hata: "Mesajı gönder" kartı kapatmıyordu, her basışta hedef yeniden %20 düşüyordu.
+- Çizbi: acil ve dokunulmamış öğrenci varsa onu söyler ("dikkat isteyen bir şey görünmüyor" yanlışı giderildi).
+- Öğrenci kartı: Mesaj'ın yanında telefon ikonu = Görüştük (tür + isteğe bağlı not).
