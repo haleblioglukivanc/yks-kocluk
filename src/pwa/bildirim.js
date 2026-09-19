@@ -137,7 +137,18 @@ export async function cihaziHesaptanAyir() {
     - sunucu aboneliği ölü bulup sildiyse (Android'de 19 Eylül'de oldu)
       yeni abonelik alınır.
     Kullanıcı Hesap'tan bilerek kapattıysa dokunmaz. */
-export async function bildirimKaydiniTazele() {
+/* Açılışta ve öne gelişte neredeyse aynı anda iki kez çağrılabiliyor; ikisi
+   birden eski aboneliği bırakıp yenisini alınca sunucuda iki kayıt oluşuyor,
+   biri ölü kalıyordu (Android, 19 Eylül 2026). Aynı anda tek onarım çalışır. */
+let suankiTazeleme = null
+export function bildirimKaydiniTazele() {
+  if (!suankiTazeleme) {
+    suankiTazeleme = tazele().finally(() => { suankiTazeleme = null })
+  }
+  return suankiTazeleme
+}
+
+async function tazele() {
   if (!destekli() || kapattiMi()) return
   if (Notification.permission !== 'granted') return
   if (iosMu() && !kuruluMu()) return
