@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { HataEkleDugmesi } from './HataDefteri.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, Dugme, Uyari } from './Ortak.jsx'
 import { gunAnahtari } from './ProgramIzgarasi.jsx'
@@ -205,6 +206,15 @@ export default function DenemeFormu({ ogrenciId, katalogId, onEklendi }) {
             </div>
           )
         })}
+        {/* Sorunun kendisini de saklamak isteyen için hata defteri kapısı. */}
+        <div className="hata-defter-kapi">
+          <HataEkleDugmesi
+            ogrenciId={ogrenciId}
+            katalogId={katalogId}
+            denemeId={kayitli.id}
+            dersler={kayitli.dersler.map((d) => d.id)}
+          />
+        </div>
         <Uyari>{hata}</Uyari>
         <div className="hata-adim-dugmeler">
           <button type="button" className="metin-dugme" onClick={onEklendi} disabled={bekliyor}>

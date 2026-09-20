@@ -20,6 +20,7 @@ import Okuduklarim from '../bilesenler/Okuduklarim.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
+import HataDefteri from '../bilesenler/HataDefteri.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import UstBlok from '../ortak/UstBlok.jsx'
 import Bolum from '../ortak/Bolum.jsx'
@@ -252,6 +253,8 @@ export default function OgrenciPaneli({
       ) : (
         <>
           <HedefeGoreDurum kayit={kayit} netDurumu={netDurumu} denemeler={denemeler} />
+          {/* Hata defteri Denemeler'in altında (mokap onayı, 20 Eylül 2026). */}
+          <HataDefteri ogrenciId={kayit.id} katalogId={kayit.katalog_id} />
           <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
         </>
       )}

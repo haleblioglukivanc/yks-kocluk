@@ -631,3 +631,17 @@ Göz ikonu (`/gozuyle/:id`) zaten öğrencinin kendi `OgrenciPaneli`ni açıyord
 - Bugün: "Kaybolan öğrenci" kartı yalnız bekliyor/hareketsiz öğrencide; "Görüştük" düğmesi eklendi. Temas kurulmuş öğrencide yalnız "Hedef ayarı" kartı (hafiflet / aynı kalsın). Hedef 7 gün içinde bir kez hafifler, 10 saatin altına inmez. Eski hata: "Mesajı gönder" kartı kapatmıyordu, her basışta hedef yeniden %20 düşüyordu.
 - Çizbi: acil ve dokunulmamış öğrenci varsa onu söyler ("dikkat isteyen bir şey görünmüyor" yanlışı giderildi).
 - Öğrenci kartı: Mesaj'ın yanında telefon ikonu = Görüştük (tür + isteğe bağlı not).
+
+## 20 Eylül 2026 — yanlış havuzu düzeltmesi + hata defteri
+
+**Yanlış havuzu testi (geri alınan işlemde, gerçek öğrenci verisinde):** zincir deneme_hatalari → zorlanma_sinyali → konu_skor → plan_taslagi_hesapla → tekrar görevi → tekrar_araligini_ilerlet.
+Bulgu: sinyal tekrar tarihini "yarın" yapıyor, hemen ardından `konu_skor_tazele` son çalışma tarihinden yeniden hesaplayıp siliyordu. Hiç çalışılmamış konudaki yanlış plana hiç girmiyor, çalışılmış konuda "19 gün gecikmiş" gerekçesiyle giriyordu.
+Düzeltme (`20260920_yanlis_tekrar_duzeltme.sql`): son çalışmadan sonra gelmiş sinyal varsa sıradaki tekrar = sinyal + 1 gün, aralık 0; plan gerekçesi sinyal kaynağından ("Denemede yanlış", "Soru çözümünde yanlış", "Öğrenci tekrar istedi"); aynı konu hem tekrar hem yeni konu olarak iki kez çıkmaz. Test tekrarlandı: iki konu da yarına kuruldu, gece tazelemesi bozmadı, tekrar bitince aralık 3 güne ilerledi. Konu aralıkları 1-3-7-21-60 olarak kaldı (bilinçli).
+
+**Hata defteri** (`20260920_hata_defteri.sql`, `src/bilesenler/HataDefteri.jsx/.css`), mokap: Design kanvası "Hata Defteri — öğrenci mokabı".
+- Tablolar `hata_defteri`, `hata_tekrarlari`; kova `hata-foto` (`<ogrenci_id>/…`, uzun kenar 1600px JPEG).
+- Neden: bilgi/dikkat/yontem/sure; güven emin/tahmin; doğru şık isteğe bağlı (yoksa öğrenci "doğru yaptım / yine yanlış" der).
+- Tekrar `hata_tekrar_cevapla`: 1-3-7-14-28 gün, üst üste 2 doğru = öğrenildi, yanlış = yarın.
+- Soru çözümünden eklenen kayıt konu havuzuna `soru_cozumu` sinyali düşer (zorlanma_sinyali.hata_turu'na `yontem` eklendi); denemeden eklenen düşmez (deneme_hatalari zaten sayıyor).
+- Girişler: öğrenci Denemeler sekmesi (satır → tam sayfa defter), deneme kaydındaki "Yanlışlar nereden geldi?" adımı, Günü tamamla → Bugün çözülen (yanlışı olan ders varsa). Koçun öğrenci ekranı Denemeler'de salt okunur.
+- Açık: koç karar kartı (aynı konu + aynı neden 3. hata) sonraki adım. Playwright doğrulaması yapılamadı (test hesabı yok); Bekir telefondan deneyecek.

@@ -7,6 +7,7 @@ import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
+import HataDefteri from '../bilesenler/HataDefteri.jsx'
 import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
@@ -1060,13 +1061,17 @@ function Denemeler({ ogrenci, onHedefEkle }) {
     ayt: ogrenci.hedef_ayt_net,
   }
   return (
-    <DenemePaneli
-      ogrenciId={ogrenci.id}
-      katalogId={ogrenci.katalog_id}
-      duzenlenebilir
-      hedef={hedef}
-      onHedefEkle={onHedefEkle}
-    />
+    <>
+      {/* Koç öğrencinin defterini görür; ekleme ve tekrar öğrencinin işi. */}
+      <HataDefteri ogrenciId={ogrenci.id} katalogId={ogrenci.katalog_id} duzenlenebilir={false} />
+      <DenemePaneli
+        ogrenciId={ogrenci.id}
+        katalogId={ogrenci.katalog_id}
+        duzenlenebilir
+        hedef={hedef}
+        onHedefEkle={onHedefEkle}
+      />
+    </>
   )
 }
 

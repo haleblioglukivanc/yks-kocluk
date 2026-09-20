@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { HataEkleDugmesi } from './HataDefteri.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Bos, Kart, Uyari } from './Ortak.jsx'
 
@@ -137,6 +138,18 @@ export default function BugunCozulen({ ogrenciId, katalogId, kayitlar, tarih, on
             </li>
           ))}
         </ul>
+      )}
+
+      {/* Yanlışı olan derste soruyu deftere ekleme kapısı. */}
+      {!saltOkunur && liste.some((s) => s.yanlis > 0) && (
+        <div className="hata-defter-kapi">
+          <HataEkleDugmesi
+            ogrenciId={ogrenciId}
+            katalogId={katalogId}
+            dersler={liste.filter((s) => s.yanlis > 0).map((s) => s.ders_id)}
+            metin="+ Yanlış soruyu deftere ekle"
+          />
+        </div>
       )}
 
       {saltOkunur ? null : acik ? (
