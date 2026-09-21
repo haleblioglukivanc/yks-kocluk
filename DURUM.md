@@ -7,6 +7,14 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koç ana ekranı: kapılar sahnenin içinde
+
+- Bekir kart tabanlı dashboard mokaplarını reddetti ("mevsimleri yaptık, yukarı kartları eklersen tasarımın ne anlamı kalır"); onaylanan yön: gezinme sahnenin içinde.
+- `src/ortak/SahneKapilari.jsx`: manzaranın ön planında patika, solda "Öğrenciler" tabelası (baş harfler risk renginde halkayla asılı, 3'ten fazlası "+N"), sağda Yapılacaklar posta kutusu (üstünde iş sayısı; iş varken kırmızı bayrak kalkık ve arada sallanır, iş yoksa iner). Süsler mevsime göre: kış kar, ilkbahar çiçek, yaz ot, sonbahar yaprak. Ön plan zemini tam genişlik (`--m-on-zemin`, `--m-patika`).
+- Tabela → `/ogrencilerim` (OgrenciNabzi), posta kutusu → `/yapilacaklar` (KararKuyrugu + VeliMesajlari). İkisinde de üst şeritte geri düğmesi ana ekrana döner.
+- Sahnenin altı: Gidişat tek şerit (dört sayı) + "Son 7 gün çalışma" çubukları; veri başlangıcından önceki günler taralı "veri yok" kutusu.
+- Tepedeki cümle bekleyen işten: "5 iş bekliyor, 2 tanesi acil. Önce Berçem."
+
 ## 22 Eylül 2026 — Sahne hafifletildi
 
 - Sayfa boyu düşen parçacıklar kaldırıldı; yaprak/kar/çiçek yalnız tepedeki manzaranın içinde düşer ve tepenin altında kaybolur (Bekir: "kartların altına girince kaybolsun, en aşağı inmesine gerek yok, sistemi yormayalım").

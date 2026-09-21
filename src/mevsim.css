@@ -23,10 +23,12 @@
   --m-cizgi: #e7dacb; --m-cizgi-2: #d9c7b3;
   --m-vurgu: #b4532d; --m-yumusak: #f4ddcc; --m-vurgu-2: #c98a1e;
   --m-tepe: #4a2c1f; --m-tepe-alt: #35201a;
+  --m-on-zemin: #a8633f; --m-patika: #e6c39c; --m-patika-2: #f0d5b3;
   --m-gok: #f3cda3; --m-ufuk-1: #e0b597; --m-ufuk-2: #c7825d;
   --m-g1: #b4532d; --m-g2: #d9a13b; --m-g3: #6f8f5e; --m-g4: #7c5a46;
 }
 html[data-mevsim='sonbahar'] {
+  --m-on-zemin: #a8633f; --m-patika: #e6c39c; --m-patika-2: #f0d5b3;
   --m-gok: #f3cda3; --m-ufuk-1: #e0b597; --m-ufuk-2: #c7825d;
   --m-g1: #b4532d; --m-g2: #d9a13b; --m-g3: #6f8f5e; --m-g4: #7c5a46;
   --m-zemin: #f6efe6; --m-yuzey: #fffdf9; --m-yuzey-2: #f1e7da;
@@ -36,6 +38,7 @@ html[data-mevsim='sonbahar'] {
   --m-tepe: #4a2c1f; --m-tepe-alt: #35201a;
 }
 html[data-mevsim='kis'] {
+  --m-on-zemin: #f4f7fb; --m-patika: #d6e0ec; --m-patika-2: #eaf0f7;
   --m-gok: #c5d5ea; --m-ufuk-1: #a9bbd3; --m-ufuk-2: #dce5f0;
   --m-g1: #2e4b7d; --m-g2: #6d8fc0; --m-g3: #d5a443; --m-g4: #8c9cb2;
   --m-zemin: #edf1f6; --m-yuzey: #ffffff; --m-yuzey-2: #e3e9f1;
@@ -45,6 +48,7 @@ html[data-mevsim='kis'] {
   --m-tepe: #22324f; --m-tepe-alt: #18243a;
 }
 html[data-mevsim='ilkbahar'] {
+  --m-on-zemin: #7ea66b; --m-patika: #e7d9b7; --m-patika-2: #f2e8cf;
   --m-gok: #cde4ee; --m-ufuk-1: #c2d8b0; --m-ufuk-2: #9cc089;
   --m-g1: #4b7a58; --m-g2: #8eb58b; --m-g3: #d98a97; --m-g4: #7ea2c2;
   --m-zemin: #f1f4eb; --m-yuzey: #ffffff; --m-yuzey-2: #e6ecde;
@@ -54,6 +58,7 @@ html[data-mevsim='ilkbahar'] {
   --m-tepe: #2c4535; --m-tepe-alt: #1f3226;
 }
 html[data-mevsim='yaz'] {
+  --m-on-zemin: #efd8a6; --m-patika: #d9b97c; --m-patika-2: #e8cf9c;
   --m-gok: #9ad2e7; --m-ufuk-1: #79bfcf; --m-ufuk-2: #3c98b1;
   --m-g1: #1d6e89; --m-g2: #58a8b9; --m-g3: #e59a45; --m-g4: #d9be5c;
   --m-zemin: #edf4f3; --m-yuzey: #ffffff; --m-yuzey-2: #e0eceb;
@@ -582,3 +587,75 @@ html .uygulama .dikkat .dugme--ikincil {
 .ana-mevsim { background: color-mix(in srgb, #fff 82%, transparent); }
 /* Zemin arka planı sabitlenmiyor: iOS'ta fixed arka plan kaydırmayı yoruyor. */
 html body[data-tema='panel'] { background-attachment: scroll; }
+
+
+/* ═══ Koç ana ekranı: kapılar sahnenin içinde (22 Eylül 2026) ═══════
+   Tepe uzar; yazı gökyüzünde, manzara ortada, ön planda patika,
+   "Öğrenciler" tabelası ve Yapılacaklar posta kutusu. */
+.ana-tepe--kapili { min-height: 0; display: flex; flex-direction: column; }
+.ana-tepe--kapili .ana-tepe-ic { padding-bottom: 0; width: 100%; box-sizing: border-box; }
+.ana-tepe--kapili .manzara { top: 26%; bottom: 3rem; }
+@media (min-width: 40.01rem) { .ana-tepe--kapili .manzara { top: 22%; } }
+.sk { position: relative; z-index: 1; margin-top: clamp(4.5rem, 16vw, 7rem); }
+.sk-zemin { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 62%; display: block; }
+.sk::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: 0; height: 32%; pointer-events: none;
+  background: linear-gradient(180deg, transparent, var(--m-zemin));
+}
+.sk-nesneler { position: relative; z-index: 1; width: min(100%, 34rem); margin: 0 auto; aspect-ratio: 400 / 210; }
+.sk-nesneler > svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; overflow: visible; }
+.sk-kapi {
+  position: absolute; z-index: 2; border: 0; background: transparent; padding: 0; cursor: pointer;
+  display: flex; align-items: flex-end; justify-content: center; font: inherit; color: inherit;
+}
+.sk-kapi--sol { left: 8%; top: 44%; width: 42%; height: 58%; }
+.sk-kapi--sag { left: 62%; top: 44%; width: 34%; height: 58%; }
+.sk-etiket {
+  display: inline-flex; align-items: center; gap: 0.35rem; white-space: nowrap;
+  min-height: 34px; padding: 0 0.75rem; border-radius: 999px; transform: translateY(40%);
+  background: color-mix(in srgb, var(--m-yuzey) 95%, transparent); color: var(--m-murekkep);
+  font: 800 0.8rem var(--m-govde);
+  box-shadow: 0 6px 16px -8px rgba(60, 30, 10, .45);
+}
+.sk-etiket i { width: 8px; height: 8px; border-radius: 50%; background: var(--m-acil); }
+.sk-ok { color: var(--m-soluk); font-size: 1rem; }
+.sk-kapi:active .sk-etiket { transform: translateY(40%) scale(.96); }
+.sk-kapi:focus-visible { outline: 3px solid var(--m-murekkep); outline-offset: 2px; border-radius: 16px; }
+.sk-bayrak { transform-box: fill-box; transform-origin: 0% 100%; animation: sk-bayrak 2.6s ease-in-out infinite; }
+@keyframes sk-bayrak { 0%, 70%, 100% { transform: rotate(0); } 78% { transform: rotate(-14deg); } 86% { transform: rotate(6deg); } }
+
+/* Sahnenin altı: dar, sade. */
+.ana-govde--dar { max-width: 40rem; }
+.gs { display: flex; flex-direction: column; gap: 0.7rem; }
+.gs .ana-bolum-bas h2 { margin: 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.35rem; }
+.gs-serit {
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+  background: var(--m-yuzey); border-radius: 20px; padding: 0.8rem 0.25rem;
+}
+.gs-serit--bekle { min-height: 4.2rem; opacity: .6; }
+.gs-serit > div { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; text-align: center; min-width: 0; }
+.gs-serit > div + div { border-left: 1px solid var(--m-cizgi); }
+.gs-serit b { font-size: clamp(1.05rem, 4.6vw, 1.35rem); font-weight: 800; letter-spacing: -0.02em; white-space: nowrap; }
+.gs-serit span { font-size: 0.72rem; font-weight: 700; color: var(--m-soluk); }
+.gs-hafta { background: var(--m-yuzey); border-radius: 20px; padding: 0.9rem 1rem 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.gs-hafta-baslik { font-size: 0.8rem; font-weight: 700; color: var(--m-soluk); }
+.gs-cubuklar { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0.4rem; }
+.gs-gun { display: flex; flex-direction: column; align-items: stretch; gap: 0.3rem; }
+.gs-kutu { height: 3.4rem; border-radius: 10px; background: var(--m-yumusak); display: flex; align-items: flex-end; overflow: hidden; }
+.gs-kutu i { display: block; width: 100%; background: var(--m-vurgu); border-radius: 10px 10px 0 0; transition: height .8s cubic-bezier(.2, .8, .2, 1); }
+.gs-kutu--yok { background: transparent; box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); background-image: repeating-linear-gradient(135deg, transparent 0 6px, color-mix(in srgb, var(--m-cizgi) 60%, transparent) 6px 7px); }
+.gs-gun-ad { font-size: 0.7rem; font-weight: 700; color: var(--m-soluk); text-align: center; }
+.gs-gun-ad--bugun { color: var(--m-murekkep); }
+
+/* Tabela ve kutunun arkasındaki alt ekranlar. */
+.alt-ekran { padding-top: 1.25rem; padding-bottom: 2rem; }
+
+@media (prefers-reduced-motion: reduce) { .sk-bayrak { animation: none; } .gs-kutu i { transition: none; } }
+/* Etiketler zeminin üstünde dursun, tepenin kenarında kesilmesin. */
+.sk { padding-bottom: 1.1rem; }
+.sk-kapi--sol, .sk-kapi--sag { height: 50%; }
+.sk-etiket, .sk-kapi:active .sk-etiket { transform: none; }
+.sk-kapi:active .sk-etiket { transform: scale(.96); }
+/* Etiket, tabelaya asılı baş harflerin altına insin. */
+.sk { padding-bottom: 2.6rem; }
+.sk-kapi--sol, .sk-kapi--sag { top: 44%; height: 68%; }
