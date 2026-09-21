@@ -945,3 +945,43 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .bl-satir--okundu { opacity: .6; }
 .bl-satir--yeni b::after { content: ''; display: inline-block; width: 7px; height: 7px; margin-left: 0.4rem; border-radius: 50%; background: var(--m-vurgu); vertical-align: middle; }
 @media (prefers-reduced-motion: reduce) { .can-salla { animation: none; } }
+
+/* ═══ Öğrenci ekranının sekme içleri: Program, Denemeler, Konular (22 Eylül 2026) ═══
+   Aynı dil: başlıklar zeminde Fraunces, içerik beyaz kâğıt kartta, hap
+   düğmeler. Çizgili bölüm ayraçları kalktı; bölümler boşlukla ayrılıyor. */
+.od-govde { display: flex; flex-direction: column; gap: 1.25rem; padding-bottom: 2rem; }
+.od-govde .bolum, .od-govde .bolum--cizgili { margin: 0; padding: 0; border-top: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.od-govde .bolum-basi, .od-govde .prg-gun-basi { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0 0.25rem; min-height: 40px; }
+.od-govde .bolum-baslik, .od-govde .prg-gun-ad-baslik {
+  margin: 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.3rem; letter-spacing: -0.01em; color: var(--m-murekkep); text-transform: none;
+}
+.od-govde .bolum-sayi { font-family: var(--m-govde); font-size: 0.8rem; font-weight: 800; color: var(--m-soluk); margin-left: 0.4rem; }
+.od-govde .bolum-aciklama, .od-govde .bos-durum-metin { margin: 0 0.25rem; font-size: 0.85rem; color: var(--m-soluk); line-height: 1.45; }
+.od-govde .eylem-dugmesi {
+  min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0;
+  background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2);
+  font: 700 0.8rem var(--m-govde);
+}
+.od-govde .dugme { border-radius: 999px; }
+.od-govde .dugme--birincil { background: var(--m-murekkep); color: #fff; border: 0; }
+/* Kartlar: görev listesi, formlar, deneme ve konu listeleri. */
+.od-govde .gorev-liste, .od-govde .form-kutu, .od-govde .bolum-kart, .od-govde .rutin-liste,
+.od-govde .dg-liste, .od-govde .konu-yolu, .od-govde .hit-liste {
+  background: var(--m-yuzey); border: 0; border-radius: 22px;
+  box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3);
+}
+.od-govde .form-kutu { padding: 1rem; }
+.od-govde .form-kutu textarea, .od-govde .form-kutu select, .od-govde .form-kutu input { border-radius: 14px; }
+/* Hafta şeridi: beyaz kâğıt; bugün mürekkep rengi, seçili gün yumuşak ton. */
+.od-govde .prg-serit-kap {
+  top: env(safe-area-inset-top, 0px); padding: 0.6rem 0.5rem; border-radius: 22px;
+  background: var(--m-yuzey); background-image: none;
+  box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3);
+}
+.od-govde .prg-hafta-adi { font-family: var(--m-govde); font-weight: 700; letter-spacing: 0; padding-left: 0.4rem; }
+.od-govde .hafta-gun { border: 0; border-radius: 14px; background: transparent; box-shadow: none; }
+.od-govde .hafta-gun--secili { background: var(--m-yumusak); }
+.od-govde .hafta-gun--bugun, .uygulama .od-govde .hafta-gun--bugun { background: var(--m-murekkep); border: 0; box-shadow: none; }
+.od-govde .hafta-gun--bugun .hafta-gun-ad, .od-govde .hafta-gun--bugun .hafta-gun-no, .od-govde .hafta-gun--bugun .hafta-gun-sayi { color: #fff; }
+.od-govde .hafta-gun--secili.hafta-gun--bugun, .uygulama .od-govde .hafta-gun--secili.hafta-gun--bugun { border: 0; outline: 3px solid var(--m-yumusak); outline-offset: -3px; }
+.od-govde .prg-gun { margin-top: 0; }
