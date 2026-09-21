@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koç ana ekranı: kapı kartları
+
+- Bekir'in kararı: tepe eski haliyle (sahne, selam, tek cümle); tabela/posta kutusu kalktı (`SahneKapilari.jsx` silindi). Dikkat gerektirenler'in yerinde iki kart: Öğrencilerim (risk halkalı baş harfler, en fazla 4 + "+N") → `/ogrencilerim`, Yapılacaklar (üst üste kart çizimi, iş sayısı; acil varsa kırmızı) → `/yapilacaklar`. Öğrencinin Yol/Denemeler kartlarıyla aynı kalıp (`.ana-kapi`).
+- Altta Gidişat eski haliyle (ikonlu, pastel 2×2 kartlar, Bugün/7 gün/30 gün). "Son 7 gün çalışma" çubukları kaldırıldı.
+
 ## 22 Eylül 2026 — Tabela/posta kutusu geri geldi, koça mevsim teması seçici
 
 - Bekir önce geri aldırdı, sonra "o tasarım güzeldi" dedi: koç ana ekranındaki tabela + posta kutusu yeniden canlıda.

@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
-import { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
-import SahneKapilari from '../ortak/SahneKapilari.jsx'
+import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
 import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 import OgrenciNabzi from '../bilesenler/OgrenciNabzi.jsx'
@@ -125,57 +124,6 @@ function useKocGidisati(donem) {
   }
 }
 
-const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
-const DONEM = [['bugun', 'Bugün'], ['hafta', '7 gün'], ['ay', '30 gün']]
-
-/* Sahnenin altı: tek şeritte dört sayı ve son 7 günün çalışma çubukları.
-   Kart yığını yok; sahne ekranın yıldızı kalsın. */
-function GidisatSeridi({ donem, onDonem, g }) {
-  const enCok = Math.max(1, ...(g.son7 ?? []).map((x) => x.dakika))
-  return (
-    <section className="gs" aria-label="Gidişat">
-      <div className="ana-bolum-bas">
-        <h2>Gidişat</h2>
-        <div className="ana-anahtar" role="group" aria-label="Dönem">
-          {DONEM.map(([k, ad]) => (
-            <button key={k} type="button" aria-pressed={donem === k} onClick={() => onDonem(k)}>{ad}</button>
-          ))}
-        </div>
-      </div>
-      {g.yukleniyor ? (
-        <div className="gs-serit gs-serit--bekle" aria-busy="true" />
-      ) : g.bos ? (
-        <div className="gd-bos"><strong>{g.bos.baslik}</strong><span>{g.bos.metin}</span></div>
-      ) : (
-        <>
-          <div className="gs-serit">
-            {g.kartlar.map((k) => (
-              <div key={k.kisa}>
-                <b className={k.sonuk ? 'gd-deger--sonuk' : ''}>{k.deger}</b>
-                <span>{k.kisa}</span>
-              </div>
-            ))}
-          </div>
-          {g.not && <p className="ana-bolum-not">{g.not}</p>}
-        </>
-      )}
-      <div className="gs-hafta" role="img" aria-label={`Son 7 gün çalışma: ${(g.son7 ?? []).map((x) => (x.veriYok ? 'veri yok' : sureYaz(x.dakika))).join(', ')}`}>
-        <span className="gs-hafta-baslik">Son 7 gün çalışma</span>
-        <div className="gs-cubuklar">
-          {(g.son7 ?? []).map((x) => (
-            <div key={x.tarih} className="gs-gun">
-              <div className={x.veriYok ? 'gs-kutu gs-kutu--yok' : 'gs-kutu'}>
-                {!x.veriYok && <i style={{ height: `${Math.max(x.dakika > 0 ? 8 : 0, Math.round((x.dakika / enCok) * 100))}%` }} />}
-              </div>
-              <span className={x.bugun ? 'gs-gun-ad gs-gun-ad--bugun' : 'gs-gun-ad'}>{x.bugun ? 'Bugün' : GUN[new Date(`${x.tarih}T00:00:00`).getDay()]}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 export default function KocAnaSayfa({ profil, onGit, tepe }) {
   const [riskler, setRiskler] = useState(null)
   const [isler, setIsler] = useState(null)
@@ -216,23 +164,45 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
     : sirali.length === 0 ? 'Öğrenci yok' : dikkat === 0 ? 'Hepsi yolunda' : iyi === 0 ? `${dikkat} dikkat istiyor` : `${dikkat} dikkat, ${iyi} yolunda`
   const basHarf = (ad) => (ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
 
+  const HALKA = { acil: 'var(--m-acil)', izle: 'var(--m-dikkat)', iyi: 'var(--m-yolunda)' }
+  const asili = sirali.slice(0, 4)
+  const isSayisi = isler?.length ?? 0
+  const veliSayisi = (isler ?? []).filter((x) => x.tip === 'veli_ozet').length
+  const isMetni = !isler
+    ? ' '
+    : isSayisi === 0
+      ? 'Bekleyen iş yok. Bugünlük bu kadar.'
+      : [acil.length ? `${acil.length} acil` : null, veliSayisi ? `${veliSayisi} veli özeti` : null, isSayisi - acil.length - veliSayisi > 0 ? `${isSayisi - acil.length - veliSayisi} karar` : null].filter(Boolean).join(', ') + `. Önce ${(acil[0] ?? isler[0]).ad?.split(' ')[0]}.`
+
   return (
     <div className="ana-sayfa ana-sayfa--koc">
-      <AnaTepe selam={selamVer(profil?.ad_soyad)} tarih={bugunTarih()} ozet={ozet} {...tepe}>
-        {(mevsim) => (
-          <SahneKapilari
-            mevsim={mevsim}
-            ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))}
-            ogrenciEtiket={ogrenciEtiket}
-            isSayisi={isler?.length ?? 0}
-            acilVar={acil.length > 0}
-            onOgrenciler={() => onGit('/ogrencilerim')}
-            onYapilacaklar={() => onGit('/yapilacaklar')}
-          />
-        )}
-      </AnaTepe>
+      <AnaTepe selam={selamVer(profil?.ad_soyad)} tarih={bugunTarih()} ozet={ozet} {...tepe} />
       <div className="ana-govde ana-govde--dar">
-        <GidisatSeridi donem={donem} onDonem={setDonem} g={gidisat} />
+        {/* Kapılar (22 Eylül 2026, Bekir): Dikkat gerektirenler'in yerinde
+            iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}
+        <section className="ana-kapilar" aria-label="Öğrencilerim ve Yapılacaklar">
+          <button type="button" className="ana-kapi" onClick={() => onGit('/ogrencilerim')}>
+            <span className="kk-halkalar" aria-hidden="true">
+              {asili.map((r, i) => (
+                <span key={r.ogrenci_id} className="kk-halka" style={{ boxShadow: `0 0 0 3px var(--m-yuzey), inset 0 0 0 3px ${HALKA[r.risk_seviyesi] ?? 'var(--m-soluk)'}`, zIndex: 10 - i }}>
+                  {basHarf(r.ad_soyad)}
+                </span>
+              ))}
+              {sirali.length > asili.length && <span className="kk-halka kk-halka--fazla">+{sirali.length - asili.length}</span>}
+            </span>
+            <b>Öğrencilerim</b>
+            <span>{ogrenciEtiket === 'Öğrencilerim' ? ' ' : `${sirali.length} öğrenci: ${ogrenciEtiket}.`}</span>
+          </button>
+          <button type="button" className="ana-kapi" onClick={() => onGit('/yapilacaklar')}>
+            <span className="kk-yigin" aria-hidden="true">
+              <i /><i /><i className={acil.length ? 'kk-yigin-ust kk-yigin-ust--acil' : 'kk-yigin-ust'}>{acil.length ? 'Acil' : isSayisi ? 'Sırada' : 'Boş'}</i>
+              {isSayisi > 0 && <em className={acil.length ? 'kk-sayi kk-sayi--acil' : 'kk-sayi'}>{isSayisi > 9 ? '9+' : isSayisi}</em>}
+            </span>
+            <b>Yapılacaklar</b>
+            <span>{isMetni}</span>
+          </button>
+        </section>
+        <Gidisat donem={donem} onDonem={setDonem} {...gidisat} />
       </div>
     </div>
   )

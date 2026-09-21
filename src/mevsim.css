@@ -671,3 +671,29 @@ html body[data-tema='panel'] { background-attachment: scroll; }
 }
 .mevsim-secim-dugmeler button[aria-pressed='true'] { background: var(--m-murekkep); color: #fff; box-shadow: none; }
 .mevsim-secim-not { font-size: 0.75rem; color: var(--m-soluk); }
+
+/* Koç kapıları (Öğrencilerim, Yapılacaklar) — öğrencinin Yol/Denemeler
+   kartlarıyla aynı kalıp; çizimler veriden. */
+.kk-halkalar { height: 70px; display: flex; align-items: center; }
+.kk-halka {
+  position: relative; width: 44px; height: 44px; border-radius: 50%; margin-left: -10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--m-yumusak); font-size: 0.72rem; font-weight: 800; color: var(--m-murekkep);
+}
+.kk-halka:first-child { margin-left: 0; }
+.kk-halka--fazla { background: var(--m-zemin); box-shadow: 0 0 0 3px var(--m-yuzey); color: var(--m-soluk); }
+.kk-yigin { position: relative; height: 70px; width: 100%; display: block; }
+.kk-yigin i { position: absolute; left: 0; border-radius: 12px; font-style: normal; }
+.kk-yigin i:nth-child(1) { top: 4px; left: 16px; width: 72%; height: 44px; background: var(--m-yuzey-2); }
+.kk-yigin i:nth-child(2) { top: 12px; left: 8px; width: 76%; height: 44px; background: var(--m-yumusak); }
+.kk-yigin-ust {
+  top: 20px; width: 80%; height: 44px; display: flex; align-items: center; padding: 0 0.7rem;
+  background: var(--m-zemin); color: var(--m-soluk); font-size: 0.75rem; font-weight: 800; box-shadow: 0 2px 6px -3px rgba(40,30,20,.25);
+}
+.kk-yigin-ust--acil { background: var(--m-acil-zemin); color: var(--m-acil); }
+.kk-sayi {
+  position: absolute; right: 0; top: 0; min-width: 28px; height: 28px; padding: 0 6px; box-sizing: border-box;
+  border-radius: 99px; background: var(--m-murekkep); color: #fff; font-style: normal; font-size: 0.85rem; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+}
+.kk-sayi--acil { background: var(--m-acil); }
