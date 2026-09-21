@@ -566,3 +566,19 @@ html .uygulama .dikkat .dugme--ikincil {
   .on-ritim { width: 5.2rem; }
   .on-son { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
 }
+
+/* Performans (22 Eylül 2026): kaydırırken her karede yeniden hesaplanan
+   buzlu cam (backdrop-filter) kalktı; kartlar neredeyse opak kâğıt.
+   Sahne yine kenarlardan ve kartların arasından görünür. */
+.ana-kart, .gd-kart, .ana-kapi, .ana-anahtar, .ana-mevsim {
+  -webkit-backdrop-filter: none; backdrop-filter: none;
+}
+.ana-kart, .ana-kapi { background: color-mix(in srgb, var(--m-yuzey) 94%, transparent); }
+.ana-anahtar { background: color-mix(in srgb, var(--m-yuzey) 94%, transparent); }
+.gd-kart--1 { background: color-mix(in srgb, var(--m-g1) 10%, var(--m-yuzey)); }
+.gd-kart--2 { background: color-mix(in srgb, var(--m-g2) 12%, var(--m-yuzey)); }
+.gd-kart--3 { background: color-mix(in srgb, var(--m-g3) 11%, var(--m-yuzey)); }
+.gd-kart--4 { background: color-mix(in srgb, var(--m-g4) 10%, var(--m-yuzey)); }
+.ana-mevsim { background: color-mix(in srgb, #fff 82%, transparent); }
+/* Zemin arka planı sabitlenmiyor: iOS'ta fixed arka plan kaydırmayı yoruyor. */
+html body[data-tema='panel'] { background-attachment: scroll; }

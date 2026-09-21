@@ -2,17 +2,12 @@ import { useMevsim, useAzHareket } from '../lib/mevsim.js'
 
 /* Mevsim sahnesi (22 Eylül 2026, Bekir: "mevsim yalnız üst barda
    duruyor; brifte uygulama komple bir sahnenin içinde yaşıyordu").
-   Sayfanın arkasında sabit duran katman: gökten zemine akan renk,
-   ekranın dibinde soluk bir ufuk ve bütün ekrana yayılan birkaç
-   parçacık (yaprak, kar, çiçek yaprağı, ışık). İçerik bunun üstünde
+   Sayfanın arkasında sabit duran katman: mevsim tonlu zemin ve ekranın
+   dibinde soluk, hareketsiz bir ufuk. Düşen yaprak/kar yalnız tepedeki
+   manzaranın içinde; kartların altına girmez (Bekir, 22 Eylül 2026:
+   "en aşağı kadar inmesine gerek yok, sistemi yormayalım"). İçerik bunun üstünde
    yarı saydam kâğıtlarda durur; kaydırdıkça sahne yerinde kalır.
    Hareket azaltma tercihinde parçacıklar hiç çizilmez. */
-
-/* [sol %, süre sn, gecikme sn, boy px, sürüklenme px] */
-const PARCACIK = [
-  [6, 19, -3, 12, 40], [18, 24, -14, 9, -30], [31, 21, -8, 11, 50], [44, 27, -20, 8, -40],
-  [57, 22, -5, 12, 30], [69, 26, -17, 9, -50], [81, 20, -11, 11, 35], [92, 25, -2, 8, -25],
-]
 
 export function MevsimIsareti({ mevsim, boyut = 18 }) {
   const ortak = { width: boyut, height: boyut, viewBox: '0 0 24 24', 'aria-hidden': true }
@@ -90,24 +85,12 @@ export function MevsimDali({ mevsim }) {
 
 export default function MevsimSahnesi() {
   const mevsim = useMevsim()
-  const az = useAzHareket()
   return (
     <div className="sahne" data-mevsim={mevsim} aria-hidden="true">
       <svg className="sahne-ufuk" viewBox="0 0 1440 200" preserveAspectRatio="none">
         <path d="M0 110 C 220 60 420 90 640 80 C 860 70 1040 40 1240 70 C 1340 84 1400 80 1440 76 L1440 200 L0 200 Z" fill="var(--m-ufuk-1)" />
         <path d="M0 150 C 260 118 480 146 720 138 C 960 130 1180 156 1440 136 L1440 200 L0 200 Z" fill="var(--m-ufuk-2)" />
       </svg>
-      {!az && (
-        <div className="sahne-parcaciklar">
-          {PARCACIK.map(([sol, sure, gec, boy, kay], i) => (
-            <i
-              key={i}
-              className={`sahne-p sahne-p--${mevsim}${i % 2 ? ' sahne-p--ikinci' : ''}`}
-              style={{ left: `${sol}%`, width: boy, height: mevsim === 'sonbahar' ? boy * 0.62 : boy, animationDuration: `${sure}s`, animationDelay: `${gec}s`, '--kay': `${kay}px` }}
-            />
-          ))}
-        </div>
-      )}
     </div>
   )
 }

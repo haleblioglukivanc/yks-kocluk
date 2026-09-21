@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useEffect, useId, useRef } from 'react'
 import { useAzHareket } from '../lib/mevsim.js'
 
 /* Tepedeki mevsim manzarası. Elle çizilmiş katmanlı SVG: gökyüzü, uzak
@@ -9,6 +9,24 @@ import { useAzHareket } from '../lib/mevsim.js'
 
 export default function Manzara({ mevsim = 'sonbahar' }) {
   const az = useAzHareket()
+  const kutu = useRef(null)
+  /* Tepe ekrandan çıkınca (aşağı kaydırıldığında) ya da sekme arka
+     plandayken bütün SVG hareketleri durur; işlemci boşuna çalışmasın. */
+  useEffect(() => {
+    const el = kutu.current
+    if (!el || az) return
+    let gorunur = true
+    const uygula = () => {
+      const svg = el.querySelector('svg')
+      if (!svg?.pauseAnimations) return
+      if (gorunur && document.visibilityState === 'visible') svg.unpauseAnimations()
+      else svg.pauseAnimations()
+    }
+    const io = new IntersectionObserver(([g]) => { gorunur = g.isIntersecting; uygula() })
+    io.observe(el)
+    document.addEventListener('visibilitychange', uygula)
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', uygula) }
+  }, [az, mevsim])
   const id = useId().replace(/:/g, '')
   /* Hareket öğeleri: az hareket tercihinde hiç çizilmez. */
   const Kay = (p) => (az ? null : <animateTransform attributeName="transform" repeatCount="indefinite" {...p} />)
@@ -198,5 +216,5 @@ export default function Manzara({ mevsim = 'sonbahar' }) {
     )
   }
 
-  return <div className="manzara">{icerik}</div>
+  return <div className="manzara" ref={kutu}>{icerik}</div>
 }

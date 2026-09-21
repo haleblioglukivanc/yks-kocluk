@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Sahne hafifletildi
+
+- Sayfa boyu düşen parçacıklar kaldırıldı; yaprak/kar/çiçek yalnız tepedeki manzaranın içinde düşer ve tepenin altında kaybolur (Bekir: "kartların altına girince kaybolsun, en aşağı inmesine gerek yok, sistemi yormayalım").
+- Manzara animasyonları tepe ekrandan çıkınca ve sekme arka plandayken durur (IntersectionObserver + SVG pauseAnimations).
+- Kartlardaki buzlu cam (backdrop-filter) kaldırıldı, kartlar %94 opak; zemin arka planı artık sabit değil (iOS'ta kaydırmayı yoruyordu). Ekranın dibindeki ufuk hareketsiz kaldı.
+
 ## 22 Eylül 2026 — Koç ana ekranı toparlandı (telefon)
 
 - Üstteki boş bant: iOS'ta durum çubuğu "default" olduğu için saatin altında buzlu bir şerit kalıyordu. `apple-mobile-web-app-status-bar-style` → `black-translucent`; sahne saatin altına kadar uzanıyor, beyaz saat okunsun diye tepede hafif gölge. Ana ekrana eklenmiş uygulamada değişikliğin görünmesi için uygulamayı kapatıp açmak (gerekirse yeniden eklemek) gerekebilir.
