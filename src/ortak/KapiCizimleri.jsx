@@ -148,3 +148,30 @@ export function UcakCizimi({ sayi = 0 }) {
     </svg>
   )
 }
+
+/* Bildirimler: direğin kolundan sarkan çan; bekleyen varsa hafifçe sallanır. */
+export function CanCizimi({ mevsim, sayi = 0 }) {
+  return (
+    <svg className="kapi-cizim can-cizim" viewBox="0 0 120 112" aria-hidden="true">
+      <rect x="16" y="8" width="6" height="100" rx="2" fill="#6B3D29" />
+      <rect x="16" y="12" width="64" height="5" rx="2" fill="#6B3D29" />
+      <g className={sayi > 0 ? 'can-salla' : ''}>
+        <line x1="70" y1="17" x2="70" y2="30" stroke="#6B3D29" strokeWidth="1.6" />
+        <path d="M52 70 C52 48 58 32 70 32 C82 32 88 48 88 70 Z" fill="#E4A43C" stroke="#8F5A00" strokeWidth="2" strokeLinejoin="round" />
+        <rect x="48" y="68" width="44" height="6" rx="3" fill="#C98A2A" />
+        <circle cx="70" cy="80" r="5" fill="#8F5A00" />
+        <path d="M60 44 C 62 38 66 36 70 36" fill="none" stroke="#FFF1C9" strokeWidth="2.5" strokeLinecap="round" />
+      </g>
+      {sayi > 0 && (
+        <g>
+          <circle cx="96" cy="36" r="10" fill="#BE2847" stroke="#FFFDF9" strokeWidth="2.5" />
+          <text x="96" y="40" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="11" fontWeight="800" fill="#fff">{sayi > 9 ? '9+' : sayi}</text>
+        </g>
+      )}
+      {mevsim === 'kis' && <><path d="M14 12 q10 -7 24 -4 q14 -5 28 0 q10 -2 16 4 z" fill="#FFFFFF" /><path d="M56 44 q6 -12 14 -12 q8 0 14 12 q-14 -5 -28 0 z" fill="#FFFFFF" /></>}
+      {mevsim === 'sonbahar' && [[10, 107, '#D8742C', 20], [26, 108, '#E4A43C', -30]].map(([x, y, r, a]) => <ellipse key={x} cx={x} cy={y} rx="5" ry="2.5" fill={r} transform={`rotate(${a} ${x} ${y})`} />)}
+      {mevsim === 'ilkbahar' && [[10, 104, '#F2A7B5'], [28, 105, '#FFFFFF']].map(([x, y, r]) => <g key={x}><line x1={x} y1={y} x2={x} y2={y + 6} stroke="#6E8C4F" strokeWidth="1.2" /><circle cx={x} cy={y} r="2.8" fill={r} /></g>)}
+      {mevsim === 'yaz' && [10, 30].map((x) => <path key={x} d={`M${x} 110 q-2 -7 -5 -9 M${x} 110 q0 -8 1 -10 M${x} 110 q3 -6 6 -8`} stroke="#7FA86B" strokeWidth="1.6" fill="none" strokeLinecap="round" />)}
+    </svg>
+  )
+}

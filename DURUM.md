@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Bildirimler yeni dilde
+
+- Bekir: aynı dille doğrudan. Ortak sahneli tepe ("Bildirimler", öğrencide "Gelen kutusu"), sağda ağaçların önünde direğe asılı çan (`CanCizimi`; bekleyen varsa arada sallanır, üstünde sayı; mevsim süsleri). Liste iki grup: "Senden bekleyenler" (okunmamış mesaj → doğrudan o yazışma, karar kartı → Yapılacaklar) ve "Son 7 gün" (bildirim kuyruğu; yeniler noktalı, okunmuşlar soluk). Durum rengine göre simge dairesi.
+
 ## 22 Eylül 2026 — Mesajlar yeni dilde
 
 - Mokap onaylı. `Mesajlar.jsx`: ortak sahneli tepe (başlık "Mesajlar", okunmamış cümlesi; sağda gökyüzünde süzülen kâğıt uçak `UcakCizimi`, üstünde okunmamış sayısı). Koçta arama + Tümü / Okunmamış / Veliler süzgeci; kişi satırları (baş harf, rol etiketi, önizleme, saat, okunmamış rozeti; okunmamışlar üstte).

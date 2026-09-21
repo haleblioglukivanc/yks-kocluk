@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Yukleniyor, Bos } from '../bilesenler/Ortak.jsx'
+import { Yukleniyor } from '../bilesenler/Ortak.jsx'
+import AnaTepe from '../ortak/AnaTepe.jsx'
+import { CanCizimi } from '../ortak/KapiCizimleri.jsx'
 
 /**
  * Bildirimler: kullanıcıdan bir şey bekleyen her olay tek listede.
@@ -38,7 +40,7 @@ const IKON = {
   hedef: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></>,
 }
 
-export default function Bildirimler({ profil, onGit }) {
+export default function Bildirimler({ profil, onGit, tepe = null }) {
   const [liste, setListe] = useState(null)
   const kocMu = profil.rol === 'koc'
 
@@ -56,7 +58,8 @@ export default function Bildirimler({ profil, onGit }) {
             baslik: `${k.ad} sana yazdı`,
             alt: k.sonMesaj || `${k.okunmamis} okunmamış mesaj`,
             zaman: k.sonZaman,
-            yol: '/mesajlar',
+            yol: `/mesajlar/${k.id}`,
+            bekliyor: true,
           })
         }
       }
@@ -79,6 +82,7 @@ export default function Bildirimler({ profil, onGit }) {
           id: `bildirim-${b.id}`,
           tip: b.tip,
           durum: b.okundu_mu ? 'okundu' : b.tip === 'blok_kacirildi' ? 'eylem' : 'notr',
+          yeni: !b.okundu_mu,
           baslik: b.baslik,
           alt: b.govde || '',
           zaman: b.olusturuldu,
@@ -97,7 +101,8 @@ export default function Bildirimler({ profil, onGit }) {
             baslik: `${kart.ad} · ${t.etiket}`,
             alt: kart.baglam || kart.oneri || '',
             zaman: null,
-            yol: '/',
+            yol: '/yapilacaklar',
+            bekliyor: true,
           })
         }
       }
@@ -113,34 +118,58 @@ export default function Bildirimler({ profil, onGit }) {
     return () => { iptal = true }
   }, [kocMu])
 
+  /* Mevsimsel tasarım (22 Eylül 2026, Bekir: "aynı dille doğrudan yap"):
+     ortak sahneli tepe, sağda direğe asılı çan (üstünde bekleyen sayısı).
+     Liste ikiye ayrılır: senden bir şey bekleyenler (okunmamış mesaj,
+     karar kartı) ve son 7 günün bildirimleri (okunmuşlar soluk). */
+  const bekleyen = (liste ?? []).filter((o) => o.bekliyor)
+  const gecmis = (liste ?? []).filter((o) => !o.bekliyor)
+  const yeniSayi = (liste ?? []).filter((o) => o.bekliyor || o.yeni).length
+  const baslik = profil.rol === 'ogrenci' ? 'Gelen kutusu' : 'Bildirimler'
+  const ozet = liste === null ? ' ' : bekleyen.length ? `Senden bir şey bekleyen ${bekleyen.length} olay var.` : 'Bekleyen bir şey yok.'
+
+  const satir = (o) => (
+    <button key={o.id} type="button" className={`bl-satir bl-satir--${o.durum}${o.yeni ? ' bl-satir--yeni' : ''}`} onClick={() => onGit(o.yol)}>
+      <span className="bl-simge"><svg {...ikon}>{IKON[o.tip] ?? IKON.mesaj}</svg></span>
+      <span className="bl-yazi">
+        <b>{o.baslik}</b>
+        {o.alt && <span>{o.alt}</span>}
+      </span>
+      {o.zaman && <small>{zamanYaz(o.zaman)}</small>}
+    </button>
+  )
+
   return (
-    <div className="panel">
-      <div className="ekran-basi">
-        <h1>{profil.rol === 'ogrenci' ? 'Gelen kutusu' : 'Bildirimler'}</h1>
-        {liste && liste.length > 0 && (
-          <p className="ekran-basi-alt">Senden bir şey bekleyen {liste.length} olay var.</p>
+    <div className="ana-sayfa bl">
+      <AnaTepe
+        selam={baslik}
+        tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}
+        ozet={ozet}
+        {...(tepe ?? {})}
+        sagCizim={(mevsim) => <CanCizimi mevsim={mevsim} sayi={yeniSayi} />}
+      />
+      <div className="ana-govde ana-govde--dar bl-govde">
+        {liste === null ? (
+          <Yukleniyor />
+        ) : liste.length === 0 ? (
+          <div className="gd-bos"><strong>Bekleyen bir şey yok.</strong><span>Yeni bir şey olursa çan çalar.</span></div>
+        ) : (
+          <>
+            {bekleyen.length > 0 && (
+              <section className="bl-grup" aria-label="Senden bekleyenler">
+                <div className="on2-grup-bas"><i style={{ background: 'var(--m-acil)' }} />Senden bekleyenler</div>
+                {bekleyen.map(satir)}
+              </section>
+            )}
+            {gecmis.length > 0 && (
+              <section className="bl-grup" aria-label="Son 7 gün">
+                <div className="on2-grup-bas"><i style={{ background: 'var(--m-soluk)' }} />Son 7 gün</div>
+                {gecmis.map(satir)}
+              </section>
+            )}
+          </>
         )}
       </div>
-      {liste === null ? (
-        <Yukleniyor />
-      ) : liste.length === 0 ? (
-        <Bos baslik="Bekleyen bir şey yok" aciklama="Yeni bir şey olursa Çizbi söyler." />
-      ) : (
-        <ul className="bildirim-liste">
-          {liste.map((o) => (
-            <li key={o.id}>
-              <button type="button" className="bildirim" data-durum={o.durum} onClick={() => onGit(o.yol)}>
-                <span className="bildirim-simge"><svg {...ikon}>{IKON[o.tip] ?? IKON.mesaj}</svg></span>
-                <span className="bildirim-govde">
-                  <strong>{o.baslik}</strong>
-                  {o.alt && <span>{o.alt}</span>}
-                </span>
-                {o.zaman && <small>{zamanYaz(o.zaman)}</small>}
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   )
 }
