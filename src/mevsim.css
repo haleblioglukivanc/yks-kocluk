@@ -1243,3 +1243,9 @@ button.isl-hc:disabled { cursor: default; }
 .yol-kapsam + .yol-kapsam { border-top: 1px solid var(--m-cizgi); margin-top: 0.5rem; padding-top: 0.5rem; }
 .yol-kapsam-bas { display: flex; justify-content: space-between; margin: 0.4rem 0.1rem; font-size: 0.8rem; font-weight: 800; }
 .yol-kapsam-bas small { color: var(--m-soluk); }
+
+/* ═══ Öğrencinin Denemeler sayfası (22 Eylül 2026 mokabı) ═══ */
+.dn-govde { padding-top: 0.5rem; }
+.dn-govde .veri-yuzey, .dn-govde .net-kutular, .dn-govde .hd-kart, .dn-govde .hata-defteri { border-radius: 22px; }
+.dn-govde .net-kutu { border: 0; border-radius: 14px; background: var(--m-zemin); }
+.dn-govde .hedef-cubuk { border-radius: 99px; }

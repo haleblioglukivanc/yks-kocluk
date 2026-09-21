@@ -230,7 +230,7 @@ export function YolCizimi({ mevsim, oran = 0, seri = 0, zemin = true }) {
 }
 
 /* Denemeler kapısı: şövalede kara tahta, üstünde son denemelerin net çizgisi. */
-export function DenemeCizimi({ mevsim, netler = [] }) {
+export function DenemeCizimi({ mevsim, netler = [], zemin = true }) {
   const son = netler.slice(-4)
   let cizgi = null
   if (son.length >= 2) {
@@ -241,7 +241,7 @@ export function DenemeCizimi({ mevsim, netler = [] }) {
   const sonNokta = cizgi ? cizgi.split(' ').pop().split(',').map(Number) : null
   return (
     <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
-      <Zemin mevsim={mevsim} />
+      {zemin && <Zemin mevsim={mevsim} />}
       <line x1="50" y1="74" x2="62" y2="18" stroke="#6B3D29" strokeWidth="3" />
       <line x1="104" y1="74" x2="92" y2="18" stroke="#6B3D29" strokeWidth="3" />
       <rect x="44" y="12" width="66" height="44" rx="4" fill="#2F4A3E" stroke="#6B3D29" strokeWidth="3" />

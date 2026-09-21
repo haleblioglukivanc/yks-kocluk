@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrencinin Denemeler sayfası yeni dilde
+
+- Mokap onaylı. Tepe: ortak sahne, "Denemeler", son iki aynı tür deneme arasındaki fark etiketi (▲ yeşil / ▼ kırmızı), "Son TYT 61,75 net. Hedefine N net kaldı." (hedef girilmişse), sağda ağaçların önünde kara tahta (`DenemeCizimi zemin={false}`, son 4 netin çizgisi tebeşirle çizilir), geri → ana ekran. /denemeler öğrencide üst şeritsiz.
+- Gövde `od-govde` dilinde (Fraunces başlıklar, kâğıt kartlar, hap düğmeler): hedefe göre durum, hata defteri, deneme paneli (ekleme formu, net gelişimi, ders bazında, liste). İç bileşenlerin davranışı değişmedi.
+
 ## 22 Eylül 2026 — Öğrencinin Yol sayfası yeni dilde
 
 - Mokap onaylı. Tepe: ortak sahne, "Yol", "N konudan M'si bitti. Sıradaki durak X." (konu_ilerleme), seri etiketi (seriler), sağda ağaçların önünde dağ çizimi (`YolCizimi zemin={false}`), geri → ana ekran. /yol öğrencide üst şeritsiz.

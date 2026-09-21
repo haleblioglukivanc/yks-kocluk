@@ -1,6 +1,6 @@
 import Islerim from '../bilesenler/Islerim.jsx'
 import { gunGorevleri } from '../bilesenler/HaftaSeridi.jsx'
-import { KisiPortresi, YolCizimi } from '../ortak/KapiCizimleri.jsx'
+import { KisiPortresi, YolCizimi, DenemeCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
@@ -201,6 +201,29 @@ export default function OgrenciPaneli({
   return (
     <>
       <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
+      {sekme === 'denemeler' && (() => {
+        /* Denemeler (22 Eylül 2026 mokabı): ortak sahneli tepe, sağda kara tahta. */
+        const son = denemeler?.[0] ?? null
+        const onceki = son ? denemeler.find((d, i) => i > 0 && d.tur === son.tur) : null
+        const fark = son && onceki ? Number(son.toplam_net) - Number(onceki.toplam_net) : null
+        const hedefNet = son?.tur === 'ayt' ? kayit.hedef_ayt_net : kayit.hedef_tyt_net
+        const net = (n) => Number(n).toFixed(2).replace(/0$/, '').replace(/,?\.?0$/, '').replace('.', ',')
+        const ozetMetni = !son
+          ? 'İlk denemeni ekle, net çizgin başlasın.'
+          : `Son ${String(son.tur).toUpperCase()} ${net(son.toplam_net)} net.${hedefNet ? (Number(hedefNet) > Number(son.toplam_net) ? ` Hedefine ${net(Number(hedefNet) - Number(son.toplam_net))} net kaldı.` : ' Hedefini geçtin.') : ''}`
+        const netler = [...(denemeler ?? [])].filter((d) => d.tur === son?.tur).slice(0, 4).reverse().map((d) => Number(d.toplam_net))
+        return (
+          <AnaTepe
+            selam="Denemeler"
+            tarih={gunBasligi(ozet?.bugun)}
+            ozet={ozetMetni}
+            {...(vekaleten ? {} : tepe)}
+            onGeri={() => setSekme('bugun')}
+            durum={fark ? <span className={`od-durum ${fark > 0 ? 'od-durum--iyi' : 'od-durum--acil'}`}><i />{fark > 0 ? '▲' : '▼'} {net(Math.abs(fark))} net {fark > 0 ? 'arttı' : 'düştü'}</span> : null}
+            sagCizim={(mevsim) => <DenemeCizimi mevsim={mevsim} zemin={false} netler={netler} />}
+          />
+        )
+      })()}
       {sekme === 'konular' && (
         /* Yol (22 Eylül 2026 mokabı): ortak sahneli tepe, sağda büyük dağ. */
         <AnaTepe
@@ -290,10 +313,12 @@ export default function OgrenciPaneli({
         </>
       ) : (
         <>
+          <div className="ana-govde ana-govde--dar od-govde dn-govde">
           <HedefeGoreDurum kayit={kayit} netDurumu={netDurumu} denemeler={denemeler} />
           {/* Hata defteri Denemeler'in altında (mokap onayı, 20 Eylül 2026). */}
           <HataDefteri ogrenciId={kayit.id} katalogId={kayit.katalog_id} />
           <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+          </div>
         </>
       )}
       </div>
