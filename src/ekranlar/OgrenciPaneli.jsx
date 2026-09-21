@@ -1,6 +1,6 @@
 import Islerim from '../bilesenler/Islerim.jsx'
 import OgrenciDenemeleri from '../bilesenler/OgrenciDenemeleri.jsx'
-import { TekrarSatiri } from '../bilesenler/HataDefteri.jsx'
+import { BugunRutinler, BugunUnutma } from '../bilesenler/ProgramBugun.jsx'
 import { gunGorevleri } from '../bilesenler/HaftaSeridi.jsx'
 import { KisiPortresi, YolCizimi, DenemeCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
@@ -47,14 +47,23 @@ const gunBasligi = (t) =>
     : 'Bugün'
 
 /* Tepedeki tek cümle: bugünün işi kaç, ne kadar kaldı. */
-function gunOzeti(ozet) {
+/* Tepedeki tek cümle (22 Eylül 2026): sabah dünü anlatır, gün içinde anı,
+   hepsi bitince kapanışı. Ayrı gün sonu raporu yok. */
+function gunOzeti(ozet, dun = null) {
   if (!ozet) return ' '
   const top = ozet.bugunToplamGorev ?? (ozet.gorevler ?? []).length
   const biten = ozet.bugunTamamlanan ?? (ozet.gorevler ?? []).filter((g) => g.durum === 'tamamlandi').length
+  const sira = (ozet.gorevler ?? []).find((g) => g.durum !== 'tamamlandi')
+  const sirada = sira ? ` Sırada ${sira.konu ?? sira.baslik}.` : ''
   if (!top) return 'Bugün için plan yok. İstersen Yol’dan bir konu seç.'
-  if (biten >= top) return 'Bugünün bütün işleri bitti.'
-  if (!biten) return `Bugün ${top} işin var.`
-  return `${top} işten ${biten} tanesi bitti, ${top - biten} tane kaldı.`
+  if (biten >= top) return 'Bugünün bütün işleri bitti. Yarın görüşürüz.'
+  if (!biten) {
+    const dunCumle = dun && dun.toplam > 0
+      ? `Dün ${dun.toplam} işinden ${dun.biten === dun.toplam ? 'hepsini' : `${dun.biten} tanesini`} bitirdin${dun.soru ? ` ve ${dun.soru} soru çözdün` : ''}. `
+      : ''
+    return `${dunCumle}Bugün ${top} işin var.${dunCumle ? '' : sirada}`
+  }
+  return `${top} işinden ${biten} tanesi bitti.${sirada}`
 }
 
 const SEKME_ESLE = { program: 'bugun', rozetler: 'konular', ben: 'konular' }
@@ -100,6 +109,23 @@ export default function OgrenciPaneli({
      Şimdi kartı ve liste o güne geçer. null: bugün. */
   const [gunSayaci, setGunSayaci] = useState(0)
   const [ekleTetik, setEkleTetik] = useState(0)
+  /* Dünün kısa özeti: sabah tepedeki cümle için. */
+  const [dunOzeti, setDunOzeti] = useState(null)
+  useEffect(() => {
+    if (!kayit?.id || !ozet?.bugun) return
+    let iptal = false
+    const d = new Date(`${ozet.bugun}T00:00:00`); d.setDate(d.getDate() - 1)
+    const dun = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+    Promise.all([
+      supabase.from('gorevler').select('durum').eq('ogrenci_id', kayit.id).eq('tarih', dun),
+      supabase.from('soru_kayitlari').select('dogru, yanlis, bos').eq('ogrenci_id', kayit.id).eq('tarih', dun),
+    ]).then(([g, k]) => {
+      if (iptal) return
+      const l = g.data ?? []
+      setDunOzeti({ toplam: l.length, biten: l.filter((x) => x.durum === 'tamamlandi').length, soru: (k.data ?? []).reduce((a, x) => a + (x.dogru ?? 0) + (x.yanlis ?? 0) + (x.bos ?? 0), 0) })
+    })
+    return () => { iptal = true }
+  }, [kayit?.id, ozet?.bugun])
   /* Yol sayfasının tepesi: kaç konu bitti, sıradaki durak, seri. */
   const [yolOzeti, setYolOzeti] = useState(null)
   useEffect(() => {
@@ -243,7 +269,7 @@ export default function OgrenciPaneli({
         <AnaTepe
           selam={ilkAdi ? `Merhaba ${ilkAdi}` : 'Merhaba'}
           tarih={gunBasligi(seciliGun ?? ozet?.bugun)}
-          ozet={gunOzeti(ozet)}
+          ozet={gunOzeti(ozet, dunOzeti)}
           ekDugme={<AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
           {...(vekaleten ? {} : tepe)}
           /* Öğrencinin kendi fotoğraf çerçevesi; çerçeve ya da selam profili açar
@@ -271,35 +297,52 @@ export default function OgrenciPaneli({
               ayrı Gidişat ve Kaynaklarım ana ekrandan kalktı. */}
           <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
           <Islerim ogrenciId={kayit.id} bugun={ozet?.bugun} haftaBasi={ozet?.haftaBasi} tazele={tazele} secili={seciliGun} onGunSec={setSeciliGun}>
-          <section className="ana-bolum simdi" aria-label="Şimdi">
-            <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
-            <SiradakiKart
-              gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
-              bugunMu={gunVerisi?.bugunMu !== false}
-              gunAdi={gunVerisi?.bugunMu === false ? gunVerisi.ad : 'Bugünün hedefi'}
-              onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
-            />
-            {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı. */}
-            {!vekaleten && gunVerisi?.bugunMu !== false && <TekrarSatiri ogrenciId={kayit.id} />}
-            {ozet?.bugun && gunVerisi?.bugunMu !== false && (
-              <button
-                className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
-                onClick={() => setKapatAcik(true)}
-              >
-                {ozet.gunKapandi ? (
-                  <>
-                    <strong>Gün tamamlandı ✓</strong>
-                    <span>Rutin ya da soru düzeltmek için dokun</span>
-                  </>
-                ) : (
-                  <>
-                    <strong>Günü tamamla</strong>
-                    <span>Rutinler, çözülen soru ve günün özeti</span>
-                  </>
+          {(() => {
+            /* Programım · Bugün (22 Eylül 2026): günün tamamı tek sayfada;
+               "Günü tamamla" kalktı. İlerleme = koçun işleri + her gün
+               yapılanlar; hepsi bitince kutlama. */
+            const bugunMu = gunVerisi?.bugunMu !== false
+            const gorevler = bugunMu ? (ozet?.gorevler ?? []) : (gunVerisi?.liste ?? [])
+            const gi = ozet?.haftaBasi && ozet?.bugun ? Math.round((new Date(`${ozet.bugun}T00:00:00`) - new Date(`${ozet.haftaBasi}T00:00:00`)) / 86400000) : -1
+            const rutinler = bugunMu ? (ozet?.rutinler ?? []) : []
+            const toplam = gorevler.length + rutinler.length
+            const biten = gorevler.filter((g) => g.durum === 'tamamlandi').length + rutinler.filter((r) => r.gunler?.[gi]).length
+            const hepsi = bugunMu && toplam > 0 && biten === toplam
+            return (
+              <>
+                {toplam > 0 && (
+                  <div className="pb-ilerleme" aria-label={`${toplam} işten ${biten} tanesi bitti`}>
+                    <span>{biten} / {toplam} bitti</span>
+                    <span className="pb-cubuk"><s style={{ width: `${(biten / toplam) * 100}%` }} /></span>
+                  </div>
                 )}
-              </button>
-            )}
-          </section>
+                {hepsi && (
+                  <div className="pb-kutlama" role="status">
+                    <b>Bugünün hepsi bitti ✓</b>
+                    <span>{ozet?.calismaDkBugun ? `${Math.floor(ozet.calismaDkBugun / 60) ? `${Math.floor(ozet.calismaDkBugun / 60)} saat ` : ''}${ozet.calismaDkBugun % 60} dakika çalıştın, ` : ''}{gorevler.length} işi ve {rutinler.length} alışkanlığını bitirdin. Yarın görüşürüz.</span>
+                  </div>
+                )}
+                <section className="pb-kart pb-koc" aria-label="Koçunun verdiği işler">
+                  <div className="pb-bas"><span>KOÇUNUN VERDİĞİ İŞLER</span><span>{gorevler.filter((g) => g.durum === 'tamamlandi').length} / {gorevler.length}</span></div>
+                  <div className="ana-bolum simdi">
+                    <GunGorusmesi gorevler={gorevler} />
+                    <SiradakiKart
+                      gorevler={gorevler}
+                      bugunMu={bugunMu}
+                      gunAdi={bugunMu ? 'Bugünün hedefi' : gunVerisi.ad}
+                      onDegisti={bugunMu ? yenile : gunVerisi.yenile}
+                    />
+                  </div>
+                </section>
+                {bugunMu && (
+                  <BugunRutinler ogrenciId={kayit.id} rutinler={ozet?.rutinler} haftaBasi={ozet?.haftaBasi} bugun={ozet?.bugun} onDegisti={yenile} saltOkunur={vekaleten} />
+                )}
+                {bugunMu && ozet?.bugun && (
+                  <BugunUnutma ogrenciId={kayit.id} katalogId={kayit.katalog_id} bugun={ozet.bugun} soruKayitlari={ozet?.bugunSoru} onDegisti={yenile} saltOkunur={vekaleten} />
+                )}
+              </>
+            )
+          })()}
           </Islerim>
           <HaftalikIlham ogrenciId={kayit.id} bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'} kisa />
         </div>
