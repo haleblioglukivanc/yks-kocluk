@@ -1071,3 +1071,17 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 }
 /* Kırpma penceresi açıkken arkadaki sayfa kaymasın. */
 body:has(.kirp-arka) { overflow: hidden; }
+
+/* ═══ Koçun ara sıra sayfaları: Konu öncelikleri, Kaynaklar, Telegram, Şifre ═══
+   Eski koyu başlık blokları açık zemine iner; başlık tepede zaten yazıyor.
+   Blokta eylem düğmesi varsa (Kaynak ekle) o kalır. */
+.eski-ic .hero-yuzey { background: transparent !important; background-image: none !important; color: var(--m-murekkep); box-shadow: none; border-radius: 0; margin: 0; padding: 0; min-height: 0; }
+.eski-ic .hero-yuzey::before, .eski-ic .hero-yuzey::after { display: none; }
+.eski-ic .hero-yuzey .rt-baslik, .eski-ic .hero-yuzey .rt-alt { display: none; }
+.eski-ic .rt:not(:has(button)) { display: none; }
+.eski-ic .kk-ana-eylem { min-height: 44px; padding: 0 1.1rem; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.9rem var(--m-govde); display: inline-flex; align-items: center; gap: 0.4rem; }
+.eski-ic .kart { background: var(--m-yuzey); border: 0; border-radius: 22px; box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3); }
+.eski-ic .kart-baslik, .eski-ic .kart h2 { font-family: var(--m-baslik); font-weight: 500; }
+.eski-ic input, .eski-ic select, .eski-ic textarea { border-radius: 14px; }
+.eski-ic .liste { background: var(--m-yuzey); border-radius: 22px; }
+.eski-ic { padding-top: 0.5rem; }

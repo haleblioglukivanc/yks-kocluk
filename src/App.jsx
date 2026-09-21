@@ -26,6 +26,7 @@ import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import KocProfili from './ekranlar/KocProfili.jsx'
+import AnaTepe from './ortak/AnaTepe.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './pwa/KurulumDaveti.jsx'
 import { durumCubugu, kuruluMu } from './pwa/pwa.js'
@@ -469,7 +470,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -510,6 +511,15 @@ export default function App() {
           onBitti={() => window.location.assign('/')}
         />
       )
+    /* Koçun profilinden açılan ara sıra sayfalar (22 Eylül 2026): ortak sahneli
+       tepe, geri profile döner; içerik aynı, eski koyu başlıklar gizli. */
+    const kocAltSayfa = (baslik, ozet, icerik) => (
+      <div className="ana-sayfa">
+        <AnaTepe selam={baslik} tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')} ozet={ozet} {...anaTepe} onGeri={() => git('/profil')} />
+        <div className="ana-govde ana-govde--dar od-govde eski-ic">{icerik}</div>
+      </div>
+    )
+    if (kocMu && yol === '/sifre') return kocAltSayfa('Şifremi değiştir', 'Yeni şifren en az 8 karakter olsun.', <SifreDegistir onBitti={() => git('/profil')} />)
     if (yol === '/sifre') return <SifreDegistir onBitti={() => git('/')} />
     if (yol === '/mesajlar') return <Mesajlar key="kutu" profil={profil} tepe={anaTepe} onGeri={() => git('/')} />
     /* Doğrudan bir kişinin yazışması (öğrenci kartındaki Mesaj düğmesi).
@@ -526,9 +536,9 @@ export default function App() {
       )
     if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu && yol === '/konular')
-      return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
-    if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
-    if (kocMu && yol === '/baglantilar') return <Baglantilar />
+      return kocAltSayfa('Konu öncelikleri', 'Hangi konular önce çalışılsın.', <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />)
+    if (kocMu && yol === '/kaynaklar') return kocAltSayfa('Kaynaklar', 'Kitaplar, bağlantılar ve kendi hazırladıkların.', <Kaynaklar profil={profil} />)
+    if (kocMu && yol === '/baglantilar') return kocAltSayfa('Telegram bağlantısı', 'Öğrencilerinle telefonundan da yazış.', <Baglantilar />)
     if (kocMu && genis && yol === '/ogrenciler')
       return (
         <div className="iki-sutun">

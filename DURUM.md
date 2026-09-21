@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koçun ara sıra sayfaları yeni dilde
+
+- Konu öncelikleri, Kaynaklar, Telegram bağlantısı ve Şifremi değiştir (koç) artık ortak sahneli tepeyle açılıyor (`kocAltSayfa`, App.jsx); geri düğmesi profile döner, şifre kaydedilince de profile dönülür. İçerik aynı; `.eski-ic` kapsamında eski koyu başlık blokları (`hero-yuzey`) açık zemine iner, başlık/alt yazı gizlenir (tepede yazıyor), içinde eylem varsa (Kaynak ekle) mürekkep hap olarak kalır; kartlar ve formlar yeni dilde (`od-govde` kuralları).
+- Koç tarafında eski görünümde kalan tek ekran: Yönetim.
+
 ## 22 Eylül 2026 — Kırpma penceresi kartın içine hapsoluyordu
 
 - Profil kartlarının giriş animasyonu (transform) sabit konumlu kırpma penceresini "Bilgilerim" kartının içine hapsediyordu; pencere yarım görünüyor, tepedeki sahne üstüne biniyordu. `FotoKirpici` artık `createPortal` ile doğrudan `body`'ye çiziliyor; açıkken arka sayfa kaymıyor, zemin neredeyse opak.
