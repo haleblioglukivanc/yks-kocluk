@@ -171,7 +171,7 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
   }
 
   return (
-    <div className="panel">
+    <div className="panel profil-modu">
       {/* Tepe öğrenci detayıyla aynı (22 Eylül 2026, Bekir): sahne, ad,
           sağda fotoğraf çerçevesi. Geri öğrenci ekranına döner. */}
       <AnaTepe

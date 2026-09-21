@@ -67,7 +67,7 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
   }
 
   return (
-    <div className="ana-sayfa kp">
+    <div className="ana-sayfa kp profil-modu">
       <AnaTepe
         selam={profil.ad_soyad ?? 'Profil'}
         tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}

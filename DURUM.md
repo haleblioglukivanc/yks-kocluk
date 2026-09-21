@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Profile girildiği belli olsun
+
+- Bekir: geçişler çok hızlı, profile girildiği anlaşılmıyor. Koç ve öğrenci profilinde (`.profil-modu`) sahnenin alt yarısı akşam gibi kararıyor (girişte 0,5 sn'de koyulaşır, profilde öyle kalır); altındaki kartlar sırayla aşağıdan süzülerek geliyor. Hareket azaltma açıksa animasyon yok, kararma sabit.
+
 ## 22 Eylül 2026 — Koç fotoğrafı görünmüyordu; WhatsApp gibi kırpma
 
 - Hata: koçun yüklediği fotoğraf depoya ve profile yazılıyordu ama oturumdaki profil sorgusu `fotograf_yolu` (ve `telefon`) okumuyordu; ekran hep baş harf gösteriyordu. `lib/oturum.js` sorgusuna eklendi. Aynı sebeple eski dosya silinemedi: Kıvanç'ın klasöründe iki fazla kopya var (`portre-1789995301161.jpg`, `portre-1789995316615.jpg`), panelden silinebilir.

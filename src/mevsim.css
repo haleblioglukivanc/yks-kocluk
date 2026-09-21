@@ -1047,3 +1047,25 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .kirp-vazgec { background: rgba(255,255,255,.14); color: #fff; }
 .kirp-kullan { background: #fff; color: #2a211d; }
 .kirp-eylem button:disabled { opacity: .5; }
+
+/* ═══ Profile girildiği belli olsun (22 Eylül 2026, Bekir) ═══
+   1) Sahne akşama döner: tepenin alt yarısı yumuşakça kararır (girişte
+      0,5 sn'de koyulaşır, profilde kaldıkça öyle durur).
+   2) Altındaki kartlar sırayla aşağıdan yukarı süzülerek gelir. */
+.profil-modu .ana-tepe::after {
+  content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background: linear-gradient(180deg, transparent 30%, rgba(40, 22, 12, 0.42) 100%);
+  animation: profil-aksam .5s ease-out both;
+}
+.profil-modu .ana-tepe .ana-tepe-ic, .profil-modu .ana-tepe .ana-tepe-cizim { position: relative; z-index: 2; }
+.profil-modu .ana-tepe .ana-tepe-cizim { position: absolute; }
+@keyframes profil-aksam { from { opacity: 0; } to { opacity: 1; } }
+.profil-modu .kp-govde > *, .profil-modu .profil2 > * { animation: profil-gel .45s cubic-bezier(.2, .8, .2, 1) both; }
+.profil-modu .kp-govde > :nth-child(2), .profil-modu .profil2 > :nth-child(2) { animation-delay: .06s; }
+.profil-modu .kp-govde > :nth-child(3), .profil-modu .profil2 > :nth-child(3) { animation-delay: .12s; }
+.profil-modu .kp-govde > :nth-child(4), .profil-modu .profil2 > :nth-child(4) { animation-delay: .18s; }
+.profil-modu .kp-govde > :nth-child(n+5), .profil-modu .profil2 > :nth-child(n+5) { animation-delay: .24s; }
+@keyframes profil-gel { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .profil-modu .ana-tepe::after, .profil-modu .kp-govde > *, .profil-modu .profil2 > * { animation: none; }
+}
