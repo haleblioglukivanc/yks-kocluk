@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koçun profil sayfası, KH düğmesi kalktı
+
+- Bekir: köşedeki KH düğmesi yerine öğrenci profilindeki mantık. Koçun ana ekranında sağda ağaçların önünde Kıvanç'ın fotoğraf çerçevesi (yoksa baş harfleri; kenar mevsim vurgu rengi). Çerçeveye ya da selama dokununca `/profil` açılır; profilde çerçeveye dokununca ana ekrana döner.
+- `KocProfili.jsx`: aynı sahneli tepe (ad, "Koç" / "Koç · Yönetici", Profil etiketi). Bölümler: Bilgilerim (fotoğraf ekle/değiştir/kaldır, ad soyad + telefon düzenle, e-posta), Görünüm (mevsim teması), Koçluk araçları (Konu öncelikleri, Kaynaklar, Telegram), Uygulama (bildirimler, yükle, yenile), Hesap (şifre, yöneticiye Yönetim/Koç görünümü, çıkış), sürüm.
+- Koçta KH düğmesi hiçbir ekranda yok; eski üst şeritli sayfalardaki hesap düğmesi de /profil'e gider. Öğrenci ve velide hesap yaprağı şimdilik duruyor (öğrenci ekranlarında aynısı yapılacak).
+- Fotoğraf için veritabanı değişikliği gerekmedi: `ogrenci-foto` kovası kişinin kendi klasörüne yazmaya ve okumaya zaten izin veriyor; profiller kendi satırını güncelleyebiliyor.
+
 ## 22 Eylül 2026 — Öğrenci ekranının sekme içleri yeni dilde
 
 - Bekir: doğrudan. `.od-govde` kapsamında (yalnız koçun öğrenci ekranı): bölüm başlıkları zeminde Fraunces 1.3rem, çizgili ayraçlar kalktı (boşlukla ayrılıyor), görev listesi / formlar / deneme ve konu listeleri beyaz kâğıt kart (22px), hap düğmeler; hafta şeridi beyaz kart, bugün mürekkep renginde, seçili gün yumuşak ton, yapışkan şerit güvenli alanın altında. Bileşenlerin içi ve davranışı değişmedi.

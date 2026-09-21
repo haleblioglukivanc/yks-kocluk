@@ -30,7 +30,7 @@ const ikon = {
 /* Mevsim seçimi yalnız koçta (22 Eylül 2026, Bekir): mevsimlerin nasıl
    göründüğünü görmek için. Seçim bu cihazda saklanır, öğrenciyi etkilemez;
    "Otomatik" tarihe döner. Yaprak açık kalır, değişim hemen arkada görünür. */
-function MevsimSecici() {
+export function MevsimSecici() {
   const mevsim = useMevsim()
   const [, tazele] = useState(0)
   let elle = false

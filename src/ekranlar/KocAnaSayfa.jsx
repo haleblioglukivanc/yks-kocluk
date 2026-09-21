@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
-import { TabelaCizimi, PostaKutusuCizimi } from '../ortak/KapiCizimleri.jsx'
+import { TabelaCizimi, PostaKutusuCizimi, PortreCizimi } from '../ortak/KapiCizimleri.jsx'
+import { useFotograf } from '../bilesenler/Fotograf.jsx'
 import { useMevsim } from '../lib/mevsim.js'
 import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
 import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
@@ -126,6 +127,12 @@ function useKocGidisati(donem) {
   }
 }
 
+function KocPortresi({ profil, mevsim }) {
+  const foto = useFotograf(profil?.fotograf_yolu)
+  const bas = (profil?.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  return <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={null} idEk="kocana" />
+}
+
 export default function KocAnaSayfa({ profil, onGit, tepe }) {
   const [riskler, setRiskler] = useState(null)
   const [isler, setIsler] = useState(null)
@@ -177,7 +184,20 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
 
   return (
     <div className="ana-sayfa ana-sayfa--koc">
-      <AnaTepe selam={selamVer(profil?.ad_soyad)} tarih={bugunTarih()} ozet={ozet} {...tepe} />
+      {/* Sağda Kıvanç'ın fotoğraf çerçevesi; çerçeveye ya da selama dokununca
+          koçun profil sayfası açılır (22 Eylül 2026, Bekir). */}
+      <AnaTepe
+        selam={selamVer(profil?.ad_soyad)}
+        tarih={bugunTarih()}
+        ozet={ozet}
+        {...tepe}
+        onBaslik={() => onGit('/profil')}
+        sagCizim={(mevsim) => (
+          <button type="button" className="od-portre" onClick={() => onGit('/profil')} aria-label="Profilim">
+            <KocPortresi profil={profil} mevsim={mevsim} />
+          </button>
+        )}
+      />
       <div className="ana-govde ana-govde--dar">
         {/* Kapılar (22 Eylül 2026, Bekir): Dikkat gerektirenler'in yerinde
             iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}

@@ -25,6 +25,7 @@ import UstCubuk from './bilesenler/UstCubuk.jsx'
 import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
+import KocProfili from './ekranlar/KocProfili.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './pwa/KurulumDaveti.jsx'
 import { durumCubugu, kuruluMu } from './pwa/pwa.js'
@@ -169,7 +170,7 @@ export default function App() {
   const genis = useGenisEkran()
   /* Mevsim: kök etikete data-mevsim yazar; renkler mevsim.css'ten gelir. */
   useMevsim()
-  const { durum, profil, kullanici, cikisYap, kurtarma, kurtarmaBitti } = useOturum()
+  const { durum, profil, kullanici, cikisYap, kurtarma, kurtarmaBitti, yenile: profiliYenile } = useOturum()
   const [sifreErtelendi, setSifreErtelendi] = useState(() => {
     try { return sessionStorage.getItem('sifre-ertelendi') === '1' } catch { return false }
   })
@@ -400,7 +401,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yapilacaklar', '/ogrencilerim', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yapilacaklar', '/ogrencilerim', '/profil', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -468,13 +469,15 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
     gelenKutusu: profil.rol === 'ogrenci',
     onZil: () => git('/bildirimler'),
-    onHesap: () => setHesapAcik(true),
+    /* Koçta köşedeki KH düğmesi yok (22 Eylül 2026, Bekir): profil ana
+       ekrandaki fotoğraf çerçevesinden ve selamdan açılır. */
+    onHesap: kocMu ? undefined : () => setHesapAcik(true),
     hesapHarf: basHarf,
   }
   /* Menü yokken her alt ekrandan ana sayfaya dönüş üst şeritteki geri
@@ -587,6 +590,23 @@ export default function App() {
           tepe={anaTepe}
         />
       )
+    if (kocMu && yol === '/profil')
+      return (
+        <KocProfili
+          profil={profil}
+          eposta={kullanici?.email}
+          tepe={{ ...anaTepe, onGeri: () => git('/') }}
+          yonetimdeMi={yonetimdeMi}
+          onSapka={(sapka) => git(sapka === 'yonetici' ? '/yonetim' : '/')}
+          onCikis={async () => {
+            await cihaziHesaptanAyir()
+            await cikisYap()
+            git('/')
+          }}
+          onGit={git}
+          onYenile={profiliYenile}
+        />
+      )
     if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onMesaj={(id) => git(`/mesajlar/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu)
@@ -630,7 +650,7 @@ export default function App() {
           onGeri={geriHedef ? () => git(geriHedef) : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
           onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : '/bildirimler')}
-          onHesap={() => setHesapAcik(true)}
+          onHesap={() => (kocMu ? git('/profil') : setHesapAcik(true))}
         />
       </header>
 

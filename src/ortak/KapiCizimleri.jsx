@@ -92,7 +92,7 @@ export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false, zemin = true
    renginde; üstü/dibi mevsime göre süslü (22 Eylül 2026, Bekir). */
 export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk = 'p' }) {
   const kirp = `portre-${idEk}`
-  const halka = HALKA[durum] ?? '#6F625A'
+  const halka = durum ? (HALKA[durum] ?? '#6F625A') : 'var(--m-vurgu)'
   return (
     <svg className="kapi-cizim portre-cizim" viewBox="0 0 120 112" aria-hidden="true">
       <defs>
