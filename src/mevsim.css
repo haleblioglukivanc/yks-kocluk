@@ -1348,3 +1348,25 @@ button.isl-hc:disabled { cursor: default; }
 .pb-soru-ac .kart { background: transparent; box-shadow: none; border: 0; padding: 0; }
 .pb-bilgi { margin: 0.4rem -0.3rem 0.5rem; padding: 0.65rem 0.8rem; border-radius: 14px; background: var(--m-dikkat-zemin); font-size: 0.82rem; line-height: 1.45; }
 @media (prefers-reduced-motion: reduce) { .pb-kutlama { animation: none; } .pb-cubuk s { transition: none; } }
+
+/* Fotoğraf çerçevesi dokunulabilir olsun belli (22 Eylül 2026, Bekir):
+   çerçevenin arkasından yavaşça genişleyip sönen iki halka. Çerçevenin
+   merkezi PortreCizimi'nde (72, 60), çapı 66 birim / 120. */
+.od-portre { position: relative; isolation: isolate; }
+.od-portre > svg { position: relative; z-index: 1; }
+.od-portre::before, .od-portre::after {
+  content: ''; position: absolute; z-index: 0; pointer-events: none;
+  left: 60%; top: 53.6%; width: 55%; aspect-ratio: 1; border-radius: 50%;
+  background: color-mix(in srgb, var(--m-vurgu) 45%, transparent);
+  transform: translate(-50%, -50%) scale(1); opacity: 0;
+  animation: portre-nabiz 2.8s cubic-bezier(.2, .6, .3, 1) infinite;
+}
+.od-portre::after { animation-delay: 1.4s; }
+@keyframes portre-nabiz {
+  0% { transform: translate(-50%, -50%) scale(.95); opacity: .55; }
+  80%, 100% { transform: translate(-50%, -50%) scale(1.45); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .od-portre::before { animation: none; opacity: .25; transform: translate(-50%, -50%) scale(1.12); }
+  .od-portre::after { display: none; }
+}
