@@ -185,7 +185,9 @@ export default function ProgramIzgarasi({
      hâliyle tek satırda okunur. */
   const adHarita = new Map()
   for (const g of hafta.filter((g) => seciliHafta.includes(g.tarih))) {
-    const ad = g.dersler?.ad ?? g.baslik
+    /* Anahtar işin adı (22 Eylül 2026): ders adına göre gruplanınca
+       kopyalanan haftanın bütün Matematik işleri "tekrar" sanılıyordu. */
+    const ad = (g.baslik ?? '').trim() || g.dersler?.ad || '—'
     if (!adHarita.has(ad)) adHarita.set(ad, [])
     adHarita.get(ad).push(g)
   }

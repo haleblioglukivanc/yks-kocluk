@@ -147,7 +147,7 @@ export function HaftaToplu({ ogrenciId, onDegisti }) {
       <div className="ht-dugmeler">
         <button type="button" disabled={Boolean(bekliyor)} onClick={() => {
           if (!window.confirm('Geçen haftanın görevleri bu haftanın boş günlerine kopyalansın mı? Dolu günlere dokunulmaz.')) return
-          calistir('kopya', 'koc_haftayi_kopyala', (n) => (n ? `${n} görev bu haftaya kopyalandı.` : 'Kopyalanacak görev yok: geçen hafta boş ya da bu haftanın günleri dolu.'))
+          calistir('kopya', 'koc_haftayi_kopyala', (n) => (n ? `${n} görev bu haftaya kopyalandı. Aşağıdaki haftadan günlere dokunup bakabilirsin.` : 'Kopyalanacak bir şey yok: bu haftanın günlerinde zaten görev var (geçen hafta daha önce kopyalanmış olabilir). Aşağıdaki haftadan günlere dokunup bakabilirsin.'))
         }}>{bekliyor === 'kopya' ? 'Kopyalanıyor…' : 'Geçen haftayı kopyala'}</button>
         <button type="button" disabled={Boolean(bekliyor)} onClick={() => {
           if (!window.confirm('Bu haftanın bugüne kadar bitmemiş görevleri yarına taşınsın mı?')) return

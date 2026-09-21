@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Kopyalama görünürlüğü, tepe boşluğu
+
+- "Hafta boyu tekrarlar" gruplaması ders adına göreydi: geçen hafta kopyalanınca bütün Matematik/Türkçe işleri "tekrar" sanılıp günlerden ayrılmış gibi görünüyordu. Anahtar artık işin adı (aynı başlık 3+ gün).
+- Kopyalama sonrası ve "dolu" durumda mesaj açıklayıcı (daha önce kopyalanmış olabilir; hafta şeridinden günlere bak).
+- Öğrenci ekranında gövde tepeye yaklaştı (padding 0, margin-top -1.1rem); "Bu hafta" tepenin hemen altında.
+
 ## 22 Eylül 2026 — Öğrenci ekranı düzeltmeleri, Tekrarları dağıt
 
 - Göz ve mesaj düğmeleri üst satırda zilin yanında (dar telefonda marka yazısı gizlenir, KH işareti kalır); durum etiketi tepede yalnız. Tepe ile "Bu hafta" arasındaki boşluk (boş `od-ust` kabı) kalktı.

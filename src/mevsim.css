@@ -1494,3 +1494,6 @@ button.isl-hc:disabled { cursor: default; }
 @media (max-width: 430px) {
   .ana-tepe:has(.ana-tepe-eylem > :nth-child(3)) .ana-marka-ad { display: none; }
 }
+/* Öğrenci ekranı: tepe ile "Bu hafta" arası (22 Eylül 2026, Bekir). */
+.ogr-detay-govde.od-govde { padding-top: 0; margin-top: -1.1rem; }
+.ogr-detay-govde > .kp-bolum:first-child .kp-bolum-bas, .ogr-detay-govde > .kp-bolum:first-child .kp-bolum-bas h2 { margin-top: 0; padding-top: 0; }
