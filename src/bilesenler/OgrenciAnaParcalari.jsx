@@ -67,14 +67,14 @@ export function OgrenciGidisati({ ogrenciId, tazele = 0 }) {
               ? `Son 7 gün. Başlangıcın ${gunAyYaz(ilkGun)}, ${gunSayisi} gün var.`
               : donem === 'hafta' ? 'Son 7 gün.' : 'Son 30 gün.',
         kartlar: [
-          { etiket: 'Çalışma süresi', deger: sureYaz(dk), alt: 'Sayaçla ölçülen süre.', seri: gunluk((t) => otr.filter((x) => x.tarih === t).reduce((a, x) => a + (x.sure_dk ?? 0), 0)) },
+          { ikon: 'sure', etiket: 'Çalışma süresi', deger: sureYaz(dk), alt: 'Sayaçla ölçülen süre.', seri: gunluk((t) => otr.filter((x) => x.tarih === t).reduce((a, x) => a + (x.sure_dk ?? 0), 0)) },
           gor.length
-            ? { etiket: 'Biten iş', deger: `${biten.length} / ${gor.length}`, alt: biten.length === gor.length ? 'Hepsi bitti.' : `${gor.length - biten.length} iş bekliyor.`, seri: gunluk((t) => biten.filter((x) => x.tarih === t).length) }
-            : { etiket: 'Biten iş', deger: 'Yok', alt: 'Bu dönemde planlı iş yok.', sonuk: true },
-          { etiket: 'Çözülen soru', deger: String(soru), alt: 'Bitirdiğin soru işlerinden.' },
+            ? { ikon: 'tamam', etiket: 'Biten iş', deger: `${biten.length} / ${gor.length}`, alt: biten.length === gor.length ? 'Hepsi bitti.' : `${gor.length - biten.length} iş bekliyor.`, seri: gunluk((t) => biten.filter((x) => x.tarih === t).length) }
+            : { ikon: 'tamam', etiket: 'Biten iş', deger: 'Yok', alt: 'Bu dönemde planlı iş yok.', sonuk: true },
+          { ikon: 'soru', etiket: 'Çözülen soru', deger: String(soru), alt: 'Bitirdiğin soru işlerinden.' },
           den.length
-            ? { etiket: 'Deneme', deger: String(den.length), alt: 'Bu dönemde girdiğin deneme.' }
-            : { etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girmedin.', sonuk: true },
+            ? { ikon: 'deneme', etiket: 'Deneme', deger: String(den.length), alt: 'Bu dönemde girdiğin deneme.' }
+            : { ikon: 'deneme', etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girmedin.', sonuk: true },
         ],
       }
     }

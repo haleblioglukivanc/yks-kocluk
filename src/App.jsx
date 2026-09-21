@@ -9,6 +9,7 @@ import Randevu from './ekranlar/Randevu.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocAnaSayfa from './ekranlar/KocAnaSayfa.jsx'
 import { useMevsim } from './lib/mevsim.js'
+import MevsimSahnesi from './ortak/MevsimSahnesi.jsx'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import Baglantilar from './ekranlar/Baglantilar.jsx'
@@ -613,6 +614,8 @@ export default function App() {
         anaSayfada ? 'uygulama--ana' : '',
       ].filter(Boolean).join(' ')}
     >
+      {/* Sayfanın arkasındaki sabit mevsim sahnesi: renk, ufuk, parçacıklar. */}
+      <MevsimSahnesi />
       {/* Tepe: koyu şerit. Bugün ekranlarında altındaki koyu başlıkla
           birleşir; diğer ekranlarda tek başına kalır. */}
       <header className="ust-serit">

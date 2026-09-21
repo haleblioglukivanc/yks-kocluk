@@ -6,7 +6,6 @@ import { useAzHareket } from '../lib/mevsim.js'
    dar ekranda ortası kalır. Hareketler hissedilir ama dikkat çekmez;
    hareket azaltma tercihinde hepsi kapanır ve manzara durağan çizilir. */
 
-const SARMAL = { position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }
 
 export default function Manzara({ mevsim = 'sonbahar' }) {
   const az = useAzHareket()
@@ -199,5 +198,5 @@ export default function Manzara({ mevsim = 'sonbahar' }) {
     )
   }
 
-  return <div className="manzara" style={SARMAL}>{icerik}</div>
+  return <div className="manzara">{icerik}</div>
 }

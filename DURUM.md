@@ -7,6 +7,15 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Mevsimsel tasarım: sahne (koç ana ekranı)
+
+- Bekir'in geri bildirimi: mevsim yalnız üst barda gibi duruyordu; brifte uygulama komple bir sahnenin içindeydi.
+- `src/ortak/MevsimSahnesi.jsx`: sayfanın arkasında sabit katman — mevsim tonlu zemin, ekran dibinde soluk ufuk, bütün ekrana yayılan 8 parçacık (yaprak / kar / çiçek yaprağı / ışık); hareket azaltmada parçacık yok. App'te bir kez çiziliyor, bütün panel ekranlarında geçerli.
+- Tepe kart olmaktan çıktı: yuvarlak alt köşe yok, manzara alt ve üst kenardan sahneye eriyor, yazı gökyüzünde, tepeler altında. Sağ üstte mevsim dalı (`MevsimDali`), tarihin üstünde mevsim hapı ("Sonbahar, Odaklan, derinleş, güçlen.").
+- Kartlar yarı saydam buzlu kâğıt; Gidişat kartları ikonlu ve her biri mevsim paletinden kendi pastel tonunda.
+- Karar kartları yeni dile çekildi (yalnız ana sayfada, `.dikkat` altında): sol renk çizgisi yok, tür büyük harf yerine hap, öğrenci adı mürekkep (iOS'ta mavi görünüyordu), ikincil düğmeler çerçeveli.
+- Özet cümlesi: hiç öğrenci yolunda değilse "0 tanesi" yerine "hepsi bugün bir göz istiyor".
+
 ## 21 Eylül 2026 — Mevsimsel tasarım, 1. adım (menüsüz ana sayfalar)
 
 - Referans: Bekir'in "Mevsimsel UI/UX Brifi v2" ve onaylanan kanvas mokabı. Eski rol renkleri (koç lacivert / öğrenci amber) bırakıldı; tek tasarım dili.

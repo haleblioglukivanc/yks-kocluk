@@ -1,5 +1,8 @@
 import Manzara from './Manzara.jsx'
-import { useMevsim } from '../lib/mevsim.js'
+import { useMevsim, MEVSIM_ADI } from '../lib/mevsim.js'
+import { MevsimDali, MevsimIsareti } from './MevsimSahnesi.jsx'
+
+const SLOGAN = { sonbahar: 'Odaklan, derinleş, güçlen.', kis: 'Sakinlikte güç var.', ilkbahar: 'Yenilen, birlikte büyü.', yaz: 'Daha fazlası mümkün.' }
 
 /* Ana sayfanın tepesi — koçta ve öğrencide aynı iskelet (21 Eylül 2026):
    mevsim manzarası, marka, sağ üstte bildirim + hesap, altında tarih,
@@ -43,6 +46,7 @@ export default function AnaTepe({
   return (
     <header className="ana-tepe" data-mevsim={mevsim}>
       <Manzara mevsim={mevsim} />
+      <MevsimDali mevsim={mevsim} />
       <div className="ana-tepe-ic">
         <div className="ana-tepe-ust">
           <div className="ana-marka">
@@ -77,6 +81,10 @@ export default function AnaTepe({
           </div>
         </div>
         <div className="ana-selam">
+          <span className="ana-mevsim">
+            <MevsimIsareti mevsim={mevsim} boyut={16} />
+            {MEVSIM_ADI[mevsim]}, {SLOGAN[mevsim]}
+          </span>
           {tarih && <span className="ana-tarih">{tarih}</span>}
           <h1>{selam}</h1>
           {ozet && <p className="ana-ozet">{ozet}</p>}

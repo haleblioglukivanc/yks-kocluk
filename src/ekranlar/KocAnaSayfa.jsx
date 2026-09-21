@@ -29,7 +29,11 @@ function ozetCumlesi(riskler) {
   if (!riskler) return ' '
   if (riskler.length === 0) return 'Henüz öğrencin yok. İlk öğrencini Yönetim’den ekleyebilirsin.'
   const iyi = riskler.filter((r) => r.risk_seviyesi === 'iyi').length
-  const bas = `${riskler.length} öğrenciden ${iyi} tanesi bugün yolunda.`
+  const bas = iyi === 0
+    ? `${riskler.length} öğrencinin hepsi bugün bir göz istiyor.`
+    : iyi === riskler.length
+      ? `${riskler.length} öğrencinin hepsi bugün yolunda.`
+      : `${riskler.length} öğrenciden ${iyi} tanesi bugün yolunda.`
   const oncelik = [...riskler]
     .filter((r) => r.risk_seviyesi === 'acil')
     .sort((a, b) => (b.risk_ham ?? 0) - (a.risk_ham ?? 0))[0]
@@ -99,13 +103,13 @@ function useKocGidisati(donem) {
     not,
     kartlar: [
       (g.gorev_toplam ?? 0) > 0
-        ? { etiket: 'Görev tamamlama', deger: `%${Math.round(g.tamamlama_yuzdesi ?? 0)}`, alt: `${g.gorev_tamam ?? 0} / ${g.gorev_toplam} görev bitti.` }
-        : { etiket: 'Görev tamamlama', deger: 'Yok', alt: 'Bu dönemde görev yok.', sonuk: true },
-      { etiket: 'Çalışma süresi', deger: sureYaz(g.toplam_dakika ?? 0), alt: 'Sayaçla ölçülen süre.', seri: seri && seri.length >= 2 ? seri : null },
-      { etiket: 'Çalışan öğrenci', deger: `${calisan} / ${g.ogrenci_sayisi ?? ogr.length}`, alt: 'En az bir dakika sayaç açan.' },
+        ? { ikon: 'tamam', etiket: 'Görev tamamlama', deger: `%${Math.round(g.tamamlama_yuzdesi ?? 0)}`, alt: `${g.gorev_tamam ?? 0} / ${g.gorev_toplam} görev bitti.` }
+        : { ikon: 'tamam', etiket: 'Görev tamamlama', deger: 'Yok', alt: 'Bu dönemde görev yok.', sonuk: true },
+      { ikon: 'sure', etiket: 'Çalışma süresi', deger: sureYaz(g.toplam_dakika ?? 0), alt: 'Sayaçla ölçülen süre.', seri: seri && seri.length >= 2 ? seri : null },
+      { ikon: 'kisi', etiket: 'Çalışan öğrenci', deger: `${calisan} / ${g.ogrenci_sayisi ?? ogr.length}`, alt: 'En az bir dakika sayaç açan.' },
       (g.deneme_sayisi ?? 0) > 0
-        ? { etiket: 'Deneme', deger: String(g.deneme_sayisi), alt: 'Bu dönemde girilen deneme.' }
-        : { etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girilmedi.', sonuk: true },
+        ? { ikon: 'deneme', etiket: 'Deneme', deger: String(g.deneme_sayisi), alt: 'Bu dönemde girilen deneme.' }
+        : { ikon: 'deneme', etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girilmedi.', sonuk: true },
     ],
   }
 }
