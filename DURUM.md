@@ -7,6 +7,17 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 21 Eylül 2026 — Mevsimsel tasarım, 1. adım (menüsüz ana sayfalar)
+
+- Referans: Bekir'in "Mevsimsel UI/UX Brifi v2" ve onaylanan kanvas mokabı. Eski rol renkleri (koç lacivert / öğrenci amber) bırakıldı; tek tasarım dili.
+- `src/lib/mevsim.js`: mevsim tarihten (Mar–May ilkbahar, Haz–Ağu yaz, Eyl–Kas sonbahar, Ara–Şub kış); önizleme `?mevsim=kis`, geri `?mevsim=otomatik`. Kök etikete `data-mevsim` yazılır.
+- `src/mevsim.css`: dört mevsim paleti (`--m-*`) paneldeki anlam tokenlarını ezer (kagit, yuzey, murekkep, cizgi, tepe-ust…). Durum üçlüsü sabit (acil #be2847, dikkat #8f5a00, yolunda #2d7a4e). Eylem = mürekkep. Başlık Fraunces, metin/sayı Manrope.
+- `src/ortak/Manzara.jsx`: dört mevsim SVG manzarası, hareket azaltmada durağan. `AnaTepe.jsx`: iki rolün ortak tepesi (manzara, marka, zil, hesap, selam, tek cümle özet). `Gidisat.jsx`: Bugün / 7 gün / 30 gün kartları; veri başlangıcından önceki günler çizilmez, 30 gün dolmadan "şu tarihte dolar" yer tutucusu.
+- Alt menü ve masaüstü yan çubuk kaldırıldı. Rapor sekmesi, KocPaneli, KocBasligi, SinifOzeti, BugunCalisanlar ve OgrenciBasligi silindi. Alt ekranlardan dönüş üst şeritteki geri düğmesiyle.
+- Koç ana sayfası (`KocAnaSayfa.jsx`): tepe → Dikkat gerektirenler (KararKuyrugu + VeliMesajlari) → Gidişat (`rapor_ozeti`) → Öğrencilerim (`OgrenciNabzi.jsx`: bugünün işleri, 7 günlük ritim, arama, dikkat süzgeci).
+- Öğrenci ana sayfası (OgrenciPaneli bugün): tepe (acil görüşme sağ üstte) → hafta şeridi → koç notu → Şimdi (SiradakiKart + Günü tamamla) → Gidişatın → Yol / Denemeler kapıları → söz, kitap, kaynaklar.
+- Çizbi ana sayfalarda şimdilik yok (yeri sonra kararlaştırılacak). Sıradaki: kitap/söz kütüphanesinin Yönetim'e taşınması, detay sayfalarının (öğrenci detayı, Yol, Denemeler) aynı iskelete çekilmesi.
+
 ## Oturum özeti — 18–19 Eylül 2026 (tasarım turu + Yönetim paneli)
 
 **Tasarım** (`TASARIM-KURALLARI.md`, `TESPIT.md`): 11 kural, `src/ortak/` ortak bileşenleri (UstBlok, Sekmeler, GunSeridi,

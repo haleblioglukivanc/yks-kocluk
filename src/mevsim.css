@@ -1,0 +1,360 @@
+/* ═══════════════════════════════════════════════════════════════
+   MEVSİM — tek tasarım dili, dört atmosfer (21 Eylül 2026)
+   Eski rol renkleri (koç lacivert / öğrenci amber) bırakıldı: iki rol
+   aynı dünyada, fark ekranın kurgusunda. Mevsim yalnız zemin, yüzey,
+   mürekkep, vurgu ve tepedeki manzarayı değiştirir.
+   SABİT KALAN: durum renkleri (acil / dikkat / yolunda) ve ders renkleri.
+   Durum hiçbir zaman yalnız renkle anlatılmaz; ikon ve kelime eşlik eder.
+   Eylem düğmesi her mevsim mürekkep rengindedir.
+   ═══════════════════════════════════════════════════════════════ */
+
+:root {
+  /* Sabit durum üçlüsü — dört paletin hepsinde denenmiş, hiçbirine karışmaz. */
+  --m-acil: #be2847;        --m-acil-zemin: #fbe7eb;
+  --m-dikkat: #8f5a00;      --m-dikkat-zemin: #fbefd9;
+  --m-yolunda: #2d7a4e;     --m-yolunda-zemin: #e2f1e7;
+
+  --m-baslik: 'Fraunces', Georgia, serif;
+  --m-govde: 'Manrope', system-ui, sans-serif;
+
+  /* Varsayılan: sonbahar (data-mevsim yazılmadan önceki ilk kare). */
+  --m-zemin: #f6efe6; --m-yuzey: #fffdf9; --m-yuzey-2: #f1e7da;
+  --m-murekkep: #2a211d; --m-grafit: #5e524a; --m-soluk: #6f625a;
+  --m-cizgi: #e7dacb; --m-cizgi-2: #d9c7b3;
+  --m-vurgu: #b4532d; --m-yumusak: #f4ddcc; --m-vurgu-2: #c98a1e;
+  --m-tepe: #4a2c1f; --m-tepe-alt: #35201a;
+}
+html[data-mevsim='sonbahar'] {
+  --m-zemin: #f6efe6; --m-yuzey: #fffdf9; --m-yuzey-2: #f1e7da;
+  --m-murekkep: #2a211d; --m-grafit: #5e524a; --m-soluk: #6f625a;
+  --m-cizgi: #e7dacb; --m-cizgi-2: #d9c7b3;
+  --m-vurgu: #b4532d; --m-yumusak: #f4ddcc; --m-vurgu-2: #c98a1e;
+  --m-tepe: #4a2c1f; --m-tepe-alt: #35201a;
+}
+html[data-mevsim='kis'] {
+  --m-zemin: #edf1f6; --m-yuzey: #ffffff; --m-yuzey-2: #e3e9f1;
+  --m-murekkep: #1b2537; --m-grafit: #465367; --m-soluk: #5b687b;
+  --m-cizgi: #d9e1ec; --m-cizgi-2: #c3cfdf;
+  --m-vurgu: #2e4b7d; --m-yumusak: #dde6f3; --m-vurgu-2: #c8952e;
+  --m-tepe: #22324f; --m-tepe-alt: #18243a;
+}
+html[data-mevsim='ilkbahar'] {
+  --m-zemin: #f1f4eb; --m-yuzey: #ffffff; --m-yuzey-2: #e6ecde;
+  --m-murekkep: #21302a; --m-grafit: #4a5a50; --m-soluk: #5d6c62;
+  --m-cizgi: #dde5d6; --m-cizgi-2: #c6d3bd;
+  --m-vurgu: #4b7a58; --m-yumusak: #dce9d8; --m-vurgu-2: #c9707e;
+  --m-tepe: #2c4535; --m-tepe-alt: #1f3226;
+}
+html[data-mevsim='yaz'] {
+  --m-zemin: #edf4f3; --m-yuzey: #ffffff; --m-yuzey-2: #e0eceb;
+  --m-murekkep: #15303a; --m-grafit: #445f68; --m-soluk: #55707a;
+  --m-cizgi: #d3e3e5; --m-cizgi-2: #bad1d4;
+  --m-vurgu: #1d6e89; --m-yumusak: #d3e9ef; --m-vurgu-2: #d9822f;
+  --m-tepe: #16414f; --m-tepe-alt: #0f2f3a;
+}
+
+/* Panel (giriş yapılmış uygulama) bütünüyle mevsim dilini okur. Rol
+   blokları (tema.css body[data-rol]) burada ezilir: tek dil. */
+html body[data-tema='panel'],
+html body[data-tema='panel'][data-rol] {
+  --kagit: var(--m-zemin);
+  --yuzey: var(--m-yuzey);
+  --yuzey-2: var(--m-yuzey-2);
+  --murekkep: var(--m-murekkep);
+  --grafit: var(--m-grafit);
+  --soluk: var(--m-soluk);
+  --cizgi: var(--m-cizgi);
+  --cizgi-2: var(--m-cizgi-2);
+  --cizgi-hafif: var(--m-cizgi);
+  --cizgi-kart: var(--m-cizgi);
+  --tepe-ust: var(--m-tepe);
+  --tepe-alt: var(--m-tepe-alt);
+  --odak-alt: var(--m-tepe-alt);
+  --marka-kart-gecis: linear-gradient(180deg, var(--m-tepe) 0%, var(--m-tepe-alt) 100%);
+  /* Eylem = mürekkep. Bağlantı ve odak da aynı mürekkepten. */
+  --serin: var(--m-murekkep);
+  --serin-metin: var(--m-murekkep);
+  --serin-zemin: var(--m-yumusak);
+  --serin-kenar: var(--m-cizgi-2);
+  --dolgu: var(--m-murekkep);
+  /* Durum: sabit üçlü. */
+  --kizil: var(--m-acil); --kizil-metin: var(--m-acil); --kizil-zemin: var(--m-acil-zemin);
+  --isaret: var(--m-yolunda); --isaret-metin: var(--m-yolunda); --isaret-zemin: var(--m-yolunda-zemin);
+  /* Yazı: başlıklar Fraunces, metin ve sayılar Manrope. */
+  --display: var(--m-baslik);
+  --marka-baslik: var(--m-baslik);
+  --govde: var(--m-govde);
+  --marka-govde: var(--m-govde);
+  --mono: var(--m-govde);
+  --marka-mono: var(--m-govde);
+  /* Köşeler bir kademe yumuşak. */
+  --r: 12px;
+  --r-kart: 20px;
+  --r-buyuk: 24px;
+  --r-dev: 32px;
+  --golge-kart: 0 1px 2px rgba(40, 30, 20, .05), 0 10px 24px -14px rgba(40, 30, 20, .14);
+  --golge-kalkik: 0 2px 4px rgba(40, 30, 20, .06), 0 16px 34px -16px rgba(40, 30, 20, .2);
+  font-variant-numeric: tabular-nums;
+  background-color: var(--m-zemin);
+  transition: background-color .6s ease;
+}
+
+/* ── Kabuk: menü yok ─────────────────────────────────────────── */
+@media (min-width: 64rem) {
+  .uygulama { grid-template-columns: minmax(0, 1fr); }
+  .uygulama > .ust-serit,
+  .uygulama > main,
+  .uygulama > .baglanti-serit { grid-column: 1; }
+}
+.uygulama > main { padding-bottom: 2.5rem; }
+
+/* Ana sayfa kendi tepesini çizer; üst şerit gizli, main tam genişlik. */
+.uygulama--ana > .ust-serit { display: none; }
+.uygulama--ana > main { max-width: none; padding: 0 0 3rem; }
+.uygulama--ana > main > .panel { gap: 0; }
+
+/* ── Tepe ─────────────────────────────────────────────────────── */
+.ana-tepe {
+  position: relative;
+  min-height: 17.5rem;
+  border-radius: 0 0 var(--r-dev) var(--r-dev);
+  overflow: hidden;
+  color: var(--m-murekkep);
+  background: var(--m-yumusak);
+  padding-top: env(safe-area-inset-top, 0px);
+}
+.ana-tepe-ic {
+  position: relative;
+  z-index: 1;
+  max-width: 75rem;
+  margin-inline: auto;
+  padding: 1.1rem clamp(1rem, 4vw, 2rem) 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+}
+.ana-tepe-ust { display: flex; align-items: center; gap: 0.75rem; }
+.ana-marka { display: flex; align-items: center; gap: 0.6rem; flex: 1; min-width: 0; }
+.ana-marka-ad { display: flex; flex-direction: column; line-height: 1.12; }
+.ana-marka-ad b { font-family: var(--m-baslik); font-size: 1rem; font-weight: 600; }
+.ana-marka-ad span { font-size: 0.8rem; font-weight: 600; }
+.ana-tepe-eylem { display: flex; align-items: center; gap: 0.5rem; }
+.ana-yuvarlak {
+  position: relative;
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 0; cursor: pointer;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: color-mix(in srgb, #fff 86%, transparent);
+  color: var(--m-murekkep);
+  font: 800 0.85rem var(--m-govde);
+}
+.ana-yuvarlak--hesap { background: var(--m-murekkep); color: #fff; }
+.ana-rozet {
+  position: absolute; top: 4px; right: 2px;
+  min-width: 18px; height: 18px; padding: 0 4px; box-sizing: border-box;
+  border-radius: 99px; background: var(--m-acil); color: #fff;
+  font: 800 0.68rem/18px var(--m-govde); text-align: center;
+  box-shadow: 0 0 0 2px #fff;
+}
+.ana-rozet--sakin { background: var(--m-vurgu-2); }
+.ana-selam { display: flex; flex-direction: column; gap: 0.35rem; max-width: 38rem; }
+.ana-tarih { font-size: 0.9rem; font-weight: 600; }
+.ana-selam h1 {
+  margin: 0;
+  font-family: var(--m-baslik);
+  font-weight: 500;
+  font-size: clamp(2rem, 6vw, 3.1rem);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+  color: var(--m-murekkep);
+}
+.ana-ozet { margin: 0.2rem 0 0; font-size: clamp(0.95rem, 2.4vw, 1.1rem); line-height: 1.45; font-weight: 500; max-width: 32rem; }
+/* Acil görüşme düğmesi açık tepede. */
+.ana-tepe .acil { min-height: 44px; }
+
+/* ── Gövde ve bölümler ───────────────────────────────────────── */
+.ana-govde {
+  max-width: 75rem;
+  margin-inline: auto;
+  padding: 1.5rem clamp(1rem, 4vw, 2rem) 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+.ana-govde--ogrenci { max-width: 44rem; padding-inline: 0; padding-top: 1rem; }
+.uygulama--ana .ana-govde--ogrenci { padding-inline: clamp(1rem, 4vw, 1.75rem); }
+.ana-ust-izgara { display: grid; gap: 1.75rem; }
+@media (min-width: 64rem) {
+  .ana-ust-izgara { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+}
+.ana-bolum { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+.ana-kart { background: var(--m-yuzey); border-radius: var(--r-buyuk); padding: 1.25rem; }
+@media (min-width: 40rem) { .ana-kart { padding: 1.5rem; } }
+.ana-bolum-bas { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem 1rem; flex-wrap: wrap; min-height: 44px; }
+.ana-bolum-bas h2,
+.ana-bolum-baslik h2 {
+  margin: 0;
+  font-family: var(--m-baslik);
+  font-weight: 500;
+  font-size: clamp(1.35rem, 3.2vw, 1.6rem);
+  letter-spacing: -0.01em;
+  color: var(--m-murekkep);
+}
+.ana-bolum-baslik { display: flex; flex-direction: column; gap: 0.15rem; }
+.ana-bolum-baslik p,
+.ana-bolum-not { margin: 0; font-size: 0.85rem; color: var(--m-soluk); line-height: 1.45; }
+.ana-bolum-not { margin-top: -0.35rem; }
+.ana-hata { margin: 0; color: var(--m-acil); font-size: 0.9rem; }
+
+/* Anahtar (Bugün / 7 gün / 30 gün, Tümü / Dikkat) */
+.ana-anahtar { display: inline-flex; gap: 2px; padding: 4px; border-radius: 999px; background: var(--m-yuzey); }
+.ana-kart .ana-anahtar { background: var(--m-zemin); }
+.ana-anahtar button {
+  min-height: 36px; padding: 0 0.8rem; border-radius: 999px; border: 0; cursor: pointer;
+  background: transparent; color: var(--m-murekkep); font: 700 0.82rem var(--m-govde);
+}
+.ana-anahtar button[aria-pressed='true'] { background: var(--m-murekkep); color: #fff; }
+.ana-dugme { min-height: 44px; padding: 0 1.1rem; border-radius: 999px; border: 0; cursor: pointer; font: 700 0.9rem var(--m-govde); background: var(--m-murekkep); color: #fff; }
+.ana-dugme--ikincil { background: transparent; color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); }
+
+/* ── Gidişat ─────────────────────────────────────────────────── */
+.gd-izgara { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.gd-kart {
+  background: var(--m-yuzey); border-radius: 20px; padding: 1rem 1.1rem;
+  display: flex; flex-direction: column; gap: 0.4rem; min-height: 8rem; box-sizing: border-box;
+  animation: ana-gir .45s cubic-bezier(.2, .8, .2, 1) both;
+}
+.gd-kart--bekle { background: color-mix(in srgb, var(--m-yuzey) 60%, transparent); animation: none; }
+.gd-etiket { font-size: 0.8rem; font-weight: 700; color: var(--m-soluk); }
+.gd-deger-satir { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; }
+.gd-deger { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.05; color: var(--m-murekkep); }
+.gd-deger--sonuk { color: var(--m-soluk); }
+.gd-alt { font-size: 0.8rem; color: var(--m-soluk); line-height: 1.4; }
+.gd-cizgi-yol { stroke-dasharray: 300; animation: gd-ciz 1.1s cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes gd-ciz { from { stroke-dashoffset: 300; } to { stroke-dashoffset: 0; } }
+.gd-bos {
+  border: 1.5px dashed var(--m-cizgi-2); border-radius: 20px; padding: 1.4rem;
+  display: flex; flex-direction: column; gap: 0.4rem;
+}
+.gd-bos strong { font-family: var(--m-baslik); font-weight: 500; font-size: 1.2rem; color: var(--m-murekkep); }
+.gd-bos span { font-size: 0.9rem; line-height: 1.5; color: var(--m-soluk); }
+
+/* ── Öğrencilerim ─────────────────────────────────────────────── */
+.on-arac { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.on-ara {
+  display: flex; align-items: center; gap: 0.5rem; min-height: 44px; padding: 0 0.9rem;
+  border-radius: 999px; background: var(--m-zemin); color: var(--m-soluk); flex: 1 1 10rem;
+}
+.on-ara input { border: 0; background: transparent; outline: none; font: 500 0.9rem var(--m-govde); color: var(--m-murekkep); width: 100%; min-width: 0; }
+.on-liste { display: flex; flex-direction: column; }
+.on-baslik { display: none; }
+.on-satir {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: 'kim bugun' 'ritim ritim' 'isler isler';
+  gap: 0.7rem 1rem; align-items: center; text-align: left;
+  padding: 1rem 0.25rem; border: 0; border-top: 1px solid var(--m-cizgi); background: transparent;
+  color: var(--m-murekkep); font: inherit; cursor: pointer; border-radius: 0;
+}
+.on-satir:first-of-type { border-top: 0; }
+.on-satir--bekle { min-height: 5.5rem; background: color-mix(in srgb, var(--m-zemin) 70%, transparent); border-radius: 16px; margin-bottom: 0.5rem; cursor: default; }
+.on-kim { grid-area: kim; display: flex; align-items: center; gap: 0.75rem; min-width: 0; }
+.on-kim-yazi { display: flex; flex-direction: column; gap: 0.1rem; min-width: 0; }
+.on-kim-yazi b { font-size: 0.98rem; }
+.on-son { font-size: 0.78rem; font-weight: 600; color: var(--m-soluk); }
+.on-son--iyi { color: var(--m-yolunda); }
+.on-son--dikkat { color: var(--m-dikkat); }
+.on-isler { grid-area: isler; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.on-is {
+  display: inline-flex; align-items: center; gap: 0.45rem; min-height: 32px; padding: 0 0.7rem;
+  border-radius: 10px; font-size: 0.82rem; font-weight: 600;
+  background: var(--m-yuzey); box-shadow: inset 0 0 0 1px var(--m-cizgi);
+}
+.on-is--bitti { background: var(--m-zemin); box-shadow: none; color: var(--m-soluk); }
+.on-is--kismen { box-shadow: inset 0 0 0 1.5px var(--m-yolunda); }
+.on-ders { width: 4px; height: 14px; border-radius: 2px; }
+.on-nokta { width: 8px; height: 8px; border-radius: 50%; box-shadow: inset 0 0 0 1.5px var(--m-soluk); }
+.on-nokta--canli { background: var(--m-yolunda); box-shadow: none; animation: on-nabiz 2s ease-in-out infinite; }
+.on-bos { font-size: 0.85rem; color: var(--m-soluk); }
+.on-bos--satir { padding: 1.25rem 0.25rem; margin: 0; }
+.on-ritim { grid-area: ritim; position: relative; display: flex; justify-content: space-between; align-items: center; height: 24px; max-width: 13rem; }
+.on-ritim-cizgi { position: absolute; left: 7px; right: 7px; top: 11px; height: 2px; background: var(--m-cizgi); }
+.on-r { position: relative; width: 14px; height: 14px; border-radius: 50%; box-sizing: border-box; display: inline-block; }
+.on-r--t { background: var(--m-vurgu); }
+.on-r--k { background: var(--m-yuzey); box-shadow: inset 0 0 0 3.5px var(--m-vurgu); }
+.on-r--b { background: var(--m-yuzey); box-shadow: inset 0 0 0 1.5px var(--m-soluk); }
+.on-r--n { background: var(--m-yolunda); animation: on-nabiz 2s ease-in-out infinite; }
+.on-r--y { width: 8px; height: 2px; border-radius: 1px; background: var(--m-cizgi-2); }
+.on-bugun { grid-area: bugun; display: flex; flex-direction: column; gap: 0.35rem; align-items: flex-end; min-width: 4.5rem; }
+.on-bugun b { font-size: 1rem; font-weight: 800; }
+.on-cubuk { width: 4.5rem; height: 6px; border-radius: 99px; background: var(--m-yumusak); overflow: hidden; }
+.on-cubuk span { display: block; height: 100%; border-radius: 99px; background: var(--m-vurgu); transition: width .8s cubic-bezier(.2, .8, .2, 1); }
+.on-aciklama {
+  display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; padding-top: 0.9rem; margin-top: 0.25rem;
+  border-top: 1px solid var(--m-cizgi); font-size: 0.75rem; font-weight: 600; color: var(--m-soluk);
+}
+.on-aciklama span { display: inline-flex; align-items: center; gap: 0.4rem; }
+.on-aciklama .on-r { width: 11px; height: 11px; }
+.on-aciklama .on-r--k { box-shadow: inset 0 0 0 3px var(--m-vurgu); }
+.on-aciklama .on-r--y { width: 8px; height: 2px; }
+@keyframes on-nabiz {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--m-yolunda) 45%, transparent); }
+  50% { box-shadow: 0 0 0 6px transparent; }
+}
+@media (min-width: 64rem) {
+  .on-baslik {
+    display: grid; grid-template-columns: 15rem minmax(0, 1fr) 11rem 7rem; gap: 1.25rem;
+    padding: 0 0.75rem 0.5rem; font-size: 0.75rem; font-weight: 700; color: var(--m-soluk);
+    border-bottom: 1px solid var(--m-cizgi);
+  }
+  .on-satir {
+    grid-template-columns: 15rem minmax(0, 1fr) 11rem 7rem; grid-template-areas: 'kim isler ritim bugun';
+    padding: 0.9rem 0.75rem; border-top: 0; border-radius: 16px;
+  }
+  .on-satir:hover { background: var(--m-zemin); }
+  .on-bugun { align-items: stretch; }
+  .on-cubuk { width: 100%; }
+}
+
+/* ── Öğrenci: hafta şeridi, şimdi, kapılar, koç notu ─────────── */
+.ana-hafta { margin-top: -0.25rem; }
+.ana-hafta .hafta-serit { background: transparent; border: 0; }
+.simdi .siradaki,
+.simdi > .kart { box-shadow: var(--golge-kalkik); }
+.ana-kapilar { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
+.ana-kapi {
+  display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-start; text-align: left;
+  min-height: 12rem; padding: 1rem; border: 0; border-radius: 22px; cursor: pointer;
+  background: var(--m-yuzey); color: var(--m-murekkep); font: inherit;
+  transition: transform .15s ease;
+}
+.ana-kapi:active { transform: scale(.98); }
+.ana-kapi b { font-family: var(--m-baslik); font-weight: 500; font-size: 1.35rem; }
+.ana-kapi > span:last-child { font-size: 0.82rem; color: var(--m-soluk); line-height: 1.4; }
+.ana-kapi-cizim { width: 100%; height: 70px; }
+.ana-kapi-durak { animation: ana-durak 2s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+@keyframes ana-durak { 50% { transform: scale(1.22); } }
+.ana-kapi-cubuklar { height: 70px; display: flex; align-items: flex-end; gap: 6px; }
+.ana-kapi-cubuklar i { width: 18px; border-radius: 5px; border: 1.5px dashed var(--m-cizgi-2); box-sizing: border-box; }
+.koc-notu { gap: 0.6rem; box-shadow: inset 0 0 0 1.5px var(--m-vurgu); }
+.koc-notu-kim { font-size: 0.8rem; font-weight: 800; color: var(--m-vurgu); }
+.koc-notu p { margin: 0; font-family: var(--m-baslik); font-size: 1.15rem; line-height: 1.4; }
+.koc-notu .ana-dugme { align-self: flex-start; }
+
+@keyframes ana-gir { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .gd-kart, .gd-cizgi-yol, .on-nokta--canli, .on-r--n, .ana-kapi-durak { animation: none; }
+  .on-cubuk span { transition: none; }
+}
+
+/* Dikkat gerektirenler: kuyruk kartları beyaz bölümün içinde ikinci
+   kart olmasın — zemin tonunda düz blok. */
+.dikkat .kart { background: var(--m-zemin); border: 0; box-shadow: none; }
+.kuyruk-bitis--duz { display: flex; flex-direction: column; align-items: flex-start; gap: 0.35rem; padding: 0.5rem 0 0.25rem; }
+.kuyruk-bitis--duz .kuyruk-bitis-baslik { margin: 0; font-family: var(--m-baslik); font-size: 1.25rem; font-weight: 500; color: var(--m-murekkep); }
+.kuyruk-bitis--duz .kuyruk-bitis-alt { margin: 0; font-size: 0.9rem; color: var(--m-soluk); }
+.kuyruk-bitis-tik { width: 44px; height: 44px; border-radius: 50%; background: var(--m-yolunda-zemin); color: var(--m-yolunda); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 0.25rem; }
+
+/* Telefonda tepe biraz daha uzun: yazı gökyüzünde, manzara altında. */
+@media (max-width: 40rem) {
+  .ana-tepe { min-height: 19.5rem; }
+}

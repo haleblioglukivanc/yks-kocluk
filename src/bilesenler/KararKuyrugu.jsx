@@ -6,7 +6,6 @@ import Bolum from '../ortak/Bolum.jsx'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Kart, Dugme, Uyari, Yukleniyor } from './Ortak.jsx'
 import { Avatar } from './Fotograf.jsx'
-import BugunCalisanlar from './BugunCalisanlar.jsx'
 
 /* Koçun günlük karar kuyruğu. Kararlar dört segmente ayrılır: acil, süresi
    dolacak, bugün, bu hafta. Koç tek kart görür ama şeritten istediği segmente
@@ -134,18 +133,17 @@ export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
     return (
       <>
         <GorusmeSeridi />
-        <Kart>
-          <div className="kuyruk-bitis">
-            <p className="kuyruk-bitis-baslik">Bugünlük bitti</p>
-            <p className="kuyruk-bitis-alt">
-              {verilen > 0 ? `${verilen} karar verdin.` : 'Bekleyen karar yok.'}
-              {' '}Yeni bir şey olursa Çizbi söyler.
-            </p>
-          </div>
-        </Kart>
+        <div className="kuyruk-bitis kuyruk-bitis--duz">
+          <span className="kuyruk-bitis-tik" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
+          </span>
+          <p className="kuyruk-bitis-baslik">Bugünlük bu kadar.</p>
+          <p className="kuyruk-bitis-alt">
+            {verilen > 0 ? `${verilen} karar verdin.` : 'Bekleyen karar yok.'}
+            {' '}Yeni bir şey düşerse burada görünür.
+          </p>
+        </div>
         <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
-        {/* Boş ekran boş kalmasın: kim bugün girdi, kim çalışıyor. */}
-        <BugunCalisanlar onOgrenciAc={onOgrenciAc} />
       </>
     )
   }

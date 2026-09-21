@@ -4,7 +4,9 @@ import { kutlamaKontrol } from '../lib/kutlama.js'
 import KutlamaKatmani from '../bilesenler/KutlamaKatmani.jsx'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
-import OgrenciBasligi from '../bilesenler/OgrenciBasligi.jsx'
+import AnaTepe from '../ortak/AnaTepe.jsx'
+import AcilGorusme from '../bilesenler/AcilGorusme.jsx'
+import { OgrenciGidisati, Kapilar, KocNotu } from '../bilesenler/OgrenciAnaParcalari.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { GunGorusmesi } from '../bilesenler/AcilGorusme.jsx'
@@ -42,6 +44,17 @@ const gunBasligi = (t) =>
         .replace(/^(\d+ \S+) (\S+)$/, '$2, $1')
     : 'Bugün'
 
+/* Tepedeki tek cümle: bugünün işi kaç, ne kadar kaldı. */
+function gunOzeti(ozet) {
+  if (!ozet) return ' '
+  const top = ozet.bugunToplamGorev ?? (ozet.gorevler ?? []).length
+  const biten = ozet.bugunTamamlanan ?? (ozet.gorevler ?? []).filter((g) => g.durum === 'tamamlandi').length
+  if (!top) return 'Bugün için plan yok. İstersen Yol’dan bir konu seç.'
+  if (biten >= top) return 'Bugünün bütün işleri bitti.'
+  if (!biten) return `Bugün ${top} işin var.`
+  return `${top} işten ${biten} tanesi bitti, ${top - biten} tane kaldı.`
+}
+
 const SEKME_ESLE = { program: 'bugun', rozetler: 'konular', ben: 'konular' }
 
 export default function OgrenciPaneli({
@@ -51,6 +64,7 @@ export default function OgrenciPaneli({
   sekme: disSekme,
   onSekme: disOnSekme,
   onGit,
+  tepe = {},
 }) {
   /* Vekalet: koç öğrencinin panelini onun verisiyle açar. Kendi JWT'siyle
      kalır; yetkiyi RLS (private.ogrencim_mi) verir, yazılan satırlara
@@ -146,42 +160,22 @@ export default function OgrenciPaneli({
 
   if (hata) return <Uyari>{hata}</Uyari>
   if (!kayit) return <Yukleniyor />
+  const ilkAdi = ((vekaleten ? null : profil?.ad_soyad) ?? kayit.profiller?.ad_soyad ?? '').split(' ')[0]
 
 
   return (
     <>
       <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
       {sekme === 'bugun' && (
-      <OgrenciBasligi
-        profil={
-          vekaleten
-            ? { id: hedefId, rol: 'ogrenci', ad_soyad: kayit.profiller?.ad_soyad }
-            : profil
-        }
-        ogrenciId={kayit.id}
-        vekaleten={vekaleten}
-        ozet={ozet}
-        sekme={sekme}
-        onSekme={setSekme}
-        kocMesaji={kocMesaji}
-        onGit={onGit}
-        tarihMetni={gunBasligi(seciliGun ?? ozet?.bugun)}
-      >
-        {/* Plan B (19 Eylül 2026): hafta şeridi tepede, Merhaba'nın altında.
-            Bugünün ilerlemesi de şeritteki bugün hücresinde. */}
-        {ozetGeldi && (
-          <HaftaSeridi
-            ogrenciId={kayit.id}
-            haftaBasi={ozet?.haftaBasi}
-            bugun={ozet?.bugun}
-            bugunGorevler={ozet?.gorevler}
-            onDegisti={yenile}
-            secili={seciliGun ?? ozet?.bugun ?? null}
-            onSec={setSeciliGun}
-            onListe={setGunVerisi}
-          />
-        )}
-      </OgrenciBasligi>
+        /* Ortak iskelet (21 Eylül 2026): koçla aynı tepe. Acil görüşme
+           tepenin sağ üstünde; hafta şeridi tepenin hemen altında. */
+        <AnaTepe
+          selam={ilkAdi ? `Merhaba ${ilkAdi}` : 'Merhaba'}
+          tarih={gunBasligi(seciliGun ?? ozet?.bugun)}
+          ozet={gunOzeti(ozet)}
+          ekDugme={<AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
+          {...(vekaleten ? {} : tepe)}
+        />
       )}
 
       <div className="sekme-govde" style={aksanStili()}>
@@ -192,51 +186,68 @@ export default function OgrenciPaneli({
           <Yukleniyor satir={4} />
         </Kart>
       ) : sekme === 'bugun' ? (
-        <>
-          <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
-          <SiradakiKart
-            gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
-            bugunMu={gunVerisi?.bugunMu !== false}
-            gunAdi={gunVerisi?.bugunMu === false ? gunVerisi.ad : 'Bugünün hedefi'}
-            onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
-          />
-          {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı.
-              Gün gece kendiliğinden kapanır; bu düğme kaydı tam yapar. */}
-          {ozet?.bugun && (
-            <button
-              /* Her zaman koyu, basılabilir olduğu belli (Bekir, 19 Eylül 2026). */
-              className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
-              onClick={() => setKapatAcik(true)}
-            >
-              {ozet.gunKapandi ? (
-                <>
-                  <strong>Gün tamamlandı ✓</strong>
-                  <span>Rutin ya da soru düzeltmek için dokun</span>
-                </>
-              ) : (
-                <>
-                  <strong>Günü tamamla</strong>
-                  <span>Rutinler · çözülen soru · Çizbi'nin özeti</span>
-                </>
-              )}
-            </button>
+        <div className="ana-govde ana-govde--ogrenci">
+          {ozetGeldi && (
+            <div className="ana-hafta">
+              <HaftaSeridi
+                ogrenciId={kayit.id}
+                haftaBasi={ozet?.haftaBasi}
+                bugun={ozet?.bugun}
+                bugunGorevler={ozet?.gorevler}
+                onDegisti={yenile}
+                secili={seciliGun ?? ozet?.bugun ?? null}
+                onSec={setSeciliGun}
+                onListe={setGunVerisi}
+              />
+            </div>
           )}
-          {/* Rutinler Günü tamamla akışında; elindeki kitaplar onun altında,
-              günün işi bittikten sonra bakılacak yerde. */}
-          <OgrenciKaynaklari
-            ogrenciId={kayit.id}
-            rol="ogrenci"
-            bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
-          />
-          {/* Gün işle biter: en sonda söz, altında okuduğu kitap. Kitap
-              "Bitirdim" deyene kadar burada sabit (Bekir, 19 Eylül 2026). */}
-          <div className="veri-yuzey ogr-soz">
-            <HaftalikIlham
-              ogrenciId={kayit.id}
-              bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'}
+          <KocNotu kocMesaji={kocMesaji} />
+          <section className="ana-bolum simdi" aria-label="Şimdi">
+            <div className="ana-bolum-bas"><h2>Şimdi</h2></div>
+            <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
+            <SiradakiKart
+              gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
+              bugunMu={gunVerisi?.bugunMu !== false}
+              gunAdi={gunVerisi?.bugunMu === false ? gunVerisi.ad : 'Bugünün hedefi'}
+              onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
             />
-          </div>
-        </>
+            {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı. */}
+            {ozet?.bugun && (
+              <button
+                className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
+                onClick={() => setKapatAcik(true)}
+              >
+                {ozet.gunKapandi ? (
+                  <>
+                    <strong>Gün tamamlandı ✓</strong>
+                    <span>Rutin ya da soru düzeltmek için dokun</span>
+                  </>
+                ) : (
+                  <>
+                    <strong>Günü tamamla</strong>
+                    <span>Rutinler, çözülen soru ve günün özeti</span>
+                  </>
+                )}
+              </button>
+            )}
+          </section>
+          <OgrenciGidisati ogrenciId={kayit.id} tazele={tazele} />
+          <Kapilar denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
+          <section className="ana-bolum" aria-label="Bu hafta senin için">
+            <div className="ana-bolum-bas"><h2>Bu hafta senin için</h2></div>
+            <div className="veri-yuzey ogr-soz">
+              <HaftalikIlham
+                ogrenciId={kayit.id}
+                bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'}
+              />
+            </div>
+            <OgrenciKaynaklari
+              ogrenciId={kayit.id}
+              rol="ogrenci"
+              bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
+            />
+          </section>
+        </div>
       ) : sekme === 'konular' ? (
         <>
           {/* Başlık + ders sekmeleri tek koyu blok (TASARIM-KURALLARI 3–4). */}

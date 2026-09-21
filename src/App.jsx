@@ -7,7 +7,8 @@ import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
 import Randevu from './ekranlar/Randevu.jsx'
 import Giris from './ekranlar/Giris.jsx'
-import KocPaneli from './ekranlar/KocPaneli.jsx'
+import KocAnaSayfa from './ekranlar/KocAnaSayfa.jsx'
+import { useMevsim } from './lib/mevsim.js'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import Baglantilar from './ekranlar/Baglantilar.jsx'
@@ -17,10 +18,8 @@ import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
 import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuOncelik from './ekranlar/KonuOncelik.jsx'
-import Raporlar from './ekranlar/Raporlar.jsx'
 import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
-import BugunCalisanlar from './bilesenler/BugunCalisanlar.jsx'
 import UstCubuk from './bilesenler/UstCubuk.jsx'
 import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
@@ -167,6 +166,8 @@ export default function App() {
      da seçilen öğrenci. Aynı bileşenler, yalnız yerleşim; dar ekranda tek
      sütun ve ayrı ekranlar. Kanca koşulsuz, en üstte. */
   const genis = useGenisEkran()
+  /* Mevsim: kök etikete data-mevsim yazar; renkler mevsim.css'ten gelir. */
+  useMevsim()
   const { durum, profil, kullanici, cikisYap, kurtarma, kurtarmaBitti } = useOturum()
   const [sifreErtelendi, setSifreErtelendi] = useState(() => {
     try { return sessionStorage.getItem('sifre-ertelendi') === '1' } catch { return false }
@@ -398,7 +399,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/raporlar', '/ogrenci/', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -422,7 +423,7 @@ export default function App() {
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
        bitişik tek parça (TASARIM-KURALLARI 3). */
-    (kocMu && (yol === '/raporlar' || yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || yol === '/sifre' || Boolean(ogrenciId))) ||
+    (kocMu && (yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || yol === '/sifre' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
@@ -460,7 +461,26 @@ export default function App() {
 
   /* Tek sekmelik bir çubuk gezinme değil, süs olur. Velide alt çubuk
      hiç çizilmiyor; ekranı da o kadar uzatıyor. */
-  const gezinmeVar = baglantilar.length > 1
+  /* Alt menü ve yan çubuk kalktı (21 Eylül 2026, Bekir): her rolün tek
+     ana sayfası var, diğer ekranlara oradan ve geri düğmesiyle gidilir. */
+  const gezinmeVar = false && baglantilar.length > 1
+  /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
+     orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
+     düğmesi orada. */
+  const anaSayfada = !gozuyleId && anaEkranda && (kocMu || profil.rol === 'ogrenci')
+  const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  const anaTepe = {
+    rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
+    gelenKutusu: profil.rol === 'ogrenci',
+    onZil: () => git('/bildirimler'),
+    onHesap: () => setHesapAcik(true),
+    hesapHarf: basHarf,
+  }
+  /* Menü yokken her alt ekrandan ana sayfaya dönüş üst şeritteki geri
+     düğmesinden. Gözle bakarken önce öğrencinin ana sayfası, oradan detay. */
+  const geriHedef = gozuyleId
+    ? (gozuyleSekme === 'bugun' ? `/ogrenci/${gozuyleId}` : gozuyleYolu('bugun'))
+    : anaEkranda ? null : '/'
   const bildirimlerdeMi = yol === '/bildirimler'
 
   function icerik() {
@@ -518,7 +538,7 @@ export default function App() {
             {ogrenciId ? (
               <OgrenciDetay
                 ogrenciId={ogrenciId}
-                onGeri={() => git('/ogrenciler')}
+                onGeri={() => git('/')}
                 onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
                 onGozuyle={(id) => git(`/gozuyle/${id}`)}
               />
@@ -555,41 +575,21 @@ export default function App() {
           onGit={git}
         />
       )
-    if (kocMu && yol === '/raporlar')
-      return <Raporlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && ogrenciId)
       return (
         <OgrenciDetay
           ogrenciId={ogrenciId}
-          onGeri={() => git('/ogrenciler')}
+          onGeri={() => git('/')}
           onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
         />
       )
-    if (kocMu && genis)
-      return (
-        <div className="iki-sutun">
-          <div className="sutun-ana">
-            <KocPaneli
-              profil={profil}
-              onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
-              onGit={git}
-            />
-          </div>
-          <div className="sutun-yan">
-            <Ogrencilerim onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
-            {/* Liste bitince sağ sütun bomboş kalıyordu: kim bugün girdi,
-                kim çalışıyor sorusu oraya oturuyor. */}
-            <BugunCalisanlar onOgrenciAc={(id) => git(`/ogrenci/${id}`)} duz={false} />
-          </div>
-        </div>
-      )
     if (kocMu)
       return (
-        <KocPaneli
+        <KocAnaSayfa
           profil={profil}
           onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
-          onGit={git}
+          tepe={anaTepe}
         />
       )
     if (profil.rol === 'veli') return <VeliPaneli profil={profil} />
@@ -599,6 +599,7 @@ export default function App() {
         sekme={ogrenciYolu ?? 'bugun'}
         onSekme={(k) => git(SEKME_YOLU[k] ?? '/')}
         onGit={git}
+        tepe={anaTepe}
       />
     )
   }
@@ -608,18 +609,10 @@ export default function App() {
       className={[
         'uygulama',
         gezinmeVar ? '' : 'uygulama--gezinmesiz',
-        koyuTepe ? 'uygulama--koyu-tepe' : '',
+        koyuTepe && !anaSayfada ? 'uygulama--koyu-tepe' : '',
+        anaSayfada ? 'uygulama--ana' : '',
       ].filter(Boolean).join(' ')}
     >
-      {/* Koç masaüstünde zemin: yavaş süzülen pastel lekeler ve birkaç
-          pırıltı. yerlesim.css yalnız geniş ekranda gösterir. */}
-      {!ogrenciDunyasi && (
-        <div className="zemin-lekeler" aria-hidden="true">
-          <i className="leke leke--1" /><i className="leke leke--2" /><i className="leke leke--3" /><i className="leke leke--4" />
-          <b className="piril piril--1" /><b className="piril piril--mavi piril--2" />
-          <b className="piril piril--mercan piril--3" /><b className="piril piril--4" />
-        </div>
-      )}
       {/* Tepe: koyu şerit. Bugün ekranlarında altındaki koyu başlıkla
           birleşir; diğer ekranlarda tek başına kalır. */}
       <header className="ust-serit">
@@ -633,7 +626,7 @@ export default function App() {
           gelenKutusu={profil.rol === 'ogrenci' || Boolean(gozuyleId)}
           hesapGizli={Boolean(gozuyleId)}
           hesapEtkin={hesapAcik}
-          onGeri={gozuyleId ? () => git('/ogrenciler') : null}
+          onGeri={geriHedef ? () => git(geriHedef) : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
           onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : '/bildirimler')}
           onHesap={() => setHesapAcik(true)}
