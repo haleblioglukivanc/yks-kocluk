@@ -91,6 +91,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const [balon, setBalon] = useState({ olay: null, durak: null, bolge: null })
   const [ruh, setRuh] = useState('anlatiyor')
   const [patlayan, setPatlayan] = useState(null)
+  const [hepsi, setHepsi] = useState(false)
   const haritaRef = useRef(null)
   const [cizgi, setCizgi] = useState({ soluk: '', renkli: '', cizbi: null, w: 0, h: 0 })
 
@@ -291,6 +292,11 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   }
 
   const koc = rol === 'koc'
+  /* Düz patikada uzun yol kısalır: son hareketli duraktan sonra üç durak,
+     gerisi "+N konu daha" ile açılır (mokap, 22 Eylül 2026). */
+  const sonHareket = duraklar.reduce((m, d, i) => (['onayli', 'bekliyor', 'simdi', 'tekrar'].includes(d.yol) ? i : m), -1)
+  const sinir = duz && !hepsi ? Math.max(sonHareket + 3, 4) : Infinity
+  const gizli = Math.max(0, duraklar.length - 1 - sinir)
 
   return (
     <div className={duz ? 'konu-yolu konu-yolu--duz' : 'konu-yolu'}>
@@ -321,13 +327,13 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
           </div>
         )}
 
-        {yol.bolgeler.map((b) => (
+        {yol.bolgeler.filter((b) => b.duraklar.some((d) => duraklar.findIndex((x) => x.id === d.id) <= sinir)).map((b) => (
           <section key={b.ad} className="yol-bolge">
             <h4 className="yol-bolge-ad">
               {b.ad}
               {b.tamam && <span className="yol-bolge-rozet">bölge tamam</span>}
             </h4>
-            {b.duraklar.map((d) => {
+            {b.duraklar.filter((d) => duraklar.findIndex((x) => x.id === d.id) <= sinir).map((d) => {
               const i = duraklar.findIndex((x) => x.id === d.id)
               return (
                 <div key={d.id} className="yol-durak" data-konu={d.id} data-yol={d.yol}>
@@ -361,6 +367,10 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
           </section>
         ))}
       </div>
+
+      {gizli > 0 && (
+        <button type="button" className="yol-daha" onClick={() => setHepsi(true)}>+ {gizli} konu daha</button>
+      )}
 
       {secili && (
         <>

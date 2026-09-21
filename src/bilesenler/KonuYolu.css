@@ -239,3 +239,4 @@
 .konu-yolu--duz .yol-durak[data-yol="tekrar"] .yol-ad small { color: var(--m-dikkat); font-weight: 800; }
 .konu-yolu--duz .yol-durak[data-yol="onayli"] .yol-ad, .konu-yolu--duz .yol-durak[data-yol="bekliyor"] .yol-ad { color: var(--m-murekkep); }
 .konu-yolu--duz .yol-cizgi--gecildi { stroke: var(--m-vurgu); opacity: 1; }
+.yol-daha { display: block; border: 0; background: none; min-height: 44px; padding: 0 0 0 52px; color: var(--m-vurgu, var(--vurgu)); font: 800 0.85rem var(--m-govde, inherit); cursor: pointer; text-align: left; }
