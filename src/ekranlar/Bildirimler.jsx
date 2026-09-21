@@ -18,6 +18,7 @@ const TIP = {
   analiz: { etiket: 'Deneme analizi', durum: 'izle' },
   veli_ozet: { etiket: 'Veli özeti', durum: 'izle' },
   hedef: { etiket: 'Hedef ayarı', durum: 'notr' },
+  konu_tekrar: { etiket: 'Konu tekrarı', durum: 'izle' },
 }
 
 const ikon = {
@@ -38,6 +39,7 @@ const IKON = {
   analiz: <path d="M4 18l5-6 4 3 7-9" />,
   veli_ozet: <><rect x="5" y="4" width="14" height="16" rx="2" /><path d="M8 9h8M8 13h6" /></>,
   hedef: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></>,
+  konu_tekrar: <path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4" />,
 }
 
 export default function Bildirimler({ profil, onGit, tepe = null }) {

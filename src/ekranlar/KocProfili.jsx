@@ -110,7 +110,6 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
         </Bolum>
 
         <Bolum baslik="Koçluk araçları">
-          <Satir baslik="Konu öncelikleri" alt="Hangi konular önce çalışılsın" onClick={() => onGit('/konular')} />
           <Satir baslik="Kaynaklar" alt="Kitaplar ve öğrencilere verilenler" onClick={() => onGit('/kaynaklar')} />
           <Satir baslik="Telegram bağlantısı" alt="Bildirimleri Telegram'dan da al" onClick={() => onGit('/baglantilar')} />
         </Bolum>

@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — "Konu öncelikleri" sayfası yerine Yapılacaklar kartı
+
+- Bekir: Kıvanç birebir çalışıyor, "sınıfça / ortak etüt" kavramı yok; sayfa menüde kayboluyordu. Profil menüsünden kalktı (rota duruyor, bağlantı yok); üstündeki Kaynaklar bağlantısı da kaldırıldı.
+- Yeni kart `konu_tekrar` (göç `20260922_konu_tekrar_karti.sql`): `konu_oncelik_listesi` sonucundan aynı konuda en az iki öğrenci zorlanıyor ya da tekrarı gecikmişse (o konuda bekleyen/devam eden görevi olan öğrenci sayılmaz) en yüksek skorlu 2 konu "Bu hafta" segmentine düşer: başlık "Ders · Konu", bağlam "Berçem, Roşin bu konuda zorlanıyor". Onay → `konu_tekrar_gorevi_ac` ile yarın için 20 soruluk tekrar görevi; Ertele → 7 gün. Etiket "Konu tekrarı" (kuyruk ve Bildirimler).
+- Deneme öğrencisi Bekir Yılmaz'ın tamamlanmış 9 konusu koç onaylı yapıldı (Yapılacaklar'ı 9 "konu onayı" kartıyla dolduruyordu).
+
 ## 22 Eylül 2026 — Koçun ara sıra sayfaları yeni dilde
 
 - Konu öncelikleri, Kaynaklar, Telegram bağlantısı ve Şifremi değiştir (koç) artık ortak sahneli tepeyle açılıyor (`kocAltSayfa`, App.jsx); geri düğmesi profile döner, şifre kaydedilince de profile dönülür. İçerik aynı; `.eski-ic` kapsamında eski koyu başlık blokları (`hero-yuzey`) açık zemine iner, başlık/alt yazı gizlenir (tepede yazıyor), içinde eylem varsa (Kaynak ekle) mürekkep hap olarak kalır; kartlar ve formlar yeni dilde (`od-govde` kuralları).
