@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koçun öğrenci detayı yeni dilde
+
+- Mokap onaylı. `OgrenciKimlikKarti` koyu kimlik kartı yerine ortak sahneli `AnaTepe` çiziyor: sol üstte geri (→ /ogrencilerim), büyük ad + "11. sınıf, sayısal ›" (dokununca profil), durum etiketi (risk ya da bugünkü temas), sağda ağaçların önünde öğrencinin tek tabelası (adı + risk halkalı baş harfleri). Altında tek satır eylem (Mesaj, Görüştük, gözüyle), üç ölçü şeridi (bu hafta %, seri, son net ▲▼), bölüm anahtarı (Program / Denemeler / Konular; eski koyu sekmelerin yerine).
+- `AnaTepe` yeni `onBaslik`, `altBaslik`, `durum` seçeneklerini aldı. Geniş ekranda /ogrenci/:id artık tek sütun (liste + detay ikilisi yalnız /ogrenciler'de). Program, Denemeler, Konular, Kaynaklar, Notlar ve profil sayfasının içi değişmedi.
+- `.ana-govde` esnek `.panel` içinde daralıyordu: `width: 100%`.
+
 ## 22 Eylül 2026 — Görüştük düğmesi kalktı, çizimler ağaç hizasında
 
 - Bekir yanlışlıkla Berçem için "Görüştük"e bastı (üç kayıt, 13:24); `koc_gorusmeleri` id 2, 3, 4 silindi. Öğrencilerim satırındaki tik düğmesi kaldırıldı; satırda yalnız mesaj düğmesi var (görüşme kaydı öğrenci detayındaki "Görüştük"ten).

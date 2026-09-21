@@ -468,7 +468,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || Boolean(ogrenciId))))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -525,7 +525,7 @@ export default function App() {
       return <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />
     if (kocMu && yol === '/kaynaklar') return <Kaynaklar profil={profil} />
     if (kocMu && yol === '/baglantilar') return <Baglantilar />
-    if (kocMu && genis && (yol === '/ogrenciler' || ogrenciId))
+    if (kocMu && genis && yol === '/ogrenciler')
       return (
         <div className="iki-sutun">
           <div className="sutun-yan">
@@ -580,9 +580,10 @@ export default function App() {
       return (
         <OgrenciDetay
           ogrenciId={ogrenciId}
-          onGeri={() => git('/')}
+          onGeri={() => git('/ogrencilerim')}
           onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
+          tepe={anaTepe}
         />
       )
     if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />

@@ -1,10 +1,9 @@
 import Sayan from './Sayan.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { Avatar } from './Fotograf.jsx'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
-import UstBlok from '../ortak/UstBlok.jsx'
-import UyariSatiri from '../ortak/UyariSatiri.jsx'
+import AnaTepe from '../ortak/AnaTepe.jsx'
+import { TabelaCizimi } from '../ortak/KapiCizimleri.jsx'
 import { AltSayfa, Dugme, Uyari } from './Ortak.jsx'
 import { temasMetni } from '../lib/temas.js'
 import { hataMetni } from '../lib/supabase.js'
@@ -49,6 +48,7 @@ export default function OgrenciKimlikKarti({
   onProfil,
   onEk,
   children,
+  tepe = {},
 }) {
   /* Aynı kart, iki farklı okuyucu. Görsel dil ortak; içerik değil.
      Öğrenci kendi kartında erişim anahtarını, düzenleme çarkını ve risk
@@ -138,134 +138,76 @@ export default function OgrenciKimlikKarti({
      şeyi söyleyen uyarı satırı. Şimdi üç satır: kimlik, tek satır ölçüm,
      durum + eylem. Geri düğmesi de kartın içine alındı; üstünde ayrı bir
      "← Öğrenci listesi" satırı duruyordu. */
+  /* Mevsimsel tasarım (22 Eylül 2026, Bekir'in onayladığı mokap): tepe
+     diğer koç ekranlarıyla aynı sahne. Sağda ağaçların önünde öğrencinin
+     tabelası; adın altında sınıf/alan (dokununca profil), durum etiketi.
+     Altta tek satır eylem (Mesaj, Görüştük, gözüyle), üç ölçü şeridi ve
+     bölüm anahtarı (children). */
+  const durumMetni = !aktif
+    ? 'Uygulama erişimi kapalı'
+    : temasMetni(temas) && ['atildi', 'gorusuldu', 'yanit', 'hareket'].includes(temas?.durum)
+      ? temasMetni(temas)
+      : riskSeviyesi
+        ? (uyariVar && uyari ? uyari : RISK_ADI[riskSeviyesi] ?? riskSeviyesi)
+        : null
+  const durumTuru = !aktif ? 'kapali' : temasMetni(temas) && ['atildi', 'gorusuldu', 'yanit', 'hareket'].includes(temas?.durum) ? 'temas' : riskSeviyesi
+  const basHarf = ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  const bugunTarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')
+
   return (
-      <UstBlok
-        sinif={`kimlik-kart kk-sade${kapaliSinifi(kocGorunumu, aktif)}`}
-        etiket={ad}
-        sekmeli={Boolean(children)}
-      >
-        <div className="kk-ust">
-          {onGeri && (
-            <button className="kk-geri" onClick={onGeri} aria-label="Öğrenci listesine dön">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
-                   strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M15 18l-6-6 6-6" />
-              </svg>
-            </button>
-          )}
-          {/* Koç isme dokununca öğrencinin profil sayfası açılır (iletişim,
-              veli, bilgiler, ödeme, hesap). Eski "Kayıt" sekmesinin yeri. */}
-          {kocGorunumu && onProfil ? (
-            <button
-              type="button"
-              className="kk-kimlik-dugme"
-              onClick={onProfil}
-              aria-label={`${ad} profilini aç`}
-            >
-              <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
-              <span className="kk-kimlik">
-                <span className="kk-ad">{ad}</span>
-                <span className="kk-alt-satir">
-                  {cipler.join(' · ') || '—'}
-                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor"
-                       strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M9 6l6 6-6 6" />
-                  </svg>
-                </span>
-              </span>
-            </button>
-          ) : (
-            <>
-              <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
-              <div className="kk-kimlik">
-                <h2 className="kk-ad">{ad}</h2>
-                <p className="kk-alt-satir">{cipler.join(' · ') || '—'}</p>
-              </div>
-            </>
-          )}
-          {kocGorunumu && (
-            <button
-              className="kk-ikon kk-goz"
-              onClick={() => onGozuyle?.(ogrenci.id)}
-              aria-label="Panelini aç (vekaleten)"
-              title="Panelini aç"
-            >
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
-                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" />
-                <circle cx="12" cy="12" r="3" />
-              </svg>
-            </button>
-          )}
-        </div>
-
-        {/* Haftalık hedef, seri ve son net tek satırda. */}
-        <p className="kk-durum">
-          <span className="kk-hero-sayi">{yuzde != null ? <Sayan on="%" deger={yuzde} /> : '—'}</span>
-          <span className="kk-hero-ad">
-            haftalık hedef{kalan > 0 ? ` · ${kalan} gün` : ' · son gün'}
-            {' · '}{ek?.seri ?? 0} gün seri
-            {' · '}son net {gosterilenNet != null ? Number(gosterilenNet).toFixed(2) : '—'}
-            {netFarki != null && netFarki !== 0 && (
-              <i className={`kk-fark kk-fark--${netFarki > 0 ? 'artis' : 'dusus'}`}>
-                {netFarki > 0 ? '▲' : '▼'} {Math.abs(netFarki).toFixed(2)}
-              </i>
-            )}
-          </span>
-        </p>
-
-        {/* Risk çipi ile uyarı cümlesi aynı şeyi söylüyordu; tek satır oldu.
-            Eylem düğmesi de bu satırın sağında: kendi satırını yemiyor. */}
+    <>
+      <AnaTepe
+        selam={ad}
+        tarih={bugunTarih}
+        {...tepe}
+        onGeri={onGeri}
+        onBaslik={kocGorunumu ? onProfil : null}
+        altBaslik={cipler.join(', ') || null}
+        durum={kocGorunumu && durumMetni ? <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span> : null}
+        sagCizim={(mevsim) => (
+          <TabelaCizimi mevsim={mevsim} zemin={false} yazi={ad.split(' ')[0]} ogrenciler={[{ bas: basHarf, durum: riskSeviyesi }]} />
+        )}
+      />
+      <div className="od-ust ana-govde ana-govde--dar">
         {kocGorunumu && (
-          <div className="kk-son-satir">
-            {/* Kural 7: durum hapın içinde değil, nokta + düz metin. */}
-            {!aktif ? (
-              <UyariSatiri durum="kapali">Uygulama erişimi kapalı</UyariSatiri>
-            ) : riskSeviyesi ? (
-              <UyariSatiri durum={riskSeviyesi}>
-                {uyariVar && uyari
-                  ? `${riskSeviyesi === 'acil' ? '' : `${RISK_ADI[riskSeviyesi] ?? riskSeviyesi} · `}${uyari}`
-                  : (RISK_ADI[riskSeviyesi] ?? riskSeviyesi)}
-                {temasMetni(temas) ? <span className={`kk-temas kk-temas--${temas.durum}`}>{temasMetni(temas)}</span> : null}
-              </UyariSatiri>
-            ) : (
-              <span />
-            )}
-
-            <button
-              className="kk-ikon kk-gorustuk"
-              onClick={() => setGorusmeAcik(true)}
-              aria-label="Görüştük: telefon ya da yüz yüze görüşmeyi kaydet"
-              title="Görüştük"
-            >
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"
-                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" />
-              </svg>
-            </button>
-            <button className="kk-ana-eylem" onClick={() => onMesaj?.(ogrenci.id)}>
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                   strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-              </svg>
+          <div className="od-eylem">
+            <button type="button" className="od-mesaj" onClick={() => onMesaj?.(ogrenci.id)}>
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
               Mesaj
+            </button>
+            <button type="button" className="od-yuvarlak" onClick={() => setGorusmeAcik(true)} aria-label="Görüştük: telefon ya da yüz yüze görüşmeyi kaydet" title="Görüştük">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></svg>
+            </button>
+            <button type="button" className="od-yuvarlak" onClick={() => onGozuyle?.(ogrenci.id)} aria-label="Onun gözüyle bak" title="Onun gözüyle bak">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
             </button>
           </div>
         )}
-        {gorusmeAcik && (
-          <GorusmeKaydi
-            ogrenciId={ogrenci.id}
-            ad={ad}
-            onKapat={() => setGorusmeAcik(false)}
-            onKaydedildi={() => {
-              setGorusmeAcik(false)
-              temasYukle()
-            }}
-          />
-        )}
-        {/* Sekmeler bloğun alt kenarına oturur (kural 3–4). */}
+        <div className="od-serit">
+          <div><b>{yuzde != null ? <Sayan on="%" deger={yuzde} /> : '—'}</b><span>bu hafta{kalan > 0 ? `, ${kalan} gün var` : ', son gün'}</span></div>
+          <div><b>{ek?.seri ?? 0} gün</b><span>seri</span></div>
+          <div>
+            <b className={gosterilenNet == null ? 'od-sonuk' : ''}>
+              {gosterilenNet != null ? Number(gosterilenNet).toFixed(1).replace('.', ',') : '—'}
+              {netFarki != null && netFarki !== 0 && <i className={`od-fark od-fark--${netFarki > 0 ? 'artis' : 'dusus'}`}>{netFarki > 0 ? '▲' : '▼'}{Math.abs(netFarki).toFixed(1).replace('.', ',')}</i>}
+            </b>
+            <span>son net</span>
+          </div>
+        </div>
         {children}
-      </UstBlok>
+      </div>
+      {gorusmeAcik && (
+        <GorusmeKaydi
+          ogrenciId={ogrenci.id}
+          ad={ad}
+          onKapat={() => setGorusmeAcik(false)}
+          onKaydedildi={() => {
+            setGorusmeAcik(false)
+            temasYukle()
+          }}
+        />
+      )}
+    </>
   )
 }
 

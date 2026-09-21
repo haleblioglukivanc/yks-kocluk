@@ -44,6 +44,9 @@ export default function AnaTepe({
   children = null,
   onGeri = null,
   sagCizim = null,
+  onBaslik = null,
+  altBaslik = null,
+  durum = null,
 }) {
   const mevsim = useMevsim()
   return (
@@ -96,7 +99,23 @@ export default function AnaTepe({
             </span>
             {tarih && <span className="ana-tarih">{tarih}</span>}
           </div>
-          <h1>{selam}</h1>
+          {onBaslik ? (
+            <button type="button" className="ana-baslik-dugme" onClick={onBaslik}>
+              <h1>{selam}</h1>
+              {altBaslik && (
+                <span className="ana-alt-baslik">
+                  {altBaslik}
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+                </span>
+              )}
+            </button>
+          ) : (
+            <>
+              <h1>{selam}</h1>
+              {altBaslik && <span className="ana-alt-baslik">{altBaslik}</span>}
+            </>
+          )}
+          {durum}
           {ozet && <p className="ana-ozet">{ozet}</p>}
         </div>
       </div>

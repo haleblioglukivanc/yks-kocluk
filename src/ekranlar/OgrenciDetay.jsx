@@ -11,7 +11,6 @@ import HataDefteri from '../bilesenler/HataDefteri.jsx'
 import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
-import Sekmeler from '../ortak/Sekmeler.jsx'
 import Bolum from '../ortak/Bolum.jsx'
 import UstBlok from '../ortak/UstBlok.jsx'
 import { Avatar } from '../bilesenler/Fotograf.jsx'
@@ -24,7 +23,7 @@ import { dersleriGrupla, dersKapsamAdi, kapsamEtiketi } from '../lib/dersGruplar
 
 const ALAN_ADI = { sayisal: 'Sayısal', esit_agirlik: 'Eşit Ağırlık', sozel: 'Sözel', dil: 'Dil' }
 const DURUM_ADI = { bekliyor: 'Bekliyor', devam: 'Devam ediyor', tamamlandi: 'Tamamlandı', atlandi: 'Atlandı' }
-export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) {
+export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, tepe = {} }) {
   const [ogrenci, setOgrenci] = useState(null)
   const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
@@ -104,23 +103,17 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle }) 
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
         onProfil={() => setProfil('acik')}
+        tepe={tepe}
       >
-        {/* Sekmeler üst bloğun içinde, alt kenarda (TASARIM-KURALLARI 3–4).
-            Eskiden bloğun altında dört ayrı kutu düğmeydi. */}
-        <Sekmeler
-          varyant="koyu"
-          etiket="Öğrenci bölümleri"
-          deger={sekme}
-          onSec={setSekme}
-          secenekler={[
-            { k: 'program', ad: 'Program' },
-            { k: 'denemeler', ad: 'Denemeler' },
-            { k: 'konular', ad: 'Konular' },
-          ]}
-        />
+        {/* Bölüm anahtarı: ana ekrandaki dönem anahtarıyla aynı biçim. */}
+        <div className="ana-anahtar od-anahtar" role="group" aria-label="Öğrenci bölümleri">
+          {[['program', 'Program'], ['denemeler', 'Denemeler'], ['konular', 'Konular']].map(([k, ad]) => (
+            <button key={k} type="button" aria-pressed={sekme === k} onClick={() => setSekme(k)}>{ad}</button>
+          ))}
+        </div>
       </OgrenciKimlikKarti>
 
-      <div className="sekme-govde ogr-detay-govde" style={aksanStili()}>
+      <div className="sekme-govde ogr-detay-govde ana-govde ana-govde--dar od-govde" style={aksanStili()}>
       {sekme === 'program' && (
         <>
           <Program ogrenci={ogrenci} />

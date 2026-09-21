@@ -796,3 +796,33 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 @media (max-width: 40rem) { .ana-tepe-cizim { bottom: 4%; width: clamp(120px, 36vw, 170px); } }
 @media (min-width: 40.01rem) { .ana-tepe-cizim { bottom: 6%; } }
 @media (min-width: 64rem) { .ana-tepe-cizim { right: calc((100% - 75rem) / 2 + 6rem); } }
+
+/* ═══ Koçun öğrenci detayı (22 Eylül 2026, mokap onaylı) ═══ */
+.ana-baslik-dugme { display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; border: 0; background: transparent; padding: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; max-width: 62%; }
+.ana-alt-baslik { display: inline-flex; align-items: center; gap: 0.2rem; font-size: 0.9rem; font-weight: 600; }
+.od-durum {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 0.4rem; max-width: 60%;
+  margin-top: 0.35rem; padding: 0.3rem 0.7rem; border-radius: 999px; line-height: 1.3;
+  font-size: 0.8rem; font-weight: 800; background: rgba(255,255,255,.8); color: var(--m-murekkep);
+}
+.od-durum i { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--m-soluk); }
+.od-durum--acil { background: var(--m-acil-zemin); color: var(--m-acil); } .od-durum--acil i { background: var(--m-acil); }
+.od-durum--izle { background: var(--m-dikkat-zemin); color: var(--m-dikkat); } .od-durum--izle i { background: var(--m-dikkat); }
+.od-durum--iyi, .od-durum--temas { background: var(--m-yolunda-zemin); color: var(--m-yolunda); } .od-durum--iyi i, .od-durum--temas i { background: var(--m-yolunda); }
+.od-ust { padding-top: 0; margin-top: -0.75rem; gap: 0.75rem; position: relative; z-index: 1; }
+.od-eylem { display: flex; gap: 0.5rem; }
+.od-mesaj { flex: 1; min-height: 48px; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.95rem var(--m-govde); display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+.od-yuvarlak { width: 48px; height: 48px; flex: none; border-radius: 50%; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); display: grid; place-items: center; cursor: pointer; box-shadow: 0 1px 2px rgba(40,30,20,.06); }
+.od-serit { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); background: var(--m-yuzey); border-radius: 18px; padding: 0.65rem 0.25rem; }
+.od-serit > div { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; text-align: center; min-width: 0; }
+.od-serit > div + div { border-left: 1px solid var(--m-cizgi); }
+.od-serit b { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; display: inline-flex; align-items: baseline; gap: 0.3rem; }
+.od-serit span { font-size: 0.7rem; font-weight: 700; color: var(--m-soluk); }
+.od-sonuk { color: var(--m-soluk); }
+.od-fark { font-style: normal; font-size: 0.72rem; font-weight: 800; }
+.od-fark--artis { color: var(--m-yolunda); } .od-fark--dusus { color: var(--m-acil); }
+.od-anahtar { display: flex; }
+.od-anahtar button { flex: 1; min-height: 40px; font-size: 0.9rem; }
+.od-govde { padding-top: 0.75rem; }
+/* Esnek .panel içinde ana-govde içeriği kadar daralıp ortalanmasın. */
+.ana-govde { width: 100%; box-sizing: border-box; }

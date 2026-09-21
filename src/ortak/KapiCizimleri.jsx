@@ -28,7 +28,7 @@ function Zemin({ mevsim }) {
   )
 }
 
-export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true }) {
+export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = null }) {
   const asili = ogrenciler.slice(0, 3)
   const fazla = ogrenciler.length - asili.length
   return (
@@ -38,10 +38,10 @@ export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true }) {
       <path d="M12 12 H104 L116 26 L104 40 H12 Z" fill="#8C5B45" stroke="#6B3D29" strokeWidth="2" />
       {mevsim === 'kis' && <path d="M12 12 q6 -5 14 -3 q12 -4 24 0 q14 -4 28 0 q14 -3 26 3 z" fill="#FFFFFF" />}
       <text x="62" y="30.5" textAnchor="middle" fontFamily="Fraunces, Georgia, serif" fontSize="12.5" fontWeight="600" fill="#FFF6EC">
-        {ogrenciler.length} öğrenci
+        {yazi ?? `${ogrenciler.length} öğrenci`}
       </text>
       {asili.map((o, i) => {
-        const x = 42 + i * 24
+        const x = asili.length === 1 ? 66 : 42 + i * 24
         return (
           <g key={o.bas + i}>
             <line x1={x} y1="40" x2={x} y2="47" stroke="#6B3D29" strokeWidth="1.4" />
