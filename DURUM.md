@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Vekalet görünümü sahneye alındı
+
+- Göz ikonuyla öğrencinin ekranına bakınca koyu üst şerit, "Yönetime dön" ve kutu içine sıkışmış tepe çıkıyordu. Artık öğrencinin sahneli ekranı tam genişlikte, aynen; tepede koyu "Bekir'in gözünden bakıyorsun" etiketi; geri düğmesi öğrencinin koç ekranına (Yol/Denemeler'deyken önce Bugün'e), zil o öğrenciyle yazışmaya; SOS ve profil çerçevesi yok. Türkçe ekler için `lib/turkce.js` (iyelik, belirtme).
+
 ## 22 Eylül 2026 — Yapılacaklar v2
 
 - Mokap onaylı. Yeni `bilesenler/Yapilacaklar.jsx` (eski KararKuyrugu'nun yerine; karmaşık kartlar GorusmeKarti / PlanKarti / IlhamKarti / KuyrukKarti olarak dışa açıldı ve açık kart olarak yeniden kullanılıyor). Bölümler: Önce bunlar (risk, görüşme, blok, acil/pencere) · Bugün (başvuru, konu onayı, analiz, hafiflet, ödeme…) · Bu hafta (veli özetleri tek kartta seçmeli toplu onay; kitap-söz, plan, konu tekrarı) · İyi haberler (tebrikler tek yeşil kartta toplu gönder). Yalnız bir kart açık, diğerleri tek satır.

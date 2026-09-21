@@ -1,3 +1,4 @@
+import { iyelik } from '../lib/turkce.js'
 import Islerim from '../bilesenler/Islerim.jsx'
 import OgrenciDenemeleri from '../bilesenler/OgrenciDenemeleri.jsx'
 import { BugunRutinler, BugunUnutma } from '../bilesenler/ProgramBugun.jsx'
@@ -242,7 +243,7 @@ export default function OgrenciPaneli({
             selam="Denemeler"
             tarih={gunBasligi(ozet?.bugun)}
             ozet={ozetMetni}
-            {...(vekaleten ? {} : tepe)}
+            {...tepe}
             onGeri={() => setSekme('bugun')}
             durum={fark ? <span className={`od-durum ${fark > 0 ? 'od-durum--iyi' : 'od-durum--acil'}`}><i />{fark > 0 ? '▲' : '▼'} {net(Math.abs(fark))} net {fark > 0 ? 'arttı' : 'düştü'}</span> : null}
             sagCizim={(mevsim) => <DenemeCizimi mevsim={mevsim} zemin={false} netler={netler} />}
@@ -255,7 +256,7 @@ export default function OgrenciPaneli({
           selam="Yol"
           tarih={gunBasligi(ozet?.bugun)}
           ozet={!yolOzeti ? ' ' : yolOzeti.toplam === 0 ? 'Konu konu nerede olduğun, sıradaki durak.' : `${yolOzeti.toplam} konudan ${yolOzeti.biten}'${yolOzeti.biten === 1 ? 'i' : 'u'} bitti.${yolOzeti.siradaki ? ` Sıradaki durak ${yolOzeti.siradaki}.` : ''}`}
-          {...(vekaleten ? {} : tepe)}
+          {...tepe}
           onGeri={() => setSekme('bugun')}
           durum={yolOzeti && yolOzeti.seri > 0 ? <span className="od-durum od-durum--seri"><i />{yolOzeti.seri === 1 ? 'Bugün çalıştın' : `${yolOzeti.seri} gündür her gün çalışıyorsun`}</span> : null}
           sagCizim={(mevsim) => <YolCizimi mevsim={mevsim} zemin={false} oran={yolOzeti?.toplam ? yolOzeti.biten / yolOzeti.toplam : 0} />}
@@ -268,8 +269,9 @@ export default function OgrenciPaneli({
           selam={ilkAdi ? `Merhaba ${ilkAdi}` : 'Merhaba'}
           tarih={gunBasligi(seciliGun ?? ozet?.bugun)}
           ozet={gunOzeti(ozet, dunOzeti)}
-          ekDugme={<AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
-          {...(vekaleten ? {} : tepe)}
+          ekDugme={vekaleten ? null : <AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
+          {...tepe}
+          durum={vekaleten ? <span className="od-durum od-durum--vekalet"><i />{ilkAdi ? `${iyelik(ilkAdi)} gözünden bakıyorsun` : 'Öğrencinin gözünden bakıyorsun'}</span> : undefined}
           /* Öğrencinin kendi fotoğraf çerçevesi; çerçeve ya da selam profili açar
              (22 Eylül 2026, koçla aynı). Koç gözüyle bakarken yok. */
           onBaslik={vekaleten ? null : tepe?.onProfil}

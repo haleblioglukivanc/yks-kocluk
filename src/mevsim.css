@@ -1457,3 +1457,6 @@ button.isl-hc:disabled { cursor: default; }
 .od-giris > :nth-child(3) { animation-delay: .12s; }
 .od-giris > :nth-child(n+4) { animation-delay: .18s; }
 @media (prefers-reduced-motion: reduce) { .od-giris > * { animation: none; } }
+/* Vekalet: öğrencinin ekranına koç gözüyle bakılırken tepede işaret. */
+.od-durum--vekalet { background: var(--m-murekkep); color: #fff; }
+.od-durum--vekalet i { background: #F6D36B; }

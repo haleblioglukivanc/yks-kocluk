@@ -469,7 +469,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/ogrenciler' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler')))
+  const anaSayfada = (kocMu && Boolean(gozuyleId)) || (!gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/ogrenciler' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler'))))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -551,6 +551,15 @@ export default function App() {
           sekme={gozuyleSekme}
           onSekme={(k) => git(gozuyleYolu(k))}
           onGit={git}
+          /* Vekalet (22 Eylül 2026): öğrencinin sahneli ekranı aynen; koyu
+             üst şerit ve "Yönetime dön" yok. Geri → öğrencinin koç ekranı,
+             zil → o öğrenciyle yazışma. */
+          tepe={{
+            onGeri: () => git(gozuyleSekme === 'bugun' ? `/ogrenci/${gozuyleId}` : gozuyleYolu('bugun')),
+            gelenKutusu: true,
+            rozet: 0,
+            onZil: () => git(`/mesajlar/${gozuyleId}`),
+          }}
         />
       )
     /* Yönetim paneli kalktı (22 Eylül 2026): parçaları profildeki satırlardan
