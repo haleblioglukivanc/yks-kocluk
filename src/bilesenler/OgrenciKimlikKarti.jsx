@@ -1,9 +1,7 @@
-import Sayan from './Sayan.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { sebepCumlesi } from './OgrenciSatiri.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
-import { TabelaCizimi } from '../ortak/KapiCizimleri.jsx'
 import { AltSayfa, Dugme, Uyari } from './Ortak.jsx'
 import { temasMetni } from '../lib/temas.js'
 import { hataMetni } from '../lib/supabase.js'
@@ -13,11 +11,6 @@ const RISK_ADI = { iyi: 'Yolunda', izle: 'İzle', acil: 'Önce bu' }
 
 const kapaliSinifi = (koc, aktif) => (koc && !aktif ? ' kimlik-kart--kapali' : '')
 
-/** Haftanın kalan günü; hedef yüzdesinin yanına "3 gün kaldı" için. */
-function kalanGun() {
-  const g = new Date().getDay() // 0 Paz
-  return g === 0 ? 0 : 7 - g
-}
 
 /** Tabloda tutulan seri yalnızca aktivite oldukça güncelleniyor.
  *  Son aktiflik dünden eskiyse seri kopmuştur; okurken düzeltiyoruz. */
@@ -119,11 +112,8 @@ export default function OgrenciKimlikKarti({
     ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null,
   ].filter(Boolean)
 
-  const gosterilenNet =
-    netDurumu?.tyt?.son_net ?? netDurumu?.ayt?.son_net ?? null
   const riskSeviyesi = ek?.risk?.risk_seviyesi ?? null
   const yuzde = ek?.risk?.tamamlama_yuzdesi
-  const kalan = kalanGun()
 
   /* Uyarı cümlesi liste satırındakiyle aynı üretici: koç listede ne
      okuduysa detayda da onu görür. Sorun yoksa satır hiç çizilmez. */
@@ -151,7 +141,6 @@ export default function OgrenciKimlikKarti({
         ? (uyariVar && uyari ? uyari : RISK_ADI[riskSeviyesi] ?? riskSeviyesi)
         : null
   const durumTuru = !aktif ? 'kapali' : temasMetni(temas) && ['atildi', 'gorusuldu', 'yanit', 'hareket'].includes(temas?.durum) ? 'temas' : riskSeviyesi
-  const basHarf = ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const bugunTarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')
 
   return (
@@ -162,11 +151,8 @@ export default function OgrenciKimlikKarti({
         {...tepe}
         onGeri={onGeri}
         onBaslik={kocGorunumu ? onProfil : null}
-        altBaslik={cipler.join(', ') || null}
+        altBaslik={[cipler.join(', '), yuzde != null ? `bu hafta %${Math.round(yuzde)}` : null].filter(Boolean).join(' · ') || null}
         durum={kocGorunumu && durumMetni ? <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span> : null}
-        sagCizim={(mevsim) => (
-          <TabelaCizimi mevsim={mevsim} zemin={false} yazi={ad.split(' ')[0]} ogrenciler={[{ bas: basHarf, durum: riskSeviyesi }]} />
-        )}
       />
       <div className="od-ust ana-govde ana-govde--dar">
         {kocGorunumu && (
@@ -183,17 +169,6 @@ export default function OgrenciKimlikKarti({
             </button>
           </div>
         )}
-        <div className="od-serit">
-          <div><b>{yuzde != null ? <Sayan on="%" deger={yuzde} /> : '—'}</b><span>bu hafta{kalan > 0 ? `, ${kalan} gün var` : ', son gün'}</span></div>
-          <div><b>{ek?.seri ?? 0} gün</b><span>seri</span></div>
-          <div>
-            <b className={gosterilenNet == null ? 'od-sonuk' : ''}>
-              {gosterilenNet != null ? Number(gosterilenNet).toFixed(1).replace('.', ',') : '—'}
-              {netFarki != null && netFarki !== 0 && <i className={`od-fark od-fark--${netFarki > 0 ? 'artis' : 'dusus'}`}>{netFarki > 0 ? '▲' : '▼'}{Math.abs(netFarki).toFixed(1).replace('.', ',')}</i>}
-            </b>
-            <span>son net</span>
-          </div>
-        </div>
         {children}
       </div>
       {gorusmeAcik && (

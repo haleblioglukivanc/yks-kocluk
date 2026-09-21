@@ -843,3 +843,5 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .ana-baslik-dugme { max-width: 100%; width: 100%; }
 .od-durum { max-width: 100%; }
 .ana-tepe:has(.ana-tepe-cizim) .ana-baslik-dugme h1 { max-width: 100%; }
+/* Bütün tepeler aynı boy (tabelasız öğrenci detayı dahil). */
+@media (max-width: 40rem) { .ana-tepe, .ana-tepe:has(.ana-tepe-cizim) { min-height: 21rem; } }

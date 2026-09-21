@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci detayı sadeleşti
+
+- Bekir: ad zaten kocaman yazıyor, tabelaya gerek yok; %56 / seri / son net şeridine gerek yok. Tabela kalktı (yerine mevsim dalı), ölçü şeridi kalktı; haftalık yüzde alt başlığa taşındı ("12. sınıf, Sayısal · bu hafta %56"), son net Denemeler'de, gecikme durumu etiketinde.
+- Telefonda bütün `.ana-tepe`'ler 21rem: ana ekran, Öğrencilerim, Yapılacaklar ve öğrenci detayı aynı boy.
+
 ## 22 Eylül 2026 — Tepe her ekranda aynı boy
 
 - Öğrenci detayında uzun ad üç satıra, uzun durum cümlesi iki satıra kırılıp tepeyi büyütüyordu. Ad ve durum tek satır (sığmazsa üç nokta), ad tam genişlik (tabela ağaç hizasında olduğu için çakışmıyor). Ana ekran, Öğrencilerim, Yapılacaklar ve öğrenci detayında tepe aynı yükseklikte. Ölçü şeridindeki %56 da artık diğer sayılarla aynı puntoda.
