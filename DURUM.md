@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrencilerim yenilendi, çizimler tepelere indi
+
+- Mokap onaylı ("Ok"). `OgrenciNabzi.jsx` yeniden yazıldı: satırda ders şeritleri yok (bugünün işleri öğrenci detayında). Her satır: bugünün ilerleme halkası (risk renginde), tek satır durum (son giriş ya da bugünkü temas: "Mesaj atıldı · 10:12"), 7 günlük ritim + "bugün x / n iş", sağda mesaj (→ /mesajlar/:id) ve Görüştük (`koc_gorustum`, telefon) düğmeleri.
+- Eski listeden geri gelenler: her zaman görünen arama; süzgeçler (Tümü / Önce bunlar / Bugün girmeyenler / Plansız, sayılı); toplu mesaj kartı (öncelikli ve bugün dokunulmamış öğrencilere `TopluDurtme`); Önce bunlar / İzle / Yolunda grupları. Renk açıklaması kapalı "Halka ve noktalar ne anlatıyor?" satırında.
+- Yapılacaklar'daki posta kutusu ve Öğrencilerim'deki tabela gökyüzünden indi, tepelerin üstünde duruyor.
+
 ## 22 Eylül 2026 — Yapılacaklar ve Öğrencilerim ana ekranla aynı
 
 - Bekir: bu ekranların tasarımı çok değişmesin, ekran aynı kalsın; Yapılacaklar'da posta kutusu, Öğrencilerim'de tabela sahnenin sağ üstüne çıksın, içerik altta yine olsun. Yeni mokap (açılır kartlar, toplu veli onayı) istenmedi.

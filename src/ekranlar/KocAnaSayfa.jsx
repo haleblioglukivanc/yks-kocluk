@@ -233,7 +233,7 @@ export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
 }
 
 /* Tabelanın arkası: aynı ekran; sağ üstte tabela, altında öğrenciler. */
-export function OgrencilerimEkrani({ onOgrenciAc, tepe }) {
+export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, tepe }) {
   const [riskler, setRiskler] = useState(null)
   useEffect(() => {
     let iptal = false
@@ -257,8 +257,8 @@ export function OgrencilerimEkrani({ onOgrenciAc, tepe }) {
         {...tepe}
         sagCizim={(mevsim) => <TabelaCizimi mevsim={mevsim} zemin={false} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))} />}
       />
-      <div className="ana-govde">
-        <OgrenciNabzi onOgrenciAc={onOgrenciAc} />
+      <div className="ana-govde ana-govde--dar">
+        <OgrenciNabzi onOgrenciAc={onOgrenciAc} onMesaj={onMesaj} />
       </div>
     </div>
   )

@@ -1,230 +1,217 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
-import { Avatar } from './Fotograf.jsx'
-import { dersGorunumu } from '../lib/dersGorunum.js'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
+import { dokunulduMu, temasMetni } from '../lib/temas.js'
+import TopluDurtme from './TopluDurtme.jsx'
 
-/* "Öğrencilerim" — koç ana sayfasının akış bölümü (21 Eylül 2026).
-   Eski Öğrenciler sekmesinin listesi ile "bugünün tablosu" tek yerde:
-   her satırda bugünün işleri canlı, yanında son 7 günün ritmi.
-   Ritim noktası: dolu = günü tamamladı (%80+), halka = kısmen,
-   ince halka = plan vardı çalışmadı, çizgi = o gün plan yok. */
+/* Öğrencilerim (22 Eylül 2026, Bekir'in onayladığı mokap). Ekranın sorusu
+   "kime dokunmalıyım": satırda ders listesi yok. Her satırda bugünün
+   ilerleme halkası, tek satır durum, 7 günlük ritim ve iki hızlı düğme
+   (mesaj, görüştük). Bugünün işleri tek tek öğrenci detayında.
+   Eski listeden geri gelenler: arama, süzgeçler, toplu mesaj, gruplar. */
 
-const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
+const GRUPLAR = [
+  ['acil', 'Önce bunlar', 'var(--m-acil)'],
+  ['izle', 'İzle', 'var(--m-dikkat)'],
+  ['iyi', 'Yolunda', 'var(--m-yolunda)'],
+]
+const HALKA = { acil: 'var(--m-acil)', izle: 'var(--m-dikkat)', iyi: 'var(--m-yolunda)' }
+const CEVRE = 2 * Math.PI * 21
 
 function sonHareket(r) {
-  if (!r?.son_aktiflik) return { metin: 'Henüz giriş yok', tur: 'dikkat' }
+  if (!r?.son_aktiflik) return { metin: 'Henüz giriş yok', tur: 'dikkat', bugun: false }
   const t = new Date(r.son_aktiflik)
-  const bugun = new Date()
-  const gunFarki = Math.floor((new Date(bugun.toDateString()) - new Date(t.toDateString())) / 86400000)
-  if (gunFarki <= 0) {
-    return { metin: `Bugün ${t.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, tur: 'iyi' }
-  }
-  if (gunFarki === 1) return { metin: 'Dün girdi', tur: 'notr' }
-  return { metin: `${gunFarki} gündür giriş yok`, tur: 'dikkat' }
+  const gunFarki = Math.floor((new Date(new Date().toDateString()) - new Date(t.toDateString())) / 86400000)
+  if (gunFarki <= 0) return { metin: `Bugün ${t.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, tur: 'iyi', bugun: true }
+  if (gunFarki === 1) return { metin: 'Dün girdi', tur: 'notr', bugun: false }
+  return { metin: `${gunFarki} gündür yok`, tur: 'dikkat', bugun: false }
 }
 
-export default function OgrenciNabzi({ onOgrenciAc }) {
+export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState('')
   const [arama, setArama] = useState('')
   const [suzgec, setSuzgec] = useState('tumu')
+  const [topluAcik, setTopluAcik] = useState(false)
+  const [bekleyen, setBekleyen] = useState(null)
 
   const bugun = yerelIso(new Date())
   const ilk = gunEkle(bugun, -6)
   const gunler = useMemo(() => Array.from({ length: 7 }, (_, i) => gunEkle(ilk, i)), [ilk])
 
-  useEffect(() => {
-    let iptal = false
-    ;(async () => {
-      const { data: oturum } = await supabase.auth.getSession()
-      const benimId = oturum?.session?.user?.id
-      if (!benimId) return
-      const [o, r] = await Promise.all([
-        supabase
-          .from('ogrenciler')
-          .select('id, sinif, alan, aktif, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu)')
-          .eq('koc_id', benimId)
-          .eq('aktif', true),
-        supabase
-          .from('ogrenci_risk')
-          .select('ogrenci_id, risk_seviyesi, risk_ham, son_aktiflik')
-          .eq('koc_id', benimId),
-      ])
-      if (o.error) {
-        if (!iptal) setHata(hataMetni(o.error))
-        return
-      }
-      const idler = (o.data ?? []).map((x) => x.id)
-      let gorevler = []
-      if (idler.length) {
-        const g = await supabase
-          .from('gorevler')
-          .select('id, ogrenci_id, tarih, tur, baslik, durum, hedef_adet, yapilan_adet, dersler(ad), konular(ad)')
-          .in('ogrenci_id', idler)
-          .gte('tarih', ilk)
-          .lte('tarih', bugun)
-          .order('id')
-        if (g.error) {
-          if (!iptal) setHata(hataMetni(g.error))
-          return
-        }
-        gorevler = g.data ?? []
-      }
-      if (iptal) return
-      setHata('')
-      setVeri({
-        ogrenciler: o.data ?? [],
-        riskler: Object.fromEntries((r.data ?? []).map((x) => [x.ogrenci_id, x])),
-        gorevler,
-      })
-    })()
-    return () => { iptal = true }
+  const yukle = useCallback(async () => {
+    const { data: oturum } = await supabase.auth.getSession()
+    const benimId = oturum?.session?.user?.id
+    if (!benimId) return
+    const [o, r, t] = await Promise.all([
+      supabase.from('ogrenciler').select('id, sinif, alan, aktif, profiller!ogrenciler_id_fkey(ad_soyad, fotograf_yolu)').eq('koc_id', benimId).eq('aktif', true),
+      supabase.from('ogrenci_risk').select('ogrenci_id, risk_seviyesi, risk_ham, son_aktiflik').eq('koc_id', benimId),
+      supabase.rpc('koc_temas_durumlari'),
+    ])
+    if (o.error) { setHata(hataMetni(o.error)); return }
+    const idler = (o.data ?? []).map((x) => x.id)
+    let gorevler = []
+    if (idler.length) {
+      const g = await supabase.from('gorevler').select('id, ogrenci_id, tarih, durum').in('ogrenci_id', idler).gte('tarih', ilk).lte('tarih', bugun)
+      if (g.error) { setHata(hataMetni(g.error)); return }
+      gorevler = g.data ?? []
+    }
+    setHata('')
+    setVeri({
+      ogrenciler: o.data ?? [],
+      riskler: Object.fromEntries((r.data ?? []).map((x) => [x.ogrenci_id, x])),
+      temaslar: Object.fromEntries((t.data ?? []).map((x) => [x.ogrenci_id, x])),
+      gorevler,
+    })
   }, [ilk, bugun])
+
+  useEffect(() => { yukle() }, [yukle])
 
   const satirlar = useMemo(() => {
     if (!veri) return []
     return veri.ogrenciler
       .map((o) => {
         const risk = veri.riskler[o.id] ?? null
+        const temas = veri.temaslar[o.id] ?? null
         const kendi = veri.gorevler.filter((g) => g.ogrenci_id === o.id)
         const bugunku = kendi.filter((g) => g.tarih === bugun)
+        const biten = bugunku.filter((g) => g.durum === 'tamamlandi').length
         const ritim = gunler.map((gun) => {
           const liste = kendi.filter((g) => g.tarih === gun)
           const oran = liste.length ? liste.filter((g) => g.durum === 'tamamlandi').length / liste.length : 0
-          const bugunMu = gun === bugun
-          let d = 'y'
-          if (liste.length) d = oran >= 0.8 ? 't' : bugunMu ? 'n' : oran > 0 ? 'k' : 'b'
-          const ad = GUN[new Date(`${gun}T00:00:00`).getDay()]
-          const aciklama = { y: 'plan yok', t: 'tamamladı', k: 'kısmen', b: 'çalışmadı', n: 'sürüyor' }[d]
-          return { gun, d, etiket: `${ad}: ${aciklama}` }
+          if (!liste.length) return 'y'
+          if (oran >= 0.8) return 't'
+          if (gun === bugun) return 'n'
+          return oran > 0 ? 'k' : 'b'
         })
-        const biten = bugunku.filter((g) => g.durum === 'tamamlandi').length
+        const son = sonHareket(risk)
+        const seviye = risk?.risk_seviyesi ?? 'izle'
         return {
-          id: o.id,
-          ad: o.profiller?.ad_soyad ?? 'Öğrenci',
-          foto: o.profiller?.fotograf_yolu ?? null,
-          risk,
-          son: sonHareket(risk),
-          bugunku,
-          biten,
-          toplam: bugunku.length,
-          ritim,
+          o, id: o.id, ad: o.profiller?.ad_soyad ?? 'Öğrenci', risk, temas, seviye, son, ritim,
+          biten, toplam: bugunku.length,
+          dokunuldu: dokunulduMu(temas) && temas?.zaman && new Date(temas.zaman).toDateString() === new Date().toDateString(),
         }
       })
       .sort((a, b) => (b.risk?.risk_ham ?? -1) - (a.risk?.risk_ham ?? -1))
   }, [veri, gunler, bugun])
 
+  const suzgecler = [
+    ['tumu', 'Tümü', () => true],
+    ['acil', 'Önce bunlar', (s) => s.seviye === 'acil'],
+    ['girmedi', 'Bugün girmeyenler', (s) => !s.son.bugun],
+    ['plansiz', 'Plansız', (s) => s.toplam === 0],
+  ]
+  const aktifSuzgec = suzgecler.find((x) => x[0] === suzgec)[2]
   const aranan = arama.trim().toLocaleLowerCase('tr')
-  const gorunen = satirlar.filter(
-    (s) =>
-      (suzgec === 'tumu' || ['acil', 'izle'].includes(s.risk?.risk_seviyesi)) &&
-      (!aranan || s.ad.toLocaleLowerCase('tr').includes(aranan)),
-  )
+  const gorunen = satirlar.filter((s) => aktifSuzgec(s) && (!aranan || s.ad.toLocaleLowerCase('tr').includes(aranan)))
+  /* Toplu mesaj: öncelikli ve bugün henüz dokunulmamış öğrenciler. Mesaj
+     ya da görüşme kaydı olan öğrenciye ikinci kez gitmez. */
+  const durtmeHedefi = satirlar.filter((s) => s.seviye === 'acil' && !dokunulduMu(s.temas)).map((s) => s.o)
+
+  async function gorustuk(id) {
+    setBekleyen(id)
+    const { error } = await supabase.rpc('koc_gorustum', { p_ogrenci: id, p_tur: 'telefon', p_not: '' })
+    setBekleyen(null)
+    if (error) { setHata(hataMetni(error)); return }
+    yukle()
+  }
 
   return (
-    <section className="ana-bolum ana-kart ogrenci-nabzi" aria-label="Öğrencilerim">
-      <div className="ana-bolum-bas">
-        <div className="ana-bolum-baslik">
-          <h2>Öğrencilerim</h2>
-          <p>Bugünün işleri canlı; noktalar son 7 günün ritmi.</p>
-        </div>
-        <div className="on-arac">
-          {satirlar.length > 6 && (
-          <label className="on-ara">
-            <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-              <circle cx="11" cy="11" r="6.5" />
-              <path d="M16 16l4 4" />
-            </svg>
-            <input
-              type="search"
-              value={arama}
-              onChange={(e) => setArama(e.target.value)}
-              placeholder="Öğrenci ara"
-              aria-label="Öğrenci ara"
-            />
-          </label>
-          )}
-          <div className="ana-anahtar" role="group" aria-label="Süzgeç">
-            <button type="button" aria-pressed={suzgec === 'tumu'} onClick={() => setSuzgec('tumu')}>Tümü</button>
-            <button type="button" aria-pressed={suzgec === 'dikkat'} onClick={() => setSuzgec('dikkat')}>Dikkat</button>
-          </div>
+    <div className="on2">
+      <div className="on2-arac">
+        <label className="on2-ara">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4 4" /></svg>
+          <input type="search" value={arama} onChange={(e) => setArama(e.target.value)} placeholder="Öğrenci ara" aria-label="Öğrenci ara" />
+        </label>
+        <div className="on2-suz" role="group" aria-label="Süzgeç">
+          {suzgecler.map(([k, ad, f]) => (
+            <button key={k} type="button" aria-pressed={suzgec === k} onClick={() => setSuzgec(k)}>
+              {ad}<span>{satirlar.filter(f).length}</span>
+            </button>
+          ))}
         </div>
       </div>
 
       {hata && <p className="ana-hata">{hata}</p>}
 
-      {!veri && !hata ? (
-        <div className="on-liste" aria-busy="true">
-          {[0, 1, 2].map((i) => <div key={i} className="on-satir on-satir--bekle" />)}
-        </div>
-      ) : veri && veri.ogrenciler.length === 0 ? (
-        <div className="gd-bos">
-          <strong>Henüz öğrencin yok.</strong>
-          <span>Hesap menüsündeki Yönetim'den ilk öğrencini ekleyebilirsin.</span>
-        </div>
-      ) : (
-        <div className="on-liste">
-          <div className="on-baslik" aria-hidden="true">
-            <span>Öğrenci</span>
-            <span>Bugünün işleri</span>
-            <span>Son 7 gün</span>
-            <span>Bugün</span>
-          </div>
-          {gorunen.map((s) => (
-            <button key={s.id} type="button" className="on-satir" onClick={() => onOgrenciAc?.(s.id)}>
-              <span className="on-kim">
-                <Avatar yol={s.foto} ad={s.ad} boyut="orta" />
-                <span className="on-kim-yazi">
-                  <b>{s.ad}</b>
-                  <span className={`on-son on-son--${s.son.tur}`}>{s.son.metin}</span>
-                </span>
-              </span>
-              <span className="on-isler">
-                {s.bugunku.length === 0 ? (
-                  <span className="on-bos">Bugün için plan yok</span>
-                ) : (
-                  s.bugunku.map((g) => {
-                    const ders = g.dersler?.ad ?? null
-                    const ad = g.konular?.ad || g.baslik || ders || 'Çalışma'
-                    const bitti = g.durum === 'tamamlandi'
-                    const kismen = !bitti && (g.yapilan_adet ?? 0) > 0
-                    return (
-                      <span key={g.id} className={`on-is${bitti ? ' on-is--bitti' : kismen ? ' on-is--kismen' : ''}`}>
-                        {bitti ? (
-                          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="var(--m-yolunda)" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" aria-label="bitti">
-                            <path d="M5 12.5l4.5 4.5L19 7" />
-                          </svg>
-                        ) : (
-                          <i className={kismen ? 'on-nokta on-nokta--canli' : 'on-nokta'} aria-label={kismen ? 'sürüyor' : 'bekliyor'} />
-                        )}
-                        <i className="on-ders" style={{ background: dersGorunumu(ders).renk }} aria-hidden="true" />
-                        {ad}
-                      </span>
-                    )
-                  })
-                )}
-              </span>
-              <span className="on-ritim" role="img" aria-label={`Son 7 gün: ${s.ritim.map((r) => r.etiket).join(', ')}`}>
-                <i className="on-ritim-cizgi" aria-hidden="true" />
-                {s.ritim.map((r) => <i key={r.gun} className={`on-r on-r--${r.d}`} />)}
-              </span>
-              <span className="on-bugun">
-                <b>{s.toplam ? `${s.biten} / ${s.toplam}` : '—'}</b>
-                <span className="on-cubuk"><span style={{ width: s.toplam ? `${Math.round((s.biten / s.toplam) * 100)}%` : 0 }} /></span>
-              </span>
-            </button>
-          ))}
-          {gorunen.length === 0 && <p className="on-bos on-bos--satir">Bu süzgece uyan öğrenci yok.</p>}
-          <div className="on-aciklama" aria-hidden="true">
-            <span><i className="on-r on-r--t" />günü tamamladı</span>
-            <span><i className="on-r on-r--k" />kısmen</span>
-            <span><i className="on-r on-r--b" />çalışmadı</span>
-            <span><i className="on-r on-r--n" />bugün, sürüyor</span>
-            <span><i className="on-r on-r--y" />plan yok</span>
-          </div>
+      {durtmeHedefi.length > 0 && !topluAcik && (
+        <div className="on2-toplu">
+          <p><b>{durtmeHedefi.length} öğrenciye</b> bugün henüz dokunulmadı. Hepsine aynı kısa mesajı gönder.</p>
+          <button type="button" onClick={() => setTopluAcik(true)}>Toplu mesaj</button>
         </div>
       )}
-    </section>
+      {topluAcik && (
+        <TopluDurtme ogrenciler={durtmeHedefi} onKapat={() => setTopluAcik(false)} onGonderildi={() => { setTopluAcik(false); yukle() }} />
+      )}
+
+      {!veri && !hata ? (
+        <div className="on2-grup" aria-busy="true"><div className="on2-bekle" /><div className="on2-bekle" /></div>
+      ) : veri && veri.ogrenciler.length === 0 ? (
+        <div className="gd-bos"><strong>Henüz öğrencin yok.</strong><span>Hesap menüsündeki Yönetim'den ilk öğrencini ekleyebilirsin.</span></div>
+      ) : gorunen.length === 0 ? (
+        <div className="gd-bos"><strong>Eşleşen öğrenci yok.</strong><span>Aramayı ya da süzgeci değiştir.</span></div>
+      ) : (
+        GRUPLAR.map(([seviye, ad, renk]) => {
+          const liste = gorunen.filter((s) => (s.seviye === seviye) || (seviye === 'izle' && !['acil', 'iyi'].includes(s.seviye)))
+          if (!liste.length) return null
+          return (
+            <section key={seviye} className="on2-grup" aria-label={ad}>
+              <div className="on2-grup-bas"><i style={{ background: renk }} />{ad}</div>
+              {liste.map((s) => {
+                const oran = s.toplam ? s.biten / s.toplam : 0
+                const temasYazi = s.dokunuldu ? temasMetni(s.temas) : null
+                return (
+                  <div key={s.id} className="on2-satir">
+                    <button type="button" className="on2-ac" onClick={() => onOgrenciAc?.(s.id)} aria-label={`${s.ad}, detayı aç`}>
+                      <span className="on2-halka">
+                        <svg viewBox="0 0 48 48" aria-hidden="true">
+                          <circle cx="24" cy="24" r="21" fill="none" stroke="var(--m-yumusak)" strokeWidth="4" />
+                          {oran > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke={HALKA[s.seviye] ?? 'var(--m-vurgu)'} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${oran * CEVRE} ${CEVRE}`} transform="rotate(-90 24 24)" />}
+                        </svg>
+                        <span>{s.ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')}</span>
+                      </span>
+                      <span className="on2-yazi">
+                        <b>{s.ad}</b>
+                        <span className="on2-alt">
+                          {temasYazi ? (
+                            <em className="on2-yesil">{temasYazi}</em>
+                          ) : (
+                            <em className={s.son.tur === 'dikkat' ? 'on2-kirmizi' : s.son.tur === 'iyi' ? 'on2-yesil' : ''}>{s.son.metin}</em>
+                          )}
+                        </span>
+                        <span className="on2-ritim">
+                          <span className="on2-noktalar" aria-label="Son 7 gün">{s.ritim.map((d, i) => <i key={i} className={`on2-r on2-r--${d}`} />)}</span>
+                          <span className="on2-bugun">{s.toplam ? <>bugün <b>{s.biten} / {s.toplam}</b> iş</> : 'bugün plan yok'}</span>
+                        </span>
+                      </span>
+                    </button>
+                    <span className="on2-eylem">
+                      <button type="button" aria-label={`${s.ad.split(' ')[0]}'e mesaj`} onClick={() => onMesaj?.(s.id)}>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5h16v11H9l-5 4z" /></svg>
+                      </button>
+                      <button type="button" className={s.dokunuldu ? 'on2-yapildi' : ''} disabled={bekleyen === s.id} aria-label={`${s.ad.split(' ')[0]} ile görüştük`} onClick={() => gorustuk(s.id)}>
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
+                      </button>
+                    </span>
+                  </div>
+                )
+              })}
+            </section>
+          )
+        })
+      )}
+
+      <details className="on2-lejant">
+        <summary>Halka ve noktalar ne anlatıyor?</summary>
+        <p>Halka bugünün işlerinden ne kadarının bittiğini gösterir. Noktalar son 7 gün:</p>
+        <div>
+          <span><i className="on2-r on2-r--t" />günü tamamladı</span>
+          <span><i className="on2-r on2-r--k" />kısmen</span>
+          <span><i className="on2-r on2-r--b" />çalışmadı</span>
+          <span><i className="on2-r on2-r--n" />bugün</span>
+          <span><i className="on2-r on2-r--y" />plan yok</span>
+        </div>
+      </details>
+    </div>
   )
 }

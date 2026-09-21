@@ -586,7 +586,7 @@ export default function App() {
         />
       )
     if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
-    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
+    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onMesaj={(id) => git(`/mesajlar/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu)
       return <KocAnaSayfa profil={profil} onGit={git} tepe={anaTepe} />
     if (profil.rol === 'veli') return <VeliPaneli profil={profil} />
