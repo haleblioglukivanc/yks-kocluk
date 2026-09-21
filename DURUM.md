@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci ekle geri geldi
+
+- Eski Öğrenciler listesiyle birlikte ulaşılamaz olmuştu. Öğrencilerim'de arama kutusunun yanında koyu "Ekle" hapı; aynı `OgrenciFormu` (ad, e-posta, katalog, sınıf; geçici şifre üretir) alt sayfada açılır, eklenince liste tazelenir.
+- Yönetim paneli için karar bekliyor (Bekir: tamamen kaldıralım; tek koç aynı zamanda yönetici; iş büyürse yeniden kurulur).
+
 ## 22 Eylül 2026 — Veli kalıntıları temizlendi
 
 - Karar hatırlatması (Bekir): veli uygulamaya girmiyor, yalnız mesaj (SMS/WhatsApp) alıyor. Veritabanında veli hesabı yok (profiller.rol='veli' = 0). Arayüzden kalkanlar: Mesajlar'daki "Veliler" süzgeci (ve olası veli kişileri), Bildirimler'de veliden mesaj satırı, öğrenci profilinin Hesap bölümündeki veli hesabı satırı (`VeliHesaplari`), notlardaki "Veli de görsün" seçeneği. Kalanlar: velinin telefonu ve KVKK onayı (İletişim), haftalık özet ve ödeme mesajları, Yönetim'deki veli/izin listesi.

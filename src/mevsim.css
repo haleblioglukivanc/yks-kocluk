@@ -1370,3 +1370,6 @@ button.isl-hc:disabled { cursor: default; }
   .od-portre::before { animation: none; opacity: .25; transform: translate(-50%, -50%) scale(1.12); }
   .od-portre::after { display: none; }
 }
+.on2-ara-satir { display: flex; gap: 0.5rem; align-items: stretch; }
+.on2-ara-satir .on2-ara { flex: 1; }
+.on2-ekle { flex: none; min-height: 46px; padding: 0 1rem; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.85rem var(--m-govde); display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }

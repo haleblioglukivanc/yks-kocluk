@@ -3,6 +3,8 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
 import { dokunulduMu, temasMetni } from '../lib/temas.js'
 import TopluDurtme from './TopluDurtme.jsx'
+import { AltSayfa, Dugme } from './Ortak.jsx'
+import { OgrenciFormu } from '../ekranlar/Ogrencilerim.jsx'
 import { useFotograf } from './Fotograf.jsx'
 
 /* Öğrencilerim (22 Eylül 2026, Bekir'in onayladığı mokap). Ekranın sorusu
@@ -35,12 +37,20 @@ function OgrenciBasi({ yol, ad }) {
   return <span>{foto ? <img className="portre-foto" src={foto} alt="" /> : bas}</span>
 }
 
-export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
+export default function OgrenciNabzi({ onOgrenciAc, onMesaj, onEkle = true }) {
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState('')
   const [arama, setArama] = useState('')
   const [suzgec, setSuzgec] = useState('tumu')
   const [topluAcik, setTopluAcik] = useState(false)
+  /* Öğrenci ekle (22 Eylül 2026): eski listeyle birlikte kaybolmuştu;
+     arama kutusunun yanına geri geldi. Form aynı (geçici şifre üretir). */
+  const [ekleAcik, setEkleAcik] = useState(false)
+  const [kataloglar, setKataloglar] = useState([])
+  useEffect(() => {
+    if (!ekleAcik || kataloglar.length) return
+    supabase.from('kataloglar').select('id, ad, tur, seviye, alan').is('koc_id', null).order('sira').then(({ data }) => setKataloglar(data ?? []))
+  }, [ekleAcik, kataloglar.length])
 
   const bugun = yerelIso(new Date())
   const ilk = gunEkle(bugun, -6)
@@ -119,10 +129,18 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
   return (
     <div className="on2">
       <div className="on2-arac">
+        <div className="on2-ara-satir">
         <label className="on2-ara">
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5" /><path d="M16 16l4 4" /></svg>
           <input type="search" value={arama} onChange={(e) => setArama(e.target.value)} placeholder="Öğrenci ara" aria-label="Öğrenci ara" />
         </label>
+        {onEkle !== false && (
+          <button type="button" className="on2-ekle" onClick={() => setEkleAcik(true)} aria-label="Öğrenci ekle">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+            Ekle
+          </button>
+        )}
+        </div>
         <div className="on2-suz" role="group" aria-label="Süzgeç">
           {suzgecler.map(([k, ad, f]) => (
             <button key={k} type="button" aria-pressed={suzgec === k} onClick={() => setSuzgec(k)}>
@@ -132,6 +150,11 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
         </div>
       </div>
 
+      {ekleAcik && (
+        <AltSayfa baslik="Öğrenci ekle" onKapat={() => setEkleAcik(false)} dugmeler={<Dugme tur="ikincil" onClick={() => setEkleAcik(false)}>Kapat</Dugme>}>
+          <OgrenciFormu kataloglar={kataloglar} onEklendi={yukle} />
+        </AltSayfa>
+      )}
       {hata && <p className="ana-hata">{hata}</p>}
 
       {durtmeHedefi.length > 0 && !topluAcik && (

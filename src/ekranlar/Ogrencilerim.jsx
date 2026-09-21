@@ -236,7 +236,7 @@ export default function Ogrencilerim({ onOgrenciAc, onGit, seciliId = null }) {
   )
 }
 
-function OgrenciFormu({ kataloglar, onEklendi }) {
+export function OgrenciFormu({ kataloglar, onEklendi }) {
   const [adSoyad, setAdSoyad] = useState('')
   const [eposta, setEposta] = useState('')
   const [katalogId, setKatalogId] = useState('')
