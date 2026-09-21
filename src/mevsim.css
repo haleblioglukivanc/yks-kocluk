@@ -495,8 +495,10 @@ html .uygulama .dikkat .dugme--ikincil {
    hafif bir gölge. */
 .ana-tepe::before {
   content: ''; position: absolute; left: 0; right: 0; top: 0; z-index: 1; pointer-events: none;
-  height: calc(env(safe-area-inset-top, 0px) + 1.5rem);
-  background: linear-gradient(180deg, rgba(20, 12, 8, .28), transparent);
+  /* Yalnız saatin altına uzanıldığında: güvenli alan yoksa yükseklik 0,
+     tepenin ortasında koyu bir şerit kalmaz. */
+  height: calc(env(safe-area-inset-top, 0px) * 1.6);
+  background: linear-gradient(180deg, rgba(20, 12, 8, .26), transparent);
 }
 .ana-ust-satir { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
 .ana-ust-satir .ana-mevsim { margin-bottom: 0; }
