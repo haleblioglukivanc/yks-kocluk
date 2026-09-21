@@ -129,3 +129,22 @@ export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk
     </svg>
   )
 }
+
+/* Mesajlar: gökyüzünde süzülen kâğıt uçak; üstünde okunmamış sayısı. */
+export function UcakCizimi({ sayi = 0 }) {
+  return (
+    <svg className="kapi-cizim ucak-cizim" viewBox="0 0 110 60" aria-hidden="true">
+      <g className="ucak-suzul">
+        <path d="M4 44 C 24 48 38 38 44 32" fill="none" stroke="#FFF6EC" strokeWidth="2" strokeDasharray="3 5" strokeLinecap="round" />
+        <path d="M44 32 L90 12 L64 48 L58 36 Z" fill="#FFFDF9" stroke="#8C5B45" strokeWidth="1.6" strokeLinejoin="round" />
+        <path d="M58 36 L90 12 L66 34 Z" fill="#F4DDCC" stroke="#8C5B45" strokeWidth="1.2" strokeLinejoin="round" />
+        {sayi > 0 && (
+          <g>
+            <circle cx="92" cy="9" r="9" fill="var(--m-vurgu)" stroke="#FFFDF9" strokeWidth="2" />
+            <text x="92" y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="10" fontWeight="800" fill="#fff">{sayi > 9 ? '9+' : sayi}</text>
+          </g>
+        )}
+      </g>
+    </svg>
+  )
+}

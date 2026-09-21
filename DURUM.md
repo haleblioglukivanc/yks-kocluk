@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Mesajlar yeni dilde
+
+- Mokap onaylı. `Mesajlar.jsx`: ortak sahneli tepe (başlık "Mesajlar", okunmamış cümlesi; sağda gökyüzünde süzülen kâğıt uçak `UcakCizimi`, üstünde okunmamış sayısı). Koçta arama + Tümü / Okunmamış / Veliler süzgeci; kişi satırları (baş harf, rol etiketi, önizleme, saat, okunmamış rozeti; okunmamışlar üstte).
+- Yazışma aynı sayfada: tepe kısalır (`AnaTepe kisa`), başlık kişinin adı; balonlar gün ayraçlı (benim koyu sağda, karşı taraf açık solda); düzenle / geri al (24 saat) aynı; koçta hazır cevaplar (dokununca yazma kutusuna düşer); yapışkan yazma kutusu. Geri: yazışmadan kutuya, kutudan ana ekrana; öğrenci ekranından gelindiyse oraya.
+- Koç ve öğrencide /mesajlar üst şeritsiz (ana sayfa kabuğu).
+
 ## 22 Eylül 2026 — Deneme öğrencisi: Bekir Yılmaz
 
 - Kıvanç'a bağlı deneme öğrencisi açıldı: Bekir Yılmaz (`bekiryilmaz@msn.com`, 12. sınıf sayısal, katalog 1; şifre sohbette Bekir'e verildi, repoya yazılmadı; ilk girişte şifre değiştirme istenmez).

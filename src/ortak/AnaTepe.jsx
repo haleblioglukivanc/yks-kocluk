@@ -46,10 +46,11 @@ export default function AnaTepe({
   onBaslik = null,
   altBaslik = null,
   durum = null,
+  kisa = false,
 }) {
   const mevsim = useMevsim()
   return (
-    <header className={children ? 'ana-tepe ana-tepe--kapili' : 'ana-tepe'} data-mevsim={mevsim}>
+    <header className={['ana-tepe', children ? 'ana-tepe--kapili' : '', kisa ? 'ana-tepe--kisa' : ''].filter(Boolean).join(' ')} data-mevsim={mevsim}>
       <Manzara mevsim={mevsim} />
       {sagCizim ? <div className="ana-tepe-cizim">{typeof sagCizim === 'function' ? sagCizim(mevsim) : sagCizim}</div> : <MevsimDali mevsim={mevsim} />}
       <div className="ana-tepe-ic">

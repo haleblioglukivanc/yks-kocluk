@@ -468,7 +468,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || Boolean(ogrenciId))))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && yol.startsWith('/mesajlar')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -508,7 +508,7 @@ export default function App() {
         />
       )
     if (yol === '/sifre') return <SifreDegistir onBitti={() => git('/')} />
-    if (yol === '/mesajlar') return <Mesajlar key="kutu" profil={profil} />
+    if (yol === '/mesajlar') return <Mesajlar key="kutu" profil={profil} tepe={anaTepe} onGeri={() => git('/')} />
     /* Doğrudan bir kişinin yazışması (öğrenci kartındaki Mesaj düğmesi).
        Geri, geldiği yere döner; adres doğrudan açıldıysa kutuya düşer. */
     if (yol.startsWith('/mesajlar/'))
@@ -517,6 +517,7 @@ export default function App() {
           key={yol}
           profil={profil}
           kisiId={yol.slice('/mesajlar/'.length)}
+          tepe={anaTepe}
           onGeri={() => (window.history.state ? window.history.back() : git('/mesajlar'))}
         />
       )
