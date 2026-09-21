@@ -36,7 +36,8 @@ function uzunlukEtiketi(etiketler) {
    altında okuduğu kitap. Kitap haftaya değil öğrenciye bağlı; "Bitirdim"
    deyene kadar aynı kalır (ogrenci_okuma). Veli, rapor ve tanıtım genel
    seçimi görür. */
-export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, bitirilebilir = false }) {
+export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, bitirilebilir = false, kisa = false }) {
+  const [acik, setAcik] = useState(false)
   const [veri, setVeri] = useState(null)
   const [tur, setTur] = useState(0)
   const [bekliyor, setBekliyor] = useState(false)
@@ -106,6 +107,18 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
   const bittiGibi = sayfa > 0 && okunan >= sayfa
 
   const uzunluk = uzunlukEtiketi(veri.kitap_etiket)
+
+  /* Ana ekranda tek satır (22 Eylül 2026): kapak, "Bu haftanın kitabı", ad;
+     dokununca söz ve kitabın tamamı açılır. */
+  if (kisa && !acik) {
+    return (
+      <button type="button" className="hi-kisa" onClick={() => setAcik(true)} aria-label={`Bu haftanın kitabı: ${veri.kitap_ad}. Ayrıntıyı aç`}>
+        {veri.kitap_kapak_url ? <img className="hi-kisa-kapak" src={veri.kitap_kapak_url} alt="" loading="lazy" /> : <span className="hi-kisa-kapak hi-kisa-kapak--bos" aria-hidden="true" />}
+        <span className="hi-kisa-yazi"><small>Bu haftanın kitabı</small>{veri.kitap_ad}</span>
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+      </button>
+    )
+  }
 
   return (
     <section className="haftalik-ilham" aria-label="Haftanın kitabı ve sözü">

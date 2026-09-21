@@ -100,11 +100,10 @@ export default function AcilGorusme({ ogrenciId = null, saltOkunur = false }) {
         className={acik ? 'acil acil--acik' : 'acil'}
         onClick={() => (acik ? setAcik(false) : ac())}
         aria-expanded={acik}
+        aria-label="SOS: koçumla acil konuşmam lazım"
       >
-        <span className={canli ? 'acil-ikon acil-ikon--canli' : 'acil-ikon'} aria-hidden="true">
-          💬
-        </span>
-        <span className="acil-yazi">Acil konuşmam lazım</span>
+        {/* Yazı yerine kısa SOS (22 Eylül 2026, Bekir). */}
+        <span className={canli ? 'acil-sos acil-ikon--canli' : 'acil-sos'} aria-hidden="true">SOS</span>
       </button>
 
       {/* Yaprak alt sayfa olarak açılır: düğme artık tepenin köşesinde ve

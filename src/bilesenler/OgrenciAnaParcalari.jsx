@@ -91,13 +91,24 @@ export function OgrenciGidisati({ ogrenciId, tazele = 0 }) {
 export function Kapilar({ ogrenciId, denemeler = [], onYol, onDenemeler }) {
   const mevsim = useMevsim()
   const [konu, setKonu] = useState(null)
+  const [seri, setSeri] = useState(0)
+  const [tekrar, setTekrar] = useState(0)
   useEffect(() => {
     if (!ogrenciId) return
     let iptal = false
-    supabase.from('konu_ilerleme').select('durum').eq('ogrenci_id', ogrenciId).then(({ data }) => {
+    const bugun = yerelIso(new Date())
+    Promise.all([
+      supabase.from('konu_ilerleme').select('durum').eq('ogrenci_id', ogrenciId),
+      supabase.from('seriler').select('guncel_seri, son_aktif_gun').eq('ogrenci_id', ogrenciId).maybeSingle(),
+      supabase.from('hata_defteri').select('id', { count: 'exact', head: true }).eq('ogrenci_id', ogrenciId).is('ogrenildi', null).lte('sonraki_tekrar', bugun),
+    ]).then(([k, s, h]) => {
       if (iptal) return
-      const liste = data ?? []
+      const liste = k.data ?? []
       setKonu({ toplam: liste.length, biten: liste.filter((x) => x.durum === 'tamamlandi').length })
+      /* Seri yalnız aktivite olunca güncelleniyor; dünden eskiyse kopmuştur. */
+      const son = s.data?.son_aktif_gun
+      setSeri(son && son >= gunEkle(bugun, -1) ? s.data.guncel_seri ?? 0 : 0)
+      setTekrar(h.count ?? 0)
     })
     return () => { iptal = true }
   }, [ogrenciId])
@@ -109,7 +120,7 @@ export function Kapilar({ ogrenciId, denemeler = [], onYol, onDenemeler }) {
   return (
     <section className="ana-kapilar" aria-label="Yol ve Denemeler">
       <button type="button" className="ana-kapi" onClick={onYol}>
-        <YolCizimi mevsim={mevsim} oran={konu?.toplam ? konu.biten / konu.toplam : 0} />
+        <YolCizimi mevsim={mevsim} oran={konu?.toplam ? konu.biten / konu.toplam : 0} seri={seri} />
         <b>Yol</b>
         <span>
           {!konu ? ' ' : konu.toplam === 0 ? 'Konu konu nerede olduğun, sıradaki durak.' : `${konu.toplam} konudan ${konu.biten}'${konu.biten === 1 ? 'i' : 'u'} bitti.`}
@@ -120,7 +131,7 @@ export function Kapilar({ ogrenciId, denemeler = [], onYol, onDenemeler }) {
         <b>Denemeler</b>
         <span>
           {son
-            ? `Son ${String(son.tur ?? '').toUpperCase()} ${net(son.toplam_net)} net${fark ? `, ${fark > 0 ? '▲' : '▼'} ${net(Math.abs(fark))}` : ''}.`
+            ? `Son ${String(son.tur ?? '').toUpperCase()} ${net(son.toplam_net)} net${fark ? ` ${fark > 0 ? '▲' : '▼'}${net(Math.abs(fark))}` : ''}${tekrar ? ` · ${tekrar} tekrar bekliyor` : ''}.`
             : 'Henüz deneme yok. İlk denemeni ekle, net çizgin başlasın.'}
         </span>
       </button>

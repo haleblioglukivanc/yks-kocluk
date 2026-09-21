@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci ana ekranı v2 (derli toplu)
+
+- Mokap v2 onaylı. Sıra: tepe → Yol / Denemeler kapıları (hareketli: bayrak dalgalanır, öğrenci noktası nefes alır, tahtadaki net çizgisi tebeşirle çizilir; Yol'da seri rozeti, Denemeler'de hata defterinde bekleyen tekrar) → İşlerim (`Islerim.jsx`: Bugün / 7 gün / 30 gün; altında tek satır özet: çalışılan süre, biten iş) → tek satır haftanın kitabı (`HaftalikIlham kisa`).
+- Bugün: küçültülmüş Şimdi kartı (yapı ve ders rengi aynı), günün işleri, ince "Günü tamamla". 7 gün: her gün bir satır (ilerleme çubuğu, x/y), dokununca o günün işleri. 30 gün: aylık takvim (tamam ✓ yeşil, yarım ! sarı, kaçtı ✕ kırmızı, planlı çerçeveli, bugün koyu) ve altında kaçan / yarım işler.
+- Kalkanlar: hafta şeridi, koçun notu (mesaj simgesinde), ayrı Gidişat, "Bu hafta senin için" bölümü; Kaynaklarım Yol sayfasına taşındı. "Koçum" hapı yerine yuvarlak kırmızı SOS.
+- Telefonda ana ekran ~1934 px'ten ~1200 px'e indi.
+
 ## 22 Eylül 2026 — Öğrenci ana ekranı ve öğrenci profili
 
 - Mokap onaylı. Öğrencide köşedeki baş harf düğmesi kalktı; ağaçların önünde kendi fotoğraf çerçevesi (`KisiPortresi`), çerçeve ya da "Merhaba …" `/profil`'i açar. `KocProfili` rol duyarlı: öğrencide "Öğrenci", yalnız Bilgilerim / Uygulama / Hesap (Görünüm, Koçluk araçları, Yönetim yok). Eski üst şeritli sayfalarda öğrencinin hesap düğmesi de /profil'e gider.

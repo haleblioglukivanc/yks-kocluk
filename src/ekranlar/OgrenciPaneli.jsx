@@ -1,13 +1,13 @@
+import Islerim from '../bilesenler/Islerim.jsx'
 import { KisiPortresi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
 import KutlamaKatmani from '../bilesenler/KutlamaKatmani.jsx'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
-import HaftaSeridi from '../bilesenler/HaftaSeridi.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
 import AcilGorusme from '../bilesenler/AcilGorusme.jsx'
-import { OgrenciGidisati, Kapilar, KocNotu } from '../bilesenler/OgrenciAnaParcalari.jsx'
+import { Kapilar } from '../bilesenler/OgrenciAnaParcalari.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { GunGorusmesi } from '../bilesenler/AcilGorusme.jsx'
@@ -196,23 +196,12 @@ export default function OgrenciPaneli({
         </Kart>
       ) : sekme === 'bugun' ? (
         <div className="ana-govde ana-govde--ogrenci">
-          {ozetGeldi && (
-            <div className="ana-hafta">
-              <HaftaSeridi
-                ogrenciId={kayit.id}
-                haftaBasi={ozet?.haftaBasi}
-                bugun={ozet?.bugun}
-                bugunGorevler={ozet?.gorevler}
-                onDegisti={yenile}
-                secili={seciliGun ?? ozet?.bugun ?? null}
-                onSec={setSeciliGun}
-                onListe={setGunVerisi}
-              />
-            </div>
-          )}
-          <KocNotu kocMesaji={kocMesaji} />
+          {/* Yeni düzen (22 Eylül 2026, mokap v2): önce Yol / Denemeler kapıları,
+              sonra İşlerim (Bugün / 7 gün / 30 gün). Hafta şeridi, koçun notu,
+              ayrı Gidişat ve Kaynaklarım ana ekrandan kalktı. */}
+          <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
+          <Islerim ogrenciId={kayit.id} bugun={ozet?.bugun} haftaBasi={ozet?.haftaBasi} bugunGorevler={ozet?.gorevler ?? []} tazele={tazele}>
           <section className="ana-bolum simdi" aria-label="Şimdi">
-            <div className="ana-bolum-bas"><h2>Şimdi</h2></div>
             <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
             <SiradakiKart
               gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler}
@@ -240,22 +229,8 @@ export default function OgrenciPaneli({
               </button>
             )}
           </section>
-          <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
-          <OgrenciGidisati ogrenciId={kayit.id} tazele={tazele} />
-          <section className="ana-bolum" aria-label="Bu hafta senin için">
-            <div className="ana-bolum-bas"><h2>Bu hafta senin için</h2></div>
-            <div className="veri-yuzey ogr-soz">
-              <HaftalikIlham
-                ogrenciId={kayit.id}
-                bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'}
-              />
-            </div>
-            <OgrenciKaynaklari
-              ogrenciId={kayit.id}
-              rol="ogrenci"
-              bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]}
-            />
-          </section>
+          </Islerim>
+          <HaftalikIlham ogrenciId={kayit.id} bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'} kisa />
         </div>
       ) : sekme === 'konular' ? (
         <>
@@ -269,6 +244,8 @@ export default function OgrenciPaneli({
           {/* Yol uzun vadeli bakış: seri. Kitap Bugün'e taşındı. Rozetler koçta. */}
           <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
           <Okuduklarim ogrenciId={kayit.id} />
+          {/* Kaynaklarım ana ekrandan buraya taşındı (22 Eylül 2026). */}
+          <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]} />
         </>
       ) : (
         <>

@@ -200,7 +200,7 @@ export function KisiPortresi({ mevsim, yol, bas, durum = null, idEk = 'kisi' }) 
 
 /* Öğrencinin Yol kapısı: zirvesinde bayrak olan dağ patikası; öğrenci
    patikada, bitirdiği konuların oranı kadar yukarıda. */
-export function YolCizimi({ mevsim, oran = 0 }) {
+export function YolCizimi({ mevsim, oran = 0, seri = 0 }) {
   const t = Math.max(0, Math.min(1, oran))
   // patika üzerinde kabaca konum (alttan zirveye)
   const noktalar = [[62, 72], [76, 62], [74, 52], [88, 44], [94, 32], [96, 20]]
@@ -217,8 +217,14 @@ export function YolCizimi({ mevsim, oran = 0 }) {
       {mevsim === 'kis' && <path d="M84 30 L96 18 L108 30 Q 102 27 96 30 Q 90 27 84 30 Z" fill="#FFFFFF" />}
       <path d="M62 72 C 80 62 70 52 88 44 C 100 38 92 30 96 20" fill="none" stroke="#FFF6EC" strokeWidth="4" strokeLinecap="round" strokeDasharray="2 7" />
       <line x1="96" y1="20" x2="96" y2="4" stroke="#6B3D29" strokeWidth="2" />
-      <path d="M96 4 L112 9 L96 14 Z" fill="#BE2847" />
-      <circle cx={x} cy={y} r="6" fill="#F4DDCC" stroke="var(--m-vurgu)" strokeWidth="2.5" />
+      <path className="yol-bayrak" d="M96 4 L112 9 L96 14 Z" fill="#BE2847" />
+      <circle className="yol-ben" cx={x} cy={y} r="6" fill="#F4DDCC" stroke="var(--m-vurgu)" strokeWidth="2.5" />
+      {seri > 0 && (
+        <g transform="translate(2 4)">
+          <rect width="48" height="18" rx="9" fill="#FFF6EC" stroke="#E4A43C" strokeWidth="1.5" />
+          <text x="24" y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9.5" fontWeight="800" fill="#8F5A00">{seri} gün seri</text>
+        </g>
+      )}
     </svg>
   )
 }
@@ -242,7 +248,7 @@ export function DenemeCizimi({ mevsim, netler = [] }) {
       {mevsim === 'kis' && <path d="M42 12 q8 -6 18 -4 q14 -4 28 0 q12 -3 24 4 z" fill="#FFFFFF" />}
       {cizgi ? (
         <>
-          <polyline points={cizgi} fill="none" stroke="#FFF6EC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <polyline className="deneme-tebesir" points={cizgi} fill="none" stroke="#FFF6EC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" pathLength="100" />
           <circle cx={sonNokta[0]} cy={sonNokta[1]} r="3.5" fill="#F6D36B" />
         </>
       ) : (
