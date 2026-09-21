@@ -849,3 +849,34 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .od-portre { pointer-events: auto; display: block; width: 100%; border: 0; background: transparent; padding: 0; cursor: pointer; }
 .od-portre:focus-visible { outline: 3px solid var(--m-murekkep); outline-offset: 2px; border-radius: 16px; }
 .ana-tepe-cizim:has(.od-portre) { width: clamp(96px, 27vw, 140px); }
+
+/* ═══ Öğrenci profil sayfası (22 Eylül 2026): tepe detayla aynı, altı yeni dilde ═══ */
+.od-durum--profil { background: rgba(255,255,255,.85); color: var(--m-murekkep); }
+.od-durum--profil i { background: var(--m-vurgu); }
+.od-durum--kapali { background: var(--m-yuzey-2); color: var(--m-soluk); }
+.profil2 { display: flex; flex-direction: column; gap: 1.25rem; padding-top: 0.5rem; }
+.profil2-kunye { margin: 0 0.25rem; font-size: 0.85rem; font-weight: 600; color: var(--m-soluk); }
+/* Bölümler: başlık zeminde Fraunces, içerik beyaz kâğıtta. */
+.profil2 .bolum { margin: 0; display: flex; flex-direction: column; gap: 0.5rem; }
+.profil2 .bolum-basi { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; padding: 0 0.25rem; min-height: 40px; }
+.profil2 .bolum-baslik { margin: 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.3rem; letter-spacing: -0.01em; color: var(--m-murekkep); text-transform: none; }
+.profil2 .bolum-basi button {
+  min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0;
+  background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2);
+  font: 700 0.8rem var(--m-govde);
+}
+.profil2 .bolum-kart {
+  background: var(--m-yuzey); border: 0; border-radius: 22px; padding: 0.35rem 1rem;
+  box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3);
+}
+.profil2 .bolum-kart > * + * { border-top: 1px solid var(--m-cizgi); }
+.profil2 .bolum-kart input, .profil2 .bolum-kart select, .profil2 .bolum-kart textarea { border-radius: 12px; }
+.profil2 .dugme { border-radius: 999px; }
+.profil2-tehlike { margin-top: 0.5rem; padding: 0 0.25rem; }
+.profil2-tehlike > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-size: 0.85rem; font-weight: 700; color: var(--m-soluk); }
+.profil2-tehlike[open] > summary { color: var(--m-acil); }
+.ana-tepe-cizim:has(.portre-cizim) { width: clamp(96px, 27vw, 140px); }
+/* Tepedeki başlık her ekranda tek satır. */
+.ana-selam > h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.ana-tepe:has(.ana-tepe-cizim) .ana-selam > h1 { max-width: 100%; }
+@media (max-width: 40rem) { .ana-selam > h1 { font-size: 1.9rem; } }

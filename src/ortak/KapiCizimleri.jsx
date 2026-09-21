@@ -94,7 +94,7 @@ export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk
   const kirp = `portre-${idEk}`
   const halka = HALKA[durum] ?? '#6F625A'
   return (
-    <svg className="kapi-cizim" viewBox="0 0 120 112" aria-hidden="true">
+    <svg className="kapi-cizim portre-cizim" viewBox="0 0 120 112" aria-hidden="true">
       <defs>
         <clipPath id={kirp}><circle cx="72" cy="60" r="27" /></clipPath>
       </defs>

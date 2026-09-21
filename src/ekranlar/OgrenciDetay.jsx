@@ -1,3 +1,6 @@
+import AnaTepe from '../ortak/AnaTepe.jsx'
+import { PortreCizimi } from '../ortak/KapiCizimleri.jsx'
+import { useFotograf } from '../bilesenler/Fotograf.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -12,8 +15,6 @@ import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import Bolum from '../ortak/Bolum.jsx'
-import UstBlok from '../ortak/UstBlok.jsx'
-import { Avatar } from '../bilesenler/Fotograf.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import KatalogSec, { OGRENCI_GUNCELLENDI } from '../bilesenler/KatalogSec.jsx'
 import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
@@ -88,6 +89,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
         ilkDuzenlenen={profil === 'hedef' ? 'hedef' : null}
         onKapat={() => setProfil(false)}
         onSilindi={onGeri}
+        tepe={tepe}
       />
     )
   }
@@ -137,7 +139,13 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
    ekranda başka yerde görünmeyenler yazılır: sınıf/alan kimlik kartında,
    hedef ve hedef netler Program'da; Düzenle formunda hepsi var. */
 
-function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKapat, onSilindi }) {
+function ProfilPortresi({ ogrenci, ad, mevsim }) {
+  const foto = useFotograf(ogrenci.profiller?.fotograf_yolu)
+  const bas = ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  return <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={null} idEk={`pr${ogrenci.id.slice(0, 6)}`} />
+}
+
+function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKapat, onSilindi, tepe = {} }) {
   /* Her kart kendi alanlarını gösterir ve kendi kalemiyle yalnız onları
      düzenler (mokap v2, 19 Eylül 2026). Tek dev form, neyin düzenlendiğini
      belirsizleştiriyordu. Aynı anda tek kart düzenlenir. */
@@ -164,23 +172,21 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
 
   return (
     <div className="panel">
-      <UstBlok sinif={`kimlik-kart kk-sade${ogrenci.aktif ? '' : ' kimlik-kart--kapali'}`} etiket={`${ad} profili`}>
-        <div className="kk-ust">
-          <button className="kk-geri" onClick={onKapat} aria-label="Öğrenci ekranına dön">
-            <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor"
-                 strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-              <path d="M15 18l-6-6 6-6" />
-            </svg>
-          </button>
-          <Avatar yol={ogrenci.profiller?.fotograf_yolu} ad={ad} boyut="orta" />
-          <div className="kk-kimlik">
-            <h2 className="kk-ad">{ad}</h2>
-            <p className="kk-alt-satir">{altSatir}</p>
-          </div>
-        </div>
-      </UstBlok>
+      {/* Tepe öğrenci detayıyla aynı (22 Eylül 2026, Bekir): sahne, ad,
+          sağda fotoğraf çerçevesi. Geri öğrenci ekranına döner. */}
+      <AnaTepe
+        selam={ad}
+        tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}
+        {...tepe}
+        onGeri={onKapat}
+        altBaslik={[ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null, ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null].filter(Boolean).join(', ') || null}
+        durum={<span className={`od-durum ${ogrenci.aktif ? 'od-durum--profil' : 'od-durum--kapali'}`}><i />{ogrenci.aktif ? 'Profil' : 'Erişim kapalı'}</span>}
+        sagCizim={(mevsim) => <ProfilPortresi ogrenci={ogrenci} ad={ad} mevsim={mevsim} />}
+      />
 
-      <div className="sekme-govde ogr-detay-govde profil-govde" style={aksanStili()}>
+      <div className="sekme-govde ogr-detay-govde profil-govde profil2 ana-govde ana-govde--dar" style={aksanStili()}>
+        {/* Künye: kayıt tarihi ve kaç gündür birlikte. */}
+        {altSatir && <p className="profil2-kunye">{altSatir}</p>}
         <Bolum baslik="İletişim" kartli {...kalem('iletisim')}>
           {duzenlenen === 'iletisim' ? (
             <KimlikFormu ogrenci={ogrenci} onKaydedildi={kaydedildi} onVazgec={() => setDuzenlenen(null)} />
@@ -213,7 +219,11 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
           <VeliHesaplari ogrenciId={ogrenci.id} />
         </Bolum>
 
-        <TehlikeliBolge ogrenci={ogrenci} onSilindi={onSilindi} />
+        {/* Silme en altta ve kapalı: yanlışlıkla açılmasın. */}
+        <details className="profil2-tehlike">
+          <summary>Tehlikeli işlemler</summary>
+          <TehlikeliBolge ogrenci={ogrenci} onSilindi={onSilindi} />
+        </details>
       </div>
     </div>
   )

@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci profil sayfası yeni dilde
+
+- Tepe öğrenci detayıyla aynı: sahne, tek satır ad, sınıf/alan, "Profil" etiketi (erişim kapalıysa "Erişim kapalı"), sağda fotoğraf çerçevesi; geri öğrenci ekranına döner (`ProfilPortresi`, `AnaTepe`).
+- Altı: künye satırı (kayıt tarihi, kaç gündür birlikte), bölümler (İletişim, Sınav ve hedef, Ödeme, Hesap) Fraunces başlık zeminde + beyaz kâğıt kart, çerçeveli hap "Düzenle"; silme en altta kapalı "Tehlikeli işlemler" satırında. İçerik ve formlar aynı.
+- Tepedeki başlık her ekranda tek satır (telefonda 1.9rem).
+
 ## 22 Eylül 2026 — Öğrenci detayında fotoğraf çerçevesi, kısa durum
 
 - Tabelanın yerinde, ağaçların önünde direğe asılı yuvarlak çerçeve (`PortreCizimi`): öğrencinin fotoğrafı (`useFotograf`, imzalı bağlantı), yoksa baş harfleri; kenarı risk renginde; üstü/dibi mevsime göre (kar, yaprak, çiçek, ot). Dokununca profil sayfası (fotoğraf yükleme orada).
