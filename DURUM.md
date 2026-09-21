@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Bilgisayarda tek sütun
+
+- Tepe yazısı sol kenarda, kartlar ortada ve koç (36rem) ile öğrencide (40.5rem) farklı genişlikteydi. Artık bütün `ana-govde` türleri ve `.ana-tepe-ic` ortadaki 42rem sütunda, aynı iç boşlukla; sahne çizimi sütunun sağ kenarında. Telefonda değişiklik yok (16px kenar).
+
 ## 22 Eylül 2026 — Haftanın kitabı satırı sadeleşti
 
 - Bekir: kitaba basınca söz de dahil büyük panel açılıyordu, geri dönülemiyordu. Artık ana ekranda açılan panel yok: kitap satırında kapak, "Haftanın kitabı", ad ve altında yazar · yıl; sağda küçük "Bitirdim" hapı (sonrası mesajı satırın altında). Açıklama, alıntı ve rozetler ana ekranda yok. Söz satırı aynen.

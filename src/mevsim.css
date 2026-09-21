@@ -1216,3 +1216,15 @@ button.isl-hc:disabled { cursor: default; }
 .hi-kisa--kitap .hi-kisa-kapak { height: 46px; width: 32px; }
 .hi-kisa-bitir { flex: none; min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); font: 700 0.78rem var(--m-govde); cursor: pointer; }
 .hi-kisa-kap .hi-haber { margin: 0 0.5rem; font-size: 0.82rem; color: var(--m-yolunda); }
+
+/* ═══ Bilgisayarda tek sütun (22 Eylül 2026) ═══
+   Tepe yazısı sol kenarda, kartlar ortada ve koçla öğrencide farklı
+   genişlikteydi. Artık her rolde ve her ekranda tepe içeriği ile kartlar
+   aynı ortadaki 42rem'lik sütunda; sahne çizimi de sütunun sağ kenarında. */
+.ana-govde, .ana-govde--dar, .ana-govde--ogrenci { max-width: 42rem; margin-inline: auto; }
+.uygulama--ana .ana-govde, .uygulama--ana .ana-govde--ogrenci { padding-inline: clamp(1rem, 4vw, 1.75rem); }
+.ana-tepe-ic { max-width: 42rem; margin-inline: auto; box-sizing: border-box; padding-inline: clamp(1rem, 4vw, 1.75rem); }
+@media (min-width: 42rem) {
+  .ana-tepe-cizim { right: calc((100% - 42rem) / 2 + clamp(1rem, 4vw, 1.75rem)); }
+}
+@media (min-width: 64rem) { .ana-tepe-cizim { right: calc((100% - 42rem) / 2 + 1.75rem); } }
