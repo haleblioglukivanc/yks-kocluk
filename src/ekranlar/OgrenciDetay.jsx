@@ -116,7 +116,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
         </div>
       </OgrenciKimlikKarti>
 
-      <div className="sekme-govde ogr-detay-govde ana-govde ana-govde--dar od-govde" style={aksanStili()}>
+      <div className="sekme-govde ogr-detay-govde ana-govde ana-govde--dar od-govde od-giris" style={aksanStili()}>
       {sekme === 'program' && (
         <>
           <Program ogrenci={ogrenci} />

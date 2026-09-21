@@ -1439,3 +1439,21 @@ button.isl-hc:disabled { cursor: default; }
 .yp-geri button { min-height: 36px; padding: 0 0.8rem; border-radius: 999px; border: 0; background: #fff; color: var(--m-murekkep); font: 800 0.8rem var(--m-govde); cursor: pointer; }
 @media (prefers-reduced-motion: reduce) { .yp-geri { transition: none; } }
 .yp-geri span { white-space: nowrap; }
+
+/* Profilde çerçeveye tekrar dokununca çıkılamıyordu (22 Eylül 2026, Bekir):
+   akşam kararması için tepe içeriğine verilen katman çerçevenin üstüne
+   biniyordu. Çerçeve her zaman en üstte. */
+.profil-modu .ana-tepe .ana-tepe-cizim { z-index: 3; }
+
+/* Nabız sürekli değil (22 Eylül 2026, Bekir): ekran açılınca üç kez atar,
+   sonra durur; çerçeveye yaklaşınca (fare) bir kez daha. */
+.od-portre::before, .od-portre::after { animation-iteration-count: 3; }
+.od-portre:hover::before { animation: portre-nabiz 2.8s cubic-bezier(.2, .6, .3, 1) 1; }
+
+/* Öğrenci ekranına girerken giriş hareketi: profil gibi, gövde kartları
+   sırayla aşağıdan süzülür (kararma yok). */
+.od-giris > * { animation: profil-gel .45s cubic-bezier(.2, .8, .2, 1) both; }
+.od-giris > :nth-child(2) { animation-delay: .06s; }
+.od-giris > :nth-child(3) { animation-delay: .12s; }
+.od-giris > :nth-child(n+4) { animation-delay: .18s; }
+@media (prefers-reduced-motion: reduce) { .od-giris > * { animation: none; } }
