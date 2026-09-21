@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci ana ekranı ve öğrenci profili
+
+- Mokap onaylı. Öğrencide köşedeki baş harf düğmesi kalktı; ağaçların önünde kendi fotoğraf çerçevesi (`KisiPortresi`), çerçeve ya da "Merhaba …" `/profil`'i açar. `KocProfili` rol duyarlı: öğrencide "Öğrenci", yalnız Bilgilerim / Uygulama / Hesap (Görünüm, Koçluk araçları, Yönetim yok). Eski üst şeritli sayfalarda öğrencinin hesap düğmesi de /profil'e gider.
+- Hafta şeridi beyaz kartta (bugün mürekkep), koçun notunda koçun yüzü ve saati (`KocYuzu`).
+- Yol ve Denemeler kapıları kendi çizimleriyle (`YolCizimi`: zirvesinde bayrak olan patika, öğrenci bitirdiği konu oranı kadar yukarıda; `DenemeCizimi`: şövalede kara tahta, son 4 denemenin net çizgisi) ve gerçek veriden cümle ("16 konudan 9'u bitti", "Son TYT 61,75 net, ▲ 8"). Kapılar artık Gidişat'ın üstünde.
+- "Şimdi" kartı 19 Eylül'de onaylanan ders renkli B tasarımıyla bırakıldı (mokaptaki beyaz kart yerine; büyük başlat düğmesi zaten var).
+
 ## 22 Eylül 2026 — "Konu öncelikleri" sayfası yerine Yapılacaklar kartı
 
 - Bekir: Kıvanç birebir çalışıyor, "sınıfça / ortak etüt" kavramı yok; sayfa menüde kayboluyordu. Profil menüsünden kalktı (rota duruyor, bağlantı yok); üstündeki Kaynaklar bağlantısı da kaldırıldı.

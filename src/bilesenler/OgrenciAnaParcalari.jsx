@@ -1,3 +1,6 @@
+import { useFotograf } from './Fotograf.jsx'
+import { useMevsim } from '../lib/mevsim.js'
+import { YolCizimi, DenemeCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
@@ -83,29 +86,41 @@ export function OgrenciGidisati({ ogrenciId, tazele = 0 }) {
   return <Gidisat baslik="Gidişatın" donem={donem} onDonem={setDonem} {...sonuc} />
 }
 
-export function Kapilar({ denemeler = [], onYol, onDenemeler }) {
+/* Yol ve Denemeler kapıları (22 Eylül 2026, mokap onaylı): koçun tabela ve
+   posta kutusu gibi kendi çizimleri; altında gerçek veriden tek cümle. */
+export function Kapilar({ ogrenciId, denemeler = [], onYol, onDenemeler }) {
+  const mevsim = useMevsim()
+  const [konu, setKonu] = useState(null)
+  useEffect(() => {
+    if (!ogrenciId) return
+    let iptal = false
+    supabase.from('konu_ilerleme').select('durum').eq('ogrenci_id', ogrenciId).then(({ data }) => {
+      if (iptal) return
+      const liste = data ?? []
+      setKonu({ toplam: liste.length, biten: liste.filter((x) => x.durum === 'tamamlandi').length })
+    })
+    return () => { iptal = true }
+  }, [ogrenciId])
   const son = denemeler[0] ?? null
+  const onceki = denemeler.find((d, i) => i > 0 && d.tur === son?.tur) ?? null
+  const fark = son && onceki ? Number(son.toplam_net) - Number(onceki.toplam_net) : null
+  const netler = [...denemeler].filter((d) => d.tur === son?.tur).slice(0, 4).reverse().map((d) => Number(d.toplam_net))
+  const net = (n) => Number(n).toFixed(2).replace(/0$/, '').replace('.', ',')
   return (
     <section className="ana-kapilar" aria-label="Yol ve Denemeler">
       <button type="button" className="ana-kapi" onClick={onYol}>
-        <svg className="ana-kapi-cizim" viewBox="0 0 150 70" aria-hidden="true">
-          <path d="M10 60 C 40 60 30 30 62 30 S 96 8 140 12" fill="none" stroke="var(--cizgi-2)" strokeWidth="4" strokeLinecap="round" strokeDasharray="1 9" />
-          <circle cx="10" cy="60" r="7" fill="var(--m-vurgu)" />
-          <circle className="ana-kapi-durak" cx="62" cy="30" r="6" fill="var(--yuzey)" stroke="var(--m-vurgu)" strokeWidth="3" />
-          <circle cx="104" cy="16" r="5" fill="var(--yuzey)" stroke="var(--cizgi-2)" strokeWidth="2.5" />
-          <circle cx="140" cy="12" r="5" fill="var(--yuzey)" stroke="var(--cizgi-2)" strokeWidth="2.5" />
-        </svg>
+        <YolCizimi mevsim={mevsim} oran={konu?.toplam ? konu.biten / konu.toplam : 0} />
         <b>Yol</b>
-        <span>Konu konu nerede olduğun, sıradaki durak.</span>
+        <span>
+          {!konu ? ' ' : konu.toplam === 0 ? 'Konu konu nerede olduğun, sıradaki durak.' : `${konu.toplam} konudan ${konu.biten}'${konu.biten === 1 ? 'i' : 'u'} bitti.`}
+        </span>
       </button>
       <button type="button" className="ana-kapi" onClick={onDenemeler}>
-        <span className="ana-kapi-cubuklar" aria-hidden="true">
-          <i style={{ height: 22 }} /><i style={{ height: 34 }} /><i style={{ height: 28 }} /><i style={{ height: 46 }} />
-        </span>
+        <DenemeCizimi mevsim={mevsim} netler={netler} />
         <b>Denemeler</b>
         <span>
           {son
-            ? `Son deneme ${gunAyYaz(son.tarih)}: ${Number(son.toplam_net).toFixed(1).replace('.', ',')} net. Hata defterin de burada.`
+            ? `Son ${String(son.tur ?? '').toUpperCase()} ${net(son.toplam_net)} net${fark ? `, ${fark > 0 ? '▲' : '▼'} ${net(Math.abs(fark))}` : ''}.`
             : 'Henüz deneme yok. İlk denemeni ekle, net çizgin başlasın.'}
         </span>
       </button>
@@ -113,11 +128,29 @@ export function Kapilar({ denemeler = [], onYol, onDenemeler }) {
   )
 }
 
+/* Koçun notunda koçun yüzü: fotoğrafı varsa o, yoksa baş harfleri. */
+function KocYuzu({ kocId }) {
+  const [yol, setYol] = useState(null)
+  useEffect(() => {
+    if (!kocId) return
+    let iptal = false
+    supabase.from('profiller').select('fotograf_yolu').eq('id', kocId).maybeSingle().then(({ data }) => {
+      if (!iptal) setYol(data?.fotograf_yolu ?? null)
+    })
+    return () => { iptal = true }
+  }, [kocId])
+  const foto = useFotograf(yol)
+  return <span className="koc-notu-yuz">{foto ? <img className="portre-foto" src={foto} alt="" /> : 'KH'}</span>
+}
+
 export function KocNotu({ kocMesaji }) {
   if (!kocMesaji) return null
   return (
     <section className="ana-bolum ana-kart koc-notu" aria-label="Koçundan mesaj">
-      <span className="koc-notu-kim">Kıvanç Hoca yazdı</span>
+      <div className="koc-notu-ust">
+        <KocYuzu kocId={kocMesaji.mesaj.gonderen_id} />
+        <span className="koc-notu-kim">Kıvanç Hoca{kocMesaji.mesaj.olusturuldu ? ` · ${new Date(kocMesaji.mesaj.olusturuldu).toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}` : ''}</span>
+      </div>
       <p>{kocMesaji.mesaj.icerik}</p>
       <button type="button" className="ana-dugme ana-dugme--ikincil" disabled={kocMesaji.kapaniyor} onClick={kocMesaji.okudum}>
         Okudum

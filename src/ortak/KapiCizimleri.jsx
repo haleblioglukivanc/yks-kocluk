@@ -191,3 +191,64 @@ export function CanCizimi({ mevsim, sayi = 0 }) {
     </svg>
   )
 }
+
+/* Fotoğraf yolundan çerçeve: kişinin kendi portresi (ana ekranlarda). */
+export function KisiPortresi({ mevsim, yol, bas, durum = null, idEk = 'kisi' }) {
+  const foto = useFotograf(yol)
+  return <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={durum} idEk={idEk} />
+}
+
+/* Öğrencinin Yol kapısı: zirvesinde bayrak olan dağ patikası; öğrenci
+   patikada, bitirdiği konuların oranı kadar yukarıda. */
+export function YolCizimi({ mevsim, oran = 0 }) {
+  const t = Math.max(0, Math.min(1, oran))
+  // patika üzerinde kabaca konum (alttan zirveye)
+  const noktalar = [[62, 72], [76, 62], [74, 52], [88, 44], [94, 32], [96, 20]]
+  const i = t * (noktalar.length - 1)
+  const a = noktalar[Math.floor(i)]
+  const b = noktalar[Math.min(noktalar.length - 1, Math.floor(i) + 1)]
+  const f = i - Math.floor(i)
+  const x = a[0] + (b[0] - a[0]) * f
+  const y = a[1] + (b[1] - a[1]) * f
+  return (
+    <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
+      <Zemin mevsim={mevsim} />
+      <path d="M44 72 L96 18 L150 72 Z" fill="var(--m-on-zemin)" opacity=".55" />
+      {mevsim === 'kis' && <path d="M84 30 L96 18 L108 30 Q 102 27 96 30 Q 90 27 84 30 Z" fill="#FFFFFF" />}
+      <path d="M62 72 C 80 62 70 52 88 44 C 100 38 92 30 96 20" fill="none" stroke="#FFF6EC" strokeWidth="4" strokeLinecap="round" strokeDasharray="2 7" />
+      <line x1="96" y1="20" x2="96" y2="4" stroke="#6B3D29" strokeWidth="2" />
+      <path d="M96 4 L112 9 L96 14 Z" fill="#BE2847" />
+      <circle cx={x} cy={y} r="6" fill="#F4DDCC" stroke="var(--m-vurgu)" strokeWidth="2.5" />
+    </svg>
+  )
+}
+
+/* Denemeler kapısı: şövalede kara tahta, üstünde son denemelerin net çizgisi. */
+export function DenemeCizimi({ mevsim, netler = [] }) {
+  const son = netler.slice(-4)
+  let cizgi = null
+  if (son.length >= 2) {
+    const en = Math.max(...son), az = Math.min(...son)
+    const pay = en - az || 1
+    cizgi = son.map((n, i) => `${54 + (i * 46) / (son.length - 1)},${46 - ((n - az) / pay) * 22}`).join(' ')
+  }
+  const sonNokta = cizgi ? cizgi.split(' ').pop().split(',').map(Number) : null
+  return (
+    <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
+      <Zemin mevsim={mevsim} />
+      <line x1="50" y1="74" x2="62" y2="18" stroke="#6B3D29" strokeWidth="3" />
+      <line x1="104" y1="74" x2="92" y2="18" stroke="#6B3D29" strokeWidth="3" />
+      <rect x="44" y="12" width="66" height="44" rx="4" fill="#2F4A3E" stroke="#6B3D29" strokeWidth="3" />
+      {mevsim === 'kis' && <path d="M42 12 q8 -6 18 -4 q14 -4 28 0 q12 -3 24 4 z" fill="#FFFFFF" />}
+      {cizgi ? (
+        <>
+          <polyline points={cizgi} fill="none" stroke="#FFF6EC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+          <circle cx={sonNokta[0]} cy={sonNokta[1]} r="3.5" fill="#F6D36B" />
+        </>
+      ) : (
+        <text x="77" y="38" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9" fontWeight="700" fill="#FFF6EC" opacity=".8">ilk deneme?</text>
+      )}
+      <rect x="60" y="56" width="34" height="4" rx="2" fill="#6B3D29" />
+    </svg>
+  )
+}

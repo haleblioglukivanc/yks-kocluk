@@ -1085,3 +1085,22 @@ body:has(.kirp-arka) { overflow: hidden; }
 .eski-ic input, .eski-ic select, .eski-ic textarea { border-radius: 14px; }
 .eski-ic .liste { background: var(--m-yuzey); border-radius: 22px; }
 .eski-ic { padding-top: 0.5rem; }
+
+/* ═══ Öğrenci ana ekranı (22 Eylül 2026, mokap onaylı) ═══ */
+/* Hafta şeridi beyaz kâğıtta; bugün mürekkep rengi. */
+.ana-govde--ogrenci .ana-hafta {
+  background: var(--m-yuzey); border-radius: 22px; padding: 0.4rem; overflow: hidden;
+  box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3);
+}
+.ana-govde--ogrenci .ana-hafta * { box-shadow: none; }
+.ana-govde--ogrenci .ana-hafta > *, .ana-govde--ogrenci .ana-hafta .hafta-kaydirak { background: transparent !important; background-image: none !important; }
+.ana-govde--ogrenci .hafta-gun { border: 0; border-radius: 14px; background: transparent; box-shadow: none; }
+.ana-govde--ogrenci .hafta-gun--secili { background: var(--m-yumusak); }
+.ana-govde--ogrenci .hafta-gun--bugun, .uygulama .ana-govde--ogrenci .hafta-gun--bugun { background: var(--m-murekkep); border: 0; box-shadow: none; }
+.ana-govde--ogrenci .hafta-gun--bugun .hafta-gun-ad, .ana-govde--ogrenci .hafta-gun--bugun .hafta-gun-no, .ana-govde--ogrenci .hafta-gun--bugun .hafta-gun-sayi { color: #fff; }
+.ana-govde--ogrenci .hafta-gun--secili.hafta-gun--bugun, .uygulama .ana-govde--ogrenci .hafta-gun--secili.hafta-gun--bugun { border: 0; outline: 3px solid var(--m-yumusak); outline-offset: -3px; }
+body[data-rol='ogrenci'] .ana-govde--ogrenci .hafta-gun--bugun::after { display: none; }
+/* Koçun notu: koçun yüzüyle küçük balon. */
+.koc-notu-ust { display: flex; align-items: center; gap: 0.6rem; }
+.koc-notu-yuz { width: 38px; height: 38px; flex: none; border-radius: 50%; overflow: hidden; background: var(--m-yumusak); display: grid; place-items: center; font-weight: 800; font-size: 0.72rem; box-shadow: 0 0 0 2px var(--m-vurgu); }
+.koc-notu-yuz img { width: 100%; height: 100%; object-fit: cover; display: block; }

@@ -1,3 +1,4 @@
+import { KisiPortresi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
@@ -175,6 +176,14 @@ export default function OgrenciPaneli({
           ozet={gunOzeti(ozet)}
           ekDugme={<AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
           {...(vekaleten ? {} : tepe)}
+          /* Öğrencinin kendi fotoğraf çerçevesi; çerçeve ya da selam profili açar
+             (22 Eylül 2026, koçla aynı). Koç gözüyle bakarken yok. */
+          onBaslik={vekaleten ? null : tepe?.onProfil}
+          sagCizim={vekaleten || !tepe?.onProfil ? null : (mevsim) => (
+            <button type="button" className="od-portre" onClick={tepe.onProfil} aria-label="Profilim">
+              <KisiPortresi mevsim={mevsim} yol={tepe.fotoYolu} bas={tepe.hesapHarf} idEk="ograna" />
+            </button>
+          )}
         />
       )}
 
@@ -231,8 +240,8 @@ export default function OgrenciPaneli({
               </button>
             )}
           </section>
+          <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
           <OgrenciGidisati ogrenciId={kayit.id} tazele={tazele} />
-          <Kapilar denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
           <section className="ana-bolum" aria-label="Bu hafta senin için">
             <div className="ana-bolum-bas"><h2>Bu hafta senin için</h2></div>
             <div className="veri-yuzey ogr-soz">

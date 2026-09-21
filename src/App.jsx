@@ -470,7 +470,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -478,7 +478,9 @@ export default function App() {
     onZil: () => git('/bildirimler'),
     /* Koçta köşedeki KH düğmesi yok (22 Eylül 2026, Bekir): profil ana
        ekrandaki fotoğraf çerçevesinden ve selamdan açılır. */
-    onHesap: kocMu ? undefined : () => setHesapAcik(true),
+    onHesap: kocMu || profil.rol === 'ogrenci' ? undefined : () => setHesapAcik(true),
+    onProfil: () => git('/profil'),
+    fotoYolu: profil.fotograf_yolu ?? null,
     hesapHarf: basHarf,
   }
   /* Menü yokken her alt ekrandan ana sayfaya dönüş üst şeritteki geri
@@ -600,7 +602,7 @@ export default function App() {
           tepe={anaTepe}
         />
       )
-    if (kocMu && yol === '/profil')
+    if ((kocMu || profil.rol === 'ogrenci') && yol === '/profil')
       return (
         <KocProfili
           profil={profil}
@@ -660,7 +662,7 @@ export default function App() {
           onGeri={geriHedef ? () => git(geriHedef) : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
           onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : '/bildirimler')}
-          onHesap={() => (kocMu ? git('/profil') : setHesapAcik(true))}
+          onHesap={() => (kocMu || profil.rol === 'ogrenci' ? git('/profil') : setHesapAcik(true))}
         />
       </header>
 

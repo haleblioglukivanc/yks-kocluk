@@ -46,6 +46,7 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
   const kurulum = useKurulum()
   const bildirim = useBildirim()
   const yonetici = profil.yonetici === true
+  const kocMu = profil.rol === 'koc'
   const bas = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
 
   const BILDIRIM = {
@@ -72,7 +73,7 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
         selam={profil.ad_soyad ?? 'Profil'}
         tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}
         {...tepe}
-        altBaslik={yonetici ? 'Koç · Yönetici' : 'Koç'}
+        altBaslik={kocMu ? (yonetici ? 'Koç · Yönetici' : 'Koç') : 'Öğrenci'}
         durum={<span className="od-durum od-durum--profil"><i />Profil</span>}
         sagCizim={(mevsim) => (
           <button type="button" className="od-portre" onClick={tepe.onGeri} aria-label="Ana ekrana dön">
@@ -105,14 +106,18 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
           )}
         </Bolum>
 
-        <Bolum baslik="Görünüm">
-          <div className="kp-ic"><MevsimSecici /></div>
-        </Bolum>
+        {kocMu && (
+          <Bolum baslik="Görünüm">
+            <div className="kp-ic"><MevsimSecici /></div>
+          </Bolum>
+        )}
 
+        {kocMu && (
         <Bolum baslik="Koçluk araçları">
           <Satir baslik="Kaynaklar" alt="Kitaplar ve öğrencilere verilenler" onClick={() => onGit('/kaynaklar')} />
           <Satir baslik="Telegram bağlantısı" alt="Bildirimleri Telegram'dan da al" onClick={() => onGit('/baglantilar')} />
         </Bolum>
+        )}
 
         <Bolum baslik="Uygulama">
           {bildirimSatiri && (
