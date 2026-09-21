@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Veli kalıntıları temizlendi
+
+- Karar hatırlatması (Bekir): veli uygulamaya girmiyor, yalnız mesaj (SMS/WhatsApp) alıyor. Veritabanında veli hesabı yok (profiller.rol='veli' = 0). Arayüzden kalkanlar: Mesajlar'daki "Veliler" süzgeci (ve olası veli kişileri), Bildirimler'de veliden mesaj satırı, öğrenci profilinin Hesap bölümündeki veli hesabı satırı (`VeliHesaplari`), notlardaki "Veli de görsün" seçeneği. Kalanlar: velinin telefonu ve KVKK onayı (İletişim), haftalık özet ve ödeme mesajları, Yönetim'deki veli/izin listesi.
+
 ## 22 Eylül 2026 — Programım · Bugün: günün tamamı tek sayfada, "Günü tamamla" kalktı
 
 - Bekir: öğrenci günün yarısını ancak Günü tamamla'ya basınca görüyordu; düğmeye de gerek yok. Bugün görünümü: ilerleme çubuğu ("N / M bitti" = koçun işleri + her gün yapılanlar) · hepsi bitince yeşil kutlama ("Bugünün hepsi bitti ✓", süre ve sayılar) · "Koçunun verdiği işler" kartı (sıradaki iş kartı ve liste, aynı bileşen) · "Her gün yaptıkların" (`BugunRutinler`: yalnız bugünün kutusu, dokununca işaretlenir) · "Unutma" (`BugunUnutma`: tekrar satırı, kitap sayfası, açılır "bugün kaç soru çözdün?", 7 gün içinde koçun deneme görevi varsa "Cumartesi deneme günün"). Yol / Denemeler kapıları yerinde.

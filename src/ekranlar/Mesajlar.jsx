@@ -278,7 +278,9 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
     const idler = (data ?? []).map((k) => k.id)
     const { data: fotolar } = idler.length ? await supabase.from('profiller').select('id, fotograf_yolu').in('id', idler) : { data: [] }
     const yol = Object.fromEntries((fotolar ?? []).map((f) => [f.id, f.fotograf_yolu]))
-    setKutu((data ?? []).map((k) => ({ ...k, fotograf_yolu: yol[k.id] ?? null })))
+    /* Veli uygulamaya girmiyor, yalnız SMS/WhatsApp ile bilgilendiriliyor
+       (karar): uygulama içi yazışma listesinde veliler yok. */
+    setKutu((data ?? []).filter((k) => k.rol !== 'veli').map((k) => ({ ...k, fotograf_yolu: yol[k.id] ?? null })))
     if (kisiId) {
       const hedef = (data ?? []).find((k) => k.id === kisiId)
       if (hedef) {
@@ -304,7 +306,7 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
   /* Liste: okunmamışlar üstte, sonra son yazışma. */
   const aranan = arama.trim().toLocaleLowerCase('tr')
   const liste = [...(kutu ?? [])]
-    .filter((k) => (suzgec === 'tumu' || (suzgec === 'okunmamis' ? k.okunmamis > 0 : k.rol === 'veli')))
+    .filter((k) => suzgec === 'tumu' || k.okunmamis > 0)
     .filter((k) => !aranan || (k.ad ?? '').toLocaleLowerCase('tr').includes(aranan))
     .sort((a, b) => (b.okunmamis > 0) - (a.okunmamis > 0) || new Date(b.sonZaman ?? 0) - new Date(a.sonZaman ?? 0))
 
@@ -340,7 +342,7 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
                   <input type="search" value={arama} onChange={(e) => setArama(e.target.value)} placeholder="Kişi ara" aria-label="Kişi ara" />
                 </label>
                 <div className="on2-suz" role="group" aria-label="Süzgeç">
-                  {[['tumu', 'Tümü', kutu.length], ['okunmamis', 'Okunmamış', kutu.filter((k) => k.okunmamis > 0).length], ['veli', 'Veliler', kutu.filter((k) => k.rol === 'veli').length]].map(([k, ad, n]) => (
+                  {[['tumu', 'Tümü', kutu.length], ['okunmamis', 'Okunmamış', kutu.filter((k) => k.okunmamis > 0).length]].map(([k, ad, n]) => (
                     <button key={k} type="button" aria-pressed={suzgec === k} onClick={() => setSuzgec(k)}>{ad}<span>{n}</span></button>
                   ))}
                 </div>

@@ -229,7 +229,7 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
         <Bolum baslik="Hesap" kartli>
           <ErisimSatiri ogrenci={ogrenci} onDegisti={yukle} />
           <HesapSatiri kisiId={ogrenci.id} ad={ad} tur="öğrenci" />
-          <VeliHesaplari ogrenciId={ogrenci.id} />
+          {/* Veli uygulamaya girmiyor (karar): veli hesabı satırı kalktı. */}
         </Bolum>
 
         {/* Silme en altta ve kapalı: yanlışlıkla açılmasın. */}
@@ -363,21 +363,6 @@ function IletisimSatiri({ etiket, telefon, deger, sag = null }) {
    Veliler bölümü iletişim kaydı (telefon, izin); buradaki giriş yapan
    veli hesapları (veli_ogrenci). Her birine aynı sıfırlama bileşeni. */
 
-function VeliHesaplari({ ogrenciId }) {
-  const [liste, setListe] = useState([])
-  useEffect(() => {
-    let iptal = false
-    supabase
-      .from('veli_ogrenci')
-      .select('veli_id, profiller:veli_id(ad_soyad)')
-      .eq('ogrenci_id', ogrenciId)
-      .then(({ data }) => { if (!iptal) setListe(data ?? []) })
-    return () => { iptal = true }
-  }, [ogrenciId])
-  return liste.map((v) => (
-    <HesapSatiri key={v.veli_id} kisiId={v.veli_id} ad={v.profiller?.ad_soyad ?? 'Veli'} tur="veli" />
-  ))
-}
 
 function HesapSatiri({ kisiId, ad, tur }) {
   return (
@@ -1169,7 +1154,6 @@ function Konular({ ogrenci }) {
 const GORUNURLUK = [
   ['sadece_koc', 'Sadece ben'],
   ['ogrenci', 'Öğrenci de görsün'],
-  ['veli', 'Veli de görsün'],
 ]
 
 const GORUNURLUK_ADI = Object.fromEntries(GORUNURLUK)

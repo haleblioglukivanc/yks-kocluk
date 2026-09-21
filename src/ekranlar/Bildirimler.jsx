@@ -52,7 +52,7 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
       const olaylar = []
       const { data: kutu } = await supabase.rpc('mesaj_kutum')
       for (const k of kutu ?? []) {
-        if ((k.okunmamis ?? 0) > 0) {
+        if ((k.okunmamis ?? 0) > 0 && k.rol !== 'veli') {
           olaylar.push({
             id: `mesaj-${k.id}`,
             tip: 'mesaj',
