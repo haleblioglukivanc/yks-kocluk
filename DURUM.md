@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Deneme öğrencisi: Bekir Yılmaz
+
+- Kıvanç'a bağlı deneme öğrencisi açıldı: Bekir Yılmaz (`bekiryilmaz@msn.com`, 12. sınıf sayısal, katalog 1; şifre sohbette Bekir'e verildi, repoya yazılmadı; ilk girişte şifre değiştirme istenmez).
+- Örnek veri (tetikleyiciler kapalı eklendi, kimseye bildirim gitmedi): 15–22 Eylül arası 20 görev (bitmiş / yarım / bekleyen karışık, bugün 4 iş), 12 sayaç oturumu, 16 konu ilerlemesi, 2 TYT denemesi (13 ve 20 Eylül, sonuçlar ve konu hataları), 2 hata defteri kaydı, 3 günlük seri, koçtan 1 okunmamış mesaj.
+- Gerçek veri geldiğinde bu hesap Yönetim'den silinmeli.
+
 ## 22 Eylül 2026 — Tepedeki mevsim adı kalktı
 
 - Bekir: mevsim adının ekranda yazmasına gerek yok. "Sonbahar" hapı kalktı, yalnız tarih kaldı (sahne mevsimi zaten gösteriyor). Mevsim seçici hesap menüsünde duruyor.
