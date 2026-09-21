@@ -5,7 +5,7 @@ import { dersGorunumu } from '../lib/dersGorunum.js'
 import { Kart, Uyari } from './Ortak.jsx'
 import GorevKaynagi from './GorevKaynagi.jsx'
 import { SAYAC_SURELERI, bicimle, kalanMs, useSayac, useSayacTiki, varsayilanDk } from '../lib/sayac.jsx'
-import { GOREV_TUR_OGRENCI, GOREV_TUR_KISA } from '../lib/gorevTuru.js'
+import { GOREV_TUR_OGRENCI, GOREV_TUR_KISA, GOREV_TUR_EYLEM } from '../lib/gorevTuru.js'
 import GorevSatiri from '../ortak/GorevSatiri.jsx'
 import { Kalem } from './Kalem.jsx'
 import { cizbiKutlasin, azHareket } from '../lib/canli.js'
@@ -197,7 +197,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
               {bekleyenler.map((g) => {
                 /* Koçun program listesiyle aynı satır (ortak/GorevSatiri):
                    başlık konunun adı, çipte ders ve tür. */
-                const etiket = [g.konu ? g.ders : null, GOREV_TUR_KISA[g.tur]]
+                const etiket = [g.konu ? g.ders : null, GOREV_TUR_EYLEM[g.tur] ?? GOREV_TUR_KISA[g.tur]]
                   .filter(Boolean)
                   .join(' · ')
                 return (
@@ -438,8 +438,14 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
     sira.hedef_adet && sira.hedef_adet > 0
       ? Math.max(0, sira.hedef_adet - (sira.yapilan_adet ?? 0))
       : null
-  const tamBaslik =
-    sira.baslik + (kalanSoru !== null && !/\d/.test(sira.baslik) ? ` — ${kalanSoru} soru` : '')
+  /* "— 0 soru" ne demek anlaşılmıyordu (Bekir, 22 Eylül 2026): başlık yalnız
+     işin adı; soru sayısı altında cümleyle. */
+  const tamBaslik = sira.baslik
+  const soruCumlesi = sira.hedef_adet > 0
+    ? (sira.yapilan_adet ?? 0) > 0
+      ? `${sira.hedef_adet} sorudan ${sira.yapilan_adet} tanesini çözdün`
+      : `${sira.hedef_adet} soru çözeceksin`
+    : null
   /* Başlık "Tür — Konu" kalıbındaysa kartta büyük yazı konu olur, tür
      sağ üstte zaten yazıyor. Koçun kendi yazdığı başlık olduğu gibi kalır. */
   const kalipMi = sira.konu && sira.baslik && sira.baslik.trim().endsWith(`— ${sira.konu}`) &&
@@ -484,6 +490,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
         {tur && <span className="sb-tur">{tur}</span>}
       </div>
       <h2 className="siradaki-baslik">{baslik}</h2>
+      {soruCumlesi && <p className="sb-soru">{soruCumlesi}</p>}
       {!sira.ders && etiket && <p className="siradaki-alt">{etiket}</p>}
       <GorevKaynagi gorev={sira} />
       {sira.aciklama && <p className="siradaki-not">{sira.aciklama}</p>}
@@ -527,7 +534,7 @@ export default function SiradakiKart({ gorevler, onDegisti, saltOkunur = false, 
                 disabled={saltOkunur}
                 onClick={() => setSure({ id: sira.id, dk })}
               >
-                {dk}
+                {dk} dk
               </button>
             ))}
           </div>

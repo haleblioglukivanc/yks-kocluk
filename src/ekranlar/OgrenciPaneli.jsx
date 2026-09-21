@@ -106,13 +106,13 @@ export default function OgrenciPaneli({
     if (sekme !== 'konular' || !kayit?.id) return
     let iptal = false
     Promise.all([
-      supabase.from('konu_ilerleme').select('durum, guncellendi, konular(ad)').eq('ogrenci_id', kayit.id),
+      supabase.from('konu_ilerleme').select('durum, guncellendi, konular(ad, dersler(ad))').eq('ogrenci_id', kayit.id),
       supabase.from('seriler').select('guncel_seri, en_uzun_seri, son_aktif_gun').eq('ogrenci_id', kayit.id).maybeSingle(),
     ]).then(([k, sr]) => {
       if (iptal) return
       const l = k.data ?? []
       const simdi = l.filter((x) => x.durum === 'calisiliyor').sort((a, b) => ((a.guncellendi ?? '') < (b.guncellendi ?? '') ? 1 : -1))[0]
-      setYolOzeti({ toplam: l.length, biten: l.filter((x) => x.durum === 'tamamlandi').length, siradaki: simdi?.konular?.ad ?? null, seri: sr.data?.guncel_seri ?? 0, enUzun: sr.data?.en_uzun_seri ?? 0 })
+      setYolOzeti({ toplam: l.length, biten: l.filter((x) => x.durum === 'tamamlandi').length, siradaki: simdi?.konular?.ad ?? null, siradakiDers: simdi?.konular?.dersler?.ad ?? null, seri: sr.data?.guncel_seri ?? 0, enUzun: sr.data?.en_uzun_seri ?? 0 })
     })
     return () => { iptal = true }
   }, [sekme, kayit?.id, tazele])
@@ -233,7 +233,7 @@ export default function OgrenciPaneli({
           ozet={!yolOzeti ? ' ' : yolOzeti.toplam === 0 ? 'Konu konu nerede olduğun, sıradaki durak.' : `${yolOzeti.toplam} konudan ${yolOzeti.biten}'${yolOzeti.biten === 1 ? 'i' : 'u'} bitti.${yolOzeti.siradaki ? ` Sıradaki durak ${yolOzeti.siradaki}.` : ''}`}
           {...(vekaleten ? {} : tepe)}
           onGeri={() => setSekme('bugun')}
-          durum={yolOzeti && yolOzeti.seri > 0 ? <span className="od-durum od-durum--seri"><i />{yolOzeti.seri} gün seri{yolOzeti.enUzun > yolOzeti.seri ? ` · en uzun ${yolOzeti.enUzun}` : ''}</span> : null}
+          durum={yolOzeti && yolOzeti.seri > 0 ? <span className="od-durum od-durum--seri"><i />{yolOzeti.seri === 1 ? 'Bugün çalıştın' : `${yolOzeti.seri} gündür her gün çalışıyorsun`}</span> : null}
           sagCizim={(mevsim) => <YolCizimi mevsim={mevsim} zemin={false} oran={yolOzeti?.toplam ? yolOzeti.biten / yolOzeti.toplam : 0} />}
         />
       )}
@@ -306,7 +306,7 @@ export default function OgrenciPaneli({
       ) : sekme === 'konular' ? (
         <>
           <div className="ana-govde ana-govde--dar od-govde yol-govde">
-          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} yeni />
+          <KonuHaritasi profilId={kayit.id} odakDers={odakDers ?? yolOzeti?.siradakiDers ?? null} yeni />
           {/* Seri tepede; kitaplar ve kaynaklar altta kısa listeler. */}
           <Okuduklarim ogrenciId={kayit.id} />
           {/* Kaynaklarım ana ekrandan buraya taşındı (22 Eylül 2026). */}

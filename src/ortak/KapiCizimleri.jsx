@@ -221,8 +221,8 @@ export function YolCizimi({ mevsim, oran = 0, seri = 0, zemin = true }) {
       <circle className="yol-ben" cx={x} cy={y} r="6" fill="#F4DDCC" stroke="var(--m-vurgu)" strokeWidth="2.5" />
       {seri > 0 && (
         <g transform="translate(2 4)">
-          <rect width="48" height="18" rx="9" fill="#FFF6EC" stroke="#E4A43C" strokeWidth="1.5" />
-          <text x="24" y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9.5" fontWeight="800" fill="#8F5A00">{seri} gün seri</text>
+          <rect width="58" height="18" rx="9" fill="#FFF6EC" stroke="#E4A43C" strokeWidth="1.5" />
+          <text x="29" y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9.5" fontWeight="800" fill="#8F5A00">{seri} gün üst üste</text>
         </g>
       )}
     </svg>

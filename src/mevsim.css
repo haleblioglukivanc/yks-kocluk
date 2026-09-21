@@ -1314,3 +1314,5 @@ button.isl-hc:disabled { cursor: default; }
 .tk-satir--kisa .tk-yazi b { display: inline; }
 .tk-satir--kisa { margin-bottom: 0.75rem; }
 .tk-koc-not { margin: 0 0 0.75rem; padding: 0.7rem 0.9rem; border-radius: 16px; background: var(--m-dikkat-zemin); font-size: 0.85rem; line-height: 1.45; }
+.sb-soru { margin: -0.25rem 0 0; font-size: 0.9rem; font-weight: 600; opacity: .9; }
+.yol-ders-cumle { margin: 0 0.25rem; font-size: 0.85rem; font-weight: 600; color: var(--m-soluk); }

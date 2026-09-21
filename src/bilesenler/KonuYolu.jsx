@@ -16,6 +16,17 @@ import './KonuYolu.css'
    Bilinçli kararlar: kilit ikonu yok (ileri konular soluk, ceza değil ufuk);
    yeşil yalnızca "onaylandı" demek; puan/rozet yok, tek kutlama anı koç onayı. */
 
+/* Öğrencinin Yol sayfasında (düz patika) koçun terimleri yerine öğrencinin
+   diliyle (22 Eylül 2026). */
+const ETIKET_OGRENCI = {
+  onayli: 'bitti · koçun onayladı',
+  bekliyor: 'bitirdin · koçun bakacak',
+  tekrar: 'tekrar etmen gerekiyor',
+  simdi: 'şu an buradasın',
+  planli: 'koçun planladı',
+  sirada: 'henüz başlanmadı',
+}
+
 const ETIKET = {
   onayli: 'onaylandı',
   bekliyor: 'koç onayı bekliyor',
@@ -355,7 +366,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                     {duz ? (
                       <span className="yol-ad">
                         {d.ad}
-                        <small>{d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar gerekiyor · denemede ${d.hata_adet} hata` : ETIKET[d.yol]}</small>
+                        <small>{d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar etmen gerekiyor · denemede ${d.hata_adet} soru kaçırdın` : ETIKET_OGRENCI[d.yol]}</small>
                       </span>
                     ) : (
                       <span className="yol-ad">{d.ad}</span>

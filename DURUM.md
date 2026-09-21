@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci gözüyle metin turu (ana ekran ve Yol)
+
+- Şimdi kartı: başlık yalnız işin adı, altında "30 soru çözeceksin" / "30 sorudan 12 tanesini çözdün" ("— 0 soru" kalktı); süre seçenekleri "25 dk". Sırada etiketleri fiille (`GOREV_TUR_EYLEM`: Konuyu çalış, Soru çöz, Tekrar et…).
+- Denemeler kapısı: "Son denemende 61,75 net yaptın, 11,25 net arttı. 1 soruyu tekrar etme zamanı." Yol'daki rozet "3 gün üst üste"; Yol tepesinde "3 gündür her gün çalışıyorsun".
+- Programım: 7 gün "1/4 iş"; 30 gün "kaçtı" yerine "yapılmadı" / "yarım kaldı".
+- Yol: sayfa sıradaki durağın dersiyle açılır (tepe ile aynı); ders hapında yalnız halka, kartın üstünde "Türkçe: 29 konudan 2 tanesi bitti."; durak etiketleri öğrencinin diliyle (bitti · koçun onayladı / bitirdin · koçun bakacak / şu an buradasın / tekrar etmen gerekiyor · denemede N soru kaçırdın / koçun planladı / henüz başlanmadı). Koçun zikzak haritası eski etiketlerle.
+
 ## 22 Eylül 2026 — Denemeler v2, tekrar hatırlatması, "Programım"
 
 - Denemeler v2 (mokap onaylı, öğrenciye cümleyle anlatan): yeni `OgrenciDenemeleri.jsx` (yalnız öğrenci; koç eski DenemePaneli'ni görür). Bloklar: en üstte Deneme ekle (formu açar, oraya kayar) · Son denemen (büyük net, "bir önceki denemenden N net fazla, en çok X ve Y'de ilerledin", ders kutuları — dokununca "31 doğru, 6 yanlış, 3 boş → 29,5 net, öncekinden 3,5 fazla", hedef çubuğu ya da "hedefin yok, koçunla koyun") · Tekrar etmen gerekenler (`TekrarBlogu`: bugünkü tekrar kutusu + Çöz, yoksa sıradaki tekrar günü; denemelerde en çok hata çıkan 4 konu cümleyle, defter notuyla; soru ekle, defterin tamamı) · Bütün denemelerin (net çizgisi + satırlar; dokununca D/Y/B açıklaması, hata konuları, onaylı silme). Sayılar her yerde Türkçe virgül. Eski HedefeGoreDurum kaldırıldı.

@@ -148,11 +148,12 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, y
                   <circle cx="18" cy="18" r="14" fill="none" stroke={secili ? 'rgba(255,255,255,.25)' : 'var(--m-yumusak)'} strokeWidth="4" />
                   {oran > 0 && <circle cx="18" cy="18" r="14" fill="none" stroke={secili ? '#fff' : 'var(--m-vurgu)'} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${oran * CEVRE} ${CEVRE}`} transform="rotate(-90 18 18)" />}
                 </svg>
-                {g.ad} <small>{gt.tamamlandi}/{gt.toplam}</small>
+                {g.ad}
               </button>
             )
           })}
         </div>
+        <p className="yol-ders-cumle">{etkin.ad}: {t.toplam} konudan {t.tamamlandi} tanesi bitti.</p>
         <section className="yol-kart" aria-label={`${etkin.ad} yolu`}>
           {etkin.dersler.map((d) => (
             <div key={d.dersId} className="yol-kapsam">

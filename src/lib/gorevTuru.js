@@ -39,6 +39,17 @@ export const GOREV_TUR_KISA = {
   gorusme: 'Görüşme',
 }
 
+/** Öğrencinin listesinde tür, ne yapacağını söyleyen fiille (22 Eylül 2026). */
+export const GOREV_TUR_EYLEM = {
+  konu_anlatimi: 'Konuyu çalış',
+  soru_cozumu: 'Soru çöz',
+  tekrar: 'Tekrar et',
+  deneme: 'Deneme çöz',
+  okuma: 'Oku',
+  diger: 'Çalış',
+  gorusme: 'Görüşme',
+}
+
 /** Hedef adedi sorulan türler (30 soru, 20 sayfa…). */
 export const ADETLI_TURLER = new Set(['soru_cozumu', 'okuma', 'tekrar'])
 

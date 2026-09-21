@@ -131,7 +131,7 @@ export function Kapilar({ ogrenciId, denemeler = [], onYol, onDenemeler }) {
         <b>Denemeler</b>
         <span>
           {son
-            ? `Son ${String(son.tur ?? '').toUpperCase()} ${net(son.toplam_net)} net${fark ? ` ${fark > 0 ? '▲' : '▼'}${net(Math.abs(fark))}` : ''}${tekrar ? ` · ${tekrar} tekrar bekliyor` : ''}.`
+            ? `Son denemende ${net(son.toplam_net)} net yaptın${fark ? `, ${net(Math.abs(fark))} net ${fark > 0 ? 'arttı' : 'düştü'}` : ''}.${tekrar ? ` ${tekrar} soruyu tekrar etme zamanı.` : ''}`
             : 'Henüz deneme yok. İlk denemeni ekle, net çizgin başlasın.'}
         </span>
       </button>

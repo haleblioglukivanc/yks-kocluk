@@ -88,7 +88,7 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
                 <button type="button" className={t === bugun ? 'isl-gun isl-gun--bugun' : 'isl-gun'} onClick={() => git(t)} disabled={!l.length}>
                   <b>{GUN_KISA[tarihOku(t).getDay()]} {tarihOku(t).getDate()}{t === bugun && <em> · bugün</em>}</b>
                   <span className="isl-cubuk"><s style={{ width: l.length ? `${(biten / l.length) * 100}%` : 0 }} /></span>
-                  <small>{!l.length ? 'plan yok' : t <= bugun ? `${biten} / ${l.length}` : `${l.length} iş`}</small>
+                  <small>{!l.length ? 'plan yok' : t <= bugun ? `${biten}/${l.length} iş` : `${l.length} iş`}</small>
                 </button>
               </div>
             )
@@ -110,7 +110,7 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
                 const d = gunDurumu(gunun(t), t, bugun) ?? (t === bugun ? 'bugun' : 'bos')
                 const isaret = { tam: '✓', kismen: '!', kacti: '✕' }[d]
                 return (
-                  <button key={t} type="button" className={`isl-hc isl-hc--${d}`} onClick={() => git(t)} disabled={d === 'bos'} aria-label={`${i + 1}: ${{ tam: 'tamam', kismen: 'yarım', kacti: 'kaçtı', gelecek: 'planlı', bugun: 'bugün', bos: 'plan yok' }[d]}`}>
+                  <button key={t} type="button" className={`isl-hc isl-hc--${d}`} onClick={() => git(t)} disabled={d === 'bos'} aria-label={`${i + 1}: ${{ tam: 'tamam', kismen: 'yarım', kacti: 'yapılmadı', gelecek: 'planlı', bugun: 'bugün', bos: 'plan yok' }[d]}`}>
                     {i + 1}{isaret && <i>{isaret}</i>}
                   </button>
                 )
@@ -119,7 +119,7 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
             <div className="isl-ay-alt">
               <span><b className="isl-hc--tam" />tamam</span>
               <span><b className="isl-hc--kismen" />yarım</span>
-              <span><b className="isl-hc--kacti" />kaçtı</span>
+              <span><b className="isl-hc--kacti" />yapılmadı</span>
               <span><b className="isl-hc--gelecek" />planlı</span>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
                 {kalan.map((g) => (
                   <div key={g.id} className="isl-is">
                     <i style={{ background: dersGorunumu(g.dersler?.ad).renk }} />{g.baslik}
-                    <em>{tarihOku(g.tarih).getDate()} {AY[tarihOku(g.tarih).getMonth()].slice(0, 3)} · {(g.yapilan_adet ?? 0) > 0 ? 'yarım' : 'kaçtı'}</em>
+                    <em>{tarihOku(g.tarih).getDate()} {AY[tarihOku(g.tarih).getMonth()].slice(0, 3)} · {(g.yapilan_adet ?? 0) > 0 ? 'yarım kaldı' : 'yapılmadı'}</em>
                   </div>
                 ))}
               </div>
