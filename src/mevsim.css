@@ -709,3 +709,8 @@ html body[data-tema='panel'] { background-attachment: scroll; }
     var(--m-gok) 45%,
     transparent 75%);
 }
+
+/* Kapı kartındaki tabela / posta kutusu çizimi: kartın üst kısmı. */
+.ana-kapi .kapi-cizim { width: 100%; height: 84px; display: block; margin: -0.25rem 0 0.1rem; overflow: visible; }
+/* Kışın karlı zemin beyaz kartta kaybolmasın. */
+html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }

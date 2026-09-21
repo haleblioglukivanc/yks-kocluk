@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Kapı kartlarında tabela ve posta kutusu
+
+- Bekir: "tabela ve kutu çok tatlıydı, kartlara koyalım". `src/ortak/KapiCizimleri.jsx`: Öğrencilerim kartında tabela ("N öğrenci", altında risk halkalı baş harfler, 3'ten fazlası +N), Yapılacaklar kartında posta kutusu (iş sayısı; acil varsa kırmızı; iş varken bayrak kalkık ve sallanır, yoksa iner). Kartın üstünde küçük mevsim zemini ve süsü (kar, çiçek, ot, yaprak). Tepedeki gri gölge (sis) de kaldırıldı.
+
 ## 22 Eylül 2026 — Koç ana ekranı: kapı kartları
 
 - Bekir'in kararı: tepe eski haliyle (sahne, selam, tek cümle); tabela/posta kutusu kalktı (`SahneKapilari.jsx` silindi). Dikkat gerektirenler'in yerinde iki kart: Öğrencilerim (risk halkalı baş harfler, en fazla 4 + "+N") → `/ogrencilerim`, Yapılacaklar (üst üste kart çizimi, iş sayısı; acil varsa kırmızı) → `/yapilacaklar`. Öğrencinin Yol/Denemeler kartlarıyla aynı kalıp (`.ana-kapi`).

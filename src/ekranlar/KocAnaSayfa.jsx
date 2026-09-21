@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
+import { TabelaCizimi, PostaKutusuCizimi } from '../ortak/KapiCizimleri.jsx'
+import { useMevsim } from '../lib/mevsim.js'
 import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
 import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
@@ -129,6 +131,7 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
   const [isler, setIsler] = useState(null)
   const [donem, setDonem] = useState('bugun')
   const gidisat = useKocGidisati(donem)
+  const mevsim = useMevsim()
 
   useEffect(() => {
     let iptal = false
@@ -164,8 +167,6 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
     : sirali.length === 0 ? 'Öğrenci yok' : dikkat === 0 ? 'Hepsi yolunda' : iyi === 0 ? `${dikkat} dikkat istiyor` : `${dikkat} dikkat, ${iyi} yolunda`
   const basHarf = (ad) => (ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
 
-  const HALKA = { acil: 'var(--m-acil)', izle: 'var(--m-dikkat)', iyi: 'var(--m-yolunda)' }
-  const asili = sirali.slice(0, 4)
   const isSayisi = isler?.length ?? 0
   const veliSayisi = (isler ?? []).filter((x) => x.tip === 'veli_ozet').length
   const isMetni = !isler
@@ -182,22 +183,12 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
             iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}
         <section className="ana-kapilar" aria-label="Öğrencilerim ve Yapılacaklar">
           <button type="button" className="ana-kapi" onClick={() => onGit('/ogrencilerim')}>
-            <span className="kk-halkalar" aria-hidden="true">
-              {asili.map((r, i) => (
-                <span key={r.ogrenci_id} className="kk-halka" style={{ boxShadow: `0 0 0 3px var(--m-yuzey), inset 0 0 0 3px ${HALKA[r.risk_seviyesi] ?? 'var(--m-soluk)'}`, zIndex: 10 - i }}>
-                  {basHarf(r.ad_soyad)}
-                </span>
-              ))}
-              {sirali.length > asili.length && <span className="kk-halka kk-halka--fazla">+{sirali.length - asili.length}</span>}
-            </span>
+            <TabelaCizimi mevsim={mevsim} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))} />
             <b>Öğrencilerim</b>
             <span>{ogrenciEtiket === 'Öğrencilerim' ? ' ' : `${sirali.length} öğrenci: ${ogrenciEtiket}.`}</span>
           </button>
           <button type="button" className="ana-kapi" onClick={() => onGit('/yapilacaklar')}>
-            <span className="kk-yigin" aria-hidden="true">
-              <i /><i /><i className={acil.length ? 'kk-yigin-ust kk-yigin-ust--acil' : 'kk-yigin-ust'}>{acil.length ? 'Acil' : isSayisi ? 'Sırada' : 'Boş'}</i>
-              {isSayisi > 0 && <em className={acil.length ? 'kk-sayi kk-sayi--acil' : 'kk-sayi'}>{isSayisi > 9 ? '9+' : isSayisi}</em>}
-            </span>
+            <PostaKutusuCizimi mevsim={mevsim} sayi={isSayisi} acil={acil.length > 0} />
             <b>Yapılacaklar</b>
             <span>{isMetni}</span>
           </button>
