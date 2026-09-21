@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
-import { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
-import SahneKapilari from '../ortak/SahneKapilari.jsx'
+import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
 import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 import OgrenciNabzi from '../bilesenler/OgrenciNabzi.jsx'
@@ -46,7 +45,6 @@ function ozetCumlesi(riskler) {
 
 function useKocGidisati(donem) {
   const [ilkGun, setIlkGun] = useState(undefined)
-  const [otuz, setOtuz] = useState([])
   const [veri, setVeri] = useState(null)
   const bugun = yerelIso(new Date())
 
@@ -58,7 +56,6 @@ function useKocGidisati(donem) {
       if (iptal) return
       const ilk = (data?.gunluk ?? []).find((g) => (g.dakika ?? 0) > 0)
       setIlkGun(ilk?.tarih ?? null)
-      setOtuz(data?.gunluk ?? [])
     })
     return () => { iptal = true }
   }, [bugun])
@@ -73,14 +70,8 @@ function useKocGidisati(donem) {
     return () => { iptal = true }
   }, [donem, bugun])
 
-  /* Son 7 günün çubukları: veri başlangıcından önceki gün "veri yok". */
-  const son7 = Array.from({ length: 7 }, (_, i) => {
-    const t = gunEkle(bugun, i - 6)
-    const g = otuz.find((x) => x.tarih === t)
-    return { tarih: t, dakika: g?.dakika ?? 0, veriYok: !ilkGun || t < ilkGun, bugun: t === bugun }
-  })
-  if (veri === null || ilkGun === undefined) return { yukleniyor: true, son7 }
-  if (veri === false) return { son7, bos: { baslik: 'Gidişat şu an yüklenemedi.', metin: 'Bağlantıyı kontrol edip sayfayı yenile.' } }
+  if (veri === null || ilkGun === undefined) return { yukleniyor: true }
+  if (veri === false) return { bos: { baslik: 'Gidişat şu an yüklenemedi.', metin: 'Bağlantıyı kontrol edip sayfayı yenile.' } }
 
   const g = veri.genel ?? {}
   const ogr = veri.ogrenciler ?? []
@@ -88,7 +79,6 @@ function useKocGidisati(donem) {
 
   if (donem === 'ay' && gunSayisi < 30) {
     return {
-      son7,
       not: 'Son 30 gün.',
       bos: ilkGun
         ? {
@@ -110,75 +100,22 @@ function useKocGidisati(donem) {
   else not = donem === 'hafta' ? 'Son 7 gün.' : 'Son 30 gün.'
 
   return {
-    son7,
     not,
     kartlar: [
       (g.gorev_toplam ?? 0) > 0
-        ? { kisa: 'görev', ikon: 'tamam', etiket: 'Görev tamamlama', deger: `%${Math.round(g.tamamlama_yuzdesi ?? 0)}`, alt: `${g.gorev_tamam ?? 0} / ${g.gorev_toplam} görev bitti.` }
-        : { kisa: 'görev', ikon: 'tamam', etiket: 'Görev tamamlama', deger: 'Yok', alt: 'Bu dönemde görev yok.', sonuk: true },
-      { kisa: 'çalışma', ikon: 'sure', etiket: 'Çalışma süresi', deger: sureYaz(g.toplam_dakika ?? 0), alt: 'Sayaçla ölçülen süre.', seri: seri && seri.length >= 2 ? seri : null },
-      { kisa: 'çalışan', ikon: 'kisi', etiket: 'Çalışan öğrenci', deger: `${calisan} / ${g.ogrenci_sayisi ?? ogr.length}`, alt: 'En az bir dakika sayaç açan.' },
+        ? { ikon: 'tamam', etiket: 'Görev tamamlama', deger: `%${Math.round(g.tamamlama_yuzdesi ?? 0)}`, alt: `${g.gorev_tamam ?? 0} / ${g.gorev_toplam} görev bitti.` }
+        : { ikon: 'tamam', etiket: 'Görev tamamlama', deger: 'Yok', alt: 'Bu dönemde görev yok.', sonuk: true },
+      { ikon: 'sure', etiket: 'Çalışma süresi', deger: sureYaz(g.toplam_dakika ?? 0), alt: 'Sayaçla ölçülen süre.', seri: seri && seri.length >= 2 ? seri : null },
+      { ikon: 'kisi', etiket: 'Çalışan öğrenci', deger: `${calisan} / ${g.ogrenci_sayisi ?? ogr.length}`, alt: 'En az bir dakika sayaç açan.' },
       (g.deneme_sayisi ?? 0) > 0
-        ? { kisa: 'deneme', ikon: 'deneme', etiket: 'Deneme', deger: String(g.deneme_sayisi), alt: 'Bu dönemde girilen deneme.' }
-        : { kisa: 'deneme', ikon: 'deneme', etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girilmedi.', sonuk: true },
+        ? { ikon: 'deneme', etiket: 'Deneme', deger: String(g.deneme_sayisi), alt: 'Bu dönemde girilen deneme.' }
+        : { ikon: 'deneme', etiket: 'Deneme', deger: 'Yok', alt: 'Bu dönemde deneme girilmedi.', sonuk: true },
     ],
   }
 }
 
-const GUN = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
-const DONEM = [['bugun', 'Bugün'], ['hafta', '7 gün'], ['ay', '30 gün']]
-
-/* Sahnenin altı: tek şeritte dört sayı ve son 7 günün çalışma çubukları.
-   Kart yığını yok; sahne ekranın yıldızı kalsın. */
-function GidisatSeridi({ donem, onDonem, g }) {
-  const enCok = Math.max(1, ...(g.son7 ?? []).map((x) => x.dakika))
-  return (
-    <section className="gs" aria-label="Gidişat">
-      <div className="ana-bolum-bas">
-        <h2>Gidişat</h2>
-        <div className="ana-anahtar" role="group" aria-label="Dönem">
-          {DONEM.map(([k, ad]) => (
-            <button key={k} type="button" aria-pressed={donem === k} onClick={() => onDonem(k)}>{ad}</button>
-          ))}
-        </div>
-      </div>
-      {g.yukleniyor ? (
-        <div className="gs-serit gs-serit--bekle" aria-busy="true" />
-      ) : g.bos ? (
-        <div className="gd-bos"><strong>{g.bos.baslik}</strong><span>{g.bos.metin}</span></div>
-      ) : (
-        <>
-          <div className="gs-serit">
-            {g.kartlar.map((k) => (
-              <div key={k.kisa}>
-                <b className={k.sonuk ? 'gd-deger--sonuk' : ''}>{k.deger}</b>
-                <span>{k.kisa}</span>
-              </div>
-            ))}
-          </div>
-          {g.not && <p className="ana-bolum-not">{g.not}</p>}
-        </>
-      )}
-      <div className="gs-hafta" role="img" aria-label={`Son 7 gün çalışma: ${(g.son7 ?? []).map((x) => (x.veriYok ? 'veri yok' : sureYaz(x.dakika))).join(', ')}`}>
-        <span className="gs-hafta-baslik">Son 7 gün çalışma</span>
-        <div className="gs-cubuklar">
-          {(g.son7 ?? []).map((x) => (
-            <div key={x.tarih} className="gs-gun">
-              <div className={x.veriYok ? 'gs-kutu gs-kutu--yok' : 'gs-kutu'}>
-                {!x.veriYok && <i style={{ height: `${Math.max(x.dakika > 0 ? 8 : 0, Math.round((x.dakika / enCok) * 100))}%` }} />}
-              </div>
-              <span className={x.bugun ? 'gs-gun-ad gs-gun-ad--bugun' : 'gs-gun-ad'}>{x.bugun ? 'Bugün' : GUN[new Date(`${x.tarih}T00:00:00`).getDay()]}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-export default function KocAnaSayfa({ profil, onGit, tepe }) {
+export default function KocAnaSayfa({ profil, onOgrenciAc, tepe }) {
   const [riskler, setRiskler] = useState(null)
-  const [isler, setIsler] = useState(null)
   const [donem, setDonem] = useState('bugun')
   const gidisat = useKocGidisati(donem)
 
@@ -188,74 +125,36 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
       const { data: oturum } = await supabase.auth.getSession()
       const benimId = oturum?.session?.user?.id
       if (!benimId) return
-      const [r, k] = await Promise.all([
-        supabase.from('ogrenci_risk').select('ogrenci_id, ad_soyad, risk_seviyesi, risk_ham, sessiz_gun').eq('koc_id', benimId),
-        supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 }),
-      ])
-      if (iptal) return
-      setRiskler(r.data ?? [])
-      setIsler((k.data ?? []).filter((x) => x.tip !== 'tebrik'))
+      const { data } = await supabase
+        .from('ogrenci_risk')
+        .select('ogrenci_id, ad_soyad, risk_seviyesi, risk_ham, sessiz_gun')
+        .eq('koc_id', benimId)
+      if (!iptal) setRiskler(data ?? [])
     })()
     return () => { iptal = true }
   }, [])
 
-  /* Tepedeki tek cümle: bekleyen iş varsa ondan, yoksa öğrencilerden. */
-  let ozet = ozetCumlesi(riskler)
-  const acil = (isler ?? []).filter((x) => x.segment === 'acil')
-  if (isler && isler.length) {
-    const ilk = (acil[0] ?? isler[0]).ad?.split(' ')[0]
-    const acilMetin = acil.length === 0 ? '' : acil.length === isler.length ? ', hepsi acil' : `, ${acil.length} tanesi acil`
-    ozet = `${isler.length} iş bekliyor${acilMetin}. Önce ${ilk}.`
-  }
-
-  const sirali = [...(riskler ?? [])].sort((a, b) => (b.risk_ham ?? 0) - (a.risk_ham ?? 0))
-  const dikkat = sirali.filter((r) => r.risk_seviyesi !== 'iyi').length
-  const iyi = sirali.length - dikkat
-  const ogrenciEtiket = !riskler
-    ? 'Öğrencilerim'
-    : sirali.length === 0 ? 'Öğrenci yok' : dikkat === 0 ? 'Hepsi yolunda' : iyi === 0 ? `${dikkat} dikkat istiyor` : `${dikkat} dikkat, ${iyi} yolunda`
-  const basHarf = (ad) => (ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
-
   return (
     <div className="ana-sayfa ana-sayfa--koc">
-      <AnaTepe selam={selamVer(profil?.ad_soyad)} tarih={bugunTarih()} ozet={ozet} {...tepe}>
-        {(mevsim) => (
-          <SahneKapilari
-            mevsim={mevsim}
-            ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))}
-            ogrenciEtiket={ogrenciEtiket}
-            isSayisi={isler?.length ?? 0}
-            acilVar={acil.length > 0}
-            onOgrenciler={() => onGit('/ogrencilerim')}
-            onYapilacaklar={() => onGit('/yapilacaklar')}
-          />
-        )}
-      </AnaTepe>
-      <div className="ana-govde ana-govde--dar">
-        <GidisatSeridi donem={donem} onDonem={setDonem} g={gidisat} />
+      <AnaTepe
+        selam={selamVer(profil?.ad_soyad)}
+        tarih={bugunTarih()}
+        ozet={ozetCumlesi(riskler)}
+        {...tepe}
+      />
+      <div className="ana-govde">
+        <div className="ana-ust-izgara">
+          <section className="ana-bolum ana-kart dikkat" aria-label="Dikkat gerektirenler">
+            <div className="ana-bolum-bas">
+              <h2>Dikkat gerektirenler</h2>
+            </div>
+            <KararKuyrugu onOgrenciAc={onOgrenciAc} kompakt />
+            <VeliMesajlari />
+          </section>
+          <Gidisat donem={donem} onDonem={setDonem} {...gidisat} />
+        </div>
+        <OgrenciNabzi onOgrenciAc={onOgrenciAc} />
       </div>
-    </div>
-  )
-}
-
-/* Posta kutusunun arkası: karar kartları tek tek (eski "Dikkat gerektirenler"). */
-export function YapilacaklarEkrani({ onOgrenciAc }) {
-  return (
-    <div className="ana-govde ana-govde--dar alt-ekran">
-      <section className="ana-bolum ana-kart dikkat" aria-label="Yapılacaklar">
-        <div className="ana-bolum-bas"><h2>Yapılacaklar</h2></div>
-        <KararKuyrugu onOgrenciAc={onOgrenciAc} />
-        <VeliMesajlari />
-      </section>
-    </div>
-  )
-}
-
-/* Tabelanın arkası: öğrenciler, bugünün işleri ve 7 günlük ritim. */
-export function OgrencilerimEkrani({ onOgrenciAc }) {
-  return (
-    <div className="ana-govde alt-ekran">
-      <OgrenciNabzi onOgrenciAc={onOgrenciAc} />
     </div>
   )
 }

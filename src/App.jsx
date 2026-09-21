@@ -7,7 +7,7 @@ import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
 import Randevu from './ekranlar/Randevu.jsx'
 import Giris from './ekranlar/Giris.jsx'
-import KocAnaSayfa, { YapilacaklarEkrani, OgrencilerimEkrani } from './ekranlar/KocAnaSayfa.jsx'
+import KocAnaSayfa from './ekranlar/KocAnaSayfa.jsx'
 import { useMevsim } from './lib/mevsim.js'
 import MevsimSahnesi from './ortak/MevsimSahnesi.jsx'
 import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
@@ -400,7 +400,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yapilacaklar', '/ogrencilerim', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yol', '/denemeler']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -585,10 +585,14 @@ export default function App() {
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
         />
       )
-    if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
-    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
     if (kocMu)
-      return <KocAnaSayfa profil={profil} onGit={git} tepe={anaTepe} />
+      return (
+        <KocAnaSayfa
+          profil={profil}
+          onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
+          tepe={anaTepe}
+        />
+      )
     if (profil.rol === 'veli') return <VeliPaneli profil={profil} />
     return (
       <OgrenciPaneli
