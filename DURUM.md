@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Yapılacaklar ve Öğrencilerim ana ekranla aynı
+
+- Bekir: bu ekranların tasarımı çok değişmesin, ekran aynı kalsın; Yapılacaklar'da posta kutusu, Öğrencilerim'de tabela sahnenin sağ üstüne çıksın, içerik altta yine olsun. Yeni mokap (açılır kartlar, toplu veli onayı) istenmedi.
+- İki ekran da ana ekranın sahneli tepesini kullanıyor (üst şerit gizli); `AnaTepe` yeni `onGeri` (sol üstte geri) ve `sagCizim` (sağ üstte nesne; mevsim dalının yerine) aldı. Tepede başlık + tek cümle; altta Yapılacaklar'da KararKuyrugu + VeliMesajlari, Öğrencilerim'de OgrenciNabzi.
+
 ## 22 Eylül 2026 — Kapı kartlarında tabela ve posta kutusu
 
 - Bekir: "tabela ve kutu çok tatlıydı, kartlara koyalım". `src/ortak/KapiCizimleri.jsx`: Öğrencilerim kartında tabela ("N öğrenci", altında risk halkalı baş harfler, 3'ten fazlası +N), Yapılacaklar kartında posta kutusu (iş sayısı; acil varsa kırmızı; iş varken bayrak kalkık ve sallanır, yoksa iner). Kartın üstünde küçük mevsim zemini ve süsü (kar, çiçek, ot, yaprak). Tepedeki gri gölge (sis) de kaldırıldı.

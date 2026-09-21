@@ -199,24 +199,67 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
   )
 }
 
-/* Posta kutusunun arkası: karar kartları tek tek (eski "Dikkat gerektirenler"). */
-export function YapilacaklarEkrani({ onOgrenciAc }) {
+/* Posta kutusunun arkası (22 Eylül 2026, Bekir): ekran ana ekranla aynı
+   kalır; sahnenin sağ üstünde posta kutusu, altında karar kartları. */
+export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
+  const [isler, setIsler] = useState(null)
+  useEffect(() => {
+    let iptal = false
+    supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 }).then(({ data }) => {
+      if (!iptal) setIsler((data ?? []).filter((x) => x.tip !== 'tebrik'))
+    })
+    return () => { iptal = true }
+  }, [])
+  const acil = (isler ?? []).filter((x) => x.segment === 'acil').length
+  const n = isler?.length ?? 0
+  const ozet = !isler ? ' ' : n === 0 ? 'Posta kutusu boş. Bugünlük bu kadar.' : `${n} iş bekliyor${acil ? `, ${acil === n ? 'hepsi' : `${acil} tanesi`} acil` : ''}.`
   return (
-    <div className="ana-govde ana-govde--dar alt-ekran">
-      <section className="ana-bolum ana-kart dikkat" aria-label="Yapılacaklar">
-        <div className="ana-bolum-bas"><h2>Yapılacaklar</h2></div>
-        <KararKuyrugu onOgrenciAc={onOgrenciAc} />
-        <VeliMesajlari />
-      </section>
+    <div className="ana-sayfa ana-sayfa--koc">
+      <AnaTepe
+        selam="Yapılacaklar"
+        tarih={bugunTarih()}
+        ozet={ozet}
+        {...tepe}
+        sagCizim={(mevsim) => <PostaKutusuCizimi mevsim={mevsim} sayi={n} acil={acil > 0} zemin={false} />}
+      />
+      <div className="ana-govde ana-govde--dar">
+        <section className="ana-bolum ana-kart dikkat" aria-label="Yapılacaklar">
+          <KararKuyrugu onOgrenciAc={onOgrenciAc} />
+          <VeliMesajlari />
+        </section>
+      </div>
     </div>
   )
 }
 
-/* Tabelanın arkası: öğrenciler, bugünün işleri ve 7 günlük ritim. */
-export function OgrencilerimEkrani({ onOgrenciAc }) {
+/* Tabelanın arkası: aynı ekran; sağ üstte tabela, altında öğrenciler. */
+export function OgrencilerimEkrani({ onOgrenciAc, tepe }) {
+  const [riskler, setRiskler] = useState(null)
+  useEffect(() => {
+    let iptal = false
+    ;(async () => {
+      const { data: oturum } = await supabase.auth.getSession()
+      const benimId = oturum?.session?.user?.id
+      if (!benimId) return
+      const { data } = await supabase.from('ogrenci_risk').select('ogrenci_id, ad_soyad, risk_seviyesi, risk_ham, sessiz_gun').eq('koc_id', benimId)
+      if (!iptal) setRiskler(data ?? [])
+    })()
+    return () => { iptal = true }
+  }, [])
+  const sirali = [...(riskler ?? [])].sort((a, b) => (b.risk_ham ?? 0) - (a.risk_ham ?? 0))
+  const basHarf = (ad) => (ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   return (
-    <div className="ana-govde alt-ekran">
-      <OgrenciNabzi onOgrenciAc={onOgrenciAc} />
+    <div className="ana-sayfa ana-sayfa--koc">
+      <AnaTepe
+        selam="Öğrencilerim"
+        tarih={bugunTarih()}
+        ozet={ozetCumlesi(riskler)}
+        {...tepe}
+        sagCizim={(mevsim) => <TabelaCizimi mevsim={mevsim} zemin={false} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))} />}
+      />
+      <div className="ana-govde">
+        <OgrenciNabzi onOgrenciAc={onOgrenciAc} />
+      </div>
     </div>
   )
 }

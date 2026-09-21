@@ -28,12 +28,12 @@ function Zemin({ mevsim }) {
   )
 }
 
-export function TabelaCizimi({ mevsim, ogrenciler = [] }) {
+export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true }) {
   const asili = ogrenciler.slice(0, 3)
   const fazla = ogrenciler.length - asili.length
   return (
     <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
-      <Zemin mevsim={mevsim} />
+      {zemin && <Zemin mevsim={mevsim} />}
       <rect x="22" y="6" width="6" height="70" rx="2" fill="#6B3D29" />
       <path d="M12 12 H104 L116 26 L104 40 H12 Z" fill="#8C5B45" stroke="#6B3D29" strokeWidth="2" />
       {mevsim === 'kis' && <path d="M12 12 q6 -5 14 -3 q12 -4 24 0 q14 -4 28 0 q14 -3 26 3 z" fill="#FFFFFF" />}
@@ -57,11 +57,11 @@ export function TabelaCizimi({ mevsim, ogrenciler = [] }) {
   )
 }
 
-export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false }) {
+export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false, zemin = true }) {
   const az = useAzHareket()
   return (
     <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
-      <Zemin mevsim={mevsim} />
+      {zemin && <Zemin mevsim={mevsim} />}
       <rect x="52" y="36" width="7" height="40" rx="2" fill="#6B3D29" />
       <path d="M34 22 C34 10 43 6 52 6 H76 C86 6 92 13 92 22 V42 H34 Z" fill="#2E4B5A" />
       <path d="M34 22 C34 10 43 6 52 6 H56 C47 6 41 12 41 22 V42 H34 Z" fill="#253E4A" />

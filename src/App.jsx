@@ -468,7 +468,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && anaEkranda && (kocMu || profil.rol === 'ogrenci')
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -585,8 +585,8 @@ export default function App() {
           onGozuyle={(id) => git(`/gozuyle/${id}`)}
         />
       )
-    if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
-    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />
+    if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
+    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu)
       return <KocAnaSayfa profil={profil} onGit={git} tepe={anaTepe} />
     if (profil.rol === 'veli') return <VeliPaneli profil={profil} />

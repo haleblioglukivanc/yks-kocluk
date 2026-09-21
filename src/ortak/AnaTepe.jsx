@@ -42,14 +42,21 @@ export default function AnaTepe({
   hesapHarf = '',
   ekDugme = null,
   children = null,
+  onGeri = null,
+  sagCizim = null,
 }) {
   const mevsim = useMevsim()
   return (
     <header className={children ? 'ana-tepe ana-tepe--kapili' : 'ana-tepe'} data-mevsim={mevsim}>
       <Manzara mevsim={mevsim} />
-      <MevsimDali mevsim={mevsim} />
+      {sagCizim ? <div className="ana-tepe-cizim">{typeof sagCizim === 'function' ? sagCizim(mevsim) : sagCizim}</div> : <MevsimDali mevsim={mevsim} />}
       <div className="ana-tepe-ic">
         <div className="ana-tepe-ust">
+          {onGeri && (
+            <button type="button" className="ana-yuvarlak" onClick={onGeri} aria-label="Ana ekrana dön">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6" /></svg>
+            </button>
+          )}
           <div className="ana-marka">
             <KhIsareti />
             <span className="ana-marka-ad">
