@@ -1,3 +1,4 @@
+import { GecikenTekrarNotu } from '../bilesenler/HataDefteri.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
 import { PortreCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useFotograf } from '../bilesenler/Fotograf.jsx'
@@ -127,7 +128,13 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
           <Notlar ogrenci={ogrenci} />
         </>
       )}
-      {sekme === 'denemeler' && <Denemeler ogrenci={ogrenci} onHedefEkle={() => setProfil('hedef')} />}
+      {sekme === 'denemeler' && (
+        <>
+          {/* Koç, öğrencinin çözmediği tekrarları görsün (22 Eylül 2026). */}
+          <GecikenTekrarNotu ogrenciId={ogrenci.id} />
+          <Denemeler ogrenci={ogrenci} onHedefEkle={() => setProfil('hedef')} />
+        </>
+      )}
       {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
       </div>
     </div>

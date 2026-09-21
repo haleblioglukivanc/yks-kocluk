@@ -1253,3 +1253,64 @@ button.isl-hc:disabled { cursor: default; }
 
 /* Çizbi kalktı: onun için ayrılmış boş kutular da yer tutmasın. */
 .bos-cizbi, .sayac-cizbi, .yan-not-cizbi, .yol-cizbi, .yol-balon { display: none !important; }
+
+/* ═══ Denemeler v2 ve tekrar hatırlatması (22 Eylül 2026) ═══ */
+.tb-aciklama { margin: -0.25rem 0.25rem 0; font-size: 0.82rem; color: var(--m-soluk); line-height: 1.45; }
+.tb { padding: 0.75rem 1rem; display: flex; flex-direction: column; }
+.kp-kart.tb > * + * { border-top: 1px solid var(--m-cizgi); }
+.tb-kutu { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem; margin-bottom: 0.5rem; border-radius: 16px; background: var(--m-zemin); border-top: 0 !important; }
+.tb-kutu--simdi { background: var(--m-dikkat-zemin); }
+.tb-kutu > div { flex: 1; font-size: 0.85rem; line-height: 1.4; color: var(--m-soluk); }
+.tb-kutu b { display: block; font-size: 0.92rem; color: var(--m-murekkep); }
+.tb-sayi { width: 44px; height: 44px; flex: none; border-radius: 12px; background: #fff; color: var(--m-dikkat); display: grid; place-items: center; font-weight: 800; font-size: 1.2rem; }
+.tb-kutu button, .tk-satir button { flex: none; min-height: 40px; padding: 0 0.9rem; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.82rem var(--m-govde); cursor: pointer; }
+.tb-konu { padding: 0.7rem 0; }
+.tb-konu b { display: block; font-size: 0.92rem; }
+.tb-konu span { font-size: 0.8rem; color: var(--m-soluk); line-height: 1.45; }
+.tb-eylem { display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0.75rem 0 0.25rem; }
+.tb-eylem button { flex: 1 1 auto; min-height: 44px; padding: 0 1rem; border-radius: 999px; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); font: 800 0.82rem var(--m-govde); cursor: pointer; }
+.tb-eylem .tb-ikincil { box-shadow: none; background: var(--m-zemin); }
+/* Son denemen */
+.odn-son { padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.kp-kart.odn-son > * + * { border-top: 0; }
+.odn-son-ust { display: flex; align-items: flex-end; justify-content: space-between; gap: 0.75rem; }
+.odn-buyuk { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1; }
+.odn-buyuk small { font-size: 0.95rem; font-weight: 700; color: var(--m-soluk); margin-left: 0.25rem; letter-spacing: 0; }
+.odn-kim { text-align: right; font-size: 0.78rem; color: var(--m-soluk); font-weight: 600; line-height: 1.4; }
+.odn-cumle { margin: 0; font-size: 0.92rem; line-height: 1.5; }
+.odn-iyi { color: var(--m-yolunda); } .odn-kotu { color: var(--m-acil); }
+.odn-dersler { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
+.odn-ders { border: 0; border-radius: 14px; background: var(--m-zemin); padding: 0.55rem 0.65rem; text-align: left; display: flex; flex-direction: column; gap: 0.1rem; color: var(--m-murekkep); font: inherit; cursor: pointer; min-width: 0; }
+.odn-ders span { font-size: 0.72rem; font-weight: 700; color: var(--m-soluk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.odn-ders b { font-size: 1.05rem; font-weight: 800; }
+.odn-ders[aria-expanded='true'] { background: var(--m-murekkep); color: #fff; }
+.odn-ders[aria-expanded='true'] span { color: rgba(255,255,255,.75); }
+.odn-ders-acik { margin: 0; padding: 0.6rem 0.75rem; border-radius: 14px; background: var(--m-yumusak); font-size: 0.85rem; line-height: 1.5; }
+.odn-ipucu { font-size: 0.75rem; color: var(--m-soluk); }
+.odn-hedef { border-top: 1px solid var(--m-cizgi) !important; padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.odn-hedef p { margin: 0; font-size: 0.85rem; line-height: 1.45; }
+.odn-soluk { color: var(--m-soluk); }
+.odn-cubuk { height: 10px; border-radius: 99px; background: var(--m-yumusak); overflow: hidden; }
+.odn-cubuk s { display: block; height: 100%; border-radius: 99px; background: var(--m-vurgu); }
+.odn-bos { padding: 1rem; font-size: 0.9rem; line-height: 1.5; color: var(--m-soluk); }
+/* Bütün denemelerin */
+.odn-gecmis { padding: 0.5rem 1rem; }
+.odn-grafik { padding: 0.25rem 0 0.5rem; }
+.odn-dn { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 60px; border: 0; background: none; padding: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.odn-dn span { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.odn-dn b { font-size: 0.92rem; }
+.odn-dn small { font-size: 0.78rem; color: var(--m-soluk); }
+.odn-dn em { font-style: normal; font-size: 1.05rem; font-weight: 800; }
+.odn-dn-acik { padding: 0 0 0.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.odn-dn-acik p { margin: 0; font-size: 0.82rem; line-height: 1.5; color: var(--m-soluk); }
+.odn-sil { align-self: flex-start; min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0; background: var(--m-acil-zemin); color: var(--m-acil); font: 800 0.78rem var(--m-govde); cursor: pointer; }
+.odn-form { background: var(--m-yuzey); border-radius: 22px; padding: 1rem; box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3); display: flex; flex-direction: column; gap: 0.5rem; }
+.odn-vazgec { align-self: center; min-height: 40px; border: 0; background: none; color: var(--m-soluk); font: 700 0.85rem var(--m-govde); cursor: pointer; }
+/* Programım'daki tekrar satırı ve Günü tamamla hatırlatması */
+.tk-satir { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 0.75rem 0.7rem 0.9rem; border-radius: 18px; background: var(--m-dikkat-zemin); color: var(--m-murekkep); }
+.tk-ikon { width: 34px; height: 34px; flex: none; border-radius: 50%; background: #fff; color: var(--m-dikkat); display: grid; place-items: center; font-weight: 800; font-size: 1.1rem; }
+.tk-yazi { flex: 1; min-width: 0; font-size: 0.82rem; color: var(--m-soluk); line-height: 1.4; }
+.tk-yazi b { color: var(--m-murekkep); font-size: 0.9rem; display: block; }
+.tk-satir--kisa .tk-yazi b { display: inline; }
+.tk-satir--kisa { margin-bottom: 0.75rem; }
+.tk-koc-not { margin: 0 0 0.75rem; padding: 0.7rem 0.9rem; border-radius: 16px; background: var(--m-dikkat-zemin); font-size: 0.85rem; line-height: 1.45; }

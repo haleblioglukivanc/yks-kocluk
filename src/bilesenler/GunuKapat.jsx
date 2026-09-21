@@ -1,3 +1,4 @@
+import { TekrarSatiri } from './HataDefteri.jsx'
 import { useEffect, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { useSurukleKapat } from '../lib/surukleKapat.js'
@@ -121,6 +122,8 @@ export default function GunuKapat({ acik, onKapat, onTamamlandi, ogrenciId, kata
         </header>
 
         <div className="alt-sayfa-govde">
+          {/* Çözülmemiş tekrar varsa günü kapatmadan önce nazik hatırlatma. */}
+          {!saltOkunur && adim === 0 && <TekrarSatiri ogrenciId={ogrenciId} kisa />}
           {adim === 0 && (
             <GunlukRutinler
               ogrenciId={ogrenciId}

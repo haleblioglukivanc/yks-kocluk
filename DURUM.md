@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Denemeler v2, tekrar hatırlatması, "Programım"
+
+- Denemeler v2 (mokap onaylı, öğrenciye cümleyle anlatan): yeni `OgrenciDenemeleri.jsx` (yalnız öğrenci; koç eski DenemePaneli'ni görür). Bloklar: en üstte Deneme ekle (formu açar, oraya kayar) · Son denemen (büyük net, "bir önceki denemenden N net fazla, en çok X ve Y'de ilerledin", ders kutuları — dokununca "31 doğru, 6 yanlış, 3 boş → 29,5 net, öncekinden 3,5 fazla", hedef çubuğu ya da "hedefin yok, koçunla koyun") · Tekrar etmen gerekenler (`TekrarBlogu`: bugünkü tekrar kutusu + Çöz, yoksa sıradaki tekrar günü; denemelerde en çok hata çıkan 4 konu cümleyle, defter notuyla; soru ekle, defterin tamamı) · Bütün denemelerin (net çizgisi + satırlar; dokununca D/Y/B açıklaması, hata konuları, onaylı silme). Sayılar her yerde Türkçe virgül. Eski HedefeGoreDurum kaldırıldı.
+- Tekrar hatırlatması: tekrar zamanı gelen soru varsa Programım'da (bugün) Günü tamamla'nın üstünde "Tekrar zamanı · N soru (konu) · ~dk" satırı + Çöz (`TekrarSatiri`); görev değil, sayıları etkilemez. Günü tamamla penceresinin ilk adımında "Bugünün N tekrarı kaldı…" hatırlatması. Koçun öğrenci ekranında Denemeler sekmesinin başında zamanı geçmiş tekrar notu (`GecikenTekrarNotu`). Ayrı push bildirimi yok.
+- "İşlerim" → "Programım" (koçun "Program" sekmesinin eşi).
+- Test: Bekir Yılmaz'ın EBOB–EKOK hata kaydı bugüne çekildi (tekrar satırı görünsün diye).
+
 ## 22 Eylül 2026 — Çizbi kaldırıldı
 
 - Bekir: "Çizbiyi kaldır tamamen". `Kalem` bileşeni boş döner (`CIZBI_ACIK = false`; geri getirmek için true), köşedeki `KalemKosede` ve balonları hiç çizilmez; boş durumlarda, sayaçta, yol haritasında, kutlama katmanında, Günü kapat'ta ve veli başlığında maskot yok; ona ayrılmış kutular gizli. "Çizbi" adı metinlerden çıktı (kutlama, kaynak seçici). Kural motoru (kalem-kurallari.js) ve Yönetim'deki "Çizbi olayları" kaydı yerinde, görünür bir etkisi yok.

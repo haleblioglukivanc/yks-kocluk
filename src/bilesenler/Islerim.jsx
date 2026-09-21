@@ -58,9 +58,9 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
 
   const gunun = (t) => (gorevler ?? []).filter((g) => g.tarih === t)
   return (
-    <section className="isl" aria-label="İşlerim">
+    <section className="isl" aria-label="Programım">
       <div className="ana-bolum-bas isl-bas">
-        <h2>İşlerim</h2>
+        <h2>Programım</h2>
         <div className="ana-anahtar" role="group" aria-label="Dönem">
           {[['bugun', 'Bugün'], ['hafta', '7 gün'], ['ay', '30 gün']].map(([k, ad]) => (
             <button key={k} type="button" aria-pressed={donem === k} onClick={() => setDonem(k)}>{ad}</button>

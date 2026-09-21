@@ -1,4 +1,6 @@
 import Islerim from '../bilesenler/Islerim.jsx'
+import OgrenciDenemeleri from '../bilesenler/OgrenciDenemeleri.jsx'
+import { TekrarSatiri } from '../bilesenler/HataDefteri.jsx'
 import { gunGorevleri } from '../bilesenler/HaftaSeridi.jsx'
 import { KisiPortresi, YolCizimi, DenemeCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
@@ -23,8 +25,6 @@ import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import Okuduklarim from '../bilesenler/Okuduklarim.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
-import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
-import HataDefteri from '../bilesenler/HataDefteri.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import UstBlok from '../ortak/UstBlok.jsx'
 import Bolum from '../ortak/Bolum.jsx'
@@ -99,6 +99,7 @@ export default function OgrenciPaneli({
   /* İşlerim'de bir güne dokununca (7 gün / 30 gün) o günün işleri gelir;
      Şimdi kartı ve liste o güne geçer. null: bugün. */
   const [gunSayaci, setGunSayaci] = useState(0)
+  const [ekleTetik, setEkleTetik] = useState(0)
   /* Yol sayfasının tepesi: kaç konu bitti, sıradaki durak, seri. */
   const [yolOzeti, setYolOzeti] = useState(null)
   useEffect(() => {
@@ -279,6 +280,7 @@ export default function OgrenciPaneli({
               onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
             />
             {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı. */}
+            {!vekaleten && gunVerisi?.bugunMu !== false && <TekrarSatiri ogrenciId={kayit.id} />}
             {ozet?.bugun && gunVerisi?.bugunMu !== false && (
               <button
                 className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
@@ -314,27 +316,22 @@ export default function OgrenciPaneli({
       ) : (
         <>
           <div className="ana-govde ana-govde--dar od-govde eski-ic dn-govde">
-          {/* Deneme ekle en üstte (mokap): aşağıdaki listenin kendi ekle
-              düğmesini açar ve forma kaydırır. */}
+          {/* Denemeler v2 (22 Eylül 2026): Deneme ekle · Son denemen · Tekrar
+              etmen gerekenler · Bütün denemelerin. */}
           {!vekaleten && (
-            <button
-              type="button"
-              className="dn-ekle"
-              onClick={(e) => {
-                const kok = e.currentTarget.closest('.dn-govde')
-                const hedef = [...(kok?.querySelectorAll('button') ?? [])].find((b) => b !== e.currentTarget && /deneme ekle/i.test(b.textContent ?? ''))
-                hedef?.click()
-                setTimeout(() => (kok?.querySelector('.deneme-form-kap') ?? hedef)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
-              }}
-            >
+            <button type="button" className="dn-ekle" onClick={() => setEkleTetik((n) => n + 1)}>
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
               Deneme ekle
             </button>
           )}
-          <HedefeGoreDurum kayit={kayit} netDurumu={netDurumu} denemeler={denemeler} />
-          {/* Hata defteri Denemeler'in altında (mokap onayı, 20 Eylül 2026). */}
-          <HataDefteri ogrenciId={kayit.id} katalogId={kayit.katalog_id} />
-          <DenemePaneli ogrenciId={kayit.id} katalogId={kayit.katalog_id} duzenlenebilir />
+          <OgrenciDenemeleri
+            ogrenciId={kayit.id}
+            katalogId={kayit.katalog_id}
+            hedefTyt={kayit.hedef_tyt_net}
+            hedefAyt={kayit.hedef_ayt_net}
+            duzenlenebilir={!vekaleten}
+            ekleTetik={ekleTetik}
+          />
           </div>
         </>
       )}
@@ -364,50 +361,5 @@ export default function OgrenciPaneli({
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>
-  )
-}
-
-/* Hedefe göre net durumu denemelerden doğar; yeri Denemeler'in başı.
-   Eskiden Ben'deydi. Veri yeni değil: panel zaten çekiyor. */
-function HedefeGoreDurum({ kayit, netDurumu, denemeler }) {
-  const sonNet = denemeler?.[0] ? Number(denemeler[0].toplam_net) : null
-  const oncekiNet = denemeler?.[1] ? Number(denemeler[1].toplam_net) : null
-  const fark = sonNet !== null && oncekiNet !== null ? sonNet - oncekiNet : null
-  const hedefAlt =
-    [kayit?.hedef_universite, kayit?.hedef_bolum].filter(Boolean).join(' · ') || undefined
-  /* Göstergede tek sayı: hedefi olan ilk sınav (TYT, yoksa AYT). Hedef
-     yoksa gösterge boş kalır ve tepe bunu söyler; iki sınavın çubukları
-     altta zaten ayrı ayrı duruyor. */
-  const secim =
-    kayit.hedef_tyt_net != null
-      ? { ad: 'TYT', hedef: Number(kayit.hedef_tyt_net), son: netDurumu?.tyt?.son_net }
-      : kayit.hedef_ayt_net != null
-        ? { ad: 'AYT', hedef: Number(kayit.hedef_ayt_net), son: netDurumu?.ayt?.son_net }
-        : null
-  const son = secim?.son != null ? Number(secim.son) : null
-  const yuzde = secim && son != null && secim.hedef > 0 ? Math.round((son / secim.hedef) * 100) : null
-  const kalan = secim && son != null ? secim.hedef - son : null
-
-  return (
-    <RaporTepesi
-      baslik="Denemelerim"
-      altBaslik={hedefAlt}
-      yuzde={yuzde}
-      deger={yuzde == null ? '—' : `%${Math.min(100, yuzde)}`}
-      etiket={secim ? `${secim.ad} hedefine göre` : 'Hedefe göre'}
-      detay={
-        !secim
-          ? 'Net hedefin henüz belirlenmemiş; koçunla koyabilirsiniz.'
-          : son == null
-            ? `Hedef ${secim.hedef} net · ilk denemeyle başlar`
-            : kalan > 0
-              ? `Hedefe ${kalan.toFixed(1)} net kaldı`
-              : 'Hedefin üstündesin'
-      }
-      durum={fark == null ? null : fark >= 0 ? 'iyi' : 'dikkat'}
-      durumMetni={fark == null ? null : `Son denemede ${fark >= 0 ? '+' : '−'}${Math.abs(fark).toFixed(1)} net`}
-    >
-      <HedefNet tyt={kayit.hedef_tyt_net} ayt={kayit.hedef_ayt_net} durum={netDurumu} />
-    </RaporTepesi>
   )
 }

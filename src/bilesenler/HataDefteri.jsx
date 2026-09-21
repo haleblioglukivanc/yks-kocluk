@@ -106,7 +106,7 @@ function TamSayfa({ etiket, onGeri, geriIkon = 'geri', baslik, alt, tepeEk, chil
 
 /* ───────────── Veri ───────────── */
 
-function useDefter(ogrenciId) {
+export function useDefter(ogrenciId) {
   const [liste, setListe] = useState(null)
   const [hata, setHata] = useState('')
   const yukle = useCallback(async () => {
@@ -124,7 +124,7 @@ function useDefter(ogrenciId) {
   return { liste, hata, yukle }
 }
 
-function bekleyenler(liste) {
+export function bekleyenler(liste) {
   const bugun = yerelGun()
   return (liste ?? [])
     .filter((h) => !h.ogrenildi && h.sonraki_tekrar <= bugun)
@@ -598,5 +598,138 @@ function TekrarSayfasi({ sorular, onBitti }) {
         </div>
       )}
     </TamSayfa>
+  )
+}
+
+
+/* ───────────── Denemeler v2: "Tekrar etmen gerekenler" (22 Eylül 2026) ─────────────
+   Hata defteri ile denemelerde hata çıkan konular tek blokta; öğrenciye
+   cümleyle anlatılır. Tekrar zamanı gelen sorular "Çöz" ile açılır. */
+const NEDEN_CUMLE = { bilgi: 'konuyu tam bilmediğini', dikkat: 'dikkatsizlik yaptığını', yontem: 'yöntemi karıştırdığını', sure: 'süreye yetişemediğini' }
+
+function kacGunSonra(t) {
+  const a = new Date(`${yerelGun()}T00:00:00`)
+  const b = new Date(`${t}T00:00:00`)
+  return Math.round((b - a) / 86400000)
+}
+
+export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir = true }) {
+  const { liste, yukle } = useDefter(ogrenciId)
+  const [ekran, setEkran] = useState(null)
+  const bekleyen = useMemo(() => bekleyenler(liste), [liste])
+  if (!liste) return null
+  const acik = liste.filter((h) => !h.ogrenildi)
+  const siradaki = [...acik].sort((a, b) => (a.sonraki_tekrar < b.sonraki_tekrar ? -1 : 1))[0]
+  const konuAdi = (h) => h?.konular?.ad ?? h?.dersler?.ad ?? 'bir soru'
+
+  let kutu
+  if (bekleyen.length > 0) {
+    kutu = (
+      <div className="tb-kutu tb-kutu--simdi">
+        <span className="tb-sayi">{bekleyen.length}</span>
+        <div><b>Bugün {bekleyen.length} soruyu yeniden çözme zamanı</b>{[...new Set(bekleyen.map(konuAdi))].slice(0, 3).join(', ')}.</div>
+        <button type="button" onClick={() => setEkran('tekrar')}>Çöz</button>
+      </div>
+    )
+  } else if (siradaki) {
+    const g = kacGunSonra(siradaki.sonraki_tekrar)
+    kutu = (
+      <div className="tb-kutu">
+        <span className="tb-sayi">✓</span>
+        <div><b>Bugün tekrar yok</b>{g === 1 ? 'Yarın' : `${g} gün sonra`} {konuAdi(siradaki)} sorusunu yeniden çözeceksin.</div>
+      </div>
+    )
+  } else {
+    kutu = (
+      <div className="tb-kutu">
+        <span className="tb-sayi">+</span>
+        <div><b>Defterin boş</b>Yanlış yaptığın bir soruyu ekle; unutmaman için doğru zamanda karşına çıkar.</div>
+      </div>
+    )
+  }
+
+  const notu = (konu) => acik.find((h) => h.konular?.ad === konu)
+  return (
+    <>
+      <section className="kp-bolum">
+        <div className="kp-bolum-bas"><h2>Tekrar etmen gerekenler</h2></div>
+        <p className="tb-aciklama">Yanlış yaptığın sorular unutulmasın diye aralıklarla karşına çıkar.</p>
+        <div className="kp-kart tb">
+          {kutu}
+          {zayif.slice(0, 4).map((z) => {
+            const h = notu(z.konu)
+            return (
+              <div key={z.konuId} className="tb-konu">
+                <div>
+                  <b>{z.konu}</b>
+                  <span>
+                    Denemelerde {z.hata} soru kaçırdın.
+                    {h?.not_metni ? ` Defterine "${h.not_metni}" diye not düşmüşsün.` : h?.neden ? ` Defterine ${NEDEN_CUMLE[h.neden] ?? 'bir not'} yazmışsın.` : ''}
+                  </span>
+                </div>
+              </div>
+            )
+          })}
+          <div className="tb-eylem">
+            {duzenlenebilir && <button type="button" onClick={() => setEkran('ekle')}>+ Yanlış yaptığın bir soruyu ekle</button>}
+            {liste.length > 0 && <button type="button" className="tb-ikincil" onClick={() => setEkran('defter')}>Defterin tamamı · {acik.length}</button>}
+          </div>
+        </div>
+      </section>
+      {ekran === 'defter' && (
+        <DefterSayfasi liste={liste} duzenlenebilir={duzenlenebilir} onGeri={() => setEkran(null)} onEkle={() => setEkran('ekle')} onTekrar={() => setEkran('tekrar')} />
+      )}
+      {ekran === 'ekle' && (
+        <YanlisEkle ogrenciId={ogrenciId} katalogId={katalogId} onGeri={() => setEkran(null)} onEklendi={() => { yukle(); setEkran(null) }} />
+      )}
+      {ekran === 'tekrar' && (
+        <TekrarSayfasi sorular={bekleyen} onBitti={() => { yukle(); setEkran(null) }} />
+      )}
+    </>
+  )
+}
+
+/* ───────────── Tekrar hatırlatması (22 Eylül 2026) ─────────────
+   Tekrar zamanı gelen sorular öğrencinin gününe düşer: Programım'da
+   günün işlerinin arasında ayrı bir satır ve Günü tamamla'da son
+   hatırlatma. Görev değildir: koçun iş sayılarını ve günün yüzdesini
+   etkilemez. Soru yoksa hiçbir şey çizmez. */
+export function TekrarSatiri({ ogrenciId, kisa = false }) {
+  const { liste, yukle } = useDefter(ogrenciId)
+  const [acik, setAcik] = useState(false)
+  const bekleyen = useMemo(() => bekleyenler(liste), [liste])
+  if (!liste || bekleyen.length === 0) return null
+  const konular = [...new Set(bekleyen.map((h) => h.konular?.ad ?? h.dersler?.ad).filter(Boolean))].slice(0, 2).join(', ')
+  const dk = Math.max(2, bekleyen.length * 2)
+  return (
+    <>
+      <div className={kisa ? 'tk-satir tk-satir--kisa' : 'tk-satir'}>
+        <span className="tk-ikon" aria-hidden="true">↻</span>
+        <span className="tk-yazi">
+          {kisa ? (
+            <><b>Bugünün {bekleyen.length} tekrarı kaldı.</b> Şimdi {dk} dakikada çözmek ister misin?</>
+          ) : (
+            <><b>Tekrar zamanı · {bekleyen.length} soru</b>{konours(konular)} · ~{dk} dk</>
+          )}
+        </span>
+        <button type="button" onClick={() => setAcik(true)}>Çöz</button>
+      </div>
+      {acik && <TekrarSayfasi sorular={bekleyen} onBitti={() => { setAcik(false); yukle() }} />}
+    </>
+  )
+}
+const konours = (k) => (k ? ` (${k})` : '')
+
+/* Koç için: öğrencinin zamanı geçmiş ama çözülmemiş tekrarları. */
+export function GecikenTekrarNotu({ ogrenciId }) {
+  const { liste } = useDefter(ogrenciId)
+  if (!liste) return null
+  const bugun = yerelGun()
+  const geciken = liste.filter((h) => !h.ogrenildi && h.sonraki_tekrar < bugun)
+  if (geciken.length === 0) return null
+  return (
+    <p className="tk-koc-not">
+      Hata defterinde zamanı geçmiş <b>{geciken.length} tekrar</b> var; öğrenci bunları çözmemiş.
+    </p>
   )
 }

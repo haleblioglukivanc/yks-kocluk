@@ -46,7 +46,7 @@ function SayanNet({ deger }) {
   return <span aria-label={Number(deger).toFixed(2)}>{Number(d).toFixed(2)}</span>
 }
 
-function NetCizgisi({ seri, hedef = null }) {
+export function NetCizgisi({ seri, hedef = null }) {
   if (seri.length < 2) {
     return <Bos ruh="fikir" baslik="İkinci denemeyle çizgi başlar" aciklama="Bir deneme daha girince ilkiyle arasındaki yön burada görünür." />
   }
@@ -423,7 +423,7 @@ export default function DenemePaneli({
 /* Netin hangi konudan düştüğü, denemenin asıl bilgisi. Buraya girilen
    satırlar öğrencinin deneme sekmesinde "tekrar edilmesi gereken konular"
    listesinde birikiyor. */
-function DenemeHatalari({ deneme, katalogId, onDegisti }) {
+export function DenemeHatalari({ deneme, katalogId, onDegisti }) {
   const [satirlar, setSatirlar] = useState(null)
   const [dersler, setDersler] = useState([])
   const [konular, setKonular] = useState([])
