@@ -130,6 +130,7 @@ export default function OgrenciNabzi({ onOgrenciAc }) {
           <p>Bugünün işleri canlı; noktalar son 7 günün ritmi.</p>
         </div>
         <div className="on-arac">
+          {satirlar.length > 6 && (
           <label className="on-ara">
             <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
               <circle cx="11" cy="11" r="6.5" />
@@ -143,9 +144,10 @@ export default function OgrenciNabzi({ onOgrenciAc }) {
               aria-label="Öğrenci ara"
             />
           </label>
+          )}
           <div className="ana-anahtar" role="group" aria-label="Süzgeç">
             <button type="button" aria-pressed={suzgec === 'tumu'} onClick={() => setSuzgec('tumu')}>Tümü</button>
-            <button type="button" aria-pressed={suzgec === 'dikkat'} onClick={() => setSuzgec('dikkat')}>Dikkat isteyenler</button>
+            <button type="button" aria-pressed={suzgec === 'dikkat'} onClick={() => setSuzgec('dikkat')}>Dikkat</button>
           </div>
         </div>
       </div>

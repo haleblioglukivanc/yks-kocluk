@@ -81,11 +81,14 @@ export default function AnaTepe({
           </div>
         </div>
         <div className="ana-selam">
-          <span className="ana-mevsim">
-            <MevsimIsareti mevsim={mevsim} boyut={16} />
-            {MEVSIM_ADI[mevsim]}, {SLOGAN[mevsim]}
-          </span>
-          {tarih && <span className="ana-tarih">{tarih}</span>}
+          <div className="ana-ust-satir">
+            <span className="ana-mevsim">
+              <MevsimIsareti mevsim={mevsim} boyut={16} />
+              {MEVSIM_ADI[mevsim]}
+              <span className="ana-slogan">, {SLOGAN[mevsim]}</span>
+            </span>
+            {tarih && <span className="ana-tarih">{tarih}</span>}
+          </div>
           <h1>{selam}</h1>
           {ozet && <p className="ana-ozet">{ozet}</p>}
         </div>

@@ -148,7 +148,7 @@ export default function KocAnaSayfa({ profil, onOgrenciAc, tepe }) {
             <div className="ana-bolum-bas">
               <h2>Dikkat gerektirenler</h2>
             </div>
-            <KararKuyrugu onOgrenciAc={onOgrenciAc} />
+            <KararKuyrugu onOgrenciAc={onOgrenciAc} kompakt />
             <VeliMesajlari />
           </section>
           <Gidisat donem={donem} onDonem={setDonem} {...gidisat} />

@@ -7,6 +7,14 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koç ana ekranı toparlandı (telefon)
+
+- Üstteki boş bant: iOS'ta durum çubuğu "default" olduğu için saatin altında buzlu bir şerit kalıyordu. `apple-mobile-web-app-status-bar-style` → `black-translucent`; sahne saatin altına kadar uzanıyor, beyaz saat okunsun diye tepede hafif gölge. Ana ekrana eklenmiş uygulamada değişikliğin görünmesi için uygulamayı kapatıp açmak (gerekirse yeniden eklemek) gerekebilir.
+- Telefonda sıra: Dikkat gerektirenler → Öğrencilerim → Gidişat.
+- Karar kuyruğu ana sayfada `kompakt`: "Sırada N iş daha" tek satır, dokununca açılır.
+- Öğrencilerim telefonda satır başına iki sıra (kim + 7 günlük ritim + sayı; altında işler yana kayan tek şerit). Arama 6 öğrenciden fazlaysa çıkar; süzgeç "Tümü / Dikkat".
+- Gidişat telefonda sıkı 2×2; tepe kısaldı, slogan yalnız masaüstünde, telefonda mevsim hapı ve tarih tek satır.
+
 ## 22 Eylül 2026 — Mevsimsel tasarım: sahne (koç ana ekranı)
 
 - Bekir'in geri bildirimi: mevsim yalnız üst barda gibi duruyordu; brifte uygulama komple bir sahnenin içindeydi.

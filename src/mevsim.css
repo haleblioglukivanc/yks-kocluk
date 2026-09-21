@@ -488,3 +488,79 @@ html .uygulama .dikkat .dugme--ikincil {
   -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 70%, transparent 100%);
   mask-image: linear-gradient(to bottom, transparent 0%, #000 14%, #000 70%, transparent 100%);
 }
+
+/* ═══ Toparlama (22 Eylül 2026): ekran aşağı doğru çok uzuyordu ═══ */
+/* Durum çubuğu artık saydam (black-translucent): sahne saatin altına
+   kadar uzanır, üstte boş bant kalmaz. Beyaz saat okunsun diye tepede
+   hafif bir gölge. */
+.ana-tepe::before {
+  content: ''; position: absolute; left: 0; right: 0; top: 0; z-index: 1; pointer-events: none;
+  height: calc(env(safe-area-inset-top, 0px) + 1.5rem);
+  background: linear-gradient(180deg, rgba(20, 12, 8, .28), transparent);
+}
+.ana-ust-satir { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+.ana-ust-satir .ana-mevsim { margin-bottom: 0; }
+.sirada-kapali {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; width: 100%;
+  min-height: 48px; padding: 0.6rem 0.9rem; margin-top: 0.5rem; border: 0; border-radius: 16px; cursor: pointer;
+  background: color-mix(in srgb, var(--m-zemin) 72%, transparent); color: var(--m-soluk);
+  font: 500 0.88rem var(--m-govde); text-align: left;
+}
+.sirada-kapali b { color: var(--m-murekkep); font-weight: 700; }
+.sirada-kapali-ok { font-size: 1.3rem; color: var(--m-soluk); }
+
+@media (max-width: 40rem) {
+  /* Tepe: slogan masaüstünde; telefonda mevsim adı ve tarih tek satır. */
+  .ana-slogan { display: none; }
+  .ana-tepe { min-height: 0; }
+  .ana-tepe-ic { gap: 1rem; padding-bottom: 5.5rem; }
+  .ana-tepe .manzara { top: 48%; }
+  .ana-selam h1 { font-size: 2rem; }
+  .ana-ozet { font-size: 0.95rem; }
+  .ana-govde { gap: 1.25rem; padding-top: 0.5rem; }
+  .ana-kart { padding: 1rem; }
+
+  /* Sıra: dikkat → öğrencilerim → gidişat. */
+  .ana-ust-izgara { display: contents; }
+  .dikkat { order: 1; }
+  .ogrenci-nabzi { order: 2; }
+  .gidisat { order: 3; }
+
+  /* Gidişat: sıkı 2×2. */
+  .gd-izgara { gap: 0.5rem; }
+  .gd-kart { min-height: 0; padding: 0.75rem 0.85rem; gap: 0.25rem; }
+  .gd-deger { font-size: 1.45rem; }
+  .gd-ikon { width: 24px; height: 24px; }
+  .gd-ikon svg { width: 14px; height: 14px; }
+  .gd-etiket { font-size: 0.75rem; }
+  .gd-alt { font-size: 0.72rem; }
+  .gd-cizgi { width: 72px; height: 26px; }
+
+  /* Öğrencilerim: satır başına iki sıra — kim/ritim/sayı, altında işler
+     tek satırda yana kayar. */
+  .ogrenci-nabzi .ana-bolum-baslik p { display: none; }
+  .on-satir {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas: 'kim ritim bugun' 'isler isler isler';
+    gap: 0.55rem 0.75rem; padding: 0.8rem 0;
+  }
+  .on-ritim { width: 6.5rem; }
+  .on-r { width: 10px; height: 10px; }
+  .on-r--k { box-shadow: inset 0 0 0 2.5px var(--m-vurgu); }
+  .on-r--y { width: 6px; }
+  .on-ritim-cizgi { top: 11px; left: 5px; right: 5px; }
+  .on-bugun { min-width: 2.5rem; }
+  .on-cubuk { display: none; }
+  .on-kim .avatar, .on-kim [class*='avatar'] { width: 36px; height: 36px; font-size: 0.75rem; }
+  .on-kim-yazi b { font-size: 0.92rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .on-isler { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-right: -1rem; padding-right: 1rem; }
+  .on-isler::-webkit-scrollbar { display: none; }
+  .on-is { flex: none; max-width: 13rem; }
+  .on-is { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-flex; }
+  .on-aciklama { gap: 0.35rem 0.8rem; font-size: 0.7rem; padding-top: 0.7rem; }
+}
+.kuyruk-bitis--duz, .kuyruk-bitis--duz .kuyruk-bitis-alt { text-align: left; }
+@media (max-width: 40rem) {
+  .on-ritim { width: 5.2rem; }
+  .on-son { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; }
+}

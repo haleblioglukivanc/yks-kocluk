@@ -37,7 +37,7 @@ function anahtar(k) {
   return `${k.tip}-${k.kaynak_id}`
 }
 
-export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
+export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null, kompakt = false }) {
   const [kartlar, setKartlar] = useState(null)
   const [bitenler, setBitenler] = useState([])
   const [verilen, setVerilen] = useState(0)
@@ -198,7 +198,7 @@ export default function KararKuyrugu({ onOgrenciAc, sekmeYuvasi = null }) {
         />
       )}
 
-      <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} dersBul={dersBul} />
+      <Sirada kartlar={sirada} onSec={(k) => setOdakKey(anahtar(k))} dersBul={dersBul} kapali={kompakt} />
       <IyiHaber kartlar={kutlamalar} onBitti={bittiIsaretle} onHata={setHata} />
     </>
   )
@@ -231,9 +231,19 @@ function SegmentSeridi({ yuva, sayilar, aktif, onSec }) {
    istendiğinde açılır; dokununca o karta atlanır. */
 const basHarf = (ad) => (ad ?? '').split(/\s+/).filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr-TR')
 
-function Sirada({ kartlar, onSec, dersBul = metindenDers }) {
+function Sirada({ kartlar, onSec, dersBul = metindenDers, kapali = false }) {
   const [hepsi, setHepsi] = useState(false)
+  /* Ana sayfada sıra kapalı başlar: tek satır, dokununca açılır. Ekran
+     aşağı doğru uzamasın (Bekir, 22 Eylül 2026). */
+  const [acik, setAcik] = useState(!kapali)
   if (kartlar.length === 0) return null
+  if (!acik)
+    return (
+      <button type="button" className="sirada-kapali" onClick={() => setAcik(true)}>
+        <span><b>Sırada {kartlar.length} iş daha</b>{' '}{kartlar.slice(0, 3).map((k) => k.ad.split(' ')[0]).join(', ')}{kartlar.length > 3 ? '…' : ''}</span>
+        <span className="sirada-kapali-ok" aria-hidden="true">›</span>
+      </button>
+    )
   const gosterilen = hepsi ? kartlar : kartlar.slice(0, 4)
   /* Kart değil bölüm (TASARIM-KURALLARI 8): zemine oturan başlık + liste.
      Renkli ders hapı yerine bağlam adın altında düz metin. */
