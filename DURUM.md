@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrencinin Yol sayfası yeni dilde
+
+- Mokap onaylı. Tepe: ortak sahne, "Yol", "N konudan M'si bitti. Sıradaki durak X." (konu_ilerleme), seri etiketi (seriler), sağda ağaçların önünde dağ çizimi (`YolCizimi zemin={false}`), geri → ana ekran. /yol öğrencide üst şeritsiz.
+- Ders seçimi halkalı haplar (her dersin tamamlanma halkası ve x/y); altında beyaz kartta düz patika: `KonuYolu duz` — duraklar dikey, solda taş, sağda ad ve durum (onaylandı / koç onayı bekliyor / şu an burada / tekrar gerekiyor · denemede N hata / planda / sırada); Çizbi ve anlatıcı satırı bu görünümde gizli, dokununca eskisi gibi alt sayfa açılır. Koçun öğrenci ekranındaki konu yolu değişmedi (zikzak).
+- Altında okuduğu kitaplar ve Kaynaklarım (od-govde kart dili). Ayrı seri kartı kalktı (tepede).
+
 ## 22 Eylül 2026 — Bilgisayarda tek sütun
 
 - Tepe yazısı sol kenarda, kartlar ortada ve koç (36rem) ile öğrencide (40.5rem) farklı genişlikteydi. Artık bütün `ana-govde` türleri ve `.ana-tepe-ic` ortadaki 42rem sütunda, aynı iç boşlukla; sahne çizimi sütunun sağ kenarında. Telefonda değişiklik yok (16px kenar).

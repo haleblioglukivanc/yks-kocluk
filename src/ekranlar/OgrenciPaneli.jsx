@@ -1,6 +1,6 @@
 import Islerim from '../bilesenler/Islerim.jsx'
 import { gunGorevleri } from '../bilesenler/HaftaSeridi.jsx'
-import { KisiPortresi } from '../ortak/KapiCizimleri.jsx'
+import { KisiPortresi, YolCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { kutlamaKontrol } from '../lib/kutlama.js'
@@ -95,11 +95,26 @@ export default function OgrenciPaneli({
   /* Hafta şeridi artık görev kartının başlığı: seçili gün burada tutuluyor,
      o günün listesi de şeritten buraya geliyor ve aynı karta besleniyor. */
   const [seciliGun, setSeciliGun] = useState(null)
-  const [dersYuvasi, setDersYuvasi] = useState(null)
   const [gunVerisi, setGunVerisi] = useState(null)
   /* İşlerim'de bir güne dokununca (7 gün / 30 gün) o günün işleri gelir;
      Şimdi kartı ve liste o güne geçer. null: bugün. */
   const [gunSayaci, setGunSayaci] = useState(0)
+  /* Yol sayfasının tepesi: kaç konu bitti, sıradaki durak, seri. */
+  const [yolOzeti, setYolOzeti] = useState(null)
+  useEffect(() => {
+    if (sekme !== 'konular' || !kayit?.id) return
+    let iptal = false
+    Promise.all([
+      supabase.from('konu_ilerleme').select('durum, guncellendi, konular(ad)').eq('ogrenci_id', kayit.id),
+      supabase.from('seriler').select('guncel_seri, en_uzun_seri, son_aktif_gun').eq('ogrenci_id', kayit.id).maybeSingle(),
+    ]).then(([k, sr]) => {
+      if (iptal) return
+      const l = k.data ?? []
+      const simdi = l.filter((x) => x.durum === 'calisiliyor').sort((a, b) => ((a.guncellendi ?? '') < (b.guncellendi ?? '') ? 1 : -1))[0]
+      setYolOzeti({ toplam: l.length, biten: l.filter((x) => x.durum === 'tamamlandi').length, siradaki: simdi?.konular?.ad ?? null, seri: sr.data?.guncel_seri ?? 0, enUzun: sr.data?.en_uzun_seri ?? 0 })
+    })
+    return () => { iptal = true }
+  }, [sekme, kayit?.id, tazele])
   useEffect(() => {
     if (!seciliGun || !kayit?.id || seciliGun === ozet?.bugun) { setGunVerisi(null); return }
     let iptal = false
@@ -186,6 +201,18 @@ export default function OgrenciPaneli({
   return (
     <>
       <SayacSaglayici ogrenciId={kayit.id} onKaydedildi={yenile}>
+      {sekme === 'konular' && (
+        /* Yol (22 Eylül 2026 mokabı): ortak sahneli tepe, sağda büyük dağ. */
+        <AnaTepe
+          selam="Yol"
+          tarih={gunBasligi(ozet?.bugun)}
+          ozet={!yolOzeti ? ' ' : yolOzeti.toplam === 0 ? 'Konu konu nerede olduğun, sıradaki durak.' : `${yolOzeti.toplam} konudan ${yolOzeti.biten}'${yolOzeti.biten === 1 ? 'i' : 'u'} bitti.${yolOzeti.siradaki ? ` Sıradaki durak ${yolOzeti.siradaki}.` : ''}`}
+          {...(vekaleten ? {} : tepe)}
+          onGeri={() => setSekme('bugun')}
+          durum={yolOzeti && yolOzeti.seri > 0 ? <span className="od-durum od-durum--seri"><i />{yolOzeti.seri} gün seri{yolOzeti.enUzun > yolOzeti.seri ? ` · en uzun ${yolOzeti.enUzun}` : ''}</span> : null}
+          sagCizim={(mevsim) => <YolCizimi mevsim={mevsim} zemin={false} oran={yolOzeti?.toplam ? yolOzeti.biten / yolOzeti.toplam : 0} />}
+        />
+      )}
       {sekme === 'bugun' && (
         /* Ortak iskelet (21 Eylül 2026): koçla aynı tepe. Acil görüşme
            tepenin sağ üstünde; hafta şeridi tepenin hemen altında. */
@@ -253,18 +280,13 @@ export default function OgrenciPaneli({
         </div>
       ) : sekme === 'konular' ? (
         <>
-          {/* Başlık + ders sekmeleri tek koyu blok (TASARIM-KURALLARI 3–4). */}
-          <UstBlok etiket="Yol" sekmeli sinif="rapor-tepe">
-            <h1 className="rt-baslik">Yol</h1>
-            <p className="rt-alt">Konu konu nerede olduğun</p>
-            <div className="ob-sekme-yuvasi" ref={setDersYuvasi} />
-          </UstBlok>
-          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} sekmeYuvasi={dersYuvasi} />
-          {/* Yol uzun vadeli bakış: seri. Kitap Bugün'e taşındı. Rozetler koçta. */}
-          <Rozetlerim ogrenciId={kayit.id} sadeceSeri />
+          <div className="ana-govde ana-govde--dar od-govde yol-govde">
+          <KonuHaritasi profilId={kayit.id} odakDers={odakDers} yeni />
+          {/* Seri tepede; kitaplar ve kaynaklar altta kısa listeler. */}
           <Okuduklarim ogrenciId={kayit.id} />
           {/* Kaynaklarım ana ekrandan buraya taşındı (22 Eylül 2026). */}
           <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]} />
+          </div>
         </>
       ) : (
         <>

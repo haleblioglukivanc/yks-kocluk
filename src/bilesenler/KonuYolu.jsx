@@ -83,7 +83,7 @@ function soz(rol, durak, bolge, olay) {
   }
 }
 
-export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti, durakSayisi = 0 }) {
+export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti, durakSayisi = 0, duz = false }) {
   const [yol, setYol] = useState(null)
   const [hata, setHata] = useState('')
   const [secili, setSecili] = useState(null)
@@ -293,7 +293,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
   const koc = rol === 'koc'
 
   return (
-    <div className="konu-yolu">
+    <div className={duz ? 'konu-yolu konu-yolu--duz' : 'konu-yolu'}>
       <Uyari>{hata}</Uyari>
       {/* Anlatıcı: haritanın üstüne binen ikinci Çizbi balonu yerine düz
           durum satırı (tek ses kuralı; Bekir, 18 Eylül 2026). Metin aynı,
@@ -333,7 +333,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                 <div key={d.id} className="yol-durak" data-konu={d.id} data-yol={d.yol}>
                   <button
                     type="button"
-                    style={{ left: `${X[i % 3]}%` }}
+                    style={duz ? undefined : { left: `${X[i % 3]}%` }}
                     onClick={() => ac({ ...d, bolge: b.ad })}
                     aria-label={`${d.ad}, ${ETIKET[d.yol]}${(d.hata_adet ?? 0) >= 2 ? `, denemelerde ${d.hata_adet} hata` : ''}`}
                   >
@@ -346,7 +346,14 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                         <span className="yol-hata" title={`Denemelerde ${d.hata_adet} hata`}>{d.hata_adet}</span>
                       )}
                     </span>
-                    <span className="yol-ad">{d.ad}</span>
+                    {duz ? (
+                      <span className="yol-ad">
+                        {d.ad}
+                        <small>{d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar gerekiyor · denemede ${d.hata_adet} hata` : ETIKET[d.yol]}</small>
+                      </span>
+                    ) : (
+                      <span className="yol-ad">{d.ad}</span>
+                    )}
                   </button>
                 </div>
               )

@@ -200,7 +200,7 @@ export function KisiPortresi({ mevsim, yol, bas, durum = null, idEk = 'kisi' }) 
 
 /* Öğrencinin Yol kapısı: zirvesinde bayrak olan dağ patikası; öğrenci
    patikada, bitirdiği konuların oranı kadar yukarıda. */
-export function YolCizimi({ mevsim, oran = 0, seri = 0 }) {
+export function YolCizimi({ mevsim, oran = 0, seri = 0, zemin = true }) {
   const t = Math.max(0, Math.min(1, oran))
   // patika üzerinde kabaca konum (alttan zirveye)
   const noktalar = [[62, 72], [76, 62], [74, 52], [88, 44], [94, 32], [96, 20]]
@@ -212,7 +212,7 @@ export function YolCizimi({ mevsim, oran = 0, seri = 0 }) {
   const y = a[1] + (b[1] - a[1]) * f
   return (
     <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
-      <Zemin mevsim={mevsim} />
+      {zemin && <Zemin mevsim={mevsim} />}
       <path d="M44 72 L96 18 L150 72 Z" fill="var(--m-on-zemin)" opacity=".55" />
       {mevsim === 'kis' && <path d="M84 30 L96 18 L108 30 Q 102 27 96 30 Q 90 27 84 30 Z" fill="#FFFFFF" />}
       <path d="M62 72 C 80 62 70 52 88 44 C 100 38 92 30 96 20" fill="none" stroke="#FFF6EC" strokeWidth="4" strokeLinecap="round" strokeDasharray="2 7" />

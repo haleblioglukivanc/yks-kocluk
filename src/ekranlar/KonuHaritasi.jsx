@@ -62,7 +62,7 @@ const ayniDers = (a, b) => {
   return Boolean(x) && Boolean(y) && (x === y || x.includes(y) || y.includes(x))
 }
 
-export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null }) {
+export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, yeni = false }) {
   const [dersler, setDersler] = useState(null)
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
@@ -129,6 +129,43 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null })
   }
 
   const t = grupToplami(etkin, ['toplam', 'tamamlandi', 'onayli', 'calisiliyor', 'tekrar'])
+
+  /* Yeni Yol sayfası (22 Eylül 2026 mokabı): ders seçimi halkalı haplar,
+     altında beyaz kartta düz patika. */
+  if (yeni) {
+    const CEVRE = 2 * Math.PI * 14
+    return (
+      <>
+        <Uyari>{hata}</Uyari>
+        <div className="yol-dersler" role="group" aria-label="Dersler">
+          {gruplar.map((g) => {
+            const gt = grupToplami(g, ['toplam', 'tamamlandi'])
+            const oran = gt.toplam ? gt.tamamlandi / gt.toplam : 0
+            const secili = g.kod === etkin.kod
+            return (
+              <button key={g.kod} type="button" className="yol-ders" aria-pressed={secili} onClick={() => setSecili(g.kod)}>
+                <svg viewBox="0 0 36 36" aria-hidden="true">
+                  <circle cx="18" cy="18" r="14" fill="none" stroke={secili ? 'rgba(255,255,255,.25)' : 'var(--m-yumusak)'} strokeWidth="4" />
+                  {oran > 0 && <circle cx="18" cy="18" r="14" fill="none" stroke={secili ? '#fff' : 'var(--m-vurgu)'} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${oran * CEVRE} ${CEVRE}`} transform="rotate(-90 18 18)" />}
+                </svg>
+                {g.ad} <small>{gt.tamamlandi}/{gt.toplam}</small>
+              </button>
+            )
+          })}
+        </div>
+        <section className="yol-kart" aria-label={`${etkin.ad} yolu`}>
+          {etkin.dersler.map((d) => (
+            <div key={d.dersId} className="yol-kapsam">
+              {etkin.dersler.length > 1 && (
+                <p className="yol-kapsam-bas"><span>{dersKapsamAdi(d)}</span><small>{d.tamamlandi}/{d.toplam}</small></p>
+              )}
+              <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} durakSayisi={d.toplam} duz />
+            </div>
+          ))}
+        </section>
+      </>
+    )
+  }
 
   return (
     <>

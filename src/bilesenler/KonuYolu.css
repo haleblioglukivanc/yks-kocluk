@@ -209,3 +209,33 @@
   background: var(--murekkep); border-color: var(--murekkep); color: var(--yuzey);
 }
 .ders-cip--etkin .ders-cip-sayi { color: var(--yuzey); opacity: 0.7; }
+
+/* ═══ Düz patika (öğrencinin Yol sayfası, 22 Eylül 2026 mokabı) ═══
+   Duraklar dikey bir yolda, solda taş, sağında ad ve durum. Çizgi yine
+   taşların merkezinden ölçülür; Çizbi ve anlatıcı satırı bu görünümde yok
+   (tepedeki cümle aynı şeyi söylüyor). */
+.konu-yolu--duz .yol-balon, .konu-yolu--duz .yol-cizbi { display: none; }
+.konu-yolu--duz .yol-harita { padding-bottom: 0.5rem; }
+.konu-yolu--duz .yol-bolge { padding: 0.25rem 0 0.5rem; }
+.konu-yolu--duz .yol-bolge-ad { font-family: var(--m-govde, inherit); font-size: 0.75rem; font-weight: 800; letter-spacing: .02em; color: var(--m-soluk, var(--soluk)); margin: 0.25rem 0 0.25rem; }
+.konu-yolu--duz .yol-durak { height: 62px; }
+.konu-yolu--duz .yol-durak > button {
+  left: 0; right: 0; transform: none; width: auto; flex-direction: row; align-items: center; gap: 14px; text-align: left;
+}
+.konu-yolu--duz .yol-nokta { width: 38px; height: 38px; font-size: 0.85rem; }
+.konu-yolu--duz .yol-ad {
+  display: flex; flex-direction: column; gap: 2px; max-width: none; background: none; padding: 0; text-align: left;
+  font-size: 0.95rem; font-weight: 700; color: var(--m-murekkep, var(--murekkep));
+}
+.konu-yolu--duz .yol-ad small { font-size: 0.78rem; font-weight: 600; color: var(--m-soluk, var(--soluk)); }
+/* Renkler sahnenin diliyle: biten vurgu renginde dolu, bekleyen kesikli
+   vurgu, buradasın halkalı, tekrar amber. */
+.konu-yolu--duz .yol-durak[data-yol="onayli"] .yol-nokta { background: var(--m-vurgu); border-color: var(--m-vurgu); color: #fff; }
+.konu-yolu--duz .yol-durak[data-yol="bekliyor"] .yol-nokta { background: var(--m-yumusak); border-color: var(--m-vurgu); color: var(--m-vurgu); }
+.konu-yolu--duz .yol-durak[data-yol="simdi"] .yol-nokta { background: var(--m-yuzey); border: 3px solid var(--m-vurgu); color: var(--m-vurgu); box-shadow: 0 0 0 6px color-mix(in srgb, var(--m-vurgu) 14%, transparent); }
+.konu-yolu--duz .yol-durak[data-yol="simdi"] .yol-nokta-sar::before { border-color: var(--m-vurgu); }
+.konu-yolu--duz .yol-durak[data-yol="simdi"] .yol-ad small { color: var(--m-vurgu); font-weight: 800; }
+.konu-yolu--duz .yol-durak[data-yol="tekrar"] .yol-nokta { background: var(--m-dikkat-zemin); border-color: var(--m-dikkat); color: var(--m-dikkat); }
+.konu-yolu--duz .yol-durak[data-yol="tekrar"] .yol-ad small { color: var(--m-dikkat); font-weight: 800; }
+.konu-yolu--duz .yol-durak[data-yol="onayli"] .yol-ad, .konu-yolu--duz .yol-durak[data-yol="bekliyor"] .yol-ad { color: var(--m-murekkep); }
+.konu-yolu--duz .yol-cizgi--gecildi { stroke: var(--m-vurgu); opacity: 1; }
