@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Haftanın kitabı satırı sadeleşti
+
+- Bekir: kitaba basınca söz de dahil büyük panel açılıyordu, geri dönülemiyordu. Artık ana ekranda açılan panel yok: kitap satırında kapak, "Haftanın kitabı", ad ve altında yazar · yıl; sağda küçük "Bitirdim" hapı (sonrası mesajı satırın altında). Açıklama, alıntı ve rozetler ana ekranda yok. Söz satırı aynen.
+
 ## 22 Eylül 2026 — Öğrenci ana ekranı: güne gitme, düğme, kitap ve söz
 
 - İşlerim'in altındaki tek satır özet kalktı (tepede yazıyor).

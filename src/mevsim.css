@@ -1210,3 +1210,9 @@ button.isl-hc:disabled { cursor: default; }
 .hi-kisa--soz .hi-kisa-yazi { font-style: italic; }
 .hi-kisa--soz .hi-kisa-yazi small { font-style: normal; }
 .hi-kisa--soz .hi-kisa-yazi { white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.4; }
+/* Kitap satırı: ad altında yazar · yıl; sağda Bitirdim. Tıklanan satır değil. */
+.hi-kisa--kitap { cursor: default; }
+.hi-kisa--kitap .hi-kisa-yazi em { display: block; font-style: normal; font-size: 0.78rem; font-weight: 600; color: var(--m-soluk); margin-top: 0.1rem; }
+.hi-kisa--kitap .hi-kisa-kapak { height: 46px; width: 32px; }
+.hi-kisa-bitir { flex: none; min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); font: 700 0.78rem var(--m-govde); cursor: pointer; }
+.hi-kisa-kap .hi-haber { margin: 0 0.5rem; font-size: 0.82rem; color: var(--m-yolunda); }

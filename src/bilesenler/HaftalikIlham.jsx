@@ -37,7 +37,6 @@ function uzunlukEtiketi(etiketler) {
    deyene kadar aynı kalır (ogrenci_okuma). Veli, rapor ve tanıtım genel
    seçimi görür. */
 export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, bitirilebilir = false, kisa = false }) {
-  const [acik, setAcik] = useState(false)
   const [veri, setVeri] = useState(null)
   const [tur, setTur] = useState(0)
   const [bekliyor, setBekliyor] = useState(false)
@@ -113,14 +112,26 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
   /* Ana ekranda iki kısa satır (Bekir, 22 Eylül 2026): haftanın kitabı ve
      haftanın sözü. Kitabın iç ayrıntısı yok; kitap satırına dokununca
      kitabın tamamı (Bitirdim dahil) açılır. */
-  if (kisa && !acik) {
+  if (kisa) {
+    /* Kitap: kapak, ad, yazar · yıl (açıklama yok, ayrı sayfa yok); sağda
+       Bitirdim. Söz aynen (Bekir, 22 Eylül 2026). */
+    const kunye = [veri.kitap_yazar, veri.kitap_yil].filter(Boolean).join(' · ')
     return (
       <div className="hi-kisa-kap">
-        <button type="button" className="hi-kisa" onClick={() => setAcik(true)} aria-label={`Bu haftanın kitabı: ${veri.kitap_ad}. Ayrıntıyı aç`}>
+        <div className="hi-kisa hi-kisa--kitap">
           {veri.kitap_kapak_url ? <img className="hi-kisa-kapak" src={veri.kitap_kapak_url} alt="" loading="lazy" /> : <span className="hi-kisa-kapak hi-kisa-kapak--bos" aria-hidden="true" />}
-          <span className="hi-kisa-yazi"><small>Haftanın kitabı</small>{veri.kitap_ad}</span>
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
-        </button>
+          <span className="hi-kisa-yazi">
+            <small>Haftanın kitabı</small>
+            {veri.kitap_ad}
+            {kunye && <em>{kunye}</em>}
+          </span>
+          {bitirilebilir && (
+            <button type="button" className="hi-kisa-bitir" disabled={bekliyor} onClick={bitir}>
+              {bekliyor ? '…' : 'Bitirdim'}
+            </button>
+          )}
+        </div>
+        {haber && <p className="hi-haber" role="status">{haber}</p>}
         {veri.soz_metin && (
           <div className="hi-kisa hi-kisa--soz">
             <span className="hi-kisa-tirnak" aria-hidden="true">“</span>
@@ -130,6 +141,7 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
       </div>
     )
   }
+
 
 
   return (
