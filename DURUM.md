@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Çizbi kaldırıldı
+
+- Bekir: "Çizbiyi kaldır tamamen". `Kalem` bileşeni boş döner (`CIZBI_ACIK = false`; geri getirmek için true), köşedeki `KalemKosede` ve balonları hiç çizilmez; boş durumlarda, sayaçta, yol haritasında, kutlama katmanında, Günü kapat'ta ve veli başlığında maskot yok; ona ayrılmış kutular gizli. "Çizbi" adı metinlerden çıktı (kutlama, kaynak seçici). Kural motoru (kalem-kurallari.js) ve Yönetim'deki "Çizbi olayları" kaydı yerinde, görünür bir etkisi yok.
+
 ## 22 Eylül 2026 — Öğrencinin Denemeler sayfası yeni dilde
 
 - Mokap onaylı. Tepe: ortak sahne, "Denemeler", son iki aynı tür deneme arasındaki fark etiketi (▲ yeşil / ▼ kırmızı), "Son TYT 61,75 net. Hedefine N net kaldı." (hedef girilmişse), sağda ağaçların önünde kara tahta (`DenemeCizimi zemin={false}`, son 4 netin çizgisi tebeşirle çizilir), geri → ana ekran. /denemeler öğrencide üst şeritsiz.

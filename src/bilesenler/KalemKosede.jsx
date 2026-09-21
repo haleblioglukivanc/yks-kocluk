@@ -12,7 +12,14 @@ import { kalemiCalistir, kalemiKapat } from '../lib/kalemMotoru.js'
 
 const KOC_ROLLERI = ['koc']
 
-export default function KalemKosede({ profil, ekran = 'bugun' }) {
+/* Köşedeki Çizbi ve balonları da kalktı (22 Eylül 2026, Bekir). */
+export default function KalemKosede(props) {
+  return null
+  // eslint-disable-next-line no-unreachable
+  return <KalemKosedeEski {...props} />
+}
+
+function KalemKosedeEski({ profil, ekran = 'bugun' }) {
   const ekrandaMaskotVar = useMaskotDevrildiMi()
   const [olay, setOlay] = useState(null)
   const [acik, setAcik] = useState(false)

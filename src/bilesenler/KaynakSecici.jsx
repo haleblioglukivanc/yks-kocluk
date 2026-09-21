@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Alan, Yukleniyor } from './Ortak.jsx'
-import { KALEM_ADI } from './Kalem.jsx'
 
 /**
  * Göreve kaynak iliştirme.
@@ -144,7 +143,7 @@ export default function KaynakSecici({
 
       {liste.length === 0 ? (
         <p className="kaynak-oneri kaynak-oneri--sessiz">
-          Kütüphane boş. {KALEM_ADI} boş listeyi sevmiyor — bir kaynak eklersen buraya düşer.
+          Kütüphane boş. Bir kaynak eklersen buraya düşer.
         </p>
       ) : (
         gosterilen.length > 0 && (

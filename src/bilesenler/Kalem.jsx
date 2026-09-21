@@ -231,7 +231,17 @@ const KOL_EL = {
 // yipranma: 0 (yepyeni) → 1 (kısalmış)
 const govdeYuksekligi = (y = 0) => 132 - Math.min(Math.max(y, 0), 1) * 42;
 
-export function Kalem({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
+/* Çizbi kaldırıldı (22 Eylül 2026, Bekir: "Çizbiyi kaldır tamamen"). Maskot
+   hiçbir ekranda çizilmez; çağıranlar dokunulmadan kalır, bileşen boş döner.
+   Geri getirmek gerekirse CIZBI_ACIK'ı true yapmak yeter. */
+const CIZBI_ACIK = false
+
+export function Kalem(props) {
+  if (!CIZBI_ACIK) return null
+  return <KalemCizimi {...props} />
+}
+
+function KalemCizimi({ ruh = 'bekliyor', boyut = 120, yipranma = 0 }) {
   const i = IFADE[ruh] ?? IFADE.bekliyor;
   const [kirpiyor, setKirpiyor] = useState(false);
 

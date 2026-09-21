@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react'
-import Kalem, { KALEM_ADI } from './Kalem.jsx'
+import Kalem from './Kalem.jsx'
 import Konfeti from './Konfeti.jsx'
 
 /* Kutlama katmanı — ortak bileşen.
@@ -50,7 +50,6 @@ export default function KutlamaKatmani({ kutlamalar = [], kapandi }) {
           <Kalem ruh={aktif.ruh || 'kutlama'} boyut={buyuk ? 150 : 130} />
         </div>
 
-        <p className="kutlama-ad">{KALEM_ADI}</p>
         <h2 className="kutlama-baslik">{aktif.baslik}</h2>
         <p className="kutlama-mesaj" aria-live="polite">
           {aktif.mesaj}

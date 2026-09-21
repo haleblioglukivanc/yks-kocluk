@@ -1250,3 +1250,6 @@ button.isl-hc:disabled { cursor: default; }
 .dn-govde .net-kutu { border: 0; border-radius: 14px; background: var(--m-zemin); }
 .dn-govde .hedef-cubuk { border-radius: 99px; }
 .dn-ekle { min-height: 52px; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.95rem var(--m-govde); display: flex; align-items: center; justify-content: center; gap: 0.5rem; cursor: pointer; }
+
+/* Çizbi kalktı: onun için ayrılmış boş kutular da yer tutmasın. */
+.bos-cizbi, .sayac-cizbi, .yan-not-cizbi, .yol-cizbi, .yol-balon { display: none !important; }
