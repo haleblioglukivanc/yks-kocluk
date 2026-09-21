@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
-import { sebepCumlesi } from './OgrenciSatiri.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
+import { PortreCizimi } from '../ortak/KapiCizimleri.jsx'
+import { useFotograf } from './Fotograf.jsx'
 import { AltSayfa, Dugme, Uyari } from './Ortak.jsx'
 import { temasMetni } from '../lib/temas.js'
 import { hataMetni } from '../lib/supabase.js'
@@ -115,13 +116,6 @@ export default function OgrenciKimlikKarti({
   const riskSeviyesi = ek?.risk?.risk_seviyesi ?? null
   const yuzde = ek?.risk?.tamamlama_yuzdesi
 
-  /* Uyarı cümlesi liste satırındakiyle aynı üretici: koç listede ne
-     okuduysa detayda da onu görür. Sorun yoksa satır hiç çizilmez. */
-  const uyari = ek?.risk ? sebepCumlesi(ek.risk) : null
-  const uyariVar =
-    ek?.risk &&
-    (ek.risk.hic_baslamadi || ek.risk.gun_gecti >= 2 || ek.risk.gecikmis_gorev > 0 ||
-      ek.risk.eksik_ust_uste >= 2 || Number(ek.risk.net_farki ?? 0) <= -5)
 
   /* Kart eskiden yarım ekran yiyordu: büyük avatar, 2.3rem'lik yüzde,
      tam genişlik amber düğme, ayrıca sağ üstte risk çipi ve altında aynı
@@ -133,14 +127,23 @@ export default function OgrenciKimlikKarti({
      tabelası; adın altında sınıf/alan (dokununca profil), durum etiketi.
      Altta tek satır eylem (Mesaj, Görüştük, gözüyle), üç ölçü şeridi ve
      bölüm anahtarı (children). */
-  const durumMetni = !aktif
-    ? 'Uygulama erişimi kapalı'
-    : temasMetni(temas) && ['atildi', 'gorusuldu', 'yanit', 'hareket'].includes(temas?.durum)
-      ? temasMetni(temas)
-      : riskSeviyesi
-        ? (uyariVar && uyari ? uyari : RISK_ADI[riskSeviyesi] ?? riskSeviyesi)
-        : null
-  const durumTuru = !aktif ? 'kapali' : temasMetni(temas) && ['atildi', 'gorusuldu', 'yanit', 'hareket'].includes(temas?.durum) ? 'temas' : riskSeviyesi
+  /* Durum etiketi tek kısa bilgi (22 Eylül 2026, Bekir): en önemlisi
+     hangisiyse o. Uzun açıklama karar kartında ve listede duruyor. */
+  const r = ek?.risk
+  const temasBugun = temas?.zaman && new Date(temas.zaman).toDateString() === new Date().toDateString()
+  const TEMAS_KISA = { atildi: 'Bugün mesaj attın', gorusuldu: 'Bugün görüştünüz', yanit: 'Mesajına yanıt verdi', hareket: 'Mesajdan sonra çalıştı' }
+  let durumMetni = null
+  let durumTuru = riskSeviyesi
+  if (!aktif) { durumMetni = 'Erişim kapalı'; durumTuru = 'kapali' }
+  else if (temasBugun && TEMAS_KISA[temas.durum]) { durumMetni = TEMAS_KISA[temas.durum]; durumTuru = 'temas' }
+  else if (r?.hic_baslamadi) durumMetni = 'Hiç başlamadı'
+  else if ((r?.gun_gecti ?? 0) >= 2) durumMetni = `${r.gun_gecti} gündür yok`
+  else if ((r?.gecikmis_gorev ?? 0) > 0) durumMetni = `${r.gecikmis_gorev} iş gecikti`
+  else if ((r?.eksik_ust_uste ?? 0) >= 2) durumMetni = `${r.eksik_ust_uste} gündür eksik`
+  else if (Number(r?.net_farki ?? 0) <= -5) durumMetni = `Son deneme ${Math.round(Number(r.net_farki))} net`
+  else if (riskSeviyesi) durumMetni = RISK_ADI[riskSeviyesi] === 'Önce bu' ? 'Dikkat' : RISK_ADI[riskSeviyesi]
+  const foto = useFotograf(ogrenci.profiller?.fotograf_yolu)
+  const basHarf = ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const bugunTarih = new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')
 
   return (
@@ -152,6 +155,11 @@ export default function OgrenciKimlikKarti({
         onGeri={onGeri}
         onBaslik={kocGorunumu ? onProfil : null}
         altBaslik={[cipler.join(', '), yuzde != null ? `bu hafta %${Math.round(yuzde)}` : null].filter(Boolean).join(' · ') || null}
+        sagCizim={(mevsim) => (
+          <button type="button" className="od-portre" onClick={kocGorunumu ? onProfil : undefined} aria-label={`${ad} profilini aç`}>
+            <PortreCizimi mevsim={mevsim} foto={foto} bas={basHarf} durum={riskSeviyesi} idEk={ogrenci.id.slice(0, 8)} />
+          </button>
+        )}
         durum={kocGorunumu && durumMetni ? <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span> : null}
       />
       <div className="od-ust ana-govde ana-govde--dar">

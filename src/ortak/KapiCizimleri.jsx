@@ -86,3 +86,46 @@ export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false, zemin = true
     </svg>
   )
 }
+
+/* Öğrenci detayında tabelanın yerinde: direğe asılı yuvarlak çerçevede
+   öğrencinin fotoğrafı (yoksa baş harfleri). Çerçevenin kenarı risk
+   renginde; üstü/dibi mevsime göre süslü (22 Eylül 2026, Bekir). */
+export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk = 'p' }) {
+  const kirp = `portre-${idEk}`
+  const halka = HALKA[durum] ?? '#6F625A'
+  return (
+    <svg className="kapi-cizim" viewBox="0 0 120 112" aria-hidden="true">
+      <defs>
+        <clipPath id={kirp}><circle cx="72" cy="60" r="27" /></clipPath>
+      </defs>
+      {/* direk ve kol */}
+      <rect x="16" y="8" width="6" height="100" rx="2" fill="#6B3D29" />
+      <rect x="16" y="12" width="64" height="5" rx="2" fill="#6B3D29" />
+      <line x1="72" y1="17" x2="72" y2="28" stroke="#6B3D29" strokeWidth="1.6" />
+      {/* çerçeve */}
+      <circle cx="72" cy="60" r="33" fill="#8C5B45" />
+      <circle cx="72" cy="60" r="30" fill="#F4DDCC" stroke={halka} strokeWidth="3.5" />
+      {foto ? (
+        <image href={foto} x="45" y="33" width="54" height="54" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${kirp})`} />
+      ) : (
+        <text x="72" y="67" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="19" fontWeight="800" fill="#2A211D">{bas}</text>
+      )}
+      {mevsim === 'kis' && (
+        <>
+          <path d="M14 12 q10 -7 24 -4 q14 -5 28 0 q10 -2 16 4 z" fill="#FFFFFF" />
+          <path d="M46 36 q10 -12 26 -12 q16 0 26 12 q-26 -6 -52 0 z" fill="#FFFFFF" />
+          <ellipse cx="20" cy="108" rx="12" ry="3" fill="#FFFFFF" />
+        </>
+      )}
+      {mevsim === 'sonbahar' && [[10, 107, '#D8742C', 20], [26, 108, '#E4A43C', -30], [34, 106, '#C8572A', 50]].map(([x, y, r, a]) => (
+        <ellipse key={x} cx={x} cy={y} rx="5" ry="2.5" fill={r} transform={`rotate(${a} ${x} ${y})`} />
+      ))}
+      {mevsim === 'ilkbahar' && [[10, 104, '#F2A7B5'], [28, 105, '#FFFFFF'], [34, 102, '#F6D36B']].map(([x, y, r]) => (
+        <g key={x}><line x1={x} y1={y} x2={x} y2={y + 6} stroke="#6E8C4F" strokeWidth="1.2" /><circle cx={x} cy={y} r="2.8" fill={r} /></g>
+      ))}
+      {mevsim === 'yaz' && [10, 30].map((x) => (
+        <path key={x} d={`M${x} 110 q-2 -7 -5 -9 M${x} 110 q0 -8 1 -10 M${x} 110 q3 -6 6 -8`} stroke="#7FA86B" strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      ))}
+    </svg>
+  )
+}

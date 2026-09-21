@@ -845,3 +845,7 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .ana-tepe:has(.ana-tepe-cizim) .ana-baslik-dugme h1 { max-width: 100%; }
 /* Bütün tepeler aynı boy (tabelasız öğrenci detayı dahil). */
 @media (max-width: 40rem) { .ana-tepe, .ana-tepe:has(.ana-tepe-cizim) { min-height: 21rem; } }
+/* Öğrenci detayında fotoğraf çerçevesi: dokununca profil. */
+.od-portre { pointer-events: auto; display: block; width: 100%; border: 0; background: transparent; padding: 0; cursor: pointer; }
+.od-portre:focus-visible { outline: 3px solid var(--m-murekkep); outline-offset: 2px; border-radius: 16px; }
+.ana-tepe-cizim:has(.od-portre) { width: clamp(96px, 27vw, 140px); }

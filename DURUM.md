@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci detayında fotoğraf çerçevesi, kısa durum
+
+- Tabelanın yerinde, ağaçların önünde direğe asılı yuvarlak çerçeve (`PortreCizimi`): öğrencinin fotoğrafı (`useFotograf`, imzalı bağlantı), yoksa baş harfleri; kenarı risk renginde; üstü/dibi mevsime göre (kar, yaprak, çiçek, ot). Dokununca profil sayfası (fotoğraf yükleme orada).
+- Durum etiketi tek kısa bilgi, öncelik sırasıyla: erişim kapalı → bugünkü temas ("Bugün mesaj attın", yeşil) → hiç başlamadı → "N gündür yok" → "N iş gecikti" → "N gündür eksik" → düşük net → Yolunda/İzle/Dikkat. Uzun `sebepCumlesi` bu ekrandan kalktı (listede ve karar kartında duruyor).
+
 ## 22 Eylül 2026 — Öğrenci detayı sadeleşti
 
 - Bekir: ad zaten kocaman yazıyor, tabelaya gerek yok; %56 / seri / son net şeridine gerek yok. Tabela kalktı (yerine mevsim dalı), ölçü şeridi kalktı; haftalık yüzde alt başlığa taşındı ("12. sınıf, Sayısal · bu hafta %56"), son net Denemeler'de, gecikme durumu etiketinde.
