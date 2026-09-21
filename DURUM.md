@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrencinin koç ekranı v2 (sekmesiz)
+
+- Mokap onaylı. Sekme kalktı. Ana akış: tepe (durum etiketinin yanında göz ve mesaj hapları; telefon/Görüştük kalktı; mesaj `HizliMesaj` alt penceresinde, son 3 mesaj + "Tüm yazışmayı aç") · Bu hafta (`HaftaOzeti`: 4 cümle — haftanın yüzdesi ve bugün, seri ve sayaç süresi, son deneme ve fark → Denemeler, bekleyen tekrar ve en çok kaçırdığı konu → Konular) · "X için bekleyenler" (`Yapilacaklar ogrenciId`: yalnız bu öğrencinin kartları, aynı Geri al; buradan gönderilen Yapılacaklar'dan da düşer) · Denemeler / Konular kapıları · `HaftaToplu` (Geçen haftayı kopyala → `koc_haftayi_kopyala`: yalnız boş günlere, görüşme hariç; Yarım kalanları yarına taşı → `koc_yarimlari_tasi`; onaylı, sonuç cümlesi, program tazelenir) · Program · kaynaklar · notlar.
+- Denemeler ve Konular alt sayfa (geri → program, sayfa başa kayar): Denemeler = `OgrenciDenemeleri koc` (Denemeler v2 blokları üçüncü kişiyle, hedef yoksa "Hedef ekle ›", tekrar bloğu koç sesiyle, Çöz yok); Konular = `KonuHaritasi yeni rol="koc"` (düz patika; etiketler: onayladın / onayını bekliyor / şu an burada / tekrar etmesi gerekiyor / planladın / henüz başlamadı; durağa dokununca koç eylemleri).
+- Öğrenci Programım 7 gün: güne dokununca Bugün görünümüne geçip o güne kayar (dokunuşun işe yaradığı görünsün). Türkçe ekler `lib/turkce.js` (iyelik, belirtme, yönelme).
+- "Tekrarları dağıt" düğmesi yapılmadı: ne yapacağı netleşmedi.
+
 ## 22 Eylül 2026 — Vekalet görünümü sahneye alındı
 
 - Göz ikonuyla öğrencinin ekranına bakınca koyu üst şerit, "Yönetime dön" ve kutu içine sıkışmış tepe çıkıyordu. Artık öğrencinin sahneli ekranı tam genişlikte, aynen; tepede koyu "Bekir'in gözünden bakıyorsun" etiketi; geri düğmesi öğrencinin koç ekranına (Yol/Denemeler'deyken önce Bugün'e), zil o öğrenciyle yazışmaya; SOS ve profil çerçevesi yok. Türkçe ekler için `lib/turkce.js` (iyelik, belirtme).

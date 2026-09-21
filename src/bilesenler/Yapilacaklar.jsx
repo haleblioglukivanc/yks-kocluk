@@ -42,7 +42,7 @@ async function kararVer(k, karar, metin = null) {
   return error
 }
 
-export default function Yapilacaklar({ onOgrenciAc, onSayi }) {
+export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, baslik = null }) {
   const [kartlar, setKartlar] = useState(null)
   const [gizli, setGizli] = useState(() => new Set())
   const [acik, setAcik] = useState(null)
@@ -54,9 +54,11 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi }) {
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 })
     if (error) { setHata(hataMetni(error)); setKartlar([]); return }
-    setKartlar(data ?? [])
-    setIlkToplam((t) => t || (data ?? []).length)
-  }, [])
+    /* Öğrencinin koç ekranında yalnız o öğrencinin işleri (22 Eylül 2026). */
+    const liste = (data ?? []).filter((k) => !ogrenciId || k.ogrenci_id === ogrenciId)
+    setKartlar(liste)
+    setIlkToplam((t) => t || liste.length)
+  }, [ogrenciId])
   useEffect(() => { yukle() }, [yukle])
 
   /* Bekleyen işlem: kartlar gizlenir, 5 sn sonra gönderilir; Geri al iptal eder. */
@@ -101,7 +103,8 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi }) {
   const kalan = gorunen.length
   useEffect(() => { onSayi?.(kalan, gorunen.filter((k) => k.segment === 'acil').length, gorunen[0]?.ad) }, [kalan, gorunen, onSayi])
 
-  if (kartlar === null) return <div className="yp-bekle" aria-busy="true" />
+  if (kartlar === null) return ogrenciId ? null : <div className="yp-bekle" aria-busy="true" />
+  if (ogrenciId && kartlar.length === 0) return null
 
   const once = gorunen.filter((k) => ACIL_TIP.has(k.tip) || k.segment === 'acil' || k.segment === 'pencere')
   const tebrik = gorunen.filter((k) => k.tip === 'tebrik')
@@ -129,6 +132,32 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi }) {
     if (k.tip === 'risk') return <RiskKarti key={anahtar(k)} k={k} diger={digerleri(k)} onOgrenciAc={onOgrenciAc} yap={yap} />
     if (k.tip === 'basvuru') return <BasvuruKarti key={anahtar(k)} k={k} yap={yap} />
     return <div key={anahtar(k)} className="yp-eski"><KuyrukKarti {...ortak} /></div>
+  }
+
+  if (ogrenciId) {
+    if (kalan === 0 && !toast) return null
+    const hepsi = [...once, ...bugun, ...haftaDiger]
+    return (
+      <div className="yp yp--ogrenci">
+        <h2 className="yp-bas">{baslik ?? 'Bekleyenler'} <small>{kalan}</small></h2>
+        {hata && <p className="yp-hata" role="alert">{hata}</p>}
+        {hepsi.map(kartCiz)}
+        {veliOzet.length > 0 && (
+          <TopluKart ikon="✉︎" baslik={`Veli özeti · ${veliOzet.length}`} alt="Onaylanınca WhatsApp'tan iletmen için hazırlanır." kartlar={veliOzet}
+            satirAd={(k) => `${iyelik(ilkAd(k.ad))} velisi`} dugme={(n) => `Seçilen ${n} özeti onayla`}
+            onOnay={(sec) => yap(sec.map((kart) => ({ kart, karar: 'onay' })), `${sec.length} özet onaylandı ✓`)} />
+        )}
+        {tebrik.length > 0 && (
+          <TopluKart iyi ikon="★" baslik={`${tebrik.length} tebrik hazır`} alt="Fark ettiğini söylemek yeter." kartlar={tebrik}
+            satirAd={(k) => String(k.baglam ?? '').split(' · ').pop()} dugme={(n) => `Seçilen ${n} tebriği gönder`}
+            onOnay={(sec) => yap(sec.map((kart) => ({ kart, karar: 'onay' })), `${sec.length} tebrik gönderiliyor ✓`)} />
+        )}
+        <div className={toast ? 'yp-geri yp-geri--acik' : 'yp-geri'} role="status" aria-live="polite">
+          <span>{toast}</span>
+          {toast && <button type="button" onClick={geriAl}>Geri al</button>}
+        </div>
+      </div>
+    )
   }
 
   return (

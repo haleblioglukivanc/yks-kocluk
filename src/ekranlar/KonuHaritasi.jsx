@@ -62,7 +62,7 @@ const ayniDers = (a, b) => {
   return Boolean(x) && Boolean(y) && (x === y || x.includes(y) || y.includes(x))
 }
 
-export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, yeni = false }) {
+export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, yeni = false, rol = 'ogrenci' }) {
   const [dersler, setDersler] = useState(null)
   const [secili, setSecili] = useState(null)
   const [hata, setHata] = useState('')
@@ -123,7 +123,7 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, y
     return (
       <>
         <Uyari>{hata}</Uyari>
-        <BosDurum metin='Yol henüz çizilmedi. Koçun konu listeni tanımlayınca harita burada belirir.' />
+        <BosDurum metin={rol === 'koc' ? 'Bu öğrencinin konu kataloğu seçilmemiş. Profilinden bir katalog seçince yolu burada belirir.' : 'Yol henüz çizilmedi. Koçun konu listeni tanımlayınca harita burada belirir.'} />
       </>
     )
   }
@@ -160,7 +160,7 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, y
               {etkin.dersler.length > 1 && (
                 <p className="yol-kapsam-bas"><span>{dersKapsamAdi(d)}</span><small>{d.tamamlandi}/{d.toplam}</small></p>
               )}
-              <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol="ogrenci" onDegisti={ozetiYukle} durakSayisi={d.toplam} duz />
+              <KonuYolu ogrenciId={profilId} dersId={d.dersId} rol={rol} onDegisti={ozetiYukle} durakSayisi={d.toplam} duz />
             </div>
           ))}
         </section>

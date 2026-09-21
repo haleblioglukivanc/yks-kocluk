@@ -30,7 +30,12 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secil
   const [donem, setDonem] = useState('bugun')
   const [gorevler, setGorevler] = useState(null)
   /* Bir güne dokununca Bugün görünümü o güne geçer: işleri, sıradaki kart. */
-  const git = (t) => { onGunSec?.(t === bugun ? null : t); setDonem('bugun') }
+  const git = (t) => {
+    onGunSec?.(t === bugun ? null : t)
+    setDonem('bugun')
+    /* Dokununca bir şey oldu belli olsun: seçilen güne kayar (22 Eylül 2026). */
+    setTimeout(() => document.querySelector('.isl-secili, .isl-bugun')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 120)
+  }
 
   /* Ayın başından haftanın sonuna kadar tek sorgu: 7 gün ve 30 gün ikisi de buradan. */
   const aralik = useMemo(() => {

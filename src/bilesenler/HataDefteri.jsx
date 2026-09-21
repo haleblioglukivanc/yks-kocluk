@@ -613,7 +613,7 @@ function kacGunSonra(t) {
   return Math.round((b - a) / 86400000)
 }
 
-export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir = true }) {
+export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir = true, koc = false }) {
   const { liste, yukle } = useDefter(ogrenciId)
   const [ekran, setEkran] = useState(null)
   const bekleyen = useMemo(() => bekleyenler(liste), [liste])
@@ -628,7 +628,7 @@ export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir =
       <div className="tb-kutu tb-kutu--simdi">
         <span className="tb-sayi">{bekleyen.length}</span>
         <div><b>Bugün {bekleyen.length} soruyu yeniden çözme zamanı</b>{[...new Set(bekleyen.map(konuAdi))].slice(0, 3).join(', ')}.</div>
-        <button type="button" onClick={() => setEkran('tekrar')}>Çöz</button>
+        {!koc && <button type="button" onClick={() => setEkran('tekrar')}>Çöz</button>}
       </div>
     )
   } else if (siradaki) {
@@ -636,14 +636,14 @@ export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir =
     kutu = (
       <div className="tb-kutu">
         <span className="tb-sayi">✓</span>
-        <div><b>Bugün tekrar yok</b>{g === 1 ? 'Yarın' : `${g} gün sonra`} {konuAdi(siradaki)} sorusunu yeniden çözeceksin.</div>
+        <div><b>Bugün tekrar yok</b>{g === 1 ? 'Yarın' : `${g} gün sonra`} {konuAdi(siradaki)} sorusunu yeniden {koc ? 'çözecek' : 'çözeceksin'}.</div>
       </div>
     )
   } else {
     kutu = (
       <div className="tb-kutu">
         <span className="tb-sayi">+</span>
-        <div><b>Defterin boş</b>Yanlış yaptığın bir soruyu ekle; unutmaman için doğru zamanda karşına çıkar.</div>
+        <div><b>{koc ? 'Defteri boş' : 'Defterin boş'}</b>{koc ? 'Yanlış yaptığı soruları eklediğinde burada görünür.' : 'Yanlış yaptığın bir soruyu ekle; unutmaman için doğru zamanda karşına çıkar.'}</div>
       </div>
     )
   }
@@ -652,8 +652,8 @@ export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir =
   return (
     <>
       <section className="kp-bolum">
-        <div className="kp-bolum-bas"><h2>Tekrar etmen gerekenler</h2></div>
-        <p className="tb-aciklama">Yanlış yaptığın sorular unutulmasın diye aralıklarla karşına çıkar.</p>
+        <div className="kp-bolum-bas"><h2>{koc ? 'Tekrar etmesi gerekenler' : 'Tekrar etmen gerekenler'}</h2></div>
+        <p className="tb-aciklama">{koc ? 'Yanlış yaptığı sorular aralıklarla karşısına çıkar.' : 'Yanlış yaptığın sorular unutulmasın diye aralıklarla karşına çıkar.'}</p>
         <div className="kp-kart tb">
           {kutu}
           {zayif.slice(0, 4).map((z) => {
@@ -663,8 +663,8 @@ export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir =
                 <div>
                   <b>{z.konu}</b>
                   <span>
-                    Denemelerde {z.hata} soru kaçırdın.
-                    {h?.not_metni ? ` Defterine "${h.not_metni}" diye not düşmüşsün.` : h?.neden ? ` Defterine ${NEDEN_CUMLE[h.neden] ?? 'bir not'} yazmışsın.` : ''}
+                    Denemelerde {z.hata} soru {koc ? 'kaçırdı' : 'kaçırdın'}.
+                    {h?.not_metni ? ` Defterine "${h.not_metni}" diye not ${koc ? 'düşmüş' : 'düşmüşsün'}.` : h?.neden && !koc ? ` Defterine ${NEDEN_CUMLE[h.neden] ?? 'bir not'} yazmışsın.` : ''}
                   </span>
                 </div>
               </div>

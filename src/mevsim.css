@@ -1460,3 +1460,29 @@ button.isl-hc:disabled { cursor: default; }
 /* Vekalet: öğrencinin ekranına koç gözüyle bakılırken tepede işaret. */
 .od-durum--vekalet { background: var(--m-murekkep); color: #fff; }
 .od-durum--vekalet i { background: #F6D36B; }
+
+/* ═══ Öğrencinin koç ekranı v2 (22 Eylül 2026) ═══ */
+.od-durum-satir { display: inline-flex; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+.od-mini { width: 38px; height: 38px; border-radius: 50%; border: 0; background: rgba(255,255,255,.88); color: var(--m-murekkep); display: grid; place-items: center; cursor: pointer; box-shadow: 0 2px 8px -4px rgba(40,30,20,.4); }
+.od-mini:active { transform: scale(.94); }
+.oo { padding: 0.25rem 0.9rem; }
+.kp-kart.oo > * + * { border-top: 1px solid var(--m-cizgi); }
+.oo-satir { display: flex; align-items: flex-start; gap: 0.6rem; padding: 0.65rem 0; font-size: 0.88rem; line-height: 1.45; }
+.oo-satir i { width: 10px; height: 10px; flex: none; margin-top: 0.35rem; border-radius: 50%; }
+.oo-satir span { flex: 1; min-width: 0; }
+.oo-git { flex: none; border: 0; background: none; padding: 0.1rem 0; color: var(--m-vurgu); font: 800 0.75rem var(--m-govde); cursor: pointer; white-space: nowrap; }
+.oo-bekle { min-height: 180px; }
+.ht { display: flex; flex-direction: column; gap: 0.4rem; }
+.ht-dugmeler { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+.ht-dugmeler button { min-height: 40px; padding: 0 0.85rem; border-radius: 999px; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); box-shadow: inset 0 0 0 1.5px var(--m-cizgi-2); font: 700 0.8rem var(--m-govde); cursor: pointer; }
+.ht-dugmeler button:disabled { opacity: .5; }
+.ht-haber { margin: 0 0.25rem; font-size: 0.8rem; color: var(--m-yolunda); font-weight: 600; }
+.hm { display: flex; flex-direction: column; gap: 0.6rem; }
+.hm-son { display: flex; flex-direction: column; gap: 0.35rem; }
+.hm-balon { margin: 0; max-width: 85%; align-self: flex-start; padding: 0.5rem 0.7rem; border-radius: 14px 14px 14px 4px; background: var(--m-zemin); font-size: 0.85rem; line-height: 1.4; }
+.hm-balon--ben { align-self: flex-end; border-radius: 14px 14px 4px 14px; background: var(--m-murekkep); color: #fff; }
+.hm-tumu { align-self: center; min-height: 40px; border: 0; background: none; color: var(--m-vurgu); font: 800 0.85rem var(--m-govde); cursor: pointer; }
+.od-alt-geri { align-self: flex-start; min-height: 40px; padding: 0 0.9rem; border-radius: 999px; border: 0; background: var(--m-yuzey); color: var(--m-murekkep); font: 700 0.85rem var(--m-govde); cursor: pointer; }
+.od-alt-baslik { margin: 0.25rem 0.25rem 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.6rem; }
+.yp--ogrenci { padding-bottom: 0; }
+.odn-hedef-ekle { border: 0; background: none; padding: 0; color: var(--m-vurgu); font: 800 0.85rem var(--m-govde); cursor: pointer; }

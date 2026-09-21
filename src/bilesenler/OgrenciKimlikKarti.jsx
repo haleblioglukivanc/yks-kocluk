@@ -1,3 +1,4 @@
+import { HizliMesaj } from './OgrenciDetayParcalari.jsx'
 import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
@@ -53,6 +54,7 @@ export default function OgrenciKimlikKarti({
   const [ek, setEk] = useState(null)
   const [temas, setTemas] = useState(null)
   const [gorusmeAcik, setGorusmeAcik] = useState(false)
+  const [mesajAcik, setMesajAcik] = useState(false)
   const aktif = ogrenci.aktif
 
   /* Koçun son teması; liste satırıyla aynı cümle. "Görüştük" sonrası
@@ -160,25 +162,27 @@ export default function OgrenciKimlikKarti({
             <PortreCizimi mevsim={mevsim} foto={foto} bas={basHarf} durum={riskSeviyesi} idEk={ogrenci.id.slice(0, 8)} />
           </button>
         )}
-        durum={kocGorunumu && durumMetni ? <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span> : null}
+        /* Eylemler durumun yanında küçük haplar (22 Eylül 2026, Bekir):
+           telefon (Görüştük) kalktı; göz ve mesaj etiketin yanında; mesaj
+           açılır pencerede yazılır. */
+        durum={kocGorunumu ? (
+          <span className="od-durum-satir">
+            {durumMetni && <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span>}
+            <button type="button" className="od-mini" onClick={() => onGozuyle?.(ogrenci.id)} aria-label="Onun gözünden bak" title="Onun gözünden bak">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
+            </button>
+            <button type="button" className="od-mini" onClick={() => setMesajAcik(true)} aria-label="Mesaj yaz" title="Mesaj yaz">
+              <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
+            </button>
+          </span>
+        ) : null}
       />
       <div className="od-ust ana-govde ana-govde--dar">
-        {kocGorunumu && (
-          <div className="od-eylem">
-            <button type="button" className="od-mesaj" onClick={() => onMesaj?.(ogrenci.id)}>
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
-              Mesaj
-            </button>
-            <button type="button" className="od-yuvarlak" onClick={() => setGorusmeAcik(true)} aria-label="Görüştük: telefon ya da yüz yüze görüşmeyi kaydet" title="Görüştük">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z" /></svg>
-            </button>
-            <button type="button" className="od-yuvarlak" onClick={() => onGozuyle?.(ogrenci.id)} aria-label="Onun gözüyle bak" title="Onun gözüyle bak">
-              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
-            </button>
-          </div>
-        )}
         {children}
       </div>
+      {mesajAcik && (
+        <HizliMesaj ogrenciId={ogrenci.id} ad={ad} onKapat={() => setMesajAcik(false)} onTumu={() => { setMesajAcik(false); onMesaj?.(ogrenci.id) }} />
+      )}
       {gorusmeAcik && (
         <GorusmeKaydi
           ogrenciId={ogrenci.id}

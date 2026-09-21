@@ -27,6 +27,15 @@ const ETIKET_OGRENCI = {
   sirada: 'henüz başlanmadı',
 }
 
+const ETIKET_KOC_DUZ = {
+  onayli: 'bitti · onayladın',
+  bekliyor: 'bitirdi · onayını bekliyor',
+  tekrar: 'tekrar etmesi gerekiyor',
+  simdi: 'şu an burada',
+  planli: 'planladın',
+  sirada: 'henüz başlamadı',
+}
+
 const ETIKET = {
   onayli: 'onaylandı',
   bekliyor: 'koç onayı bekliyor',
@@ -366,7 +375,7 @@ export default function KonuYolu({ ogrenciId, dersId, rol = 'ogrenci', onDegisti
                     {duz ? (
                       <span className="yol-ad">
                         {d.ad}
-                        <small>{d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar etmen gerekiyor · denemede ${d.hata_adet} soru kaçırdın` : ETIKET_OGRENCI[d.yol]}</small>
+                        <small>{rol === 'koc' ? (d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar etmesi gerekiyor · denemede ${d.hata_adet} soru kaçırdı` : ETIKET_KOC_DUZ[d.yol]) : d.yol === 'tekrar' && (d.hata_adet ?? 0) > 0 ? `tekrar etmen gerekiyor · denemede ${d.hata_adet} soru kaçırdın` : ETIKET_OGRENCI[d.yol]}</small>
                       </span>
                     ) : (
                       <span className="yol-ad">{d.ad}</span>

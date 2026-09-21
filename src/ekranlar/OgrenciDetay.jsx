@@ -1,3 +1,8 @@
+import Yapilacaklar from '../bilesenler/Yapilacaklar.jsx'
+import OgrenciDenemeleri from '../bilesenler/OgrenciDenemeleri.jsx'
+import KonuHaritasi from './KonuHaritasi.jsx'
+import { HaftaOzeti, OgrenciKapilari, HaftaToplu } from '../bilesenler/OgrenciDetayParcalari.jsx'
+import { iyelik } from '../lib/turkce.js'
 import { GecikenTekrarNotu } from '../bilesenler/HataDefteri.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
 import { PortreCizimi } from '../ortak/KapiCizimleri.jsx'
@@ -30,6 +35,8 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
   const [netDurumu, setNetDurumu] = useState(null)
   const [kataloglar, setKataloglar] = useState([])
   const [sekme, setSekme] = useState('program')
+  const [programSayac, setProgramSayac] = useState(0)
+  useEffect(() => { window.scrollTo({ top: 0 }) }, [sekme])
   // false | 'acik' | 'hedef' (hedef: Sınav ve hedef kartı düzenlemede açılır)
   const [profil, setProfil] = useState(false)
   const [hata, setHata] = useState('')
@@ -102,24 +109,25 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
       <OgrenciKimlikKarti
         ogrenci={ogrenci}
         netDurumu={netDurumu}
-        onGeri={onGeri}
+        onGeri={sekme === 'program' ? onGeri : () => setSekme('program')}
         onMesaj={onMesaj}
         onGozuyle={onGozuyle}
         onProfil={() => setProfil('acik')}
         tepe={tepe}
-      >
-        {/* Bölüm anahtarı: ana ekrandaki dönem anahtarıyla aynı biçim. */}
-        <div className="ana-anahtar od-anahtar" role="group" aria-label="Öğrenci bölümleri">
-          {[['program', 'Program'], ['denemeler', 'Denemeler'], ['konular', 'Konular']].map(([k, ad]) => (
-            <button key={k} type="button" aria-pressed={sekme === k} onClick={() => setSekme(k)}>{ad}</button>
-          ))}
-        </div>
-      </OgrenciKimlikKarti>
+      />
 
       <div className="sekme-govde ogr-detay-govde ana-govde ana-govde--dar od-govde od-giris" style={aksanStili()}>
-      {sekme === 'program' && (
+      {/* Öğrencinin koç ekranı v2 (22 Eylül 2026): sekme yok. Ana sayfa:
+          Bu hafta (cümleler) · bu öğrenci için bekleyenler · Denemeler ve
+          Konular kapıları · haftayı hızlı kurma · Program. Denemeler ve
+          Konular kendi alt sayfasında (geri → program). */}
+      {sekme === 'program' ? (
         <>
-          <Program ogrenci={ogrenci} />
+          <HaftaOzeti ogrenciId={ogrenci.id} ad={ad} onDenemeler={() => setSekme('denemeler')} onKonular={() => setSekme('konular')} tazele={programSayac} />
+          <Yapilacaklar ogrenciId={ogrenci.id} baslik={`${ad.split(' ')[0]} için bekleyenler`} onOgrenciAc={() => {}} />
+          <OgrenciKapilari ogrenciId={ogrenci.id} onDenemeler={() => setSekme('denemeler')} onKonular={() => setSekme('konular')} />
+          <HaftaToplu ogrenciId={ogrenci.id} onDegisti={() => setProgramSayac((n) => n + 1)} />
+          <Program key={programSayac} ogrenci={ogrenci} />
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
           <OgrenciKaynaklari ogrenciId={ogrenci.id} rol="koc" />
@@ -127,15 +135,22 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
               yazılır. Bu yüzden profil sayfasına değil buraya alındı. */}
           <Notlar ogrenci={ogrenci} />
         </>
-      )}
-      {sekme === 'denemeler' && (
+      ) : (
         <>
-          {/* Koç, öğrencinin çözmediği tekrarları görsün (22 Eylül 2026). */}
-          <GecikenTekrarNotu ogrenciId={ogrenci.id} />
-          <Denemeler ogrenci={ogrenci} onHedefEkle={() => setProfil('hedef')} />
+          <button type="button" className="od-alt-geri" onClick={() => setSekme('program')}>‹ {iyelik(ad.split(' ')[0])} programı</button>
+          <h2 className="od-alt-baslik">{sekme === 'denemeler' ? 'Denemeler' : 'Konular'}</h2>
+          {sekme === 'denemeler' && (
+            <>
+              {/* Koç, öğrencinin çözmediği tekrarları görsün (22 Eylül 2026). */}
+              <GecikenTekrarNotu ogrenciId={ogrenci.id} />
+              {/* Öğrencinin Denemeler v2 blokları, koç sesiyle. */}
+              <OgrenciDenemeleri koc ogrenciId={ogrenci.id} katalogId={ogrenci.katalog_id} hedefTyt={ogrenci.hedef_tyt_net} hedefAyt={ogrenci.hedef_ayt_net} duzenlenebilir onHedefEkle={() => setProfil('hedef')} />
+            </>
+          )}
+          {/* Konular: öğrencinin Yol'undaki düz patika, koç eylemleriyle. */}
+          {sekme === 'konular' && <KonuHaritasi profilId={ogrenci.id} yeni rol="koc" />}
         </>
       )}
-      {sekme === 'konular' && <Konular ogrenci={ogrenci} />}
       </div>
     </div>
   )

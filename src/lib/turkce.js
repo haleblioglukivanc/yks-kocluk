@@ -11,3 +11,8 @@ function uyum(ad) {
 const unluyleBiter = (ad) => SESLI.includes(String(ad).slice(-1))
 export const iyelik = (ad) => `${ad}'${unluyleBiter(ad) ? 'n' : ''}${uyum(ad)}n`
 export const belirtme = (ad) => `${ad}'${unluyleBiter(ad) ? 'y' : ''}${uyum(ad)}`
+/* Yönelme: Bekir'e, Nisa'ya, Oğuz'a. */
+export const yonelme = (ad) => {
+  const u = sonUnlu(String(ad))
+  return `${ad}'${unluyleBiter(ad) ? 'y' : ''}${'aıou'.includes(u) ? 'a' : 'e'}`
+}
