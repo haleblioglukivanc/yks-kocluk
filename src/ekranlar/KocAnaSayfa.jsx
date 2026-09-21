@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react'
+import Yapilacaklar from '../bilesenler/Yapilacaklar.jsx'
+import { useCallback, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
 import { TabelaCizimi, PostaKutusuCizimi, PortreCizimi } from '../ortak/KapiCizimleri.jsx'
 import { useFotograf } from '../bilesenler/Fotograf.jsx'
 import { useMevsim } from '../lib/mevsim.js'
 import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
-import KararKuyrugu from '../bilesenler/KararKuyrugu.jsx'
 import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 import OgrenciNabzi from '../bilesenler/OgrenciNabzi.jsx'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
@@ -226,17 +226,17 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
 /* Posta kutusunun arkası (22 Eylül 2026, Bekir): ekran ana ekranla aynı
    kalır; sahnenin sağ üstünde posta kutusu, altında karar kartları. */
 export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
-  const [isler, setIsler] = useState(null)
-  useEffect(() => {
-    let iptal = false
-    supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 }).then(({ data }) => {
-      if (!iptal) setIsler((data ?? []).filter((x) => x.tip !== 'tebrik'))
-    })
-    return () => { iptal = true }
-  }, [])
-  const acil = (isler ?? []).filter((x) => x.segment === 'acil').length
-  const n = isler?.length ?? 0
-  const ozet = !isler ? ' ' : n === 0 ? 'Posta kutusu boş. Bugünlük bu kadar.' : `${n} iş bekliyor${acil ? `, ${acil === n ? 'hepsi' : `${acil} tanesi`} acil` : ''}.`
+  /* Yapılacaklar v2 (22 Eylül 2026): sayı ve tepe cümlesi listeden gelir;
+     iş bittikçe posta kutusundaki sayı da azalır. */
+  const [durum, setDurum] = useState(null)
+  const onSayi = useCallback((n, acil, ilk) => setDurum({ n, acil, ilk }), [])
+  const n = durum?.n ?? 0
+  const acil = durum?.acil ?? 0
+  const ozet = !durum
+    ? ' '
+    : n === 0
+      ? 'Posta kutusu boş. Bugünlük bu kadar.'
+      : `${n} iş, yaklaşık ${Math.max(1, Math.round(n * 0.5))} dakika.${durum.ilk ? ` Önce ${String(durum.ilk).replace(/ velisi$/, '').split(' ')[0]}.` : ''}`
   return (
     <div className="ana-sayfa ana-sayfa--koc">
       <AnaTepe
@@ -246,11 +246,9 @@ export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
         {...tepe}
         sagCizim={(mevsim) => <PostaKutusuCizimi mevsim={mevsim} sayi={n} acil={acil > 0} zemin={false} />}
       />
-      <div className="ana-govde ana-govde--dar">
-        <section className="ana-bolum ana-kart dikkat" aria-label="Yapılacaklar">
-          <KararKuyrugu onOgrenciAc={onOgrenciAc} />
-          <VeliMesajlari />
-        </section>
+      <div className="ana-govde ana-govde--dar od-govde">
+        <Yapilacaklar onOgrenciAc={onOgrenciAc} onSayi={onSayi} />
+        <VeliMesajlari />
       </div>
     </div>
   )

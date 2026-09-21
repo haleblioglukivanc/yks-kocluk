@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Yapılacaklar v2
+
+- Mokap onaylı. Yeni `bilesenler/Yapilacaklar.jsx` (eski KararKuyrugu'nun yerine; karmaşık kartlar GorusmeKarti / PlanKarti / IlhamKarti / KuyrukKarti olarak dışa açıldı ve açık kart olarak yeniden kullanılıyor). Bölümler: Önce bunlar (risk, görüşme, blok, acil/pencere) · Bugün (başvuru, konu onayı, analiz, hafiflet, ödeme…) · Bu hafta (veli özetleri tek kartta seçmeli toplu onay; kitap-söz, plan, konu tekrarı) · İyi haberler (tebrikler tek yeşil kartta toplu gönder). Yalnız bir kart açık, diğerleri tek satır.
+- Risk kartı: neden (öneri), düzenlenebilir mesaj, "X için N iş daha" satırı, Mesajı gönder / Telefonda görüştüm / Yarına ertele / Öğrenciyi aç. Başvuru kartı: "Ara · 0555…" (tel:), Aradım kapat / Yarın hatırlat.
+- Basit işlemler 5 sn bekletilir, altta "… ✓ · Geri al"; süre dolunca `koc_karar_ver` çağrılır (sayfadan çıkılırsa hemen). Tepe cümlesi "N iş, yaklaşık M dakika. Önce X." ve posta kutusu sayısı listeyle birlikte azalır; ilerleme çubuğu "k / n bitti"; boşken "Posta kutusu boş."
+- Veli özeti taslağı (`private.veli_ozet_taslagi`, göç veli_ozet_sure_yoksa_yazma): çalışma 30 dk altındaysa süre ve eğilim cümlesi yazılmaz ("0 saat çalıştı" gitmez); 90 dk altı dakika olarak yazılır.
+
 ## 22 Eylül 2026 — İnce ayar ve temizlik (1. tur)
 
 - Eski Öğrenciler listesi silindi (`Ogrencilerim.jsx`, `OgrenciSatiri.jsx`); /ogrenciler adresi yeni Öğrencilerim ekranını açar. Öğrenci ekleme formu `bilesenler/OgrenciFormu.jsx`'e taşındı.

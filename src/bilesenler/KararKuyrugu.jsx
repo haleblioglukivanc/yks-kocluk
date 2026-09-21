@@ -347,7 +347,7 @@ function varsayilanSaat() {
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
 }
 
-function GorusmeKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+export function GorusmeKarti({ kart, onOgrenciAc, onBitti, onHata }) {
   const [tarih, setTarih] = useState(bugunISO)
   const [saat, setSaat] = useState(varsayilanSaat)
   const [sure, setSure] = useState(30)
@@ -576,7 +576,7 @@ function GorusmeSeridi() {
 
 const GUN_KISA = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
 
-function PlanKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+export function PlanKarti({ kart, onOgrenciAc, onBitti, onHata }) {
   const [bekliyor, setBekliyor] = useState(false)
   const a = kart.aksiyonlar ?? {}
   const taslak = kart.ek ?? {}
@@ -689,7 +689,7 @@ const ETIKET_AD = {
 }
 const kucuk = (m) => String(m ?? '').toLocaleLowerCase('tr-TR')
 
-function IlhamKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+export function IlhamKarti({ kart, onOgrenciAc, onBitti, onHata }) {
   const hafta = kart.ek?.hafta_basi
   const [satirlar, setSatirlar] = useState(() =>
     (kart.ek?.satirlar ?? []).map((r) => ({ ...r, koc: false, bitti: false })),
@@ -909,7 +909,7 @@ function SozSecici({ seciliId, onSec }) {
   )
 }
 
-function KuyrukKarti({ kart, onOgrenciAc, onBitti, onHata }) {
+export function KuyrukKarti({ kart, onOgrenciAc, onBitti, onHata }) {
   const [metin, setMetin] = useState(kart.mesaj ?? '')
   const [duzenle, setDuzenle] = useState(false)
   const [bekliyor, setBekliyor] = useState(false)

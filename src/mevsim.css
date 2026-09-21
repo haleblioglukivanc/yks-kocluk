@@ -1383,3 +1383,59 @@ button.isl-hc:disabled { cursor: default; }
 .profil2 .profil-hucre dt, .od-govde .profil-hucre dt { flex: none; font-size: 0.85rem; color: var(--m-soluk); }
 .profil2 .profil-hucre dd, .od-govde .profil-hucre dd { margin: 0; text-align: right; font-weight: 700; min-width: 0; }
 .profil2 .profil-hucre dd.bos, .od-govde .profil-hucre dd.bos { font-weight: 500; font-style: italic; color: var(--m-soluk); }
+
+/* ═══ Yapılacaklar v2 (22 Eylül 2026, mokap onaylı) ═══ */
+.yp { display: flex; flex-direction: column; gap: 0.75rem; padding-bottom: 5rem; }
+.yp-bekle { min-height: 40vh; }
+.yp-hata { margin: 0; padding: 0.6rem 0.8rem; border-radius: 14px; background: var(--m-acil-zemin); color: var(--m-acil); font-size: 0.85rem; }
+.yp-bolum { display: flex; flex-direction: column; gap: 0.5rem; }
+.yp-bas { margin: 0.5rem 0.25rem 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.3rem; display: flex; align-items: baseline; justify-content: space-between; }
+.yp-bas small { font-family: var(--m-govde); font-size: 0.75rem; font-weight: 700; color: var(--m-soluk); }
+.yp-kart { background: var(--m-yuzey); border-radius: 22px; box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3); }
+.yp-kapali { display: flex; align-items: center; gap: 0.7rem; width: 100%; min-height: 60px; padding: 0.5rem 0.9rem; border: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.yp-kapali-yazi, .yp-kisi-yazi { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.1rem; }
+.yp-kapali-yazi b, .yp-kisi-yazi b { font-size: 0.95rem; }
+.yp-kapali-yazi small, .yp-kisi-yazi small { font-size: 0.78rem; color: var(--m-soluk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yp-kisi-yazi { border: 0; background: none; padding: 0; text-align: left; color: inherit; font: inherit; cursor: pointer; }
+.yp-tur { flex: none; font-size: 0.7rem; font-weight: 800; padding: 0.25rem 0.55rem; border-radius: 99px; }
+.yp-tur--acil { background: var(--m-acil-zemin); color: var(--m-acil); }
+.yp-tur--dikkat { background: var(--m-dikkat-zemin); color: var(--m-dikkat); }
+.yp-tur--yeni { background: #E6EEF9; color: #2E5BB8; }
+.yp-is { padding: 0.9rem 1rem; display: flex; flex-direction: column; gap: 0.65rem; }
+.yp-kisi { display: flex; align-items: center; gap: 0.65rem; }
+.yp-neden { margin: 0; font-size: 0.9rem; line-height: 1.5; }
+.yp-mesaj { width: 100%; box-sizing: border-box; border: 1.5px dashed var(--m-cizgi-2); border-radius: 16px; padding: 0.65rem 0.75rem; background: var(--m-zemin); font: 500 0.9rem/1.5 var(--m-govde); color: var(--m-murekkep); resize: vertical; }
+.yp-mesaj:focus { outline: none; border-style: solid; border-color: var(--m-vurgu); background: #fff; }
+.yp-ipucu { margin-top: -0.4rem; font-size: 0.72rem; color: var(--m-soluk); }
+.yp-ayni { margin: 0; padding: 0.5rem 0.65rem; border-radius: 12px; background: var(--m-dikkat-zemin); font-size: 0.78rem; color: var(--m-soluk); }
+.yp-ayni b { color: var(--m-murekkep); }
+.yp-birincil { display: grid; place-items: center; min-height: 50px; padding: 0 1rem; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.95rem var(--m-govde); text-decoration: none; cursor: pointer; }
+.yp-birincil:disabled { opacity: .45; cursor: default; }
+.yp-ikincil { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.yp-ikincil button { min-height: 38px; padding: 0 0.75rem; border-radius: 999px; border: 0; background: var(--m-zemin); color: var(--m-murekkep); font: 700 0.78rem var(--m-govde); cursor: pointer; }
+.yp-ikincil .yp-sag { margin-left: auto; background: none; color: var(--m-vurgu); }
+.yp-toplu { padding: 0.75rem 0.9rem; display: flex; flex-direction: column; }
+.yp-toplu-bas { display: flex; align-items: center; gap: 0.65rem; margin-bottom: 0.25rem; }
+.yp-toplu-bas span:last-child { display: flex; flex-direction: column; }
+.yp-toplu-bas b { font-size: 0.95rem; }
+.yp-toplu-bas small { font-size: 0.78rem; color: var(--m-soluk); }
+.yp-ikon { width: 42px; height: 42px; flex: none; border-radius: 12px; background: var(--m-yumusak); color: var(--m-vurgu); display: grid; place-items: center; font-weight: 800; }
+.yp-alt { display: flex; align-items: flex-start; gap: 0.65rem; padding: 0.6rem 0; border-top: 1px solid var(--m-cizgi); }
+.yp-tik { width: 26px; height: 26px; flex: none; margin-top: 0.1rem; border-radius: 8px; border: 0; background: var(--m-yolunda); color: #fff; font-weight: 800; font-size: 0.8rem; cursor: pointer; }
+.yp-tik[aria-pressed='false'] { background: transparent; box-shadow: inset 0 0 0 2px var(--m-cizgi-2); }
+.yp-alt-yazi { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 0.15rem; border: 0; background: none; padding: 0; text-align: left; color: inherit; font: 600 0.85rem var(--m-govde); cursor: pointer; }
+.yp-alt-yazi small { font-weight: 500; font-size: 0.78rem; color: var(--m-soluk); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.yp-alt-yazi small.yp-tam { white-space: normal; line-height: 1.5; color: var(--m-murekkep); }
+.yp-toplu .yp-birincil { margin-top: 0.5rem; }
+.yp-toplu--iyi { background: var(--m-yolunda-zemin); }
+.yp-toplu--iyi .yp-ikon { background: #fff; color: var(--m-yolunda); }
+.yp-toplu--iyi .yp-birincil { background: var(--m-yolunda); }
+.yp-toplu--iyi .yp-alt { border-top-color: rgba(45,122,78,.15); }
+.yp-eski .kart { margin: 0; border-radius: 22px; }
+.yp-bos { padding: 1.5rem 1rem; text-align: center; background: var(--m-yuzey); border-radius: 22px; font-size: 0.92rem; color: var(--m-soluk); }
+.yp-bos b { display: block; font-family: var(--m-baslik); font-weight: 500; font-size: 1.35rem; color: var(--m-murekkep); margin-bottom: 0.25rem; }
+.yp-geri { position: fixed; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 16px); z-index: 30; transform: translate(-50%, 160%); transition: transform .3s ease; display: flex; align-items: center; gap: 0.75rem; max-width: 92vw; padding: 0.6rem 0.6rem 0.6rem 1rem; border-radius: 16px; background: var(--m-murekkep); color: #fff; font: 600 0.88rem var(--m-govde); }
+.yp-geri--acik { transform: translate(-50%, 0); }
+.yp-geri button { min-height: 36px; padding: 0 0.8rem; border-radius: 999px; border: 0; background: #fff; color: var(--m-murekkep); font: 800 0.8rem var(--m-govde); cursor: pointer; }
+@media (prefers-reduced-motion: reduce) { .yp-geri { transition: none; } }
+.yp-geri span { white-space: nowrap; }
