@@ -826,3 +826,20 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .od-govde { padding-top: 0.75rem; }
 /* Esnek .panel içinde ana-govde içeriği kadar daralıp ortalanmasın. */
 .ana-govde { width: 100%; box-sizing: border-box; }
+
+/* Tepe her ekranda aynı boyda (22 Eylül 2026, Bekir): uzun öğrenci adı
+   üç satıra, uzun durum iki satıra kırılıp tepeyi büyütüyordu. Ad ve
+   durum tek satır; sığmazsa üç noktayla kısalır. */
+.ana-baslik-dugme { max-width: 62%; min-width: 0; }
+.ana-baslik-dugme h1 { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.od-durum { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: inline-block; max-width: 62%; }
+.od-durum i { display: inline-block; margin-right: 0.4rem; vertical-align: middle; }
+@media (max-width: 40rem) {
+  .ana-baslik-dugme h1 { font-size: 1.9rem; }
+}
+/* Sayan bileşeni kendi küçük puntosunu getiriyordu. */
+.od-serit b * { font-size: inherit; font-weight: inherit; letter-spacing: inherit; }
+/* Tabela ağaç hizasında olduğu için ad tam genişliği kullanabilir. */
+.ana-baslik-dugme { max-width: 100%; width: 100%; }
+.od-durum { max-width: 100%; }
+.ana-tepe:has(.ana-tepe-cizim) .ana-baslik-dugme h1 { max-width: 100%; }
