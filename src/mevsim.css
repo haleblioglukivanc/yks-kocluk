@@ -697,3 +697,15 @@ html body[data-tema='panel'] { background-attachment: scroll; }
   display: flex; align-items: center; justify-content: center;
 }
 .kk-sayi--acil { background: var(--m-acil); }
+
+/* Sis kalktı (22 Eylül 2026, Bekir): saatin altındaki gri gölge sis gibi
+   duruyordu. Yerine gökyüzünün kendisi tepede biraz koyulaşıyor; gri yok,
+   beyaz saat yine okunur. */
+.ana-tepe::before { display: none; }
+.ana-tepe {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--m-gok) 80%, var(--m-vurgu)) 0%,
+    var(--m-gok) calc(env(safe-area-inset-top, 0px) + 4rem),
+    var(--m-gok) 45%,
+    transparent 75%);
+}
