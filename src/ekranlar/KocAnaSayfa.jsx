@@ -151,7 +151,11 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
         supabase.rpc('koc_karar_kuyrugu', { p_limit: 99 }),
       ])
       if (iptal) return
-      setRiskler(r.data ?? [])
+      const idler = (r.data ?? []).map((x) => x.ogrenci_id)
+      const { data: fotolar } = idler.length ? await supabase.from('profiller').select('id, fotograf_yolu').in('id', idler) : { data: [] }
+      if (iptal) return
+      const yol = Object.fromEntries((fotolar ?? []).map((f) => [f.id, f.fotograf_yolu]))
+      setRiskler((r.data ?? []).map((x) => ({ ...x, fotograf_yolu: yol[x.ogrenci_id] ?? null })))
       setIsler((k.data ?? []).filter((x) => x.tip !== 'tebrik'))
     })()
     return () => { iptal = true }
@@ -203,7 +207,7 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
             iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}
         <section className="ana-kapilar" aria-label="Öğrencilerim ve Yapılacaklar">
           <button type="button" className="ana-kapi" onClick={() => onGit('/ogrencilerim')}>
-            <TabelaCizimi mevsim={mevsim} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))} />
+            <TabelaCizimi mevsim={mevsim} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi, yol: r.fotograf_yolu }))} />
             <b>Öğrencilerim</b>
             <span>{ogrenciEtiket === 'Öğrencilerim' ? ' ' : `${sirali.length} öğrenci: ${ogrenciEtiket}.`}</span>
           </button>
@@ -262,7 +266,10 @@ export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, tepe }) {
       const benimId = oturum?.session?.user?.id
       if (!benimId) return
       const { data } = await supabase.from('ogrenci_risk').select('ogrenci_id, ad_soyad, risk_seviyesi, risk_ham, sessiz_gun').eq('koc_id', benimId)
-      if (!iptal) setRiskler(data ?? [])
+      const idler = (data ?? []).map((x) => x.ogrenci_id)
+      const { data: fotolar } = idler.length ? await supabase.from('profiller').select('id, fotograf_yolu').in('id', idler) : { data: [] }
+      const yol = Object.fromEntries((fotolar ?? []).map((f) => [f.id, f.fotograf_yolu]))
+      if (!iptal) setRiskler((data ?? []).map((x) => ({ ...x, fotograf_yolu: yol[x.ogrenci_id] ?? null })))
     })()
     return () => { iptal = true }
   }, [])
@@ -275,7 +282,7 @@ export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, tepe }) {
         tarih={bugunTarih()}
         ozet={ozetCumlesi(riskler)}
         {...tepe}
-        sagCizim={(mevsim) => <TabelaCizimi mevsim={mevsim} zemin={false} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi }))} />}
+        sagCizim={(mevsim) => <TabelaCizimi mevsim={mevsim} zemin={false} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi, yol: r.fotograf_yolu }))} />}
       />
       <div className="ana-govde ana-govde--dar">
         <OgrenciNabzi onOgrenciAc={onOgrenciAc} onMesaj={onMesaj} />

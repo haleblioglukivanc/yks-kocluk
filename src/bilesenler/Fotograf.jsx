@@ -3,9 +3,38 @@ import { supabase } from '../lib/supabase.js'
 
 const KOVA = 'ogrenci-foto'
 
-/** Gizli kovadaki fotoğraf için imzalı bağlantı üretir. */
+/* İmzalı bağlantılar bir saat geçerli. Her açılışta yenisi üretilince
+   adres değişiyor, telefon önbelleği kullanamıyor ve fotoğraf her seferinde
+   yeniden, parça parça iniyordu (22 Eylül 2026, Bekir). Artık aynı yol için
+   üretilen bağlantı 50 dakika hatırlanıyor; aynı istek iki kez gitmiyor. */
+const BAGLANTI = new Map() // yol -> { adres, bitis } | Promise
+const INMIS = new Set() // tamamen inmiş adresler
+
+function baglantiAl(yol) {
+  const kayit = BAGLANTI.get(yol)
+  if (kayit instanceof Promise) return kayit
+  if (kayit && kayit.bitis > Date.now()) return Promise.resolve(kayit.adres)
+  const is = supabase.storage
+    .from(KOVA)
+    .createSignedUrl(yol, 3600)
+    .then(({ data }) => {
+      const adres = data?.signedUrl ?? null
+      if (adres) BAGLANTI.set(yol, { adres, bitis: Date.now() + 50 * 60 * 1000 })
+      else BAGLANTI.delete(yol)
+      return adres
+    })
+    .catch(() => { BAGLANTI.delete(yol); return null })
+  BAGLANTI.set(yol, is)
+  return is
+}
+
+/** Fotoğrafın adresi; yalnız fotoğraf tamamen indikten sonra döner.
+ *  O ana kadar ekranda baş harfler durur, yarım resim görünmez. */
 export function useFotograf(yol) {
-  const [adres, setAdres] = useState(null)
+  const [adres, setAdres] = useState(() => {
+    const k = yol && BAGLANTI.get(yol)
+    return k && !(k instanceof Promise) && INMIS.has(k.adres) ? k.adres : null
+  })
 
   useEffect(() => {
     let iptal = false
@@ -13,12 +42,13 @@ export function useFotograf(yol) {
       setAdres(null)
       return
     }
-    supabase.storage
-      .from(KOVA)
-      .createSignedUrl(yol, 3600)
-      .then(({ data }) => {
-        if (!iptal) setAdres(data?.signedUrl ?? null)
-      })
+    baglantiAl(yol).then((a) => {
+      if (iptal || !a) return
+      if (INMIS.has(a)) { setAdres(a); return }
+      const r = new Image()
+      r.onload = () => { INMIS.add(a); if (!iptal) setAdres(a) }
+      r.src = a
+    })
     return () => {
       iptal = true
     }
@@ -45,9 +75,10 @@ export function Avatar({ yol, ad, boyut = 'orta' }) {
 }
 
 /* Telefondan gelen fotoğraf çoğu zaman 3–10 MB ve yatay/dikey. Yüklemeden
-   önce tarayıcıda ortadan kare kırpılıp 512px JPEG'e indirilir (~50–90 KB):
+   önce tarayıcıda ortadan kare kırpılıp 320px JPEG'e indirilir (~20–30 KB,
+   WhatsApp profil fotoğrafı gibi; ekranda en çok ~100px görünüyor):
    yükleme takılmaz, liste ve karar kartında avatar anında açılır. */
-const KARE = 512
+const KARE = 320
 
 function resmiAc(dosya) {
   return new Promise((coz, reddet) => {
@@ -70,7 +101,7 @@ async function kareKucult(dosya) {
   const c = tuval.getContext('2d')
   c.imageSmoothingQuality = 'high'
   c.drawImage(resim, (g - kenar) / 2, (y - kenar) / 2, kenar, kenar, 0, 0, hedef, hedef)
-  const blob = await new Promise((coz) => tuval.toBlob(coz, 'image/jpeg', 0.85))
+  const blob = await new Promise((coz) => tuval.toBlob(coz, 'image/jpeg', 0.82))
   if (!blob) throw new Error('Fotoğraf hazırlanamadı.')
   return blob
 }

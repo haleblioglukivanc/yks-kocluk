@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
 import AnaTepe from '../ortak/AnaTepe.jsx'
+import { useFotograf } from '../bilesenler/Fotograf.jsx'
 import { UcakCizimi } from '../ortak/KapiCizimleri.jsx'
 
 const ROL_ADI = { koc: 'Koç', yonetici: 'Koç', ogrenci: 'Öğrenci', veli: 'Veli' }
@@ -249,6 +250,15 @@ const HAZIR = ['Harika, böyle devam', 'Takıldığın soruyu fotoğrafla at', '
 /* kisiId verilirse liste atlanır, doğrudan o kişinin yazışması açılır
    (koçun öğrenci kartındaki Mesaj düğmesi). Kutu herkesi — hiç yazışma
    olmayanları da — getirdiği için ilk mesaj burada yazılabilir. */
+function KisiBasi({ k }) {
+  const foto = useFotograf(k.fotograf_yolu)
+  return (
+    <span className={k.rol === 'veli' ? 'ms-av ms-av--veli' : 'ms-av'}>
+      {foto ? <img className="portre-foto" src={foto} alt="" /> : (k.ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')}
+    </span>
+  )
+}
+
 export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
   const [kutu, setKutu] = useState(null)
   const [secili, setSecili] = useState(null)
@@ -264,7 +274,11 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
       setHata(hataMetni(error))
       return
     }
-    setKutu(data ?? [])
+    /* Fotoğraf yolları kutuda gelmiyor; görünen kişilerinkini ayrıca oku. */
+    const idler = (data ?? []).map((k) => k.id)
+    const { data: fotolar } = idler.length ? await supabase.from('profiller').select('id, fotograf_yolu').in('id', idler) : { data: [] }
+    const yol = Object.fromEntries((fotolar ?? []).map((f) => [f.id, f.fotograf_yolu]))
+    setKutu((data ?? []).map((k) => ({ ...k, fotograf_yolu: yol[k.id] ?? null })))
     if (kisiId) {
       const hedef = (data ?? []).find((k) => k.id === kisiId)
       if (hedef) {
@@ -338,9 +352,7 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
               <div className="ms-liste">
                 {liste.map((k) => (
                   <button key={k.id} type="button" className={k.okunmamis > 0 ? 'ms-kisi ms-kisi--yeni' : 'ms-kisi'} onClick={() => setSecili(k)}>
-                    <span className={k.rol === 'veli' ? 'ms-av ms-av--veli' : 'ms-av'}>
-                      {(k.ad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')}
-                    </span>
+                    <KisiBasi k={k} />
                     <span className="ms-yazi">
                       <span className="ms-ust">
                         <b>{k.ad}</b>

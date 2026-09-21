@@ -1,4 +1,6 @@
+import { useId } from 'react'
 import { useAzHareket } from '../lib/mevsim.js'
+import { useFotograf } from '../bilesenler/Fotograf.jsx'
 
 /* Koç kapı kartlarının çizimleri (22 Eylül 2026, Bekir: "tabela ve kutu
    çok tatlıydı, kartlara koyalım"). Kartın üst kısmında küçük bir mevsim
@@ -28,6 +30,27 @@ function Zemin({ mevsim }) {
   )
 }
 
+/* Tabelaya asılı tek öğrenci: fotoğrafı varsa o, yoksa baş harfleri. */
+function AsiliBas({ x, o }) {
+  const foto = useFotograf(o.yol)
+  const id = useId().replace(/:/g, '')
+  return (
+    <g>
+      <line x1={x} y1="40" x2={x} y2="47" stroke="#6B3D29" strokeWidth="1.4" />
+      <circle cx={x} cy="57" r="10" fill="#F4DDCC" />
+      {foto ? (
+        <>
+          <clipPath id={`as${id}`}><circle cx={x} cy="57" r="10" /></clipPath>
+          <image className="portre-foto" href={foto} x={x - 10} y="47" width="20" height="20" preserveAspectRatio="xMidYMid slice" clipPath={`url(#as${id})`} />
+        </>
+      ) : (
+        <text x={x} y="60.3" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="7.5" fontWeight="800" fill="#2A211D">{o.bas}</text>
+      )}
+      <circle cx={x} cy="57" r="10" fill="none" stroke={HALKA[o.durum] ?? '#6F625A'} strokeWidth="2.6" />
+    </g>
+  )
+}
+
 export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = null }) {
   const asili = ogrenciler.slice(0, 3)
   const fazla = ogrenciler.length - asili.length
@@ -40,16 +63,9 @@ export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = nul
       <text x="62" y="30.5" textAnchor="middle" fontFamily="Fraunces, Georgia, serif" fontSize="12.5" fontWeight="600" fill="#FFF6EC">
         {yazi ?? `${ogrenciler.length} öğrenci`}
       </text>
-      {asili.map((o, i) => {
-        const x = asili.length === 1 ? 66 : 42 + i * 24
-        return (
-          <g key={o.bas + i}>
-            <line x1={x} y1="40" x2={x} y2="47" stroke="#6B3D29" strokeWidth="1.4" />
-            <circle cx={x} cy="57" r="10" fill="#F4DDCC" stroke={HALKA[o.durum] ?? '#6F625A'} strokeWidth="2.6" />
-            <text x={x} y="60.3" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="7.5" fontWeight="800" fill="#2A211D">{o.bas}</text>
-          </g>
-        )
-      })}
+      {asili.map((o, i) => (
+        <AsiliBas key={o.bas + i} x={asili.length === 1 ? 66 : 42 + i * 24} o={o} />
+      ))}
       {fazla > 0 && (
         <text x={42 + 3 * 24 - 4} y="60.5" fontFamily="Manrope, sans-serif" fontSize="10" fontWeight="800" fill="var(--m-soluk)">+{fazla}</text>
       )}
@@ -106,7 +122,7 @@ export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk
       <circle cx="72" cy="60" r="33" fill="#8C5B45" />
       <circle cx="72" cy="60" r="30" fill="#F4DDCC" stroke={halka} strokeWidth="3.5" />
       {foto ? (
-        <image href={foto} x="45" y="33" width="54" height="54" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${kirp})`} />
+        <image className="portre-foto" href={foto} x="45" y="33" width="54" height="54" preserveAspectRatio="xMidYMid slice" clipPath={`url(#${kirp})`} />
       ) : (
         <text x="72" y="67" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="19" fontWeight="800" fill="#2A211D">{bas}</text>
       )}

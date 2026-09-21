@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Fotoğraflar hızlı ve her yerde; sahne çizimleri büyüdü
+
+- Fotoğraflar zaten küçültülüyordu (512px); sorun her açılışta yeni imzalı bağlantı üretilmesiydi (önbellek tutmuyor, resim parça parça iniyordu). `useFotograf`: aynı yol için bağlantı 50 dk hatırlanıyor, fotoğraf tamamen inmeden gösterilmiyor (o ana kadar baş harf), sonra yumuşakça beliriyor. Yeni yüklemeler 320px, JPEG 0.82 (~20–30 KB).
+- Fotoğraf artık Öğrencilerim satırındaki halkada, Mesajlar kişi satırında ve tabelaya asılı baş harflerde de görünüyor (profiller.fotograf_yolu ayrıca okunuyor).
+- Tabela, posta kutusu, fotoğraf çerçeveleri ve çan ~%25 büyük.
+- Ağustos'tan kalma, hiçbir profile bağlı olmayan 1,3 MB'lık dosya (`101ac9a4-…/portre-1788072121141.jpg`) SQL'den silinemiyor (Storage API gerekli); Supabase panelinden Storage > ogrenci-foto'dan elle silinebilir.
+
 ## 22 Eylül 2026 — Koçun profil sayfası, KH düğmesi kalktı
 
 - Bekir: köşedeki KH düğmesi yerine öğrenci profilindeki mantık. Koçun ana ekranında sağda ağaçların önünde Kıvanç'ın fotoğraf çerçevesi (yoksa baş harfleri; kenar mevsim vurgu rengi). Çerçeveye ya da selama dokununca `/profil` açılır; profilde çerçeveye dokununca ana ekrana döner.

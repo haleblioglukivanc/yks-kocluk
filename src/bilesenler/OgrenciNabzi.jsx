@@ -3,6 +3,7 @@ import { supabase, hataMetni } from '../lib/supabase.js'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
 import { dokunulduMu, temasMetni } from '../lib/temas.js'
 import TopluDurtme from './TopluDurtme.jsx'
+import { useFotograf } from './Fotograf.jsx'
 
 /* Öğrencilerim (22 Eylül 2026, Bekir'in onayladığı mokap). Ekranın sorusu
    "kime dokunmalıyım": satırda ders listesi yok. Her satırda bugünün
@@ -25,6 +26,13 @@ function sonHareket(r) {
   if (gunFarki <= 0) return { metin: `Bugün ${t.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, tur: 'iyi', bugun: true }
   if (gunFarki === 1) return { metin: 'Dün girdi', tur: 'notr', bugun: false }
   return { metin: `${gunFarki} gündür yok`, tur: 'dikkat', bugun: false }
+}
+
+/* Halkanın ortası: fotoğraf varsa o (tamamen inince belirir), yoksa baş harfler. */
+function OgrenciBasi({ yol, ad }) {
+  const foto = useFotograf(yol)
+  const bas = ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  return <span>{foto ? <img className="portre-foto" src={foto} alt="" /> : bas}</span>
 }
 
 export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
@@ -160,7 +168,7 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
                           <circle cx="24" cy="24" r="21" fill="none" stroke="var(--m-yumusak)" strokeWidth="4" />
                           {oran > 0 && <circle cx="24" cy="24" r="21" fill="none" stroke={HALKA[s.seviye] ?? 'var(--m-vurgu)'} strokeWidth="4" strokeLinecap="round" strokeDasharray={`${oran * CEVRE} ${CEVRE}`} transform="rotate(-90 24 24)" />}
                         </svg>
-                        <span>{s.ad.split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')}</span>
+                        <OgrenciBasi yol={s.o.profiller?.fotograf_yolu} ad={s.ad} />
                       </span>
                       <span className="on2-yazi">
                         <b>{s.ad}</b>
