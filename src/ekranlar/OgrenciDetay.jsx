@@ -181,7 +181,13 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
         onGeri={onKapat}
         altBaslik={[ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null, ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null].filter(Boolean).join(', ') || null}
         durum={<span className={`od-durum ${ogrenci.aktif ? 'od-durum--profil' : 'od-durum--kapali'}`}><i />{ogrenci.aktif ? 'Profil' : 'Erişim kapalı'}</span>}
-        sagCizim={(mevsim) => <ProfilPortresi ogrenci={ogrenci} ad={ad} mevsim={mevsim} />}
+        sagCizim={(mevsim) => (
+          /* Çerçeve iki yönlü (22 Eylül 2026, Bekir): öğrenci ekranında
+             profili açar, profilde öğrenci ekranına geri götürür. */
+          <button type="button" className="od-portre" onClick={onKapat} aria-label={`${ad} öğrenci ekranına dön`}>
+            <ProfilPortresi ogrenci={ogrenci} ad={ad} mevsim={mevsim} />
+          </button>
+        )}
       />
 
       <div className="sekme-govde ogr-detay-govde profil-govde profil2 ana-govde ana-govde--dar" style={aksanStili()}>

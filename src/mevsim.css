@@ -880,3 +880,5 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .ana-selam > h1 { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
 .ana-tepe:has(.ana-tepe-cizim) .ana-selam > h1 { max-width: 100%; }
 @media (max-width: 40rem) { .ana-selam > h1 { font-size: 1.9rem; } }
+/* Çerçeve dokunulabilir olsun: yazı katmanının (ana-tepe-ic) üstünde. */
+.ana-tepe-cizim { z-index: 2; }

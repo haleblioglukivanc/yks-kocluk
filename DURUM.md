@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Fotoğraf çerçevesi iki yönlü
+
+- Öğrenci ekranında çerçeve profili açar, profilde öğrenci ekranına geri götürür. Çerçeve aslında hiç dokunulamıyordu: tepedeki yazı katmanı (`.ana-tepe-ic`) üstüne biniyordu; `.ana-tepe-cizim` artık z-index 2.
+
 ## 22 Eylül 2026 — Öğrenci profil sayfası yeni dilde
 
 - Tepe öğrenci detayıyla aynı: sahne, tek satır ad, sınıf/alan, "Profil" etiketi (erişim kapalıysa "Erişim kapalı"), sağda fotoğraf çerçevesi; geri öğrenci ekranına döner (`ProfilPortresi`, `AnaTepe`).
