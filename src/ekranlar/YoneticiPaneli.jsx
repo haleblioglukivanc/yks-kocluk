@@ -320,7 +320,7 @@ function cronOku(z) {
 const kisaSaat = (z) =>
   z ? new Date(z).toLocaleString('tr-TR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : null
 
-function Sistem({ s }) {
+export function Sistem({ s }) {
   const mail = mailDurumu(s)
   const gunluk = s.gunluk ?? []
   const hata24s = Number(s.gunluk_hata_24s ?? 0)
@@ -410,7 +410,7 @@ function Sistem({ s }) {
   )
 }
 
-function Vekalet({ liste }) {
+export function Vekalet({ liste }) {
   return (
     <Bolum cizgili baslik="Öğrenci adına yapılan işlemler" aciklama="Vekâlet modunda son 7 gün.">
       {!liste?.length ? (
@@ -437,7 +437,7 @@ function Vekalet({ liste }) {
   )
 }
 
-function Tahsilat({ t, onOgrenciAc }) {
+export function Tahsilat({ t, onOgrenciAc }) {
   const fark = Number(t.bu_ay_tahsil) - Number(t.gecen_ay_tahsil)
   return (
     <>
@@ -548,7 +548,7 @@ const AYARLAR = [
   ['/kaynaklar', 'Kaynaklar', 'Kitap ve soru bankası kataloğu'],
 ]
 
-function Ayarlar({ onGit }) {
+export function Ayarlar({ onGit }) {
   return (
     <Bolum cizgili baslik="Kütüphane ve katalog" aciklama="Kurum geneli içerik. Koçlar da hesap menüsünden açabilir; kendi eklediklerini yönetir.">
       <ul className="liste">

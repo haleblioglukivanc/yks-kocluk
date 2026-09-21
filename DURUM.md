@@ -7,6 +7,12 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Yönetim paneli kaldırıldı, parçaları koça dağıldı
+
+- Bekir: tek koç aynı zamanda yönetici; ayrı panel gereksiz, iş büyürse yeniden kurulur. Profilde "Yönetim paneli" satırı yok. Koçluk araçları'na (yalnız yöneticide): Başvurular (/basvurular), Sosyal mesajlar (/sosyal, SMS kaydıyla), Haftanın kitabı ve sözü (/ilham), Kütüphane (/kutuphane), Ödemeler (/odemeler). Hesap'a: KVKK ve izinler (/kvkk: veli izinleri + KVKK talepleri). Hepsi `kocAltSayfa` ile sahneli tepe, geri → profil (`YonetimParcalari.jsx`).
+- Teknik (entegrasyonlar, arka plan işleri, e-posta kaydı, erişim günlüğü, vekâlet, sürüm) yalnız /sistem adresinde, menüde yok. Eski /yonetim bağlantısı /sistem'i, #sosyal ile sosyal sayfasını açar. Kurum nabzı, Koçlar sekmesi, koç ekleme ve yönetici yetkisi arayüzden kalktı (kod YoneticiPaneli.jsx'te duruyor).
+- Göç `20260922_basvuru_karti.sql`: yeni başvuru (durum 'yeni') yöneticinin Yapılacaklar'ına "Yeni başvuru" kartı (ad, hizmet, sınıf, ne zaman aranmak istediği, telefon; Aradım → durum arandı, Yarın → ertele). Bildirimler'de onay bekleyen sosyal yanıtlar satırı (→ /sosyal).
+
 ## 22 Eylül 2026 — Öğrenci ekle geri geldi
 
 - Eski Öğrenciler listesiyle birlikte ulaşılamaz olmuştu. Öğrencilerim'de arama kutusunun yanında koyu "Ekle" hapı; aynı `OgrenciFormu` (ad, e-posta, katalog, sınıf; geçici şifre üretir) alt sayfada açılır, eklenince liste tazelenir.

@@ -10,7 +10,6 @@ import Giris from './ekranlar/Giris.jsx'
 import KocAnaSayfa, { YapilacaklarEkrani, OgrencilerimEkrani } from './ekranlar/KocAnaSayfa.jsx'
 import { useMevsim } from './lib/mevsim.js'
 import MevsimSahnesi from './ortak/MevsimSahnesi.jsx'
-import YoneticiPaneli from './ekranlar/YoneticiPaneli.jsx'
 import OgrenciDetay from './ekranlar/OgrenciDetay.jsx'
 import Baglantilar from './ekranlar/Baglantilar.jsx'
 import SifreDegistir from './ekranlar/SifreDegistir.jsx'
@@ -26,6 +25,7 @@ import BaglantiSeridi from './bilesenler/BaglantiSeridi.jsx'
 import { useGenisEkran } from './lib/genislik.js'
 import HesapYapragi from './bilesenler/HesapYapragi.jsx'
 import KocProfili from './ekranlar/KocProfili.jsx'
+import { BasvurularSayfasi, SosyalSayfasi, IlhamSayfasi, KutuphaneSayfasi, OdemelerSayfasi, KvkkSayfasi, SistemSayfasi } from './ekranlar/YonetimParcalari.jsx'
 import AnaTepe from './ortak/AnaTepe.jsx'
 import Bildirimler from './ekranlar/Bildirimler.jsx'
 import KurulumDaveti from './pwa/KurulumDaveti.jsx'
@@ -402,7 +402,7 @@ export default function App() {
   const ogrenciYolu = OGRENCI_SEKME[yol]
   /* Tanınmayan her yol ana ekrana düşer (giriş sonrası '/giris' gibi).
      Ana ekran kararı da aynı kurala uymalı; yoksa başlık kart kalıyordu. */
-  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yapilacaklar', '/ogrencilerim', '/profil', '/yol', '/denemeler']
+  const TANINAN = ['/sifre', '/baglantilar', '/mesajlar', '/mesajlar/', '/bildirimler', '/konular', '/kaynaklar', '/ogrenciler', '/gozuyle/', '/yonetim', '/ogrenci/', '/yapilacaklar', '/ogrencilerim', '/profil', '/yol', '/denemeler', '/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem']
   const anaEkranda = yol === '/' || !TANINAN.some((t) => (t.endsWith('/') ? yol.startsWith(t) : yol === t))
 
   const yonetimdeMi = yoneticiMi && yol === '/yonetim'
@@ -470,7 +470,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -584,14 +584,19 @@ export default function App() {
           onGit={git}
         />
       )
-    if (yoneticiMi && yol === '/yonetim')
-      return (
-        <YoneticiPaneli
-          profil={profil}
-          onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
-          onGit={git}
-        />
-      )
+    /* Yönetim paneli kalktı (22 Eylül 2026): parçaları profildeki satırlardan
+       açılan sayfalarda; teknik kayıtlar yalnız /sistem'de. Eski /yonetim
+       bağlantıları (acil e-postadaki #sosyal) doğru sayfaya düşer. */
+    if (kocMu && yol === '/basvurular') return kocAltSayfa('Başvurular', 'Tanıtım sitesinden gelen öğrenci adayları.', <BasvurularSayfasi />)
+    if (kocMu && yol === '/sosyal') return kocAltSayfa('Sosyal mesajlar', 'Instagram ve YouTube; onayın olmadan hiçbir yanıt gitmez.', <SosyalSayfasi />)
+    if (kocMu && yol === '/ilham') return kocAltSayfa('Haftanın kitabı ve sözü', 'Öğrencilere gidecek 12 haftalık plan.', <IlhamSayfasi />)
+    if (kocMu && yol === '/kutuphane') return kocAltSayfa('Kütüphane', 'Kurum geneli konu kataloğu ve içerik.', <KutuphaneSayfasi onGit={git} />)
+    if (kocMu && yol === '/odemeler') return kocAltSayfa('Ödemeler', 'Bu ayın tahsilatı ve gecikenler.', <OdemelerSayfasi onOgrenciAc={(id) => git(`/ogrenci/${id}`)} />)
+    if (kocMu && yol === '/kvkk') return kocAltSayfa('KVKK ve izinler', 'Veli iletişim izinleri ve kişisel veri talepleri.', <KvkkSayfasi />)
+    if (yoneticiMi && (yol === '/sistem' || yol === '/yonetim')) {
+      if (yol === '/yonetim' && typeof window !== 'undefined' && /#(sosyal|iletisim)/.test(window.location.hash)) return kocAltSayfa('Sosyal mesajlar', 'Instagram ve YouTube; onayın olmadan hiçbir yanıt gitmez.', <SosyalSayfasi />)
+      return kocAltSayfa('Sistem', 'Teknik kayıtlar. Menüde yok; yalnız bu adresten açılır.', <SistemSayfasi />)
+    }
     if (kocMu && ogrenciId)
       return (
         <OgrenciDetay

@@ -116,6 +116,15 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
         <Bolum baslik="Koçluk araçları">
           <Satir baslik="Kaynaklar" alt="Kitaplar ve öğrencilere verilenler" onClick={() => onGit('/kaynaklar')} />
           <Satir baslik="Telegram bağlantısı" alt="Bildirimleri Telegram'dan da al" onClick={() => onGit('/baglantilar')} />
+          {yonetici && (
+            <>
+              <Satir baslik="Başvurular" alt="Tanıtım sitesinden gelen öğrenci adayları" onClick={() => onGit('/basvurular')} />
+              <Satir baslik="Sosyal mesajlar" alt="Instagram ve YouTube yanıtları" onClick={() => onGit('/sosyal')} />
+              <Satir baslik="Haftanın kitabı ve sözü" alt="12 haftalık plan" onClick={() => onGit('/ilham')} />
+              <Satir baslik="Kütüphane" alt="Konu kataloğu ve kurum içeriği" onClick={() => onGit('/kutuphane')} />
+              <Satir baslik="Ödemeler" alt="Bu ayın tahsilatı ve gecikenler" onClick={() => onGit('/odemeler')} />
+            </>
+          )}
         </Bolum>
         )}
 
@@ -131,9 +140,8 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
 
         <Bolum baslik="Hesap">
           <Satir baslik="Şifremi değiştir" onClick={() => onGit('/sifre')} />
-          {yonetici && (
-            <Satir baslik={yonetimdeMi ? 'Koç görünümüne dön' : 'Yönetim paneli'} alt="Koçlar, öğrenciler, veliler, sistem" onClick={() => onSapka(yonetimdeMi ? 'koc' : 'yonetici')} />
-          )}
+          {/* Yönetim paneli kalktı (22 Eylül 2026); yasal kayıtlar burada. */}
+          {yonetici && <Satir baslik="KVKK ve izinler" alt="Veli iletişim izinleri ve kişisel veri talepleri" onClick={() => onGit('/kvkk')} />}
           <Satir baslik="Çıkış yap" sag={null} tehlike onClick={onCikis} />
         </Bolum>
 

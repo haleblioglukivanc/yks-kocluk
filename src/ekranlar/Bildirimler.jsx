@@ -19,6 +19,7 @@ const TIP = {
   veli_ozet: { etiket: 'Veli özeti', durum: 'izle' },
   hedef: { etiket: 'Hedef ayarı', durum: 'notr' },
   konu_tekrar: { etiket: 'Konu tekrarı', durum: 'izle' },
+  basvuru: { etiket: 'Yeni başvuru', durum: 'eylem' },
 }
 
 const ikon = {
@@ -40,6 +41,8 @@ const IKON = {
   veli_ozet: <><rect x="5" y="4" width="14" height="16" rx="2" /><path d="M8 9h8M8 13h6" /></>,
   hedef: <><circle cx="12" cy="12" r="8" /><circle cx="12" cy="12" r="3" /></>,
   konu_tekrar: <path d="M4 12a8 8 0 1 0 3-6.2M4 4v4h4" />,
+  basvuru: <><circle cx="12" cy="8" r="4" /><path d="M4 20c1.5-4 4.5-6 8-6s6.5 2 8 6" /></>,
+  sosyal: <path d="M4 5h16v11H9l-5 4z" />,
 }
 
 export default function Bildirimler({ profil, onGit, tepe = null }) {
@@ -93,6 +96,15 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
       }
 
       if (kocMu) {
+        /* Onay bekleyen sosyal yanıtlar (Yönetim kalktı, 22 Eylül 2026). */
+        const { data: sosyal } = await supabase.rpc('sosyal_bekleyen')
+        if (sosyal?.bekleyen > 0) {
+          olaylar.push({
+            id: 'sosyal', tip: 'sosyal', durum: sosyal.acil ? 'acil' : 'eylem', bekliyor: true,
+            baslik: `${sosyal.bekleyen} sosyal mesaj onayını bekliyor`,
+            alt: sosyal.acil ? `${sosyal.acil} tanesi acil` : 'Instagram ve YouTube', zaman: null, yol: '/sosyal',
+          })
+        }
         const { data: kuyruk } = await supabase.rpc('koc_karar_kuyrugu', { p_limit: 20 })
         for (const kart of kuyruk ?? []) {
           const t = TIP[kart.tip] ?? { etiket: kart.tip, durum: 'notr' }

@@ -29,6 +29,7 @@ const TIP_ETIKET = {
   tebrik: 'Tebrik',
   ilham: 'Kitap ve söz',
   konu_tekrar: 'Konu tekrarı',
+  basvuru: 'Yeni başvuru',
 }
 
 const SEGMENT_ETIKET = { acil: 'Acil', pencere: 'Süreli', bugun: 'Bugün', hafta: 'Bu hafta' }
