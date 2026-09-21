@@ -41,10 +41,11 @@ export default function AnaTepe({
   onHesap,
   hesapHarf = '',
   ekDugme = null,
+  children = null,
 }) {
   const mevsim = useMevsim()
   return (
-    <header className="ana-tepe" data-mevsim={mevsim}>
+    <header className={children ? 'ana-tepe ana-tepe--kapili' : 'ana-tepe'} data-mevsim={mevsim}>
       <Manzara mevsim={mevsim} />
       <MevsimDali mevsim={mevsim} />
       <div className="ana-tepe-ic">
@@ -84,8 +85,7 @@ export default function AnaTepe({
           <div className="ana-ust-satir">
             <span className="ana-mevsim">
               <MevsimIsareti mevsim={mevsim} boyut={16} />
-              {MEVSIM_ADI[mevsim]}
-              <span className="ana-slogan">, {SLOGAN[mevsim]}</span>
+              {MEVSIM_ADI[mevsim]}<span className="ana-slogan">, {SLOGAN[mevsim]}</span>
             </span>
             {tarih && <span className="ana-tarih">{tarih}</span>}
           </div>
@@ -93,6 +93,7 @@ export default function AnaTepe({
           {ozet && <p className="ana-ozet">{ozet}</p>}
         </div>
       </div>
+      {typeof children === 'function' ? children(mevsim) : children}
     </header>
   )
 }
