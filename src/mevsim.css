@@ -1033,7 +1033,7 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .ana-tepe-cizim:has(.portre-cizim), .ana-tepe-cizim:has(.can-cizim), .ana-tepe-cizim:has(.od-portre) { width: clamp(120px, 34vw, 175px); }
 
 /* ═══ Fotoğraf kırpma (WhatsApp gibi, 22 Eylül 2026) ═══ */
-.kirp-arka { position: fixed; inset: 0; z-index: 1000; background: rgba(20,14,10,.92); display: grid; place-items: center; padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1rem calc(env(safe-area-inset-bottom, 0px) + 1rem); }
+.kirp-arka { position: fixed; inset: 0; z-index: 1000; background: rgba(20,14,10,.97); display: grid; place-items: center; padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1rem calc(env(safe-area-inset-bottom, 0px) + 1rem); }
 .kirp { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; width: 100%; max-width: 360px; color: #fff; }
 .kirp-baslik { margin: 0; font-family: var(--m-baslik, Georgia, serif); font-size: 1.4rem; font-weight: 500; }
 .kirp-alt { margin: 0; font-size: 0.85rem; opacity: .8; text-align: center; }
@@ -1069,3 +1069,5 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 @media (prefers-reduced-motion: reduce) {
   .profil-modu .ana-tepe::after, .profil-modu .kp-govde > *, .profil-modu .profil2 > * { animation: none; }
 }
+/* Kırpma penceresi açıkken arkadaki sayfa kaymasın. */
+body:has(.kirp-arka) { overflow: hidden; }

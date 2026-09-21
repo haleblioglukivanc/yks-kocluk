@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Kırpma penceresi kartın içine hapsoluyordu
+
+- Profil kartlarının giriş animasyonu (transform) sabit konumlu kırpma penceresini "Bilgilerim" kartının içine hapsediyordu; pencere yarım görünüyor, tepedeki sahne üstüne biniyordu. `FotoKirpici` artık `createPortal` ile doğrudan `body`'ye çiziliyor; açıkken arka sayfa kaymıyor, zemin neredeyse opak.
+
 ## 22 Eylül 2026 — Profile girildiği belli olsun
 
 - Bekir: geçişler çok hızlı, profile girildiği anlaşılmıyor. Koç ve öğrenci profilinde (`.profil-modu`) sahnenin alt yarısı akşam gibi kararıyor (girişte 0,5 sn'de koyulaşır, profilde öyle kalır); altındaki kartlar sırayla aşağıdan süzülerek geliyor. Hareket azaltma açıksa animasyon yok, kararma sabit.

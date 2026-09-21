@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { supabase } from '../lib/supabase.js'
 
 const KOVA = 'ogrenci-foto'
@@ -313,7 +314,9 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
         )}
         {hata && <p className="foto-hata">{hata}</p>}
       </div>
-      {kirp && <FotoKirpici resim={kirp.resim} adres={kirp.adres} onVazgec={kirpKapat} onKullan={yukle} />}
+      {/* Pencere sayfanın en üstüne taşınır (portal): kart animasyonunun
+          dönüşümü sabit konumlu pencereyi kartın içine hapsediyordu. */}
+      {kirp && createPortal(<FotoKirpici resim={kirp.resim} adres={kirp.adres} onVazgec={kirpKapat} onKullan={yukle} />, document.body)}
     </div>
   )
 }
