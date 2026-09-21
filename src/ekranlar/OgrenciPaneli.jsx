@@ -313,7 +313,24 @@ export default function OgrenciPaneli({
         </>
       ) : (
         <>
-          <div className="ana-govde ana-govde--dar od-govde dn-govde">
+          <div className="ana-govde ana-govde--dar od-govde eski-ic dn-govde">
+          {/* Deneme ekle en üstte (mokap): aşağıdaki listenin kendi ekle
+              düğmesini açar ve forma kaydırır. */}
+          {!vekaleten && (
+            <button
+              type="button"
+              className="dn-ekle"
+              onClick={(e) => {
+                const kok = e.currentTarget.closest('.dn-govde')
+                const hedef = [...(kok?.querySelectorAll('button') ?? [])].find((b) => b !== e.currentTarget && /deneme ekle/i.test(b.textContent ?? ''))
+                hedef?.click()
+                setTimeout(() => (kok?.querySelector('.deneme-form-kap') ?? hedef)?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 60)
+              }}
+            >
+              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+              Deneme ekle
+            </button>
+          )}
           <HedefeGoreDurum kayit={kayit} netDurumu={netDurumu} denemeler={denemeler} />
           {/* Hata defteri Denemeler'in altında (mokap onayı, 20 Eylül 2026). */}
           <HataDefteri ogrenciId={kayit.id} katalogId={kayit.katalog_id} />
