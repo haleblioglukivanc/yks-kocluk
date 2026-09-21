@@ -16,7 +16,6 @@ import SifreDegistir from './ekranlar/SifreDegistir.jsx'
 import OgrenciPaneli from './ekranlar/OgrenciPaneli.jsx'
 import VeliPaneli from './ekranlar/VeliPaneli.jsx'
 import Mesajlar from './ekranlar/Mesajlar.jsx'
-import Ogrencilerim from './ekranlar/Ogrencilerim.jsx'
 import KonuOncelik from './ekranlar/KonuOncelik.jsx'
 import Kaynaklar from './ekranlar/Kaynaklar.jsx'
 import KalemKosede from './bilesenler/KalemKosede.jsx'
@@ -426,7 +425,7 @@ export default function App() {
     (anaEkranda && (kocMu || profil.rol === 'ogrenci' || profil.rol === 'veli')) ||
     /* Öğrenci detayı telefonda da koyu tepeyle açılır: üst blok header'a
        bitişik tek parça (TASARIM-KURALLARI 3). */
-    (kocMu && (yol === '/ogrenciler' || yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || yol === '/sifre' || Boolean(ogrenciId))) ||
+    (kocMu && (yol === '/baglantilar' || yol === '/kaynaklar' || yol === '/yonetim' || yol === '/sifre' || Boolean(ogrenciId))) ||
     (profil.rol === 'ogrenci' && (yol === '/denemeler' || yol === '/yol')) ||
     Boolean(gozuyleId)
 
@@ -448,7 +447,7 @@ export default function App() {
         /* Üç sekme: her gün girilen üç yer. Konular, Kaynaklar ve veli
            özetleri ikinci seviyede: Bugün'deki kısayollar ve Rapor > Araçlar. */
         ['/', 'Bugün', '/'],
-        ['/ogrenciler', 'Öğrenciler', '/ogrenciler'],
+        ['/ogrencilerim', 'Öğrenciler', '/ogrencilerim'],
         ['/raporlar', 'Rapor', '/raporlar'],
         /* Yönetim yalnızca geniş ekranda: telefonda dördüncü sekme çubuğu
            ağırlaştırır ve yönetim işi zaten masa başı işi. */
@@ -470,7 +469,7 @@ export default function App() {
   /* Ana sayfa kendi tepesini (manzara + zil + hesap) çizer; üst şerit
      orada gizlenir. Koç öğrencinin gözüyle bakarken şerit kalır: geri
      düğmesi orada. */
-  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler')))
+  const anaSayfada = !gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/ogrenciler' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler')))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
   const anaTepe = {
     rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
@@ -541,38 +540,8 @@ export default function App() {
       return kocAltSayfa('Konu öncelikleri', 'Hangi konular önce çalışılsın.', <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />)
     if (kocMu && yol === '/kaynaklar') return kocAltSayfa('Kaynaklar', 'Kitaplar, bağlantılar ve kendi hazırladıkların.', <Kaynaklar profil={profil} />)
     if (kocMu && yol === '/baglantilar') return kocAltSayfa('Telegram bağlantısı', 'Öğrencilerinle telefonundan da yazış.', <Baglantilar />)
-    if (kocMu && genis && yol === '/ogrenciler')
-      return (
-        <div className="iki-sutun">
-          <div className="sutun-yan">
-            <Ogrencilerim
-              onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
-              onGit={git}
-              seciliId={ogrenciId ?? null}
-            />
-          </div>
-          <div className="sutun-ana">
-            {ogrenciId ? (
-              <OgrenciDetay
-                ogrenciId={ogrenciId}
-                onGeri={() => git('/')}
-                onMesaj={(id) => git(id ? `/mesajlar/${id}` : '/mesajlar')}
-                onGozuyle={(id) => git(`/gozuyle/${id}`)}
-              />
-            ) : (
-              <div className="sutun-bos">Listeden bir öğrenci seç.</div>
-            )}
-          </div>
-        </div>
-      )
-    if (kocMu && yol === '/ogrenciler')
-      return (
-        <Ogrencilerim
-          onOgrenciAc={(id) => git(`/ogrenci/${id}`)}
-          onGozuyle={(id) => git(`/gozuyle/${id}`)}
-          onGit={git}
-        />
-      )
+    /* Eski öğrenci listesi kalktı (22 Eylül 2026): /ogrenciler, yeni
+       Öğrencilerim ekranına gider. */
     if (kocMu && gozuyleId)
       return (
         <OgrenciPaneli
@@ -625,7 +594,7 @@ export default function App() {
         />
       )
     if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
-    if (kocMu && yol === '/ogrencilerim') return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onMesaj={(id) => git(`/mesajlar/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
+    if (kocMu && (yol === '/ogrencilerim' || yol === '/ogrenciler')) return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onMesaj={(id) => git(`/mesajlar/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu)
       return <KocAnaSayfa profil={profil} onGit={git} tepe={anaTepe} />
     if (profil.rol === 'veli') return <VeliPaneli profil={profil} />

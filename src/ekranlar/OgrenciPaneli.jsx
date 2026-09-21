@@ -16,7 +16,6 @@ import SiradakiKart from '../bilesenler/SiradakiKart.jsx'
 import { GunGorusmesi } from '../bilesenler/AcilGorusme.jsx'
 import { useKocMesaji } from '../bilesenler/KocMesaji.jsx'
 import { SayacSaglayici } from '../lib/sayac.jsx'
-import GunuKapat from '../bilesenler/GunuKapat.jsx'
 import { Kart } from '../bilesenler/Ortak.jsx'
 import HedefNet from '../bilesenler/HedefNet.jsx'
 import RaporTepesi from '../bilesenler/RaporTepesi.jsx'
@@ -97,7 +96,6 @@ export default function OgrenciPaneli({
   const [ozetGeldi, setOzetGeldi] = useState(false)
   const [tazele, setTazele] = useState(0)
   const [kutlamalar, setKutlamalar] = useState([])
-  const [kapatAcik, setKapatAcik] = useState(false)
   /* Gün kapandığında Yol'a geçilir ve bugün çalışılan ders açık gelir:
      günün sonunda öğrencinin göreceği şey, bugün nereyi geçtiği. */
   const [odakDers, setOdakDers] = useState(null)
@@ -381,26 +379,6 @@ export default function OgrenciPaneli({
       </div>
       </SayacSaglayici>
 
-      <GunuKapat
-        acik={kapatAcik}
-        onKapat={() => setKapatAcik(false)}
-        onTamamlandi={() => {
-          setKapatAcik(false)
-          /* Bugün bitirilen işlerden konusu olan sonuncusu: patikada
-             canlanacak durak onun dersinde. Konusu olan iş yoksa
-             (yalnız deneme çözülmüş olabilir) Yol yine açılır, ders
-             seçimi kendi kuralına düşer. */
-          const bugunku = [...(ozet?.gorevler ?? [])]
-            .filter((g) => g.durum === 'tamamlandi' && g.ders && g.konu)
-            .pop()
-          setOdakDers(bugunku?.ders ?? null)
-          setSekme('konular')
-        }}
-        ogrenciId={kayit.id}
-        katalogId={kayit.katalog_id}
-        ozet={ozet}
-        onDegisti={yenile}
-      />
 
       <KutlamaKatmani kutlamalar={kutlamalar} kapandi={() => setKutlamalar([])} />
     </>

@@ -4,7 +4,7 @@ import { gunEkle, yerelIso } from '../lib/hafta.js'
 import { dokunulduMu, temasMetni } from '../lib/temas.js'
 import TopluDurtme from './TopluDurtme.jsx'
 import { AltSayfa, Dugme } from './Ortak.jsx'
-import { OgrenciFormu } from '../ekranlar/Ogrencilerim.jsx'
+import { OgrenciFormu } from './OgrenciFormu.jsx'
 import { useFotograf } from './Fotograf.jsx'
 
 /* Öğrencilerim (22 Eylül 2026, Bekir'in onayladığı mokap). Ekranın sorusu

@@ -1373,3 +1373,13 @@ button.isl-hc:disabled { cursor: default; }
 .on2-ara-satir { display: flex; gap: 0.5rem; align-items: stretch; }
 .on2-ara-satir .on2-ara { flex: 1; }
 .on2-ekle { flex: none; min-height: 46px; padding: 0 1rem; border-radius: 999px; border: 0; background: var(--m-murekkep); color: #fff; font: 800 0.85rem var(--m-govde); display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; }
+
+/* Profil bilgileri (22 Eylül 2026, ince ayar): iki sütunlu ızgarada
+   "Girilmemiş" boşlukta ortada yüzüyordu. Her bilgi tek satır: solda ad,
+   sağda değer; girilmemişse soluk ve eğik. */
+.profil2 .profil-izgara, .od-govde .profil-izgara { grid-template-columns: 1fr; }
+.profil2 .profil-hucre, .od-govde .profil-hucre { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.8rem 0; }
+.profil2 .profil-hucre:nth-child(2), .od-govde .profil-hucre:nth-child(2) { border-top: 1px solid var(--m-cizgi); }
+.profil2 .profil-hucre dt, .od-govde .profil-hucre dt { flex: none; font-size: 0.85rem; color: var(--m-soluk); }
+.profil2 .profil-hucre dd, .od-govde .profil-hucre dd { margin: 0; text-align: right; font-weight: 700; min-width: 0; }
+.profil2 .profil-hucre dd.bos, .od-govde .profil-hucre dd.bos { font-weight: 500; font-style: italic; color: var(--m-soluk); }

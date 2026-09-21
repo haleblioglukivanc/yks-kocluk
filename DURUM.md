@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — İnce ayar ve temizlik (1. tur)
+
+- Eski Öğrenciler listesi silindi (`Ogrencilerim.jsx`, `OgrenciSatiri.jsx`); /ogrenciler adresi yeni Öğrencilerim ekranını açar. Öğrenci ekleme formu `bilesenler/OgrenciFormu.jsx`'e taşındı.
+- Öğrenci panelinden kullanılmayan Günü tamamla penceresi (render ve durum) çıkarıldı; `GunuKapat.jsx` dosyası duruyor.
+- Profil bilgileri: iki sütunlu ızgara yerine her bilgi tek satır (solda ad, sağda değer); "Girilmemiş" soluk ve eğik, ortada yüzmüyor.
+- Depo: kullanılmayan üç fotoğraf (101ac9a4…/portre-1788072121141.jpg 1,3 MB; a210568a…/portre-1789995301161.jpg ve -1789995316615.jpg) SQL ile silinemiyor (Supabase yalnız Storage API'ye izin veriyor); panelden elle silinmeli: Storage → ogrenci-foto. Yeni yüklemede eski fotoğraf zaten siliniyor.
+
 ## 22 Eylül 2026 — Yönetim paneli kaldırıldı, parçaları koça dağıldı
 
 - Bekir: tek koç aynı zamanda yönetici; ayrı panel gereksiz, iş büyürse yeniden kurulur. Profilde "Yönetim paneli" satırı yok. Koçluk araçları'na (yalnız yöneticide): Başvurular (/basvurular), Sosyal mesajlar (/sosyal, SMS kaydıyla), Haftanın kitabı ve sözü (/ilham), Kütüphane (/kutuphane), Ödemeler (/odemeler). Hesap'a: KVKK ve izinler (/kvkk: veli izinleri + KVKK talepleri). Hepsi `kocAltSayfa` ile sahneli tepe, geri → profil (`YonetimParcalari.jsx`).
