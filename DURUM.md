@@ -7,6 +7,10 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Tepedeki mevsim adı kalktı
+
+- Bekir: mevsim adının ekranda yazmasına gerek yok. "Sonbahar" hapı kalktı, yalnız tarih kaldı (sahne mevsimi zaten gösteriyor). Mevsim seçici hesap menüsünde duruyor.
+
 ## 22 Eylül 2026 — Fotoğraf çerçevesi iki yönlü
 
 - Öğrenci ekranında çerçeve profili açar, profilde öğrenci ekranına geri götürür. Çerçeve aslında hiç dokunulamıyordu: tepedeki yazı katmanı (`.ana-tepe-ic`) üstüne biniyordu; `.ana-tepe-cizim` artık z-index 2.

@@ -1,8 +1,7 @@
 import Manzara from './Manzara.jsx'
-import { useMevsim, MEVSIM_ADI } from '../lib/mevsim.js'
-import { MevsimDali, MevsimIsareti } from './MevsimSahnesi.jsx'
+import { useMevsim } from '../lib/mevsim.js'
+import { MevsimDali } from './MevsimSahnesi.jsx'
 
-const SLOGAN = { sonbahar: 'Odaklan, derinleş, güçlen.', kis: 'Sakinlikte güç var.', ilkbahar: 'Yenilen, birlikte büyü.', yaz: 'Daha fazlası mümkün.' }
 
 /* Ana sayfanın tepesi — koçta ve öğrencide aynı iskelet (21 Eylül 2026):
    mevsim manzarası, marka, sağ üstte bildirim + hesap, altında tarih,
@@ -92,13 +91,8 @@ export default function AnaTepe({
           </div>
         </div>
         <div className="ana-selam">
-          <div className="ana-ust-satir">
-            <span className="ana-mevsim">
-              <MevsimIsareti mevsim={mevsim} boyut={16} />
-              {MEVSIM_ADI[mevsim]}<span className="ana-slogan">, {SLOGAN[mevsim]}</span>
-            </span>
-            {tarih && <span className="ana-tarih">{tarih}</span>}
-          </div>
+          {/* Mevsim adı kalktı (22 Eylül 2026, Bekir): sahne zaten mevsimi söylüyor. */}
+          {tarih && <span className="ana-tarih">{tarih}</span>}
           {onBaslik ? (
             <button type="button" className="ana-baslik-dugme" onClick={onBaslik}>
               <h1>{selam}</h1>
