@@ -1,9 +1,10 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useSurukleKapat } from '../lib/surukleKapat.js'
 import { Avatar } from './Fotograf.jsx'
 import { kurulumuGoster, useKurulum } from '../pwa/KurulumDaveti.jsx'
 import { kur, yenidenYukle } from '../pwa/pwa.js'
 import { useBildirim } from '../pwa/bildirim.js'
+import { useMevsim, mevsimSec, MEVSIMLER, MEVSIM_ADI, tarihtenMevsim } from '../lib/mevsim.js'
 
 /**
  * Alttan açılan Hesap yaprağı.
@@ -24,6 +25,33 @@ const ikon = {
   strokeLinecap: 'round',
   strokeLinejoin: 'round',
   'aria-hidden': true,
+}
+
+/* Mevsim seçimi yalnız koçta (22 Eylül 2026, Bekir): mevsimlerin nasıl
+   göründüğünü görmek için. Seçim bu cihazda saklanır, öğrenciyi etkilemez;
+   "Otomatik" tarihe döner. Yaprak açık kalır, değişim hemen arkada görünür. */
+function MevsimSecici() {
+  const mevsim = useMevsim()
+  const [, tazele] = useState(0)
+  let elle = false
+  try { elle = Boolean(localStorage.getItem('mevsim-onizleme')) } catch { /* gizli sekme */ }
+  const secenekler = [['otomatik', `Otomatik (${MEVSIM_ADI[tarihtenMevsim()]})`], ...MEVSIMLER.map((m) => [m, MEVSIM_ADI[m]])]
+  return (
+    <div className="mevsim-secim">
+      <span className="mevsim-secim-baslik">Mevsim teması</span>
+      <div className="mevsim-secim-dugmeler" role="group" aria-label="Mevsim teması">
+        {secenekler.map(([k, ad]) => {
+          const secili = k === 'otomatik' ? !elle : elle && mevsim === k
+          return (
+            <button key={k} type="button" aria-pressed={secili} onClick={() => { mevsimSec(k === 'otomatik' ? null : k); tazele((n) => n + 1) }}>
+              {ad}
+            </button>
+          )
+        })}
+      </div>
+      <span className="mevsim-secim-not">Yalnız bu cihazda değişir; öğrenciler tarihe göre görür.</span>
+    </div>
+  )
 }
 
 export default function HesapYapragi({
@@ -95,6 +123,8 @@ export default function HesapYapragi({
             </button>
           </div>
         )}
+
+        {profil?.rol === 'koc' && <MevsimSecici />}
 
         <div className="hesap-menu">
           <button type="button" className="hesap-satir" onClick={() => { onKapat(); onGit('/mesajlar') }}>

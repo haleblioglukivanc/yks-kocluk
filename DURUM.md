@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Tabela/posta kutusu geri geldi, koça mevsim teması seçici
+
+- Bekir önce geri aldırdı, sonra "o tasarım güzeldi" dedi: koç ana ekranındaki tabela + posta kutusu yeniden canlıda.
+- Hesap yaprağında yalnız koçta "Mevsim teması": Otomatik (tarihe göre) / İlkbahar / Yaz / Sonbahar / Kış. Seçim o cihazın localStorage'ında (`mevsim-onizleme`), öğrencileri etkilemez; yaprak açık kalır, değişim arkada hemen görünür.
+
 ## 22 Eylül 2026 — Koç ana ekranı: kapılar sahnenin içinde
 
 - Bekir kart tabanlı dashboard mokaplarını reddetti ("mevsimleri yaptık, yukarı kartları eklersen tasarımın ne anlamı kalır"); onaylanan yön: gezinme sahnenin içinde.
