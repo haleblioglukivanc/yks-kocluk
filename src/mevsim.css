@@ -1183,3 +1183,30 @@ body[data-rol='ogrenci'] .isl-bugun .siradaki-odak--b .siradaki-baslik { font-si
 .hi-kisa-kapak--bos { background: linear-gradient(90deg, #7A3B24 12%, var(--m-vurgu) 12%); }
 .hi-kisa-yazi { flex: 1; min-width: 0; font-size: 0.88rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .hi-kisa-yazi small { display: block; font-size: 0.72rem; font-weight: 700; color: var(--m-soluk); }
+
+/* ═══ Öğrenci ana ekranı düzeltmeleri (22 Eylül 2026, Bekir) ═══ */
+/* Günü tamamla: diğer ana düğmeler gibi mürekkep hap, 52px, tek satır. */
+.ana-govde--ogrenci .gunu-kapat-dugme {
+  min-height: 52px; padding: 0 1.25rem; border: 0; border-radius: 999px;
+  background: var(--m-murekkep); color: #fff; box-shadow: none;
+  display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+  font: 800 1rem var(--m-govde);
+}
+.ana-govde--ogrenci .gunu-kapat-dugme span { display: none; }
+.ana-govde--ogrenci .gunu-kapat-dugme strong { font: inherit; color: inherit; }
+.ana-govde--ogrenci .gunu-kapat-dugme--kapali { background: var(--m-yolunda-zemin); color: var(--m-yolunda); }
+/* Başka bir güne gidildiğinde üstte o gün ve Bugüne dön. */
+.isl-secili { display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.75rem 0.6rem 1rem; border-radius: 18px; background: var(--m-murekkep); color: #fff; }
+.isl-secili b { font-size: 0.95rem; }
+.isl-secili span { font-size: 0.75rem; opacity: .75; }
+.isl-secili button { margin-left: auto; min-height: 36px; padding: 0 0.85rem; border-radius: 999px; border: 0; background: #fff; color: var(--m-murekkep); font: 800 0.8rem var(--m-govde); cursor: pointer; }
+/* Takvim günleri artık dokunulur. */
+button.isl-hc { border: 0; font: inherit; cursor: pointer; }
+button.isl-hc:disabled { cursor: default; }
+/* Haftanın kitabı ve sözü: iki kısa satır. */
+.hi-kisa-kap { display: flex; flex-direction: column; gap: 0.5rem; }
+.hi-kisa--soz { cursor: default; }
+.hi-kisa-tirnak { width: 30px; flex: none; font-family: var(--m-baslik); font-size: 2.2rem; line-height: 1; color: var(--m-vurgu); text-align: center; }
+.hi-kisa--soz .hi-kisa-yazi { font-style: italic; }
+.hi-kisa--soz .hi-kisa-yazi small { font-style: normal; }
+.hi-kisa--soz .hi-kisa-yazi { white-space: normal; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; line-height: 1.4; }

@@ -110,15 +110,27 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
 
   /* Ana ekranda tek satır (22 Eylül 2026): kapak, "Bu haftanın kitabı", ad;
      dokununca söz ve kitabın tamamı açılır. */
+  /* Ana ekranda iki kısa satır (Bekir, 22 Eylül 2026): haftanın kitabı ve
+     haftanın sözü. Kitabın iç ayrıntısı yok; kitap satırına dokununca
+     kitabın tamamı (Bitirdim dahil) açılır. */
   if (kisa && !acik) {
     return (
-      <button type="button" className="hi-kisa" onClick={() => setAcik(true)} aria-label={`Bu haftanın kitabı: ${veri.kitap_ad}. Ayrıntıyı aç`}>
-        {veri.kitap_kapak_url ? <img className="hi-kisa-kapak" src={veri.kitap_kapak_url} alt="" loading="lazy" /> : <span className="hi-kisa-kapak hi-kisa-kapak--bos" aria-hidden="true" />}
-        <span className="hi-kisa-yazi"><small>Bu haftanın kitabı</small>{veri.kitap_ad}</span>
-        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
-      </button>
+      <div className="hi-kisa-kap">
+        <button type="button" className="hi-kisa" onClick={() => setAcik(true)} aria-label={`Bu haftanın kitabı: ${veri.kitap_ad}. Ayrıntıyı aç`}>
+          {veri.kitap_kapak_url ? <img className="hi-kisa-kapak" src={veri.kitap_kapak_url} alt="" loading="lazy" /> : <span className="hi-kisa-kapak hi-kisa-kapak--bos" aria-hidden="true" />}
+          <span className="hi-kisa-yazi"><small>Haftanın kitabı</small>{veri.kitap_ad}</span>
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>
+        </button>
+        {veri.soz_metin && (
+          <div className="hi-kisa hi-kisa--soz">
+            <span className="hi-kisa-tirnak" aria-hidden="true">“</span>
+            <span className="hi-kisa-yazi"><small>Haftanın sözü{veri.soz_kaynak ? ` · ${veri.soz_kaynak}` : ''}</small>{veri.soz_metin}</span>
+          </div>
+        )}
+      </div>
     )
   }
+
 
   return (
     <section className="haftalik-ilham" aria-label="Haftanın kitabı ve sözü">

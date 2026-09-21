@@ -1,4 +1,5 @@
 import Islerim from '../bilesenler/Islerim.jsx'
+import { gunGorevleri } from '../bilesenler/HaftaSeridi.jsx'
 import { KisiPortresi } from '../ortak/KapiCizimleri.jsx'
 import { useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
@@ -96,6 +97,24 @@ export default function OgrenciPaneli({
   const [seciliGun, setSeciliGun] = useState(null)
   const [dersYuvasi, setDersYuvasi] = useState(null)
   const [gunVerisi, setGunVerisi] = useState(null)
+  /* İşlerim'de bir güne dokununca (7 gün / 30 gün) o günün işleri gelir;
+     Şimdi kartı ve liste o güne geçer. null: bugün. */
+  const [gunSayaci, setGunSayaci] = useState(0)
+  useEffect(() => {
+    if (!seciliGun || !kayit?.id || seciliGun === ozet?.bugun) { setGunVerisi(null); return }
+    let iptal = false
+    gunGorevleri(kayit.id, seciliGun).then((liste) => {
+      if (iptal) return
+      setGunVerisi({
+        tarih: seciliGun,
+        liste,
+        bugunMu: false,
+        ad: new Date(`${seciliGun}T00:00:00`).toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }),
+        yenile: () => setGunSayaci((n) => n + 1),
+      })
+    }).catch(() => {})
+    return () => { iptal = true }
+  }, [seciliGun, kayit?.id, ozet?.bugun, gunSayaci])
   /* Koçun okunmamış mesajı başlıkta çıkar. Vekalette de görünür (koç
      öğrencinin ne gördüğünü görsün) ama kapatmak okundu işaretlemez. */
   const kocMesaji = useKocMesaji(hedefId, true, vekaleten)
@@ -200,7 +219,7 @@ export default function OgrenciPaneli({
               sonra İşlerim (Bugün / 7 gün / 30 gün). Hafta şeridi, koçun notu,
               ayrı Gidişat ve Kaynaklarım ana ekrandan kalktı. */}
           <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
-          <Islerim ogrenciId={kayit.id} bugun={ozet?.bugun} haftaBasi={ozet?.haftaBasi} bugunGorevler={ozet?.gorevler ?? []} tazele={tazele}>
+          <Islerim ogrenciId={kayit.id} bugun={ozet?.bugun} haftaBasi={ozet?.haftaBasi} tazele={tazele} secili={seciliGun} onGunSec={setSeciliGun}>
           <section className="ana-bolum simdi" aria-label="Şimdi">
             <GunGorusmesi gorevler={gunVerisi?.bugunMu === false ? gunVerisi.liste : ozet?.gorevler} />
             <SiradakiKart
@@ -210,7 +229,7 @@ export default function OgrenciPaneli({
               onDegisti={gunVerisi?.bugunMu === false ? gunVerisi.yenile : yenile}
             />
             {/* Rutin ve çözülen soru Günü tamamla akışında; burada yalnız kapı. */}
-            {ozet?.bugun && (
+            {ozet?.bugun && gunVerisi?.bugunMu !== false && (
               <button
                 className={`gunu-kapat-dugme${ozet.gunKapandi ? ' gunu-kapat-dugme--kapali' : ''}`}
                 onClick={() => setKapatAcik(true)}

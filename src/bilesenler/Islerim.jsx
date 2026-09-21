@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { gunEkle } from '../lib/hafta.js'
 import { dersGorunumu } from '../lib/dersGorunum.js'
-import { sureYaz } from '../ortak/Gidisat.jsx'
 
 /* Öğrencinin "İşlerim" bölümü (22 Eylül 2026, Bekir'in onayladığı mokap).
    Koçun Gidişat anahtarının eşi: Bugün / 7 gün / 30 gün. Anahtarın altında
@@ -12,6 +11,7 @@ import { sureYaz } from '../ortak/Gidisat.jsx'
    altında kaçan / yarım kalan işler. Hafta şeridi bunun yerine kalktı. */
 
 const GUN_KISA = ['Paz', 'Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt']
+const GUN_UZUN = ['Pazar', 'Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi']
 const AY = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık']
 
 const tarihOku = (t) => new Date(`${t}T00:00:00`)
@@ -26,11 +26,11 @@ function gunDurumu(liste, tarih, bugun) {
   return 'kacti'
 }
 
-export default function Islerim({ ogrenciId, bugun, haftaBasi, bugunGorevler = [], tazele = 0, children }) {
+export default function Islerim({ ogrenciId, bugun, haftaBasi, tazele = 0, secili = null, onGunSec, children }) {
   const [donem, setDonem] = useState('bugun')
   const [gorevler, setGorevler] = useState(null)
-  const [sureler, setSureler] = useState(null)
-  const [acikGun, setAcikGun] = useState(null)
+  /* Bir güne dokununca Bugün görünümü o güne geçer: işleri, sıradaki kart. */
+  const git = (t) => { onGunSec?.(t === bugun ? null : t); setDonem('bugun') }
 
   /* Ayın başından haftanın sonuna kadar tek sorgu: 7 gün ve 30 gün ikisi de buradan. */
   const aralik = useMemo(() => {
@@ -48,40 +48,15 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, bugunGorevler = [
     if (!ogrenciId || !aralik) return
     let iptal = false
     ;(async () => {
-      const [g, s] = await Promise.all([
-        supabase.from('gorevler').select('id, tarih, baslik, durum, yapilan_adet, hedef_adet, dersler(ad)')
-          .eq('ogrenci_id', ogrenciId).gte('tarih', aralik.ayBas).lte('tarih', aralik.ayBit),
-        supabase.from('calisma_oturumlari').select('baslangic, sure_dk')
-          .eq('ogrenci_id', ogrenciId).gte('baslangic', `${aralik.ayBas}T00:00:00`).lte('baslangic', `${aralik.ayBit}T23:59:59`),
-      ])
+      const g = await supabase.from('gorevler').select('id, tarih, baslik, durum, yapilan_adet, hedef_adet, dersler(ad)')
+        .eq('ogrenci_id', ogrenciId).gte('tarih', aralik.ayBas).lte('tarih', aralik.ayBit)
       if (iptal) return
       setGorevler(g.data ?? [])
-      setSureler(s.data ?? [])
     })()
     return () => { iptal = true }
   }, [ogrenciId, aralik, tazele])
 
   const gunun = (t) => (gorevler ?? []).filter((g) => g.tarih === t)
-  const dakika = (bas, bit) => (sureler ?? [])
-    .filter((s) => { const t = (s.baslangic ?? '').slice(0, 10); return t >= bas && t <= bit })
-    .reduce((a, s) => a + (s.sure_dk ?? 0), 0)
-
-  let ozet = null
-  if (aralik && gorevler && sureler) {
-    if (donem === 'bugun') {
-      const l = bugunGorevler.length ? bugunGorevler : gunun(bugun)
-      const biten = l.filter((g) => g.durum === 'tamamlandi').length
-      ozet = <><b>{sureYaz(dakika(bugun, bugun))}</b> çalıştın · <b>{biten} / {l.length}</b> iş bitti</>
-    } else if (donem === 'hafta') {
-      const l = (gorevler ?? []).filter((g) => g.tarih >= aralik.hb && g.tarih <= aralik.hs)
-      ozet = <>Bu hafta <b>{sureYaz(dakika(aralik.hb, aralik.hs))}</b> · <b>{l.filter((g) => g.durum === 'tamamlandi').length} / {l.length}</b> iş bitti</>
-    } else {
-      const l = (gorevler ?? []).filter((g) => g.tarih >= aralik.ayBasGercek && g.tarih <= aralik.ayBitGercek)
-      const kacan = l.filter((g) => g.tarih < bugun && g.durum !== 'tamamlandi').length
-      ozet = <>{AY[tarihOku(bugun).getMonth()]}'de <b>{sureYaz(dakika(aralik.ayBasGercek, aralik.ayBitGercek))}</b> · <b>{l.filter((g) => g.durum === 'tamamlandi').length} / {l.length}</b> iş bitti{kacan ? <> · <b>{kacan}</b> iş kaldı</> : null}</>
-    }
-  }
-
   return (
     <section className="isl" aria-label="İşlerim">
       <div className="ana-bolum-bas isl-bas">
@@ -92,8 +67,14 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, bugunGorevler = [
           ))}
         </div>
       </div>
-      <p className="isl-ozet">{ozet ?? ' '}</p>
-
+      {/* Tek satır özet kalktı (Bekir, 22 Eylül 2026): tepede zaten yazıyor. */}
+      {donem === 'bugun' && secili && secili !== bugun && (
+        <div className="isl-secili">
+          <b>{GUN_UZUN[tarihOku(secili).getDay()]}, {tarihOku(secili).getDate()} {AY[tarihOku(secili).getMonth()]}</b>
+          <span>{secili < bugun ? 'geçmiş gün' : 'ileri gün'}</span>
+          <button type="button" onClick={() => onGunSec?.(null)}>Bugüne dön</button>
+        </div>
+      )}
       {donem === 'bugun' && <div className="isl-bugun">{children}</div>}
 
       {donem === 'hafta' && aralik && (
@@ -102,23 +83,13 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, bugunGorevler = [
             const t = gunEkle(aralik.hb, i)
             const l = gunun(t)
             const biten = l.filter((g) => g.durum === 'tamamlandi').length
-            const acik = acikGun === t
             return (
               <div key={t}>
-                <button type="button" className={t === bugun ? 'isl-gun isl-gun--bugun' : 'isl-gun'} onClick={() => setAcikGun(acik ? null : t)} aria-expanded={acik} disabled={!l.length}>
+                <button type="button" className={t === bugun ? 'isl-gun isl-gun--bugun' : 'isl-gun'} onClick={() => git(t)} disabled={!l.length}>
                   <b>{GUN_KISA[tarihOku(t).getDay()]} {tarihOku(t).getDate()}{t === bugun && <em> · bugün</em>}</b>
                   <span className="isl-cubuk"><s style={{ width: l.length ? `${(biten / l.length) * 100}%` : 0 }} /></span>
                   <small>{!l.length ? 'plan yok' : t <= bugun ? `${biten} / ${l.length}` : `${l.length} iş`}</small>
                 </button>
-                {acik && (
-                  <div className="isl-gun-ic">
-                    {l.map((g) => (
-                      <div key={g.id} className={g.durum === 'tamamlandi' ? 'isl-is isl-is--bitti' : 'isl-is'}>
-                        <i style={{ background: dersGorunumu(g.dersler?.ad).renk }} />{g.baslik}
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
             )
           })}
@@ -139,9 +110,9 @@ export default function Islerim({ ogrenciId, bugun, haftaBasi, bugunGorevler = [
                 const d = gunDurumu(gunun(t), t, bugun) ?? (t === bugun ? 'bugun' : 'bos')
                 const isaret = { tam: '✓', kismen: '!', kacti: '✕' }[d]
                 return (
-                  <span key={t} className={`isl-hc isl-hc--${d}`} aria-label={`${i + 1}: ${{ tam: 'tamam', kismen: 'yarım', kacti: 'kaçtı', gelecek: 'planlı', bugun: 'bugün', bos: 'plan yok' }[d]}`}>
+                  <button key={t} type="button" className={`isl-hc isl-hc--${d}`} onClick={() => git(t)} disabled={d === 'bos'} aria-label={`${i + 1}: ${{ tam: 'tamam', kismen: 'yarım', kacti: 'kaçtı', gelecek: 'planlı', bugun: 'bugün', bos: 'plan yok' }[d]}`}>
                     {i + 1}{isaret && <i>{isaret}</i>}
-                  </span>
+                  </button>
                 )
               })}
             </div>

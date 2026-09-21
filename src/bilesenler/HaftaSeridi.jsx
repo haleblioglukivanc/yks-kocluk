@@ -22,7 +22,7 @@ const KISA_GUN = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz']
    ogrenci_bugun_ozeti de aynı düz şekli veriyor. */
 /* Başka bir günün listesi de Bugün ile aynı kartı besliyor; koç damgası
    iki kaynakta da aynı adla çıkmalı ki kart tek bir alan tanısın. */
-function duzlestir(g, ogrenciId) {
+export function duzlestir(g, ogrenciId) {
   return {
     ...g,
     koc_isaretledi: Boolean(g.islem_yapan) && g.islem_yapan !== ogrenciId,
@@ -38,6 +38,21 @@ function duzlestir(g, ogrenciId) {
 /* Şerit artık kendi başına bir bölüm değil, görev kartının başlığı:
    dokunduğun gün aynı kartın içinde açılıyor. Seçim yukarıda tutuluyor
    (secili / onSec) ve o günün listesi onListe ile yukarı veriliyor. */
+/** Seçilen tek günün görevleri (İşlerim'den o güne gidilince). */
+export async function gunGorevleri(ogrenciId, tarih) {
+  const { data, error } = await supabase
+    .from('gorevler')
+    .select('id, tarih, periyot, tur, baslik, aciklama, hedef_adet, yapilan_adet, durum, islem_yapan, kaynak_aralik, baslangic_saat, bitis_saat, dersler(ad), konular(ad), kaynaklar(ad, bicim, url, dosya_yolu)')
+    .eq('ogrenci_id', ogrenciId)
+    .eq('tarih', tarih)
+    .order('baslangic_saat', { nullsFirst: false })
+    .order('durum')
+    .order('periyot', { nullsFirst: false })
+    .order('id')
+  if (error) throw error
+  return (data ?? []).map((g) => duzlestir(g, ogrenciId))
+}
+
 export default function HaftaSeridi({ ogrenciId, haftaBasi, bugun, bugunGorevler, onDegisti, secili, onSec, onListe }) {
   /* Açılışta kapalı: şerit yalnız yedi gün ve noktalar. Bir güne dokununca
      o günün listesi altından açılır; aynı güne tekrar dokununca kapanır.

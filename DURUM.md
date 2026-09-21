@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci ana ekranı: güne gitme, düğme, kitap ve söz
+
+- İşlerim'in altındaki tek satır özet kalktı (tepede yazıyor).
+- 7 gün satırına ya da 30 gün takviminde bir güne dokununca Bugün görünümü o güne geçer: üstte koyu şerit ("Pazar, 20 Eylül · geçmiş gün" / "ileri gün" + Bugüne dön), Şimdi kartı ve liste o günün işleri (`gunGorevleri`, HaftaSeridi.jsx). Geçmiş/ileri günde Günü tamamla görünmez.
+- Günü tamamla diğer ana düğmeler gibi: mürekkep hap, 52px, tek satır; gün kapandıysa yeşil zemin.
+- Haftanın kitabı ve sözü iki ayrı kısa satır (kitap: kapak + ad, dokununca ayrıntı; söz: metin + söyleyen, en çok 3 satır). Kitabın iç ayrıntısı ana ekranda yok.
+
 ## 22 Eylül 2026 — Öğrenci ana ekranı v2 (derli toplu)
 
 - Mokap v2 onaylı. Sıra: tepe → Yol / Denemeler kapıları (hareketli: bayrak dalgalanır, öğrenci noktası nefes alır, tahtadaki net çizgisi tebeşirle çizilir; Yol'da seri rozeti, Denemeler'de hata defterinde bekleyen tekrar) → İşlerim (`Islerim.jsx`: Bugün / 7 gün / 30 gün; altında tek satır özet: çalışılan süre, biten iş) → tek satır haftanın kitabı (`HaftalikIlham kisa`).
