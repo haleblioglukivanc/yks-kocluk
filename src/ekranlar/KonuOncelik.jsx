@@ -135,16 +135,7 @@ export default function KonuOncelik({ onOgrenciAc, onGit }) {
       <Uyari tur="bilgi">{bildirim}</Uyari>
       <Uyari>{hata}</Uyari>
 
-      {/* Kütüphane günlük değil ara sıra açılan bir ekran; alt çubukta
-          altıncı sekme olarak yer kaplamasın diye buradan giriliyor.
-          Kaynak da konu gibi içerik yönetimi, sekmesi burası. */}
-      {onGit && (
-        <button type="button" className="konu-kaynak-yol" onClick={() => onGit('/kaynaklar')}>
-          <span className="konu-kaynak-ad">Kaynaklar</span>
-          <span className="konu-kaynak-alt">Kitaplar, bağlantılar, kendi notların</span>
-          <span className="konu-kaynak-ok" aria-hidden="true">›</span>
-        </button>
-      )}
+      {/* Kaynaklar bağlantısı kalktı (22 Eylül 2026, Bekir): koçun profil menüsünde zaten var. */}
 
       <Kart
         baslik="Sınıfça zorlanılan"
