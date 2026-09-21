@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Koç fotoğrafı görünmüyordu; WhatsApp gibi kırpma
+
+- Hata: koçun yüklediği fotoğraf depoya ve profile yazılıyordu ama oturumdaki profil sorgusu `fotograf_yolu` (ve `telefon`) okumuyordu; ekran hep baş harf gösteriyordu. `lib/oturum.js` sorgusuna eklendi. Aynı sebeple eski dosya silinemedi: Kıvanç'ın klasöründe iki fazla kopya var (`portre-1789995301161.jpg`, `portre-1789995316615.jpg`), panelden silinebilir.
+- `FotoKirpici` (Fotograf.jsx): fotoğraf seçilince tam ekran pencere; yuvarlak dairenin altında sürükleme, iki parmakla / kaydırıcıyla / tekerlekle büyütme (1–5x), büyütürken daire ortası sabit, resim daireyi hep kaplar. "Kullan" yalnız seçilen kareyi 320px JPEG yapıp yükler. Öğrenci ve koç fotoğraflarında aynı.
+
 ## 22 Eylül 2026 — Fotoğraflar hızlı ve her yerde; sahne çizimleri büyüdü
 
 - Fotoğraflar zaten küçültülüyordu (512px); sorun her açılışta yeni imzalı bağlantı üretilmesiydi (önbellek tutmuyor, resim parça parça iniyordu). `useFotograf`: aynı yol için bağlantı 50 dk hatırlanıyor, fotoğraf tamamen inmeden gösterilmiyor (o ana kadar baş harf), sonra yumuşakça beliriyor. Yeni yüklemeler 320px, JPEG 0.82 (~20–30 KB).

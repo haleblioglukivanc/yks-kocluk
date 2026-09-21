@@ -90,20 +90,133 @@ function resmiAc(dosya) {
   })
 }
 
-async function kareKucult(dosya) {
-  const resim = await resmiAc(dosya)
-  const g = resim.naturalWidth, y = resim.naturalHeight
-  const kenar = Math.min(g, y)
-  const hedef = Math.min(KARE, kenar)
+
+/** Seçilen bölgeyi (kaynak piksellerinde kare) KARE boyutunda JPEG'e çizer. */
+async function bolgeyiKucult(resim, sx, sy, kenar) {
+  const hedef = Math.min(KARE, Math.round(kenar))
   const tuval = document.createElement('canvas')
   tuval.width = hedef
   tuval.height = hedef
   const c = tuval.getContext('2d')
   c.imageSmoothingQuality = 'high'
-  c.drawImage(resim, (g - kenar) / 2, (y - kenar) / 2, kenar, kenar, 0, 0, hedef, hedef)
+  c.drawImage(resim, sx, sy, kenar, kenar, 0, 0, hedef, hedef)
   const blob = await new Promise((coz) => tuval.toBlob(coz, 'image/jpeg', 0.82))
   if (!blob) throw new Error('Fotoğraf hazırlanamadı.')
   return blob
+}
+
+/* WhatsApp'taki gibi kırpma (22 Eylül 2026, Bekir): fotoğraf yuvarlak
+   pencerenin altında sürüklenir, iki parmakla ya da kaydırıcıyla büyütülür.
+   Yalnız dairenin içi kaydedilir; kalabalık bir fotoğraftan tek yüz seçilebilir. */
+function FotoKirpici({ resim, adres, onVazgec, onKullan }) {
+  const PENCERE = Math.min(300, Math.round(window.innerWidth * 0.8))
+  const g = resim.naturalWidth
+  const y = resim.naturalHeight
+  const taban = PENCERE / Math.min(g, y) // dairenin tamamını kaplayan en küçük ölçek
+  const [zoom, setZoom] = useState(1)
+  const [konum, setKonum] = useState(() => ({ x: (PENCERE - g * taban) / 2, y: (PENCERE - y * taban) / 2 }))
+  const surukleme = useRef(null)
+  const parmaklar = useRef(new Map())
+  const [bekliyor, setBekliyor] = useState(false)
+
+  const olcek = taban * zoom
+  const sinirla = (k, z = zoom) => {
+    const o = taban * z
+    return {
+      x: Math.min(0, Math.max(PENCERE - g * o, k.x)),
+      y: Math.min(0, Math.max(PENCERE - y * o, k.y)),
+    }
+  }
+  /* Büyütürken dairenin ortası sabit kalsın. */
+  const zoomAyarla = (yeni) => {
+    const z = Math.min(5, Math.max(1, yeni))
+    const orta = PENCERE / 2
+    setKonum((k) => sinirla({
+      x: orta - ((orta - k.x) / (taban * zoom)) * taban * z,
+      y: orta - ((orta - k.y) / (taban * zoom)) * taban * z,
+    }, z))
+    setZoom(z)
+  }
+
+  const bas = (e) => {
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+    parmaklar.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (parmaklar.current.size === 1) surukleme.current = { x: e.clientX, y: e.clientY }
+    else surukleme.current = null
+  }
+  const hareket = (e) => {
+    if (!parmaklar.current.has(e.pointerId)) return
+    const once = parmaklar.current.get(e.pointerId)
+    if (parmaklar.current.size === 2) {
+      const [a, b] = [...parmaklar.current.values()]
+      const eskiMesafe = Math.hypot(a.x - b.x, a.y - b.y)
+      parmaklar.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+      const [c, d] = [...parmaklar.current.values()]
+      const yeniMesafe = Math.hypot(c.x - d.x, c.y - d.y)
+      if (eskiMesafe > 0) zoomAyarla(zoom * (yeniMesafe / eskiMesafe))
+      return
+    }
+    parmaklar.current.set(e.pointerId, { x: e.clientX, y: e.clientY })
+    if (!surukleme.current) return
+    const dx = e.clientX - once.x
+    const dy = e.clientY - once.y
+    setKonum((k) => sinirla({ x: k.x + dx, y: k.y + dy }))
+  }
+  const birak = (e) => {
+    parmaklar.current.delete(e.pointerId)
+    surukleme.current = parmaklar.current.size === 1 ? [...parmaklar.current.values()][0] : null
+  }
+
+  async function kullan() {
+    setBekliyor(true)
+    try {
+      const kenar = PENCERE / olcek
+      const blob = await bolgeyiKucult(resim, -konum.x / olcek, -konum.y / olcek, kenar)
+      await onKullan(blob)
+    } finally {
+      setBekliyor(false)
+    }
+  }
+
+  return (
+    <div className="kirp-arka" role="dialog" aria-modal="true" aria-label="Fotoğrafı kırp">
+      <div className="kirp">
+        <p className="kirp-baslik">Fotoğrafı ayarla</p>
+        <p className="kirp-alt">Sürükleyerek yerleştir, iki parmakla ya da aşağıdan büyüt.</p>
+        <div
+          className="kirp-pencere"
+          style={{ width: PENCERE, height: PENCERE }}
+          onPointerDown={bas}
+          onPointerMove={hareket}
+          onPointerUp={birak}
+          onPointerCancel={birak}
+          onWheel={(e) => zoomAyarla(zoom * (e.deltaY < 0 ? 1.08 : 0.93))}
+        >
+          <img
+            src={adres}
+            alt=""
+            draggable={false}
+            style={{ width: g * olcek, height: y * olcek, transform: `translate(${konum.x}px, ${konum.y}px)` }}
+          />
+          <div className="kirp-maske" aria-hidden="true" />
+        </div>
+        <input
+          className="kirp-zoom"
+          type="range"
+          min="1"
+          max="5"
+          step="0.01"
+          value={zoom}
+          onChange={(e) => zoomAyarla(Number(e.target.value))}
+          aria-label="Büyüt"
+        />
+        <div className="kirp-eylem">
+          <button type="button" className="kirp-vazgec" onClick={onVazgec} disabled={bekliyor}>Vazgeç</button>
+          <button type="button" className="kirp-kullan" onClick={kullan} disabled={bekliyor}>{bekliyor ? 'Yükleniyor…' : 'Kullan'}</button>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
@@ -111,20 +224,35 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
   const [bekliyor, setBekliyor] = useState(false)
   const [hata, setHata] = useState('')
 
+  const [kirp, setKirp] = useState(null) // { resim, adres }
+
   async function sec(dosya) {
     if (!dosya) return
     setHata('')
-
     if (dosya.type && !dosya.type.startsWith('image/')) {
       setHata('Lütfen bir fotoğraf seçin.')
       return
     }
-
-    setBekliyor(true)
     try {
-      const kucuk = await kareKucult(dosya)
-      const yol = `${ogrenciId}/portre-${Date.now()}.jpg`
+      const resim = await resmiAc(dosya)
+      setKirp({ resim, adres: URL.createObjectURL(dosya) })
+    } catch (e) {
+      setHata(e.message ?? 'Fotoğraf açılamadı.')
+    } finally {
+      if (girdi.current) girdi.current.value = ''
+    }
+  }
 
+  function kirpKapat() {
+    if (kirp?.adres) URL.revokeObjectURL(kirp.adres)
+    setKirp(null)
+  }
+
+  async function yukle(kucuk) {
+    setBekliyor(true)
+    setHata('')
+    try {
+      const yol = `${ogrenciId}/portre-${Date.now()}.jpg`
       const { error: yHata } = await supabase.storage
         .from(KOVA)
         .upload(yol, kucuk, { cacheControl: '3600', upsert: false, contentType: 'image/jpeg' })
@@ -139,12 +267,13 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
       // Eski dosyayı temizle; başarısız olsa da akışı durdurmaz.
       if (mevcutYol) await supabase.storage.from(KOVA).remove([mevcutYol])
 
+      kirpKapat()
       await onDegisti?.(yol)
     } catch (e) {
       setHata(e.message ?? 'Fotoğraf yüklenemedi.')
+      kirpKapat()
     } finally {
       setBekliyor(false)
-      if (girdi.current) girdi.current.value = ''
     }
   }
 
@@ -184,6 +313,7 @@ export function FotografYukle({ ogrenciId, mevcutYol, ad, onDegisti }) {
         )}
         {hata && <p className="foto-hata">{hata}</p>}
       </div>
+      {kirp && <FotoKirpici resim={kirp.resim} adres={kirp.adres} onVazgec={kirpKapat} onKullan={yukle} />}
     </div>
   )
 }

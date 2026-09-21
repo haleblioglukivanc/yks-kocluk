@@ -1031,3 +1031,19 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .ana-tepe-cizim { width: clamp(150px, 45vw, 212px); }
 @media (max-width: 40rem) { .ana-tepe-cizim { width: clamp(150px, 45vw, 212px); } }
 .ana-tepe-cizim:has(.portre-cizim), .ana-tepe-cizim:has(.can-cizim), .ana-tepe-cizim:has(.od-portre) { width: clamp(120px, 34vw, 175px); }
+
+/* ═══ Fotoğraf kırpma (WhatsApp gibi, 22 Eylül 2026) ═══ */
+.kirp-arka { position: fixed; inset: 0; z-index: 1000; background: rgba(20,14,10,.92); display: grid; place-items: center; padding: calc(env(safe-area-inset-top, 0px) + 1rem) 1rem calc(env(safe-area-inset-bottom, 0px) + 1rem); }
+.kirp { display: flex; flex-direction: column; align-items: center; gap: 0.9rem; width: 100%; max-width: 360px; color: #fff; }
+.kirp-baslik { margin: 0; font-family: var(--m-baslik, Georgia, serif); font-size: 1.4rem; font-weight: 500; }
+.kirp-alt { margin: 0; font-size: 0.85rem; opacity: .8; text-align: center; }
+.kirp-pencere { position: relative; overflow: hidden; border-radius: 16px; touch-action: none; cursor: grab; background: #000; user-select: none; }
+.kirp-pencere img { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; pointer-events: none; }
+/* Dairenin dışı karartılır; yalnız içi kaydedilir. */
+.kirp-maske { position: absolute; inset: 0; border-radius: 50%; box-shadow: 0 0 0 999px rgba(20,14,10,.6); outline: 2px solid rgba(255,255,255,.9); pointer-events: none; }
+.kirp-zoom { width: 80%; accent-color: #fff; }
+.kirp-eylem { display: flex; gap: 0.6rem; width: 100%; }
+.kirp-eylem button { flex: 1; min-height: 48px; border-radius: 999px; border: 0; font: 800 0.95rem var(--m-govde, sans-serif); cursor: pointer; }
+.kirp-vazgec { background: rgba(255,255,255,.14); color: #fff; }
+.kirp-kullan { background: #fff; color: #2a211d; }
+.kirp-eylem button:disabled { opacity: .5; }
