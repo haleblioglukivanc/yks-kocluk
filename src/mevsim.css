@@ -789,3 +789,10 @@ html[data-mevsim='kis'] .ana-kapi { --m-on-zemin: #dce5f0; }
 .on2-noktalar { display: inline-flex; gap: 3px; align-items: center; }
 .on2-bugun { font-size: 0.76rem; color: var(--m-soluk); white-space: nowrap; }
 .on2-bugun b { color: var(--m-murekkep); font-weight: 800; }
+
+/* Tabela ve posta kutusu ağaçların hizasında, ağaçların önünde dursun
+   (Bekir, 22 Eylül 2026): ayakları gölün kıyısına basar. */
+.ana-tepe-cizim { bottom: 5%; right: clamp(0.25rem, 6vw, 2.5rem); z-index: 1; }
+@media (max-width: 40rem) { .ana-tepe-cizim { bottom: 4%; width: clamp(120px, 36vw, 170px); } }
+@media (min-width: 40.01rem) { .ana-tepe-cizim { bottom: 6%; } }
+@media (min-width: 64rem) { .ana-tepe-cizim { right: calc((100% - 75rem) / 2 + 6rem); } }

@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Görüştük düğmesi kalktı, çizimler ağaç hizasında
+
+- Bekir yanlışlıkla Berçem için "Görüştük"e bastı (üç kayıt, 13:24); `koc_gorusmeleri` id 2, 3, 4 silindi. Öğrencilerim satırındaki tik düğmesi kaldırıldı; satırda yalnız mesaj düğmesi var (görüşme kaydı öğrenci detayındaki "Görüştük"ten).
+- Tabela ve posta kutusu ağaçların hizasına indi, ağaçların önünde duruyor (`.ana-tepe-cizim` alttan %4–6).
+
 ## 22 Eylül 2026 — Öğrencilerim yenilendi, çizimler tepelere indi
 
 - Mokap onaylı ("Ok"). `OgrenciNabzi.jsx` yeniden yazıldı: satırda ders şeritleri yok (bugünün işleri öğrenci detayında). Her satır: bugünün ilerleme halkası (risk renginde), tek satır durum (son giriş ya da bugünkü temas: "Mesaj atıldı · 10:12"), 7 günlük ritim + "bugün x / n iş", sağda mesaj (→ /mesajlar/:id) ve Görüştük (`koc_gorustum`, telefon) düğmeleri.

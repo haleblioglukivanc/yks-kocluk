@@ -7,7 +7,7 @@ import TopluDurtme from './TopluDurtme.jsx'
 /* Öğrencilerim (22 Eylül 2026, Bekir'in onayladığı mokap). Ekranın sorusu
    "kime dokunmalıyım": satırda ders listesi yok. Her satırda bugünün
    ilerleme halkası, tek satır durum, 7 günlük ritim ve iki hızlı düğme
-   (mesaj, görüştük). Bugünün işleri tek tek öğrenci detayında.
+   (mesaj; Görüştük düğmesi yanlışlıkla basıldığı için kaldırıldı). Bugünün işleri tek tek öğrenci detayında.
    Eski listeden geri gelenler: arama, süzgeçler, toplu mesaj, gruplar. */
 
 const GRUPLAR = [
@@ -33,7 +33,6 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
   const [arama, setArama] = useState('')
   const [suzgec, setSuzgec] = useState('tumu')
   const [topluAcik, setTopluAcik] = useState(false)
-  const [bekleyen, setBekleyen] = useState(null)
 
   const bugun = yerelIso(new Date())
   const ilk = gunEkle(bugun, -6)
@@ -108,13 +107,6 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
      ya da görüşme kaydı olan öğrenciye ikinci kez gitmez. */
   const durtmeHedefi = satirlar.filter((s) => s.seviye === 'acil' && !dokunulduMu(s.temas)).map((s) => s.o)
 
-  async function gorustuk(id) {
-    setBekleyen(id)
-    const { error } = await supabase.rpc('koc_gorustum', { p_ogrenci: id, p_tur: 'telefon', p_not: '' })
-    setBekleyen(null)
-    if (error) { setHata(hataMetni(error)); return }
-    yukle()
-  }
 
   return (
     <div className="on2">
@@ -188,9 +180,6 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj }) {
                     <span className="on2-eylem">
                       <button type="button" aria-label={`${s.ad.split(' ')[0]}'e mesaj`} onClick={() => onMesaj?.(s.id)}>
                         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M4 5h16v11H9l-5 4z" /></svg>
-                      </button>
-                      <button type="button" className={s.dokunuldu ? 'on2-yapildi' : ''} disabled={bekleyen === s.id} aria-label={`${s.ad.split(' ')[0]} ile görüştük`} onClick={() => gorustuk(s.id)}>
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12.5l4.5 4.5L19 7" /></svg>
                       </button>
                     </span>
                   </div>
