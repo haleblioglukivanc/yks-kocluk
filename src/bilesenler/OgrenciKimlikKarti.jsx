@@ -165,21 +165,20 @@ export default function OgrenciKimlikKarti({
         /* Eylemler durumun yanında küçük haplar (22 Eylül 2026, Bekir):
            telefon (Görüştük) kalktı; göz ve mesaj etiketin yanında; mesaj
            açılır pencerede yazılır. */
-        durum={kocGorunumu ? (
-          <span className="od-durum-satir">
-            {durumMetni && <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span>}
-            <button type="button" className="od-mini" onClick={() => onGozuyle?.(ogrenci.id)} aria-label="Onun gözünden bak" title="Onun gözünden bak">
+        durum={kocGorunumu && durumMetni ? <span className={`od-durum od-durum--${durumTuru}`}><i />{durumMetni}</span> : null}
+        /* Göz ve mesaj üst satırda, zilin yanında (22 Eylül 2026, Bekir). */
+        ekDugme={kocGorunumu ? (
+          <>
+            <button type="button" className="ana-yuvarlak" onClick={() => onGozuyle?.(ogrenci.id)} aria-label="Onun gözünden bak" title="Onun gözünden bak">
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z" /><circle cx="12" cy="12" r="3" /></svg>
             </button>
-            <button type="button" className="od-mini" onClick={() => setMesajAcik(true)} aria-label="Mesaj yaz" title="Mesaj yaz">
+            <button type="button" className="ana-yuvarlak" onClick={() => setMesajAcik(true)} aria-label="Mesaj yaz" title="Mesaj yaz">
               <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
             </button>
-          </span>
+          </>
         ) : null}
       />
-      <div className="od-ust ana-govde ana-govde--dar">
-        {children}
-      </div>
+      {children && <div className="od-ust ana-govde ana-govde--dar">{children}</div>}
       {mesajAcik && (
         <HizliMesaj ogrenciId={ogrenci.id} ad={ad} onKapat={() => setMesajAcik(false)} onTumu={() => { setMesajAcik(false); onMesaj?.(ogrenci.id) }} />
       )}

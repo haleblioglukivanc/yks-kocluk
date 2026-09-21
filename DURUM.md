@@ -7,6 +7,14 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Öğrenci ekranı düzeltmeleri, Tekrarları dağıt
+
+- Göz ve mesaj düğmeleri üst satırda zilin yanında (dar telefonda marka yazısı gizlenir, KH işareti kalır); durum etiketi tepede yalnız. Tepe ile "Bu hafta" arasındaki boşluk (boş `od-ust` kabı) kalktı.
+- "Seçilen 2 tebriği gönder" üstündeki siyah leke: boşken de çizilen Geri al bildirimi, kartların giriş hareketi yüzünden ekranın ortasında kalıyordu. Bildirim artık yalnız varken, `createPortal` ile body'de çiziliyor.
+- Bu hafta cümlesi: "Bu hafta N işin M tanesi bitti" (haftanın tamamı; bugüne kadarkiler değil — taşıma sonrası %100 yanıltıyordu).
+- Kontrol: Bekir Yılmaz'da "Geçen haftayı kopyala" 16–20 Eylül görevlerini 23–27'ye yazdı (22 dolu olduğu için atlandı); "Yarım kalanları taşı" 21'in 3 bitmemiş işini 22'ye aldı (22'de EBOB–EKOK iki kez).
+- Yeni: "Tekrarları boş günlere dağıt" (`koc_tekrarlari_dagit`, göç 20260922_tekrarlari_dagit.sql): yarından Pazar'a kadar görevsiz her güne bir tekrar görevi (20 soru); konu sırası denemede en çok hata → tekrar gerekli → en uzun süredir dokunulmamış bitmiş konu; bekleyen görevi olan konu ve aynı konu ikinci kez atlanır.
+
 ## 22 Eylül 2026 — Öğrencinin koç ekranı v2 (sekmesiz)
 
 - Mokap onaylı. Sekme kalktı. Ana akış: tepe (durum etiketinin yanında göz ve mesaj hapları; telefon/Görüştük kalktı; mesaj `HizliMesaj` alt penceresinde, son 3 mesaj + "Tüm yazışmayı aç") · Bu hafta (`HaftaOzeti`: 4 cümle — haftanın yüzdesi ve bugün, seri ve sayaç süresi, son deneme ve fark → Denemeler, bekleyen tekrar ve en çok kaçırdığı konu → Konular) · "X için bekleyenler" (`Yapilacaklar ogrenciId`: yalnız bu öğrencinin kartları, aynı Geri al; buradan gönderilen Yapılacaklar'dan da düşer) · Denemeler / Konular kapıları · `HaftaToplu` (Geçen haftayı kopyala → `koc_haftayi_kopyala`: yalnız boş günlere, görüşme hariç; Yarım kalanları yarına taşı → `koc_yarimlari_tasi`; onaylı, sonuç cümlesi, program tazelenir) · Program · kaynaklar · notlar.

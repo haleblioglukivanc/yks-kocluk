@@ -1486,3 +1486,11 @@ button.isl-hc:disabled { cursor: default; }
 .od-alt-baslik { margin: 0.25rem 0.25rem 0; font-family: var(--m-baslik); font-weight: 500; font-size: 1.6rem; }
 .yp--ogrenci { padding-bottom: 0; }
 .odn-hedef-ekle { border: 0; background: none; padding: 0; color: var(--m-vurgu); font: 800 0.85rem var(--m-govde); cursor: pointer; }
+.yp-geri--acik { animation: yp-geri-gel .3s ease both; }
+@keyframes yp-geri-gel { from { transform: translate(-50%, 140%); } to { transform: translate(-50%, 0); } }
+@media (prefers-reduced-motion: reduce) { .yp-geri--acik { animation: none; } }
+/* Üst satırda üç yuvarlak düğme varsa (göz, mesaj, zil) dar telefonda
+   marka yazısı sığmıyor: yalnız KH işareti kalır. */
+@media (max-width: 430px) {
+  .ana-tepe:has(.ana-tepe-eylem > :nth-child(3)) .ana-marka-ad { display: none; }
+}

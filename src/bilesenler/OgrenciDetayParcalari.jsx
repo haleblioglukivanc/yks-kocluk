@@ -13,6 +13,11 @@ const pazartesi = () => {
   d.setDate(d.getDate() - g)
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
+const haftaSonu = (hb) => {
+  const d = new Date(`${hb}T00:00:00`)
+  d.setDate(d.getDate() + 6)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+}
 const bugunIso = () => {
   const d = new Date()
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
@@ -28,7 +33,7 @@ export function HaftaOzeti({ ogrenciId, ad, onDenemeler, onKonular, tazele = 0 }
     const hb = pazartesi()
     const bg = bugunIso()
     Promise.all([
-      supabase.from('gorevler').select('tarih, durum, baslik, konular(ad)').eq('ogrenci_id', ogrenciId).gte('tarih', hb).lte('tarih', bg),
+      supabase.from('gorevler').select('tarih, durum, baslik, konular(ad)').eq('ogrenci_id', ogrenciId).gte('tarih', hb).lte('tarih', haftaSonu(hb)),
       supabase.from('seriler').select('guncel_seri').eq('ogrenci_id', ogrenciId).maybeSingle(),
       supabase.from('calisma_oturumlari').select('sure_dk, baslangic').eq('ogrenci_id', ogrenciId).gte('baslangic', `${hb}T00:00:00`),
       supabase.from('deneme_ozet').select('tarih, tur, toplam_net').eq('ogrenci_id', ogrenciId).order('tarih', { ascending: false }).limit(6),
@@ -43,7 +48,7 @@ export function HaftaOzeti({ ogrenciId, ad, onDenemeler, onKonular, tazele = 0 }
       const son = dn[0]
       const onceki = son ? dn.find((x, i) => i > 0 && x.tur === son.tur) : null
       setV({
-        hafta: gl.length ? Math.round((gl.filter((x) => x.durum === 'tamamlandi').length / gl.length) * 100) : null,
+        hafta: gl.length ? { top: gl.length, bit: gl.filter((x) => x.durum === 'tamamlandi').length } : null,
         bugunTop: bugun.length,
         bugunBit: bugun.filter((x) => x.durum === 'tamamlandi').length,
         sira: sira ? (sira.konular?.ad ?? sira.baslik) : null,
@@ -60,7 +65,7 @@ export function HaftaOzeti({ ogrenciId, ad, onDenemeler, onKonular, tazele = 0 }
   const satirlar = [
     ['#D08A1E', v.hafta == null
       ? 'Bu hafta için henüz görev yok.'
-      : <>Bu hafta işlerinin <b>%{v.hafta}</b> kadarı bitti.{v.bugunTop ? ` Bugün ${v.bugunTop} işin ${v.bugunBit} tanesi bitti${v.sira ? `, sırada ${v.sira}` : ''}.` : ' Bugün için görev yok.'}</>, null],
+      : <>Bu hafta <b>{v.hafta.top} işin {v.hafta.bit} tanesi</b> bitti.{v.bugunTop ? ` Bugün ${v.bugunTop} işin ${v.bugunBit} tanesi bitti${v.sira ? `, sırada ${v.sira}` : ''}.` : ' Bugün için görev yok.'}</>, null],
     ['#2D7A4E', v.seri > 1
       ? <><b>{v.seri} gündür</b> her gün çalışıyor.{v.dk ? <> Bu hafta sayaçla <b>{sure(v.dk)}</b>.</> : ' Sayacı bu hafta kullanmadı.'}</>
       : v.dk ? <>Bu hafta sayaçla <b>{sure(v.dk)}</b> çalıştı.</> : 'Bu hafta sayaçla çalışma kaydı yok.', null],
@@ -125,7 +130,7 @@ export function OgrenciKapilari({ ogrenciId, onDenemeler, onKonular }) {
   )
 }
 
-/** Haftayı hızlı kurmak: geçen haftayı kopyala, yarım kalanları yarına taşı. */
+/** Haftayı hızlı kurmak: geçen haftayı kopyala, yarım kalanları yarına taşı, tekrarları boş günlere dağıt. */
 export function HaftaToplu({ ogrenciId, onDegisti }) {
   const [bekliyor, setBekliyor] = useState(null)
   const [haber, setHaber] = useState('')
@@ -148,6 +153,10 @@ export function HaftaToplu({ ogrenciId, onDegisti }) {
           if (!window.confirm('Bu haftanın bugüne kadar bitmemiş görevleri yarına taşınsın mı?')) return
           calistir('tasi', 'koc_yarimlari_tasi', (n) => (n ? `${n} yarım görev yarına taşındı.` : 'Taşınacak yarım görev yok.'))
         }}>{bekliyor === 'tasi' ? 'Taşınıyor…' : 'Yarım kalanları yarına taşı'}</button>
+        <button type="button" disabled={Boolean(bekliyor)} onClick={() => {
+          if (!window.confirm('Bu haftanın boş günlerine (yarından itibaren) birer tekrar görevi yazılsın mı? Önce denemelerde en çok kaçırdığı konular gelir.')) return
+          calistir('dagit', 'koc_tekrarlari_dagit', (n) => (n ? `${n} boş güne tekrar görevi yazıldı.` : 'Bu hafta boş gün yok ya da tekrar edilecek konu bulunamadı.'))
+        }}>{bekliyor === 'dagit' ? 'Dağıtılıyor…' : 'Tekrarları boş günlere dağıt'}</button>
       </div>
       {haber && <p className="ht-haber" role="status">{haber}</p>}
     </div>

@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Avatar } from './Fotograf.jsx'
 import { GorusmeKarti, PlanKarti, IlhamKarti, KuyrukKarti } from './KararKuyrugu.jsx'
@@ -152,10 +153,13 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
             satirAd={(k) => String(k.baglam ?? '').split(' · ').pop()} dugme={(n) => `Seçilen ${n} tebriği gönder`}
             onOnay={(sec) => yap(sec.map((kart) => ({ kart, karar: 'onay' })), `${sec.length} tebrik gönderiliyor ✓`)} />
         )}
-        <div className={toast ? 'yp-geri yp-geri--acik' : 'yp-geri'} role="status" aria-live="polite">
-          <span>{toast}</span>
-          {toast && <button type="button" onClick={geriAl}>Geri al</button>}
-        </div>
+        {toast && createPortal(
+          <div className="yp-geri yp-geri--acik" role="status" aria-live="polite">
+            <span>{toast}</span>
+            <button type="button" onClick={geriAl}>Geri al</button>
+          </div>,
+          document.body,
+        )}
       </div>
     )
   }
@@ -219,10 +223,15 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
         <div className="yp-bos"><b>Posta kutusu boş.</b>Bugünlük bu kadar. Yeni bir şey olunca burada olacak.</div>
       )}
 
-      <div className={toast ? 'yp-geri yp-geri--acik' : 'yp-geri'} role="status" aria-live="polite">
-        <span>{toast}</span>
-        {toast && <button type="button" onClick={geriAl}>Geri al</button>}
-      </div>
+      {/* Bildirim sayfanın en üstünde (portal): kartların giriş hareketi
+          sabit konumu bozup ortada siyah bir leke bırakıyordu. */}
+      {toast && createPortal(
+        <div className="yp-geri yp-geri--acik" role="status" aria-live="polite">
+          <span>{toast}</span>
+          <button type="button" onClick={geriAl}>Geri al</button>
+        </div>,
+        document.body,
+      )}
     </div>
   )
 }
