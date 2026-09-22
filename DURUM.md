@@ -977,3 +977,11 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Koçta zil Yapılacaklar'ı açar; rozeti bekleyen iş sayısı (posta kutusuyla aynı, gerçek sayı, 99'a kadar). Yanında mesaj düğmesi + okunmamış mesaj sayısı. Yapılacaklar ekranında zil yok.
 - Koç için `/bildirimler` Yapılacaklar'a yönlenir (eski bildirim bağlantıları için). `Bildirimler.jsx` öğrencide aynen (gelen kutusu).
 - Sonraki: 11–16 ince ayar turu.
+
+## 22 Eylül 2026 — Tasarım denetimi ince ayar (11–15)
+- Koç profili ve öğrenci detayında anlamsız "Profil" hapı kalktı (yalnız "Erişim kapalı" kalır).
+- Yanal çip şeritleri (`.on2-suz`, `.yol-dersler`) sağda solarak biter; tabeladaki "+N" kendi zemininde.
+- `.uygulama select` mevsim dilinde (ok ikonu, yuvarlak kenar); Notlar ve Kaynaklar'daki native görünüm gitti.
+- Öğrenci detayında boş bölümler tek satır ("Şu an yok." / "Henüz yok."); Notlar formu "+ Not ekle" ile açılır, kaydedince kapanır.
+- Hata defteri boş durumunda ikon artı yok, tek düğme.
+- Kalan: 16 — masaüstünde Öğrencilerim/Yapılacaklar iki sütun (önce görsel).
