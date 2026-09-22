@@ -25,6 +25,7 @@ import SekmeTepesi from '../bilesenler/SekmeTepesi.jsx'
 import HaftalikIlham from '../bilesenler/HaftalikIlham.jsx'
 import Okuduklarim from '../bilesenler/Okuduklarim.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
+import HaftalikLinkler from '../bilesenler/HaftalikLinkler.jsx'
 import Rozetlerim from './Rozetlerim.jsx'
 import KonuHaritasi from './KonuHaritasi.jsx'
 import UstBlok from '../ortak/UstBlok.jsx'
@@ -337,6 +338,8 @@ export default function OgrenciPaneli({
                     />
                   </div>
                 </section>
+                {/* Haftanın linkleri: güne değil haftaya ait, her gün aynı yerde. */}
+                <HaftalikLinkler ogrenciId={kayit.id} saltOkunur={vekaleten} />
                 {bugunMu && (
                   <BugunRutinler ogrenciId={kayit.id} rutinler={ozet?.rutinler} haftaBasi={ozet?.haftaBasi} bugun={ozet?.bugun} onDegisti={yenile} saltOkunur={vekaleten} />
                 )}

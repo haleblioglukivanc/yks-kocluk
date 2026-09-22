@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Haftalık izleme linkleri
+
+- Mokap onaylı ("onay ok"). Tablo `haftalik_link` (öğrenci, hafta başı, url, başlık, not, izlendi, kapandı; göç 20260922_haftalik_link.sql). RLS: okuma `erisebilir_mi`, yazma yalnız koç (`ogrencim_mi`); öğrenci tiki `link_izledim(id, bool)` RPC'siyle, yalnız kendi satırı.
+- Koç: öğrencinin koç ekranında Program'ın altında "Bu haftanın izlenecekleri" (link + isteğe bağlı not, ×; YouTube başlığı oEmbed'den kendiliğinden, diğerlerinde alan adı; satırda "İzledi · Salı 21:40" / "Bekliyor"). Öğrenci: Programım'da koçun işlerinin altında "Bu hafta izle" (her gün aynı; link yoksa çizilmez). Link uygulama dışında açılır; tik denetimsiz, geri alınabilir (`bilesenler/HaftalikLinkler.jsx`).
+- Hafta bitince izlenmeyen varsa Yapılacaklar'a öğrenci başına tek "Video" kartı (`link_izle`, Bu hafta bölümü): Bu haftaya taşı / Ertele / Kapat.
+- Linkler yalnız içinde bulunulan haftaya eklenir; ayrı bildirim yok.
+
 ## 22 Eylül 2026 — Tabeladaki canlılar, ince ayar 2
 
 Düzeltme: yön çevirme animasyonu (CSS transform) aynı gruptaki SVG `transform`

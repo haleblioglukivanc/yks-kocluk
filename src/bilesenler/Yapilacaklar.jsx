@@ -12,14 +12,14 @@ import { GorusmeKarti, PlanKarti, IlhamKarti, KuyrukKarti } from './KararKuyrugu
    plan, kitap-söz, deneme analizi…) eski kart bileşenleriyle açılır. */
 
 const ACIL_TIP = new Set(['risk', 'gorusme', 'blok'])
-const HAFTA_TIP = new Set(['veli_ozet', 'ilham', 'plan', 'konu_tekrar', 'hedef'])
+const HAFTA_TIP = new Set(['veli_ozet', 'ilham', 'plan', 'konu_tekrar', 'hedef', 'link_izle'])
 const BEKLE_MS = 5000
 
 const TUR = {
   risk: ['Zorlanıyor', 'acil'], gorusme: ['Konuşmak istiyor', 'acil'], blok: ['Ders saati', 'dikkat'],
   basvuru: ['Aday', 'yeni'], konu: ['Konu bitti', 'dikkat'], analiz: ['Deneme analizi', 'dikkat'],
   hafiflet: ['Hedef', 'dikkat'], odeme: ['Ödeme', 'dikkat'], konu_tekrar: ['Konu tekrarı', 'dikkat'],
-  plan: ['Haftalık plan', 'dikkat'], hedef: ['Hedef', 'dikkat'],
+  plan: ['Haftalık plan', 'dikkat'], hedef: ['Hedef', 'dikkat'], link_izle: ['Video', 'dikkat'],
 }
 const anahtar = (k) => `${k.tip}|${k.kaynak_id}`
 const ilkAd = (ad) => String(ad ?? '').replace(/ velisi$/, '').split(' ')[0]

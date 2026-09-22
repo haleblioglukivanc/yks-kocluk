@@ -13,6 +13,7 @@ import { Alan, AltSayfa, Bos, Dugme, Kart, Uyari, Yukleniyor } from '../bilesenl
 import KaynakSecici from '../bilesenler/KaynakSecici.jsx'
 import KapsamSecimi from '../bilesenler/KapsamSecimi.jsx'
 import OgrenciKaynaklari from '../bilesenler/OgrenciKaynaklari.jsx'
+import HaftalikLinkler from '../bilesenler/HaftalikLinkler.jsx'
 import { FotografYukle } from '../bilesenler/Fotograf.jsx'
 import ProgramIzgarasi from '../bilesenler/ProgramIzgarasi.jsx'
 import DenemePaneli from '../bilesenler/DenemePaneli.jsx'
@@ -130,6 +131,7 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
           <Sag>
             <HaftaToplu ogrenciId={ogrenci.id} onDegisti={() => setProgramSayac((n) => n + 1)} />
             <Program key={programSayac} ogrenci={ogrenci} />
+            <HaftalikLinkler ogrenciId={ogrenci.id} rol="koc" />
           </Sag>
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
