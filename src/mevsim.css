@@ -1497,3 +1497,49 @@ button.isl-hc:disabled { cursor: default; }
 /* Öğrenci ekranı: tepe ile "Bu hafta" arası (22 Eylül 2026, Bekir). */
 .ogr-detay-govde.od-govde { padding-top: 0; margin-top: -1.1rem; }
 .ogr-detay-govde > .kp-bolum:first-child .kp-bolum-bas, .ogr-detay-govde > .kp-bolum:first-child .kp-bolum-bas h2 { margin-top: 0; padding-top: 0; }
+
+/* ═══ Tabeladaki canlılar (22 Eylül 2026) — bkz. docs/TABELA-CANLILARI.md ═══
+   Bir tur 35 sn. Keyframe yüzdeleri mokaptaki 16 sn'lik turdan ölçeklendi. */
+.tc { transform-box: view-box; animation-duration: 35s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
+.tc-kelebek { animation-name: tc-kelebek; }
+@keyframes tc-kelebek {
+  0% { transform: translate(-60px, 40px); opacity: 0; } 3% { opacity: 1; }
+  9% { transform: translate(8px, -14px); } 13% { transform: translate(0, 0); }
+  50% { transform: translate(0, 0); opacity: 1; } 56% { transform: translate(60px, -60px); opacity: 1; }
+  59%, 100% { transform: translate(90px, -80px); opacity: 0; }
+}
+.tc-kanat { transform-box: fill-box; transform-origin: 100% 50%; animation: tc-kanat 2.4s ease-in-out infinite; }
+.tc-kanat--sag { transform-origin: 0% 50%; }
+@keyframes tc-kanat { 0%, 55%, 100% { transform: scaleX(1); } 65% { transform: scaleX(.3); } 75% { transform: scaleX(1); } 85% { transform: scaleX(.3); } }
+.tc-serce { animation-name: tc-serce; }
+@keyframes tc-serce {
+  0% { transform: translate(90px, -70px); opacity: 0; } 2% { opacity: 1; }
+  8% { transform: translate(0, 0); } 20% { transform: translate(0, 0); }
+  22% { transform: translate(6px, -6px); } 24% { transform: translate(12px, 0); }
+  36% { transform: translate(12px, 0); } 38% { transform: translate(6px, -6px); } 40% { transform: translate(0, 0); }
+  55% { transform: translate(0, 0); opacity: 1; } 62% { transform: translate(-90px, -70px); opacity: 1; }
+  64%, 100% { transform: translate(-110px, -80px); opacity: 0; }
+}
+.tc-serce-bas { transform-box: fill-box; transform-origin: 30% 80%; animation: tc-bakin 35s infinite; }
+@keyframes tc-bakin { 0%, 12% { transform: none; } 13%, 17% { transform: scaleX(-1); } 18%, 29% { transform: none; } 30%, 33% { transform: rotate(-18deg); } 34%, 100% { transform: none; } }
+.tc-sincap { animation-name: tc-sincap; }
+@keyframes tc-sincap {
+  0% { transform: translate(-4px, 96px) rotate(-90deg); opacity: 0; } 2% { opacity: 1; }
+  9% { transform: translate(-4px, 10px) rotate(-90deg); } 12% { transform: translate(0, 0) rotate(0); }
+  52% { transform: translate(0, 0) rotate(0); opacity: 1; } 55% { transform: translate(-4px, 10px) rotate(-90deg); }
+  62% { transform: translate(-4px, 96px) rotate(-90deg); opacity: 1; } 64%, 100% { transform: translate(-4px, 110px) rotate(-90deg); opacity: 0; }
+}
+.tc-kuyruk { transform-box: fill-box; transform-origin: 90% 90%; animation: tc-kuyruk 1.6s ease-in-out infinite alternate; }
+@keyframes tc-kuyruk { to { transform: rotate(-12deg); } }
+.tc-yaprak { transform-box: view-box; animation: tc-yaprak 35s linear infinite; opacity: 0; }
+@keyframes tc-yaprak { 0%, 28% { transform: translate(0, 0) rotate(0); opacity: 0; } 29% { opacity: 1; } 40% { transform: translate(-18px, 60px) rotate(140deg); opacity: 1; } 43%, 100% { transform: translate(-24px, 80px) rotate(200deg); opacity: 0; } }
+.tc-gerdan { animation: tc-gerdan 1.2s ease-out both; }
+@keyframes tc-gerdan { from { transform: translate(0, -40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tc-gerdan-govde { transform-box: fill-box; transform-origin: 50% 90%; animation: tc-silkelen 35s ease-in-out infinite; }
+@keyframes tc-silkelen { 0%, 38% { transform: none; } 39% { transform: rotate(-8deg) scale(1.08); } 40% { transform: rotate(8deg) scale(1.08); } 41% { transform: rotate(-6deg) scale(1.05); } 42%, 100% { transform: none; } }
+.tc-kar { transform-box: view-box; animation: tc-kar 35s ease-in infinite; opacity: 0; }
+@keyframes tc-kar { 0%, 39% { transform: translate(0, 0); opacity: 0; } 39.5% { opacity: 1; } 46% { transform: translate(var(--tc-x, 0), 46px); opacity: 0; } 100% { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .tc, .tc-kanat, .tc-serce-bas, .tc-kuyruk, .tc-gerdan-govde { animation: none !important; }
+  .tc-yaprak, .tc-kar { display: none; }
+}

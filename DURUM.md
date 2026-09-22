@@ -7,6 +7,11 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Tabeladaki canlılar
+
+- Mokap onaylı, ilk sürüm canlıda: ilkbahar kelebek, yaz serçe, sonbahar sincap (+ düşen yaprak), kış kızılgerdan (+ dökülen kar). `TabelaCanlisi` (KapiCizimleri.jsx), `PortreCizimi canli` (varsayılan açık) ve `TabelaCizimi canli` (Öğrencilerim); koç ana ekranında yalnız Öğrencilerim tabelasında. Tur 35 sn, CSS keyframe (`.tc-*`, mevsim.css); hareket azaltmada canlı sabit, yaprak/kar yok.
+- İnce ayar rehberi: `docs/TABELA-CANLILARI.md` (geometri, zaman çizelgesi, açık sorular). Yeni oturumda bunu referans al.
+
 ## 22 Eylül 2026 — Kopyalama görünürlüğü, tepe boşluğu
 
 - "Hafta boyu tekrarlar" gruplaması ders adına göreydi: geçen hafta kopyalanınca bütün Matematik/Türkçe işleri "tekrar" sanılıp günlerden ayrılmış gibi görünüyordu. Anahtar artık işin adı (aynı başlık 3+ gün).

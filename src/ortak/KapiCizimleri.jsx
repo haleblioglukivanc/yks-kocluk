@@ -51,11 +51,11 @@ function AsiliBas({ x, o }) {
   )
 }
 
-export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = null }) {
+export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = null, canli = false }) {
   const asili = ogrenciler.slice(0, 3)
   const fazla = ogrenciler.length - asili.length
   return (
-    <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true">
+    <svg className="kapi-cizim" viewBox="0 0 150 84" aria-hidden="true" style={canli ? { overflow: 'visible' } : undefined}>
       {zemin && <Zemin mevsim={mevsim} />}
       <rect x="22" y="6" width="6" height="70" rx="2" fill="#6B3D29" />
       <path d="M12 12 H104 L116 26 L104 40 H12 Z" fill="#8C5B45" stroke="#6B3D29" strokeWidth="2" />
@@ -69,6 +69,7 @@ export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = nul
       {fazla > 0 && (
         <text x={42 + 3 * 24 - 4} y="60.5" fontFamily="Manrope, sans-serif" fontSize="10" fontWeight="800" fill="var(--m-soluk)">+{fazla}</text>
       )}
+      {canli && <TabelaCanlisi mevsim={mevsim} x={88} y={12} olcek={0.6} />}
     </svg>
   )
 }
@@ -106,11 +107,11 @@ export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false, zemin = true
 /* Öğrenci detayında tabelanın yerinde: direğe asılı yuvarlak çerçevede
    öğrencinin fotoğrafı (yoksa baş harfleri). Çerçevenin kenarı risk
    renginde; üstü/dibi mevsime göre süslü (22 Eylül 2026, Bekir). */
-export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk = 'p' }) {
+export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk = 'p', canli = true }) {
   const kirp = `portre-${idEk}`
   const halka = durum ? (HALKA[durum] ?? '#6F625A') : 'var(--m-vurgu)'
   return (
-    <svg className="kapi-cizim portre-cizim" viewBox="0 0 120 112" aria-hidden="true">
+    <svg className="kapi-cizim portre-cizim" viewBox="0 0 120 112" aria-hidden="true" style={{ overflow: 'visible' }}>
       <defs>
         <clipPath id={kirp}><circle cx="72" cy="60" r="27" /></clipPath>
       </defs>
@@ -142,6 +143,7 @@ export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk
       {mevsim === 'yaz' && [10, 30].map((x) => (
         <path key={x} d={`M${x} 110 q-2 -7 -5 -9 M${x} 110 q0 -8 1 -10 M${x} 110 q3 -6 6 -8`} stroke="#7FA86B" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       ))}
+      {canli && <TabelaCanlisi mevsim={mevsim} x={30} y={12} olcek={0.8} />}
     </svg>
   )
 }
@@ -256,5 +258,85 @@ export function DenemeCizimi({ mevsim, netler = [], zemin = true }) {
       )}
       <rect x="60" y="56" width="34" height="4" rx="2" fill="#6B3D29" />
     </svg>
+  )
+}
+
+/* ───────────── Tabeladaki canlılar (22 Eylül 2026, mokap onaylı) ─────────────
+   Mevsime göre tabelanın çubuğuna konan küçük bir canlı: ilkbaharda kelebek,
+   yazın serçe, sonbaharda sincap, kışın kızılgerdan. (x, y) çubuğun üstünde
+   canlının ayağının bastığı nokta; olcek çizimin boyu. Bir tur ~35 sn; ekran
+   açılınca başlar. Hareket azaltılmışsa canlı çubukta hareketsiz durur.
+   Ayrıntı ve ince ayar notları: docs/TABELA-CANLILARI.md */
+export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
+  const donus = `translate(${x} ${y}) scale(${olcek})`
+  if (mevsim === 'ilkbahar') return (
+    <g transform={donus} aria-hidden="true">
+      <g className="tc tc-kelebek">
+        <g transform="translate(4 -14)">
+          <ellipse className="tc-kanat" cx="-6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
+          <ellipse className="tc-kanat" cx="-5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
+          <ellipse className="tc-kanat tc-kanat--sag" cx="6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
+          <ellipse className="tc-kanat tc-kanat--sag" cx="5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
+          <rect x="-1.2" y="-8" width="2.4" height="18" rx="1.2" fill="#3A2A22" />
+          <path d="M-1 -8 q-4 -6 -6 -7 M1 -8 q4 -6 6 -7" stroke="#3A2A22" strokeWidth="1" fill="none" />
+        </g>
+      </g>
+    </g>
+  )
+  if (mevsim === 'yaz') return (
+    <g transform={donus} aria-hidden="true">
+      <g className="tc tc-serce">
+        <g transform="translate(0 -16)">
+          <path d="M-14 4 L-24 0 L-14 -1 Z" fill="#6E4A2E" />
+          <ellipse cx="-3" cy="2" rx="12" ry="9" fill="#9A6A43" />
+          <ellipse cx="-2" cy="5" rx="8" ry="5" fill="#E9D8BE" />
+          <path d="M-8 -1 q6 -5 12 1" stroke="#6E4A2E" strokeWidth="2" fill="none" />
+          <g className="tc-serce-bas">
+            <circle cx="8" cy="-6" r="7" fill="#9A6A43" />
+            <path d="M5 -9 q4 -3 8 0" stroke="#6E4A2E" strokeWidth="2" fill="none" />
+            <circle cx="10" cy="-7" r="1.4" fill="#1E1410" />
+            <path d="M14 -6 L19 -5 L14 -3 Z" fill="#E4A43C" />
+          </g>
+          <path d="M-4 10 v5 M2 10 v5" stroke="#6E4A2E" strokeWidth="1.4" />
+        </g>
+      </g>
+    </g>
+  )
+  if (mevsim === 'kis') return (
+    <g transform={donus} aria-hidden="true">
+      <g className="tc tc-gerdan">
+        <g transform="translate(2 -18)">
+          <g className="tc-gerdan-govde">
+            <path d="M-14 4 L-22 8 L-14 8 Z" fill="#6D5A4B" />
+            <circle cx="0" cy="2" r="12" fill="#7A6453" />
+            <circle cx="3" cy="4" r="8" fill="#D9573A" />
+            <circle cx="5" cy="-6" r="1.5" fill="#1E1410" />
+            <path d="M10 -4 L15 -3 L10 -1.5 Z" fill="#3A2A22" />
+            <path d="M-8 0 q4 -6 10 -4" stroke="#5E4C3F" strokeWidth="2" fill="none" />
+          </g>
+          <path d="M-3 13 v3 M3 13 v3" stroke="#5E4C3F" strokeWidth="1.3" />
+        </g>
+      </g>
+      {[[-6, -6], [4, 4], [12, -2], [20, 6], [28, 0]].map(([kx, dx], i) => (
+        <circle key={i} className="tc-kar" cx={kx} cy="2" r={1.6 + (i % 2)} fill="#FFFFFF" style={{ '--tc-x': `${dx}px`, animationDelay: `${i * 0.08}s` }} />
+      ))}
+    </g>
+  )
+  return (
+    <g transform={donus} aria-hidden="true">
+      <g className="tc tc-sincap">
+        <g transform="translate(-2 -20)">
+          <path className="tc-kuyruk" d="M-8 10 C -26 8 -30 -12 -18 -20 C -10 -24 -6 -14 -12 -10 C -18 -6 -14 4 -4 6 Z" fill="#B8642E" />
+          <ellipse cx="0" cy="8" rx="9" ry="11" fill="#C9763A" />
+          <ellipse cx="2" cy="11" rx="5" ry="6" fill="#F0D2A8" />
+          <circle cx="6" cy="-4" r="7" fill="#C9763A" />
+          <path d="M2 -10 l1 -6 l3 5 Z M8 -10 l2 -6 l2 6 Z" fill="#B8642E" />
+          <circle cx="8" cy="-5" r="1.4" fill="#1E1410" />
+          <circle cx="12.5" cy="-2" r="1" fill="#1E1410" />
+          <g transform="translate(12 3)"><ellipse cx="0" cy="2" rx="3.2" ry="4" fill="#8A5A2B" /><path d="M-3.4 -0.5 q3.4 -3 6.8 0 z" fill="#5E3B1C" /></g>
+        </g>
+      </g>
+      <path className="tc-yaprak" d="M30 -12 c3 -5 8 -5 10 0 c-2 5 -7 5 -10 0z" fill="#D8742C" />
+    </g>
   )
 }
