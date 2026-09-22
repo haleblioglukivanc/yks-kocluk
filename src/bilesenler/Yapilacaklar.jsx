@@ -43,7 +43,7 @@ async function kararVer(k, karar, metin = null) {
   return error
 }
 
-export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, baslik = null }) {
+export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, baslik = null, onAcikDegisti = null }) {
   const [kartlar, setKartlar] = useState(null)
   const [gizli, setGizli] = useState(() => new Set())
   const [acik, setAcik] = useState(null)
@@ -104,9 +104,6 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
   const kalan = gorunen.length
   useEffect(() => { onSayi?.(kalan, gorunen.filter((k) => k.segment === 'acil').length, gorunen[0]?.ad) }, [kalan, gorunen, onSayi])
 
-  if (kartlar === null) return ogrenciId ? null : <div className="yp-bekle" aria-busy="true" />
-  if (ogrenciId && kartlar.length === 0) return null
-
   const once = gorunen.filter((k) => ACIL_TIP.has(k.tip) || k.segment === 'acil' || k.segment === 'pencere')
   const tebrik = gorunen.filter((k) => k.tip === 'tebrik')
   const hafta = gorunen.filter((k) => !once.includes(k) && k.tip !== 'tebrik' && (HAFTA_TIP.has(k.tip) || k.segment === 'hafta'))
@@ -116,6 +113,13 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
   const toplam = Math.max(ilkToplam, kalan)
   const biten = toplam - kalan
   const ilkAcik = acik ?? (once[0] ? anahtar(once[0]) : bugun[0] ? anahtar(bugun[0]) : null)
+  /* Masaüstünde yan sütun açık kartın öğrencisini gösterir (22 Eylül 2026). */
+  const acikKart = gorunen.find((k) => anahtar(k) === ilkAcik) ?? null
+  useEffect(() => { onAcikDegisti?.(acikKart?.ogrenci_id ?? null) }, [acikKart?.ogrenci_id]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  if (kartlar === null) return ogrenciId ? null : <div className="yp-bekle" aria-busy="true" />
+  if (ogrenciId && kartlar.length === 0) return null
+
 
   /* Aynı öğrencinin başka işleri: "Roşin için 2 iş daha" */
   const digerleri = (k) => {

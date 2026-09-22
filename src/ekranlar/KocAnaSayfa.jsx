@@ -8,6 +8,8 @@ import { useMevsim } from '../lib/mevsim.js'
 import Gidisat, { sureYaz, gunAyYaz } from '../ortak/Gidisat.jsx'
 import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 import OgrenciNabzi from '../bilesenler/OgrenciNabzi.jsx'
+import OgrenciOzetPaneli from './OgrenciOzetPaneli.jsx'
+import { useGenisEkran } from '../lib/genislik.js'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
 
 /* Koçun tek ekranı (21 Eylül 2026, mevsimsel tasarım). Alt menü, Rapor
@@ -225,7 +227,9 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
 
 /* Posta kutusunun arkası (22 Eylül 2026, Bekir): ekran ana ekranla aynı
    kalır; sahnenin sağ üstünde posta kutusu, altında karar kartları. */
-export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
+export function YapilacaklarEkrani({ onOgrenciAc, onMesaj, onGozuyle, tepe }) {
+  const genis = useGenisEkran()
+  const [yanOgrenci, setYanOgrenci] = useState(null)
   /* Yapılacaklar v2 (22 Eylül 2026): sayı ve tepe cümlesi listeden gelir;
      iş bittikçe posta kutusundaki sayı da azalır. */
   const [durum, setDurum] = useState(null)
@@ -246,17 +250,30 @@ export function YapilacaklarEkrani({ onOgrenciAc, tepe }) {
         {...tepe}
         sagCizim={(mevsim) => <PostaKutusuCizimi mevsim={mevsim} sayi={n} acil={acil > 0} zemin={false} />}
       />
-      <div className="ana-govde ana-govde--dar od-govde">
-        <Yapilacaklar onOgrenciAc={onOgrenciAc} onSayi={onSayi} />
-        <VeliMesajlari />
+      <div className={genis ? 'ana-govde ana-govde--genis iki-sutun' : 'ana-govde ana-govde--dar od-govde'}>
+        {genis ? (
+          <>
+            <div className="iki-sutun-sol od-govde"><Yapilacaklar onOgrenciAc={onOgrenciAc} onSayi={onSayi} onAcikDegisti={setYanOgrenci} /><VeliMesajlari /></div>
+            <div className="iki-sutun-sag">{yanOgrenci && <OgrenciOzetPaneli ogrenciId={yanOgrenci} onAc={onOgrenciAc} onMesaj={onMesaj} onGozuyle={onGozuyle} />}</div>
+          </>
+        ) : (
+          <>
+            <Yapilacaklar onOgrenciAc={onOgrenciAc} onSayi={onSayi} />
+            <VeliMesajlari />
+          </>
+        )}
       </div>
     </div>
   )
 }
 
 /* Tabelanın arkası: aynı ekran; sağ üstte tabela, altında öğrenciler. */
-export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, tepe }) {
+export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, onGozuyle, tepe }) {
   const [riskler, setRiskler] = useState(null)
+  /* Geniş ekranda iki sütun (22 Eylül 2026, mokap onaylı): solda liste,
+     sağda seçilen öğrencinin özeti; satıra dokunmak sayfayı değiştirmez. */
+  const genis = useGenisEkran()
+  const [secili, setSecili] = useState(null)
   useEffect(() => {
     let iptal = false
     ;(async () => {
@@ -282,9 +299,20 @@ export function OgrencilerimEkrani({ onOgrenciAc, onMesaj, tepe }) {
         {...tepe}
         sagCizim={(mevsim) => <TabelaCizimi mevsim={mevsim} zemin={false} canli ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi, yol: r.fotograf_yolu }))} />}
       />
-      <div className="ana-govde ana-govde--dar">
-        <OgrenciNabzi onOgrenciAc={onOgrenciAc} onMesaj={onMesaj} />
-      </div>
+      {genis ? (
+        <div className="ana-govde ana-govde--genis iki-sutun">
+          <div className="iki-sutun-sol">
+            <OgrenciNabzi onOgrenciAc={setSecili} onMesaj={onMesaj} seciliId={secili} onIlk={(id) => setSecili((s) => s ?? id)} />
+          </div>
+          <div className="iki-sutun-sag">
+            {secili && <OgrenciOzetPaneli ogrenciId={secili} onAc={onOgrenciAc} onMesaj={onMesaj} onGozuyle={onGozuyle} />}
+          </div>
+        </div>
+      ) : (
+        <div className="ana-govde ana-govde--dar">
+          <OgrenciNabzi onOgrenciAc={onOgrenciAc} onMesaj={onMesaj} />
+        </div>
+      )}
     </div>
   )
 }

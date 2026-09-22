@@ -39,7 +39,7 @@ function OgrenciBasi({ yol, ad }) {
   return <span>{foto ? <img className="portre-foto" src={foto} alt="" /> : bas}</span>
 }
 
-export default function OgrenciNabzi({ onOgrenciAc, onMesaj, onEkle = true }) {
+export default function OgrenciNabzi({ onOgrenciAc, onMesaj, onEkle = true, seciliId = null, onIlk = null }) {
   const [veri, setVeri] = useState(null)
   const [hata, setHata] = useState('')
   const [arama, setArama] = useState('')
@@ -121,6 +121,8 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj, onEkle = true }) {
     ['plansiz', 'Plansız', (s) => s.toplam === 0],
   ]
   const aktifSuzgec = suzgecler.find((x) => x[0] === suzgec)[2]
+  const ilkId = satirlar[0]?.id ?? null
+  useEffect(() => { if (ilkId) onIlk?.(ilkId) }, [ilkId]) // eslint-disable-line react-hooks/exhaustive-deps
   const aranan = arama.trim().toLocaleLowerCase('tr')
   const gorunen = satirlar.filter((s) => aktifSuzgec(s) && (!aranan || s.ad.toLocaleLowerCase('tr').includes(aranan)))
   /* Toplu mesaj: öncelikli ve bugün henüz dokunulmamış öğrenciler. Mesaj
@@ -186,7 +188,7 @@ export default function OgrenciNabzi({ onOgrenciAc, onMesaj, onEkle = true }) {
                 const oran = s.toplam ? s.biten / s.toplam : 0
                 const temasYazi = s.dokunuldu ? temasMetni(s.temas) : null
                 return (
-                  <div key={s.id} className="on2-satir">
+                  <div key={s.id} className={`on2-satir${s.id === seciliId ? ' on2-satir--secili' : ''}`}>
                     <button type="button" className="on2-ac" onClick={() => onOgrenciAc?.(s.id)} aria-label={`${s.ad}, detayı aç`}>
                       <span className="on2-halka">
                         <svg viewBox="0 0 48 48" aria-hidden="true">

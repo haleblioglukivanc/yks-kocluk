@@ -1606,3 +1606,25 @@ button.isl-hc:disabled { cursor: default; }
   background-size: 18px;
   font-weight: 600;
 }
+
+/* ── Masaüstünde iki sütun: listeden seç, yanda aç (22 Eylül 2026, denetim 16) ── */
+.ana-govde--genis { max-width: 72rem; }
+.iki-sutun { display: grid; grid-template-columns: minmax(22rem, 26rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
+.iki-sutun-sol { min-width: 0; }
+.iki-sutun-sag { min-width: 0; position: sticky; top: 1rem; }
+.on2-satir--secili { background: color-mix(in srgb, var(--m-vurgu) 12%, var(--m-yuzey)); box-shadow: inset 3px 0 0 var(--m-vurgu); margin: 0 -0.9rem; padding-left: 0.9rem; padding-right: 0.9rem; border-radius: 12px; }
+.oz-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+.oz-kunye { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.25rem; border-radius: 22px; background: var(--m-yuzey); box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3); }
+.oz-avatar { flex: none; width: 52px; height: 52px; border-radius: 50%; background: #F4DDCC; display: grid; place-items: center; font: 800 15px var(--m-govde); color: var(--m-murekkep); overflow: hidden; box-shadow: 0 0 0 3px var(--m-cizgi-2); }
+.oz-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.oz-avatar--acil { box-shadow: 0 0 0 3px var(--m-acil); }
+.oz-avatar--izle { box-shadow: 0 0 0 3px var(--m-dikkat); }
+.oz-avatar--iyi { box-shadow: 0 0 0 3px var(--m-yolunda); }
+.oz-kimlik { flex: 1; min-width: 0; }
+.oz-kimlik h2 { margin: 0; font: 700 1.5rem var(--m-baslik, Fraunces, serif); line-height: 1.15; }
+.oz-kimlik p { margin: 0.15rem 0 0; font-size: 0.85rem; color: var(--m-soluk); }
+.oz-durum--acil { color: var(--m-acil); } .oz-durum--izle { color: var(--m-dikkat); } .oz-durum--iyi { color: var(--m-yolunda); }
+.oz-eylem { display: flex; align-items: center; gap: 0.5rem; }
+.oz-eylem .ana-yuvarlak { position: static; background: var(--m-zemin); color: var(--m-murekkep); box-shadow: none; }
+.oz-tam { min-height: 40px; padding: 0 1rem; border: 0; border-radius: 999px; background: var(--m-murekkep); color: #fff; font: 700 0.85rem var(--m-govde); cursor: pointer; white-space: nowrap; }
+.oz-govde { padding-top: 0; }
