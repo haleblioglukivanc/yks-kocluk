@@ -988,3 +988,9 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 
 ## 22 Eylül 2026 — Öğrencide zil + mesaj balonu (Bekir)
 - Koçtaki düzen öğrencide de: balon → Mesajlar (okunmamış mesaj), zil → Bildirimler (mesaj hariç okunmamış bildirim: ders yaklaşıyor, plan onayı…), SOS en köşede (`AnaTepe sonDugme`). Rozetler öğrencide amber (`sakin`). Bildirimler ekranında mesaj satırları yok; veli için eski davranış duruyor. Çizbi yüzlü "gelen kutusu" ikonu kalktı.
+
+## 22 Eylül 2026 — Masaüstünde iki sütun (denetim 16, mokap onaylı)
+- ≥64rem'de Öğrencilerim: solda arama/süzgeç/liste (`OgrenciNabzi seciliId/onIlk`), sağda seçilen öğrencinin özeti (`ekranlar/OgrenciOzetPaneli.jsx`: künye + Bu hafta + Denemeler/Konular kapıları + salt okunur program); satıra dokunmak sayfayı değiştirmez, "Tam ekran aç" detaya gider. Açılışta en öncelikli öğrenci seçili.
+- Yapılacaklar: solda kuyruk (+ veli mesajları), sağda açık kartın öğrencisinin aynı özeti (`Yapilacaklar onAcikDegisti`).
+- Telefon ve tablette hiçbir şey değişmedi (`useGenisEkran`). CSS: `.iki-sutun`, `.oz-*`, `.on2-satir--secili`.
+- Tasarım denetimi (16 madde) böylece kapandı. Demo hesaplar hâlâ açık; Bekir "sil" deyince temizlenecek.
