@@ -67,8 +67,10 @@ export default function HaftalikLinkler({ ogrenciId, rol = 'ogrenci', saltOkunur
     if (!u) return
     if (!/^https?:\/\//i.test(u)) u = `https://${u}`
     try { new URL(u) } catch { setHata('Bu bir link gibi görünmüyor.'); return }
+    /* Yalnız YouTube (22 Eylül 2026, Bekir). */
+    if (!youtubeMu(u)) { setHata('Yalnız YouTube linki eklenebilir.'); return }
     setEkleniyor(true); setHata('')
-    const baslik = (await baslikBul(u)) ?? alanAdi(u)
+    const baslik = (await baslikBul(u)) ?? 'YouTube videosu'
     const { error } = await supabase.from('haftalik_link').insert({
       ogrenci_id: ogrenciId, hafta_basi: hafta, url: u, baslik,
       not_metni: not.trim() || null,
@@ -132,7 +134,7 @@ export default function HaftalikLinkler({ ogrenciId, rol = 'ogrenci', saltOkunur
         </header>
         {n > 0 && <div className="hl-kart">{liste.map(satir)}</div>}
         <form className="hl-ekle" onSubmit={ekle}>
-          <input type="url" inputMode="url" value={url} onChange={(e) => setUrl(e.target.value)} placeholder="Link yapıştır" aria-label="İzlenecek link" />
+          <input type="url" inputMode="url" value={url} onChange={(e) => { setUrl(e.target.value); setHata('') }} placeholder="YouTube linki yapıştır" aria-label="YouTube linki" />
           <input type="text" value={not} onChange={(e) => setNot(e.target.value)} placeholder="Kısa not (isteğe bağlı)" aria-label="Kısa not" maxLength={200} />
           <button type="submit" disabled={ekleniyor || !url.trim()}>{ekleniyor ? 'Ekleniyor…' : 'Ekle'}</button>
         </form>

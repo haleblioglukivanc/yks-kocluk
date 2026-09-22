@@ -13,6 +13,7 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 - Koç: öğrencinin koç ekranında Program'ın altında "Bu haftanın izlenecekleri" (link + isteğe bağlı not, ×; YouTube başlığı oEmbed'den kendiliğinden, diğerlerinde alan adı; satırda "İzledi · Salı 21:40" / "Bekliyor"). Öğrenci: Programım'da koçun işlerinin altında "Bu hafta izle" (her gün aynı; link yoksa çizilmez). Link uygulama dışında açılır; tik denetimsiz, geri alınabilir (`bilesenler/HaftalikLinkler.jsx`).
 - Hafta bitince izlenmeyen varsa Yapılacaklar'a öğrenci başına tek "Video" kartı (`link_izle`, Bu hafta bölümü): Bu haftaya taşı / Ertele / Kapat.
 - Linkler yalnız içinde bulunulan haftaya eklenir; ayrı bildirim yok.
+- Yalnız YouTube (Bekir, aynı gün): arayüz başka linki reddeder, veritabanında `haftalik_link_youtube` kısıtı (not valid; önceden eklenmiş bir Instagram satırı duruyor). Uygulama içi oynatıcı + izlenme oranı takibi konuşuldu, Bekir istemedi: link dışarıda açılır, tik denetimsiz.
 
 ## 22 Eylül 2026 — Tabeladaki canlılar, ince ayar 2
 
