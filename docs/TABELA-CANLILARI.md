@@ -26,6 +26,8 @@ Mokap dosyası: `/mnt/user-data/outputs/tabela-canlilar-mokap.html` (oturuma ba�
 - **Mevsim seçiciyle çalışır** (koçun profilindeki Görünüm → Mevsim teması; öğrenciler tarihe göre görür).
 - **Hafif:** yalnız SVG + CSS keyframe; JS zamanlayıcısı yok.
 
+**Dikkat:** CSS ile animasyon verilen bir `<g>`e SVG `transform` özniteliği koyma — CSS transform onu ezer, canlı kayar. Kayma her zaman dış sarmal grupta, animasyon iç grupta.
+
 ## 3. Kod nerede?
 
 | Ne | Dosya | Not |

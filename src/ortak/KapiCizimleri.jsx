@@ -295,7 +295,7 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
   if (mevsim === 'yaz') return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-serce">
-        <g className="tc-serce-govde" transform="translate(0 -16)">
+        <g transform="translate(0 -16)"><g className="tc-serce-govde">
           <path d="M-14 4 L-24 0 L-14 -1 Z" fill="#6E4A2E" />
           <ellipse cx="-3" cy="2" rx="12" ry="9" fill="#9A6A43" />
           <ellipse cx="-2" cy="5" rx="8" ry="5" fill="#E9D8BE" />
@@ -313,14 +313,14 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
             <path d="M14 -6 L19 -5 L14 -3 Z" fill="#E4A43C" />
           </g>
           <path d="M-4 10 v5 M2 10 v5" stroke="#6E4A2E" strokeWidth="1.4" />
-        </g>
+        </g></g>
       </g>
     </g>
   )
   if (mevsim === 'kis') return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-gerdan">
-        <g className="tc-gerdan-yon" transform="translate(2 -18)">
+        <g transform="translate(2 -18)"><g className="tc-gerdan-yon">
           <g className="tc-gerdan-govde">
             <path d="M-14 4 L-22 8 L-14 8 Z" fill="#6D5A4B" />
             <circle cx="0" cy="2" r="12" fill="#7A6453" />
@@ -334,7 +334,7 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
             <path d="M10 -4 L15 -3 L10 -1.5 Z" fill="#3A2A22" />
           </g>
           <path d="M-3 13 v3 M3 13 v3" stroke="#5E4C3F" strokeWidth="1.3" />
-        </g>
+        </g></g>
       </g>
       {[[-6, -6], [4, 4], [12, -2], [20, 6], [28, 0]].map(([kx, dx], i) => (
         <circle key={i} className="tc-kar" cx={kx} cy="2" r={1.6 + (i % 2)} fill="#FFFFFF" style={{ '--tc-x': `${dx}px`, animationDelay: `${i * 0.08}s` }} />
