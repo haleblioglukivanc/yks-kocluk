@@ -12,6 +12,8 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 Düzeltme: yön çevirme animasyonu (CSS transform) aynı gruptaki SVG `transform`
 kaymasını eziyordu; serçe 16, kızılgerdan 18 birim aşağı oturuyordu (Bekir kışta
 fark etti). Kayma ayrı dış gruba alındı, ikisi de çubuğun üstünde.
+Sincap inişte `scaleX` 1→-1 interpolasyonuyla kâğıt gibi katlanıyordu; dönüş
+kuşlardaki gibi anlık (`step-end`) oldu.
 
 Bekir: serçe sahneye geri geri giriyordu. Serçe ve kızılgerdan artık gelirken
 uçuş yönüne (sola) bakıyor, konunca dönüyor; kızılgerdana açık kanat + çırpma

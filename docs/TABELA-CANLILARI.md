@@ -56,7 +56,8 @@ Mokap dosyası: `/mnt/user-data/outputs/tabela-canlilar-mokap.html` (oturuma ba�
 | `.tc-serce-ucan` / `.tc-serce-kapali` | Açık / kapalı kanat | Yalnız uçuş pencerelerinde (%0–4,4 ve %55–62) açık kanat görünür, aksi hâlde kapalı kanat çizgisi; `step-end` opaklık |
 | `.tc-serce-kanat` (+ `--arka`) | Çırpma | 0,22 sn ileri-geri, -38°…+22°; iki kanat yarım faz kaymalı |
 | `.tc-serce-bas` | Bakınma | %13–17 ters döner (scaleX -1), %30–33 başını eğer (-18°) |
-| `.tc-sincap` | Tırmanma–oturma–inme | Direkte -90° dönük tırmanır (%0–12), %12–52 oturur, %55–64 `scaleX(-1)` ile kafa aşağı iner |
+| `.tc-sincap` | Tırmanma–oturma–inme | Direkte -90° dönük tırmanır (%0–12), %12–53 oturur, %53–64 kafa aşağı iner |
+| `.tc-sincap-yon` | Yön | %52'de anlık `scaleX(-1)` (sola döner); `scaleX` keyframe içinde -1'e **interpolasyonla** geçirilmez, kâğıt gibi katlanır |
 | `.tc-kuyruk` | Kuyruk | 1.6 sn ileri-geri, -12° |
 | `.tc-yaprak` | Düşen yaprak (sonbahar) | %29–43 arası tabeladan düşer |
 | `.tc-gerdan` | Kış kuşunun gelişi | Bir kez, 1,8 sn sağ üstten yay çizerek konar; `.tc-gerdan-yon` gelirken sola baktırır, `.tc-gerdan-ucan`/`-kapali` kanadı açık→kapalı yapar (serçenin kanat sınıflarını paylaşır) |

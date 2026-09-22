@@ -344,7 +344,7 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
   return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-sincap">
-        <g transform="translate(-2 -20)">
+        <g transform="translate(-2 -20)"><g className="tc-sincap-yon">
           <path className="tc-kuyruk" d="M-8 10 C -26 8 -30 -12 -18 -20 C -10 -24 -6 -14 -12 -10 C -18 -6 -14 4 -4 6 Z" fill="#B8642E" />
           <ellipse cx="0" cy="8" rx="9" ry="11" fill="#C9763A" />
           <ellipse cx="2" cy="11" rx="5" ry="6" fill="#F0D2A8" />
@@ -353,7 +353,7 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
           <circle cx="8" cy="-5" r="1.4" fill="#1E1410" />
           <circle cx="12.5" cy="-2" r="1" fill="#1E1410" />
           <g transform="translate(12 3)"><ellipse cx="0" cy="2" rx="3.2" ry="4" fill="#8A5A2B" /><path d="M-3.4 -0.5 q3.4 -3 6.8 0 z" fill="#5E3B1C" /></g>
-        </g>
+        </g></g>
       </g>
       <path className="tc-yaprak" d="M30 -12 c3 -5 8 -5 10 0 c-2 5 -7 5 -10 0z" fill="#D8742C" />
     </g>
