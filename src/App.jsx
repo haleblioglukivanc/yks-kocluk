@@ -491,6 +491,7 @@ export default function App() {
     rozet: kocMu ? bekleyenKarar : okunmamisMesaj,
     gelenKutusu: profil.rol === 'ogrenci',
     onZil: () => git(kocMu ? '/yapilacaklar' : '/bildirimler'),
+    zilEtiket: kocMu ? 'Yapılacaklar' : 'Bildirimler',
     ekDugme: kocMesajDugmesi,
     /* Koçta köşedeki KH düğmesi yok (22 Eylül 2026, Bekir): profil ana
        ekrandaki fotoğraf çerçevesinden ve selamdan açılır. */
@@ -620,7 +621,7 @@ export default function App() {
           onYenile={profiliYenile}
         />
       )
-    if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
+    if (kocMu && yol === '/yapilacaklar') return <YapilacaklarEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} tepe={{ ...anaTepe, onZil: undefined, onGeri: () => git('/') }} />
     if (kocMu && (yol === '/ogrencilerim' || yol === '/ogrenciler')) return <OgrencilerimEkrani onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onMesaj={(id) => git(`/mesajlar/${id}`)} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu)
       return <KocAnaSayfa profil={profil} onGit={git} tepe={anaTepe} />

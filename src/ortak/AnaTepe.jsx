@@ -47,6 +47,7 @@ export default function AnaTepe({
   altBaslik = null,
   durum = null,
   kisa = false,
+  zilEtiket = 'Bildirimler',
 }) {
   const mevsim = useMevsim()
   return (
@@ -77,11 +78,11 @@ export default function AnaTepe({
                 aria-label={
                   gelenKutusu
                     ? rozet > 0 ? `Gelen kutusu, ${rozet} yeni` : 'Gelen kutusu'
-                    : rozet > 0 ? `Bildirimler, ${rozet} yeni` : 'Bildirimler'
+                    : rozet > 0 ? `${zilEtiket}, ${rozet} yeni` : zilEtiket
                 }
               >
                 {gelenKutusu ? KUTU : ZIL}
-                {rozet > 0 && <span className={gelenKutusu ? 'ana-rozet ana-rozet--sakin' : 'ana-rozet'}>{rozet > 9 ? '9+' : rozet}</span>}
+                {rozet > 0 && <span className={gelenKutusu ? 'ana-rozet ana-rozet--sakin' : 'ana-rozet'}>{rozet > 99 ? '99+' : rozet}</span>}
               </button>
             )}
             {onHesap && (
