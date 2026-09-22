@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import Bolum from '../ortak/Bolum.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
@@ -87,6 +87,19 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, y
     ozetiYukle()
   }, [ozetiYukle])
 
+  /* Ders şeridi yanal kayar; seçili ders (ör. Coğrafya) şeridin sağında
+     kalınca hiçbiri seçili görünmüyordu (22 Eylül 2026). Yalnız şerit kayar,
+     sayfa yerinden oynamaz. */
+  const derslerRef = useRef(null)
+  useEffect(() => {
+    const kap = derslerRef.current
+    const el = kap?.querySelector('[aria-pressed="true"]')
+    if (!kap || !el) return
+    const sol = el.offsetLeft - kap.offsetLeft
+    const sag = sol + el.offsetWidth
+    if (sol < kap.scrollLeft || sag > kap.scrollLeft + kap.clientWidth) kap.scrollLeft = Math.max(0, sol - 12)
+  }, [secili, dersler])
+
   /* Harita gelmeden bir ekran boyu yer tutulur. Altındaki Seri ve kitap
      kartları daha hızlı geliyordu; harita sonradan açılınca onları ekrandan
      itiyordu. Gerçek patika neredeyse her zaman bir ekrandan uzun. */
@@ -137,7 +150,7 @@ export default function KonuHaritasi({ profilId, odakDers, sekmeYuvasi = null, y
     return (
       <>
         <Uyari>{hata}</Uyari>
-        <div className="yol-dersler" role="group" aria-label="Dersler">
+        <div className="yol-dersler" role="group" aria-label="Dersler" ref={derslerRef}>
           {gruplar.map((g) => {
             const gt = grupToplami(g, ['toplam', 'tamamlandi'])
             const oran = gt.toplam ? gt.tamamlandi / gt.toplam : 0

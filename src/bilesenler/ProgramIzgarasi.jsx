@@ -128,9 +128,17 @@ export default function ProgramIzgarasi({
   /* Açılışta bu hafta görünsün: şerit soldaki geçmiş haftalardan
      başlıyor, o yüzden bir kez kaydırılıyor. */
   useEffect(() => {
-    const kap = kaydirakRef.current
-    const blok = kap?.children?.[GERI_HAFTA]
-    if (kap && blok) kap.scrollLeft = blok.offsetLeft - kap.offsetLeft
+    const kaydir = () => {
+      const kap = kaydirakRef.current
+      const blok = kap?.children?.[GERI_HAFTA]
+      if (kap && blok && blok.offsetLeft > 0) kap.scrollLeft = blok.offsetLeft - kap.offsetLeft
+    }
+    /* İlk çizimde bloklar henüz ölçülmemiş olabiliyordu, şerit 2 hafta
+       geride açılıyordu (22 Eylül 2026): bir kare sonra ve veri gelince tekrar. */
+    kaydir()
+    const r = requestAnimationFrame(kaydir)
+    const z = setTimeout(kaydir, 200)
+    return () => { cancelAnimationFrame(r); clearTimeout(z) }
   }, [gorevler === null])
 
   const yukle = useCallback(async () => {

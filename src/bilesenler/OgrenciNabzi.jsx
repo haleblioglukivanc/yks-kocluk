@@ -25,7 +25,9 @@ function sonHareket(r) {
   if (!r?.son_aktiflik) return { metin: 'Henüz giriş yok', tur: 'dikkat', bugun: false }
   const t = new Date(r.son_aktiflik)
   const gunFarki = Math.floor((new Date(new Date().toDateString()) - new Date(t.toDateString())) / 86400000)
-  if (gunFarki <= 0) return { metin: `Bugün ${t.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' })}`, tur: 'iyi', bugun: true }
+  /* son_aktiflik görünümde gün hassasiyetinde (::date); saat basmak hep
+     "00:00" veriyordu (22 Eylül 2026). */
+  if (gunFarki <= 0) return { metin: 'Bugün girdi', tur: 'iyi', bugun: true }
   if (gunFarki === 1) return { metin: 'Dün girdi', tur: 'notr', bugun: false }
   return { metin: `${gunFarki} gündür yok`, tur: 'dikkat', bugun: false }
 }

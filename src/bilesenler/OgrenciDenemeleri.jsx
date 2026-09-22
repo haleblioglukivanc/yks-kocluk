@@ -106,7 +106,7 @@ export default function OgrenciDenemeleri({ ogrenciId, katalogId, hedefTyt = nul
           </div>
           <p className="odn-cumle">
             {fark == null
-              ? K('Bu ilk denemen. Bir sonrakini ekleyince ne kadar ilerlediğini burada göreceksin.', 'Bu ilk denemesi. Bir sonraki girilince ne kadar ilerlediği burada görünecek.')
+              ? K(`İlk ${TUR_ADI[son.tur] ?? son.tur} denemen. Bir sonraki ${TUR_ADI[son.tur] ?? son.tur}'yi ekleyince ne kadar ilerlediğini burada göreceksin.`, `İlk ${TUR_ADI[son.tur] ?? son.tur} denemesi. Bir sonraki girilince ne kadar ilerlediği burada görünecek.`)
               : fark > 0
                 ? <>{K('Bir önceki denemenden', 'Bir önceki denemesinden')} <b className="odn-iyi">{netYaz(fark)} net fazla</b>.{ilerleyen.length ? ` En çok ${ilerleyen.join(' ve ')}'${ilerleyen.length > 1 ? 'te' : 'de'} ${K('ilerledin', 'ilerledi')}.` : ''}</>
                 : fark < 0

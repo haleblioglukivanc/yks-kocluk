@@ -156,7 +156,7 @@ export default function OgrenciKimlikKarti({
         {...tepe}
         onGeri={onGeri}
         onBaslik={kocGorunumu ? onProfil : null}
-        altBaslik={[cipler.join(', '), yuzde != null ? `bu hafta %${Math.round(yuzde)}` : null].filter(Boolean).join(' · ') || null}
+        altBaslik={[cipler.join(', '), yuzde != null ? `son 7 gün %${Math.round(yuzde)}` : null].filter(Boolean).join(' · ') || null}
         sagCizim={(mevsim) => (
           <button type="button" className="od-portre" onClick={kocGorunumu ? onProfil : undefined} aria-label={`${ad} profilini aç`}>
             <PortreCizimi mevsim={mevsim} foto={foto} bas={basHarf} durum={riskSeviyesi} idEk={ogrenci.id.slice(0, 8)} />

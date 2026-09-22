@@ -221,12 +221,18 @@ export function YolCizimi({ mevsim, oran = 0, seri = 0, zemin = true }) {
       <line x1="96" y1="20" x2="96" y2="4" stroke="#6B3D29" strokeWidth="2" />
       <path className="yol-bayrak" d="M96 4 L112 9 L96 14 Z" fill="#BE2847" />
       <circle className="yol-ben" cx={x} cy={y} r="6" fill="#F4DDCC" stroke="var(--m-vurgu)" strokeWidth="2.5" />
-      {seri > 0 && (
-        <g transform="translate(2 4)">
-          <rect width="58" height="18" rx="9" fill="#FFF6EC" stroke="#E4A43C" strokeWidth="1.5" />
-          <text x="29" y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9.5" fontWeight="800" fill="#8F5A00">{seri} gün üst üste</text>
-        </g>
-      )}
+      {seri > 0 && (() => {
+        /* Çip metinle birlikte genişler; "15 gün üst üste" sabit 58px kutuya
+           sığmıyor, ilk rakam viewBox dışına taşıyordu (22 Eylül 2026). */
+        const etiket = `${seri} gün üst üste`
+        const w = Math.round(10 + etiket.length * 5.1)
+        return (
+          <g transform="translate(3 3)">
+            <rect width={w} height="18" rx="9" fill="#FFF6EC" stroke="#E4A43C" strokeWidth="1.5" />
+            <text x={w / 2} y="12.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9" fontWeight="800" fill="#8F5A00">{etiket}</text>
+          </g>
+        )
+      })()}
     </svg>
   )
 }
@@ -252,6 +258,12 @@ export function DenemeCizimi({ mevsim, netler = [], zemin = true }) {
         <>
           <polyline className="deneme-tebesir" points={cizgi} fill="none" stroke="#FFF6EC" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" pathLength="100" />
           <circle cx={sonNokta[0]} cy={sonNokta[1]} r="3.5" fill="#F6D36B" />
+        </>
+      ) : son.length === 1 ? (
+        /* Tek deneme: çizgi yok ama "ilk deneme?" de yanlış — tebeşirle tek nokta ve net. */
+        <>
+          <circle cx="77" cy="34" r="3.5" fill="#F6D36B" />
+          <text x="77" y="48" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9" fontWeight="700" fill="#FFF6EC" opacity=".85">{String(Math.round(son[0] * 100) / 100).replace('.', ',')} net</text>
         </>
       ) : (
         <text x="77" y="38" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9" fontWeight="700" fill="#FFF6EC" opacity=".8">ilk deneme?</text>

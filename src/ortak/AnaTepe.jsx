@@ -110,8 +110,9 @@ export default function AnaTepe({
               {altBaslik && <span className="ana-alt-baslik">{altBaslik}</span>}
             </>
           )}
-          {durum}
+          {/* Sıra her ekranda aynı: başlık → alt başlık → cümle → durum hapı (22 Eylül 2026). */}
           {ozet && <p className="ana-ozet">{ozet}</p>}
+          {durum}
         </div>
       </div>
       {typeof children === 'function' ? children(mevsim) : children}

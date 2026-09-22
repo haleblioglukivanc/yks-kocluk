@@ -41,7 +41,7 @@ export function HaftaOzeti({ ogrenciId, ad, onDenemeler, onKonular, tazele = 0 }
       supabase.rpc('deneme_paneli', { p_ogrenci: ogrenciId, p_limit: 3 }),
     ]).then(([g, s, c, d, h, p]) => {
       if (iptal) return
-      const gl = g.data ?? []
+      const gl = (g.data ?? []).filter((x) => x.tarih <= bg) // gelecek günler sayılmaz
       const bugun = gl.filter((x) => x.tarih === bg)
       const sira = bugun.find((x) => x.durum !== 'tamamlandi')
       const dn = d.data ?? []
@@ -65,7 +65,7 @@ export function HaftaOzeti({ ogrenciId, ad, onDenemeler, onKonular, tazele = 0 }
   const satirlar = [
     ['#D08A1E', v.hafta == null
       ? 'Bu hafta için henüz görev yok.'
-      : <>Bu hafta <b>{v.hafta.top} işin {v.hafta.bit} tanesi</b> bitti.{v.bugunTop ? ` Bugün ${v.bugunTop} işin ${v.bugunBit} tanesi bitti${v.sira ? `, sırada ${v.sira}` : ''}.` : ' Bugün için görev yok.'}</>, null],
+      : <>Bu hafta bugüne kadar <b>{v.hafta.top} işin {v.hafta.bit} tanesi</b> bitti.{v.bugunTop ? ` Bugün ${v.bugunTop} işin ${v.bugunBit} tanesi bitti${v.sira ? `, sırada ${v.sira}` : ''}.` : ' Bugün için görev yok.'}</>, null],
     ['#2D7A4E', v.seri > 1
       ? <><b>{v.seri} gündür</b> her gün çalışıyor.{v.dk ? <> Bu hafta sayaçla <b>{sure(v.dk)}</b>.</> : ' Sayacı bu hafta kullanmadı.'}</>
       : v.dk ? <>Bu hafta sayaçla <b>{sure(v.dk)}</b> çalıştı.</> : 'Bu hafta sayaçla çalışma kaydı yok.', null],
