@@ -9,10 +9,10 @@ Uygulamanın sahneli tepesindeki tabelalara (fotoğraf çerçevesini taşıyan d
 
 | Mevsim | Canlı | Ne yapıyor |
 |---|---|---|
-| İlkbahar | Kelebek (pembe) | Soldan süzülerek gelir, çubuğa konar, kanatlarını ara ara ikişer kez yavaşça açıp kapar, sağ üstten uçup gider. |
+| İlkbahar | Kelebek (pembe) | Sol alttan dalgalı yolla, hızlı çırparak süzülür; çubuğa konunca kanatları yavaşlar (ara ara ikişer kez açıp kapar); sağ üstten dalgalı yolla uçup gider. |
 | Yaz | Serçe (kahverengi) | Sağ üstten kanat çırparak süzülür, ~1,5 sn'de yay çizip konar (kanat kapanır); sağa-sola bakınır, başını eğer, iki kez yana zıplayıp döner; sol üstten uçup gider. |
-| Sonbahar | Sincap (turuncu, ağzında palamut) | Direğe aşağıdan tırmanır, çubukta oturur, kuyruğu yavaşça sallanır; arada bir yaprak tabelaya çarpıp düşer; direkten inip gider. |
-| Kış | Kızılgerdan (tombul, kırmızı göğüslü) | Karlı çubuğa konar ve **kalır**; arada silkelenir, çubuktan birkaç kar tanesi dökülür. |
+| Sonbahar | Sincap (turuncu, ağzında palamut) | Direğe aşağıdan tırmanır, çubukta oturur, kuyruğu yavaşça sallanır; arada bir yaprak tabelaya çarpıp düşer; direkten **kafa aşağı** inip gider. |
+| Kış | Kızılgerdan (tombul, kırmızı göğüslü) | Sağ üstten sola bakarak, kanat çırparak yay çizip karlı çubuğa konar ve **kalır**; arada silkelenir, çubuktan birkaç kar tanesi dökülür. |
 
 Onaylanan mokap (hızlı, 16 sn'lik tur; mevsim düğmeli): https://claude.ai/artifact/57at2ZbY4B2SWNENogTWoG
 Mokap dosyası: `/mnt/user-data/outputs/tabela-canlilar-mokap.html` (oturuma bağlı; kalıcı değil).
@@ -48,16 +48,16 @@ Mokap dosyası: `/mnt/user-data/outputs/tabela-canlilar-mokap.html` (oturuma ba�
 |---|---|---|
 | `.tc` | Her canlının hareket kabı | `animation-duration: 35s; infinite; ease-in-out` |
 | `.tc-kelebek` / `@keyframes tc-kelebek` | Geliş–konma–gidiş | 0% sol alttan görünmez → %13 konmuş → %50'ye kadar durur → %56–59 sağ üstten çıkar → turun kalanı görünmez |
-| `.tc-kanat` (+ `--sag`) | Kanat | 2.4 sn'lik döngü, döngüde iki yavaş kapanma (scaleX .3) |
+| `.tc-kanat--yavas` / `--hizli` | Kelebek kanadı | İki takım: konmuşken yavaş (2,4 sn döngü, iki kapanma), uçarken hızlı (0,3 sn ileri-geri); `.tc-kelebek-ucan` / `-konmus` opaklıkla takım değiştirir |
 | `.tc-serce` | Geliş, iki zıplama, gidiş | %0–4,4 sağ üstten yay çizerek konar (~1,5 sn), %22–24 ve %38–40 zıplama, %55–62 sola sıçrayıp uçar |
-| `.tc-serce-govde` | Yön | %55'ten sonra `scaleX(-1)`: giderken sola bakar |
+| `.tc-serce-govde` | Yön | Gelirken (%0–4,4) ve giderken (%55+) `scaleX(-1)`: uçuş yönüne bakar, konunca sağa döner |
 | `.tc-serce-ucan` / `.tc-serce-kapali` | Açık / kapalı kanat | Yalnız uçuş pencerelerinde (%0–4,4 ve %55–62) açık kanat görünür, aksi hâlde kapalı kanat çizgisi; `step-end` opaklık |
 | `.tc-serce-kanat` (+ `--arka`) | Çırpma | 0,22 sn ileri-geri, -38°…+22°; iki kanat yarım faz kaymalı |
 | `.tc-serce-bas` | Bakınma | %13–17 ters döner (scaleX -1), %30–33 başını eğer (-18°) |
-| `.tc-sincap` | Tırmanma–oturma–inme | Direkte -90° dönük tırmanır (%0–12), %12–52 oturur, %55–64 iner |
+| `.tc-sincap` | Tırmanma–oturma–inme | Direkte -90° dönük tırmanır (%0–12), %12–52 oturur, %55–64 `scaleX(-1)` ile kafa aşağı iner |
 | `.tc-kuyruk` | Kuyruk | 1.6 sn ileri-geri, -12° |
 | `.tc-yaprak` | Düşen yaprak (sonbahar) | %29–43 arası tabeladan düşer |
-| `.tc-gerdan` | Kış kuşunun gelişi | Bir kez, 1.2 sn yukarıdan konar; sonra kalır |
+| `.tc-gerdan` | Kış kuşunun gelişi | Bir kez, 1,8 sn sağ üstten yay çizerek konar; `.tc-gerdan-yon` gelirken sola baktırır, `.tc-gerdan-ucan`/`-kapali` kanadı açık→kapalı yapar (serçenin kanat sınıflarını paylaşır) |
 | `.tc-gerdan-govde` | Silkelenme | %38–42 arası sağa-sola sallanıp kabarır |
 | `.tc-kar` | Dökülen kar | %39–46 arası 5 tane, `--tc-x` ile yana saçılır |
 
@@ -65,6 +65,7 @@ Renkler çizimin içinde sabit (mevsim paletine bağlı değil): kelebek `#F28FB
 
 ## 4. İnce ayar için açık sorular / fikirler
 
+Tur 2 (22 Eylül 2026): serçe ve kızılgerdan gelirken uçuş yönüne bakıyor (Bekir: "arka arka geliyor"), kızılgerdana kanat, kelebeğe dalgalı yol + hızlı çırpma, sincap kafa aşağı iniyor.
 Tur 1 (22 Eylül 2026): koç ana ekranında canlı sağ üstteki fotoğraf tabelasına taşındı; ölçekler büyütüldü (0.8→1, 0.6→0.85); serçeye açık kanat + çırpma ve süzülen geliş eklendi. Kalan konular:
 
 1. **Boyut:** fotoğraf tabelasında `olcek 1`, Öğrencilerim tabelasında `0.85` (390px'te doğrulandı).

@@ -269,20 +269,29 @@ export function DenemeCizimi({ mevsim, netler = [], zemin = true }) {
    Ayrıntı ve ince ayar notları: docs/TABELA-CANLILARI.md */
 export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
   const donus = `translate(${x} ${y}) scale(${olcek})`
-  if (mevsim === 'ilkbahar') return (
-    <g transform={donus} aria-hidden="true">
-      <g className="tc tc-kelebek">
-        <g transform="translate(4 -14)">
-          <ellipse className="tc-kanat" cx="-6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
-          <ellipse className="tc-kanat" cx="-5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
-          <ellipse className="tc-kanat tc-kanat--sag" cx="6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
-          <ellipse className="tc-kanat tc-kanat--sag" cx="5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
-          <rect x="-1.2" y="-8" width="2.4" height="18" rx="1.2" fill="#3A2A22" />
-          <path d="M-1 -8 q-4 -6 -6 -7 M1 -8 q4 -6 6 -7" stroke="#3A2A22" strokeWidth="1" fill="none" />
+  if (mevsim === 'ilkbahar') {
+    const kanatlar = (ek) => (
+      <>
+        <ellipse className={`tc-kanat ${ek}`} cx="-6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
+        <ellipse className={`tc-kanat ${ek}`} cx="-5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
+        <ellipse className={`tc-kanat tc-kanat--sag ${ek}`} cx="6" cy="-2" rx="7" ry="9" fill="#F28FB0" />
+        <ellipse className={`tc-kanat tc-kanat--sag ${ek}`} cx="5" cy="7" rx="5" ry="5" fill="#F6B8CC" />
+      </>
+    )
+    return (
+      <g transform={donus} aria-hidden="true">
+        <g className="tc tc-kelebek">
+          <g transform="translate(4 -14)">
+            {/* uçarken hızlı çırpan takım, konunca yavaş takım (opaklıkla değişir) */}
+            <g className="tc-kelebek-ucan">{kanatlar('tc-kanat--hizli')}</g>
+            <g className="tc-kelebek-konmus">{kanatlar('tc-kanat--yavas')}</g>
+            <rect x="-1.2" y="-8" width="2.4" height="18" rx="1.2" fill="#3A2A22" />
+            <path d="M-1 -8 q-4 -6 -6 -7 M1 -8 q4 -6 6 -7" stroke="#3A2A22" strokeWidth="1" fill="none" />
+          </g>
         </g>
       </g>
-    </g>
-  )
+    )
+  }
   if (mevsim === 'yaz') return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-serce">
@@ -311,14 +320,18 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
   if (mevsim === 'kis') return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-gerdan">
-        <g transform="translate(2 -18)">
+        <g className="tc-gerdan-yon" transform="translate(2 -18)">
           <g className="tc-gerdan-govde">
             <path d="M-14 4 L-22 8 L-14 8 Z" fill="#6D5A4B" />
             <circle cx="0" cy="2" r="12" fill="#7A6453" />
             <circle cx="3" cy="4" r="8" fill="#D9573A" />
+            <path className="tc-gerdan-kapali" d="M-8 0 q4 -6 10 -4" stroke="#5E4C3F" strokeWidth="2" fill="none" />
+            <g className="tc-gerdan-ucan">
+              <ellipse className="tc-serce-kanat" cx="-3" cy="-4" rx="10" ry="3.8" fill="#6A5648" />
+              <ellipse className="tc-serce-kanat tc-serce-kanat--arka" cx="-5" cy="-2" rx="9" ry="3.2" fill="#5E4C3F" />
+            </g>
             <circle cx="5" cy="-6" r="1.5" fill="#1E1410" />
             <path d="M10 -4 L15 -3 L10 -1.5 Z" fill="#3A2A22" />
-            <path d="M-8 0 q4 -6 10 -4" stroke="#5E4C3F" strokeWidth="2" fill="none" />
           </g>
           <path d="M-3 13 v3 M3 13 v3" stroke="#5E4C3F" strokeWidth="1.3" />
         </g>

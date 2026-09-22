@@ -1502,15 +1502,25 @@ button.isl-hc:disabled { cursor: default; }
    Bir tur 35 sn. Keyframe yüzdeleri mokaptaki 16 sn'lik turdan ölçeklendi. */
 .tc { transform-box: view-box; animation-duration: 35s; animation-iteration-count: infinite; animation-timing-function: ease-in-out; }
 .tc-kelebek { animation-name: tc-kelebek; }
+/* Kelebek: sol alttan dalgalı yolla süzülür (%0–13), konar, sağ üstten dalgalı çıkar (%50–59) */
 @keyframes tc-kelebek {
-  0% { transform: translate(-60px, 40px); opacity: 0; } 3% { opacity: 1; }
-  9% { transform: translate(8px, -14px); } 13% { transform: translate(0, 0); }
-  50% { transform: translate(0, 0); opacity: 1; } 56% { transform: translate(60px, -60px); opacity: 1; }
-  59%, 100% { transform: translate(90px, -80px); opacity: 0; }
+  0% { transform: translate(-70px, 44px); opacity: 0; } 2% { opacity: 1; }
+  4% { transform: translate(-50px, 26px); } 6.5% { transform: translate(-34px, 34px); }
+  9% { transform: translate(-16px, 10px); } 11% { transform: translate(6px, -12px); } 13% { transform: translate(0, 0); }
+  50% { transform: translate(0, 0); opacity: 1; }
+  52% { transform: translate(14px, -18px); } 54% { transform: translate(28px, -10px); } 56% { transform: translate(50px, -44px); opacity: 1; }
+  58% { transform: translate(68px, -36px); } 59%, 100% { transform: translate(90px, -80px); opacity: 0; }
 }
-.tc-kanat { transform-box: fill-box; transform-origin: 100% 50%; animation: tc-kanat 2.4s ease-in-out infinite; }
+.tc-kelebek-ucan { animation: tc-kelebek-ucus 35s step-end infinite; }
+@keyframes tc-kelebek-ucus { 0% { opacity: 1; } 13% { opacity: 0; } 50% { opacity: 1; } 59% { opacity: 0; } 100% { opacity: 0; } }
+.tc-kelebek-konmus { animation: tc-kelebek-konma 35s step-end infinite; }
+@keyframes tc-kelebek-konma { 0% { opacity: 0; } 13% { opacity: 1; } 50% { opacity: 0; } 59% { opacity: 1; } 100% { opacity: 1; } }
+.tc-kanat { transform-box: fill-box; transform-origin: 100% 50%; }
 .tc-kanat--sag { transform-origin: 0% 50%; }
+.tc-kanat--yavas { animation: tc-kanat 2.4s ease-in-out infinite; }
+.tc-kanat--hizli { animation: tc-kanat-hizli .3s ease-in-out infinite alternate; }
 @keyframes tc-kanat { 0%, 55%, 100% { transform: scaleX(1); } 65% { transform: scaleX(.3); } 75% { transform: scaleX(1); } 85% { transform: scaleX(.3); } }
+@keyframes tc-kanat-hizli { from { transform: scaleX(1); } to { transform: scaleX(.25); } }
 .tc-serce { animation-name: tc-serce; }
 /* Geliş: sağ üstten süzülerek, ~1,5 sn'de yay çizip konar; gidiş: sola sıçrayıp yükselir. */
 @keyframes tc-serce {
@@ -1527,7 +1537,7 @@ button.isl-hc:disabled { cursor: default; }
 }
 /* Gövde giderken sola bakar */
 .tc-serce-govde { transform-box: fill-box; transform-origin: 50% 50%; animation: tc-serce-yon 35s step-end infinite; }
-@keyframes tc-serce-yon { 0%, 55% { transform: none; } 55.2%, 100% { transform: scaleX(-1); } }
+@keyframes tc-serce-yon { 0% { transform: scaleX(-1); } 4.4%, 55% { transform: none; } 55.2%, 100% { transform: scaleX(-1); } }
 /* Açık kanatlar yalnız uçuş pencerelerinde görünür (0–4,4 % ve 55–62 %) */
 .tc-serce-ucan { animation: tc-serce-ucus 35s step-end infinite; }
 @keyframes tc-serce-ucus { 0% { opacity: 1; } 4.4% { opacity: 0; } 55% { opacity: 1; } 62% { opacity: 0; } 100% { opacity: 0; } }
@@ -1538,23 +1548,33 @@ button.isl-hc:disabled { cursor: default; }
 @keyframes tc-cirp { from { transform: rotate(-38deg) scaleY(.9); } to { transform: rotate(22deg) scaleY(1.1); } }
 .tc-sincap { animation-name: tc-sincap; }
 @keyframes tc-sincap {
-  0% { transform: translate(-4px, 96px) rotate(-90deg); opacity: 0; } 2% { opacity: 1; }
-  9% { transform: translate(-4px, 10px) rotate(-90deg); } 12% { transform: translate(0, 0) rotate(0); }
-  52% { transform: translate(0, 0) rotate(0); opacity: 1; } 55% { transform: translate(-4px, 10px) rotate(-90deg); }
-  62% { transform: translate(-4px, 96px) rotate(-90deg); opacity: 1; } 64%, 100% { transform: translate(-4px, 110px) rotate(-90deg); opacity: 0; }
+  0% { transform: translate(-4px, 96px) rotate(-90deg) scaleX(1); opacity: 0; } 2% { opacity: 1; }
+  9% { transform: translate(-4px, 10px) rotate(-90deg) scaleX(1); } 12% { transform: translate(0, 0) rotate(0) scaleX(1); }
+  52% { transform: translate(0, 0) rotate(0) scaleX(1); opacity: 1; } 55% { transform: translate(-4px, 10px) rotate(-90deg) scaleX(-1); }
+  62% { transform: translate(-4px, 96px) rotate(-90deg) scaleX(-1); opacity: 1; } 64%, 100% { transform: translate(-4px, 110px) rotate(-90deg) scaleX(-1); opacity: 0; }
 }
 .tc-kuyruk { transform-box: fill-box; transform-origin: 90% 90%; animation: tc-kuyruk 1.6s ease-in-out infinite alternate; }
 @keyframes tc-kuyruk { to { transform: rotate(-12deg); } }
 .tc-yaprak { transform-box: view-box; animation: tc-yaprak 35s linear infinite; opacity: 0; }
 @keyframes tc-yaprak { 0%, 28% { transform: translate(0, 0) rotate(0); opacity: 0; } 29% { opacity: 1; } 40% { transform: translate(-18px, 60px) rotate(140deg); opacity: 1; } 43%, 100% { transform: translate(-24px, 80px) rotate(200deg); opacity: 0; } }
-.tc-gerdan { animation: tc-gerdan 1.2s ease-out both; }
-@keyframes tc-gerdan { from { transform: translate(0, -40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.tc-gerdan { animation: tc-gerdan 1.8s ease-in-out both; }
+@keyframes tc-gerdan {
+  0% { transform: translate(110px, -44px) rotate(-8deg); opacity: 0; } 12% { opacity: 1; }
+  50% { transform: translate(40px, 4px) rotate(6deg); } 82% { transform: translate(6px, -8px) rotate(-4deg); } 100% { transform: none; opacity: 1; }
+}
+.tc-gerdan-yon { transform-box: fill-box; transform-origin: 50% 50%; animation: tc-gerdan-yon 1.8s step-end both; }
+@keyframes tc-gerdan-yon { 0% { transform: scaleX(-1); } 100% { transform: none; } }
+.tc-gerdan-ucan { animation: tc-gerdan-ucus 1.8s step-end both; }
+@keyframes tc-gerdan-ucus { 0% { opacity: 1; } 100% { opacity: 0; } }
+.tc-gerdan-kapali { animation: tc-gerdan-konma 1.8s step-end both; }
+@keyframes tc-gerdan-konma { 0% { opacity: 0; } 100% { opacity: 1; } }
 .tc-gerdan-govde { transform-box: fill-box; transform-origin: 50% 90%; animation: tc-silkelen 35s ease-in-out infinite; }
 @keyframes tc-silkelen { 0%, 38% { transform: none; } 39% { transform: rotate(-8deg) scale(1.08); } 40% { transform: rotate(8deg) scale(1.08); } 41% { transform: rotate(-6deg) scale(1.05); } 42%, 100% { transform: none; } }
 .tc-kar { transform-box: view-box; animation: tc-kar 35s ease-in infinite; opacity: 0; }
 @keyframes tc-kar { 0%, 39% { transform: translate(0, 0); opacity: 0; } 39.5% { opacity: 1; } 46% { transform: translate(var(--tc-x, 0), 46px); opacity: 0; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .tc, .tc-kanat, .tc-serce-bas, .tc-serce-govde, .tc-serce-kanat, .tc-kuyruk, .tc-gerdan-govde { animation: none !important; }
-  .tc-serce-ucan { display: none; } .tc-serce-kapali { opacity: 1 !important; animation: none !important; }
+  .tc, .tc-kanat, .tc-serce-bas, .tc-serce-govde, .tc-serce-kanat, .tc-kuyruk, .tc-gerdan-govde, .tc-gerdan-yon { animation: none !important; }
+  .tc-serce-ucan, .tc-gerdan-ucan, .tc-kelebek-ucan { display: none; }
+  .tc-serce-kapali, .tc-gerdan-kapali, .tc-kelebek-konmus { opacity: 1 !important; animation: none !important; }
   .tc-yaprak, .tc-kar { display: none; }
 }

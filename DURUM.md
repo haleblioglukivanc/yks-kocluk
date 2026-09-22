@@ -7,6 +7,13 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Tabeladaki canlılar, ince ayar 2
+
+Bekir: serçe sahneye geri geri giriyordu. Serçe ve kızılgerdan artık gelirken
+uçuş yönüne (sola) bakıyor, konunca dönüyor; kızılgerdana açık kanat + çırpma
+ve yay çizen geliş eklendi (düz düşmüyor); kelebek dalgalı yolla, hızlı
+çırparak gelip konunca yavaşlıyor; sincap direkten kafa aşağı iniyor.
+
 ## 22 Eylül 2026 — Tabeladaki canlılar, ince ayar 1
 
 Bekir'in telefon geri bildirimi: canlı koç ana ekranında alttaki Öğrencilerim
