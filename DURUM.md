@@ -994,3 +994,8 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Yapılacaklar: solda kuyruk (+ veli mesajları), sağda açık kartın öğrencisinin aynı özeti (`Yapilacaklar onAcikDegisti`).
 - Telefon ve tablette hiçbir şey değişmedi (`useGenisEkran`). CSS: `.iki-sutun`, `.oz-*`, `.on2-satir--secili`.
 - Tasarım denetimi (16 madde) böylece kapandı. Demo hesaplar hâlâ açık; Bekir "sil" deyince temizlenecek.
+
+## 22 Eylül 2026 — Bilgisayarda tek çerçeve (Bekir: "masaüstü güncellemesi tüm ekranlarda aynı olmalı")
+- ≥64rem'de her ekranda tepe içeriği ve gövde aynı 72rem çerçevede, aynı sol kenarda (ölçüldü: 13 ekranda başlık ve içerik x=128). Ekran değişince içerik kaymıyor. Eski 42rem tek sütun kuralı yalnız 64rem altında geçerli.
+- `ortak/Sutunlu.jsx` (+ `Sag`): çocuklar telefondaki sırayla yazılır, `<Sag>` içindekiler bilgisayarda sağ sütuna geçer; telefon/tablette sıra aynen. Kullanılan yerler: koç ana (kapılar | Gidişat), öğrenci detayı (özet, kapılar, kaynaklar, notlar | hızlı kurma + program), profil (bilgiler, görünüm | araçlar, uygulama, hesap), Bildirimler (bekleyenler | son 7 gün), öğrenci ana (kapılar, kitap/söz | Programım), Yol (okuduklarım, kaynaklar | patika), Denemeler (son deneme | tekrar + bütün denemeler). Mesajlar koçta liste | açık yazışma (ilk kişi açık gelir). Öğrencilerim/Yapılacaklar aynı ızgarada.
+- Alt sayfalar (Kaynaklar vb.) tek sütun ama aynı çerçevede; formlar 36rem'de kalır.
