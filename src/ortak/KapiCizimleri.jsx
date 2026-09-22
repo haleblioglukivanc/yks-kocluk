@@ -97,7 +97,7 @@ export function PostaKutusuCizimi({ mevsim, sayi = 0, acil = false, zemin = true
       {sayi > 0 && (
         <g>
           <circle cx="36" cy="8" r="10.5" fill={acil ? '#BE2847' : '#2A211D'} stroke="var(--m-yuzey)" strokeWidth="2.5" />
-          <text x="36" y="12" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="11" fontWeight="800" fill="#FFFFFF">{sayi > 9 ? '9+' : sayi}</text>
+          <text x="36" y="12" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize={sayi > 9 ? '9.5' : '11'} fontWeight="800" fill="#FFFFFF">{sayi > 99 ? '99' : sayi}</text>
         </g>
       )}
     </svg>
@@ -183,7 +183,7 @@ export function CanCizimi({ mevsim, sayi = 0 }) {
       {sayi > 0 && (
         <g>
           <circle cx="96" cy="36" r="10" fill="#BE2847" stroke="#FFFDF9" strokeWidth="2.5" />
-          <text x="96" y="40" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="11" fontWeight="800" fill="#fff">{sayi > 9 ? '9+' : sayi}</text>
+          <text x="96" y="40" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize={sayi > 9 ? '9.5' : '11'} fontWeight="800" fill="#fff">{sayi > 99 ? '99' : sayi}</text>
         </g>
       )}
       {mevsim === 'kis' && <><path d="M14 12 q10 -7 24 -4 q14 -5 28 0 q10 -2 16 4 z" fill="#FFFFFF" /><path d="M56 44 q6 -12 14 -12 q8 0 14 12 q-14 -5 -28 0 z" fill="#FFFFFF" /></>}

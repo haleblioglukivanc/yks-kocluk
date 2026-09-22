@@ -358,7 +358,7 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
                     <span className="ms-yazi">
                       <span className="ms-ust">
                         <b>{k.ad}</b>
-                        <span className="ms-rol">{ROL_ADI[k.rol] ?? k.rol}</span>
+                        {k.rol !== 'ogrenci' && <span className="ms-rol">{ROL_ADI[k.rol] ?? k.rol}</span>}
                         <span className="ms-zaman">{k.sonZaman ? gunYaz(k.sonZaman) : ''}</span>
                       </span>
                       <span className="ms-onizleme">

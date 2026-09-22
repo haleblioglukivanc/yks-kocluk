@@ -123,9 +123,13 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
     return gorunen.filter((x) => x !== k && (x.ogrenci_id === k.ogrenci_id || ilkAd(x.ad) === ilkAd(k.ad) && x.tip !== 'basvuru'))
   }
 
-  const kartCiz = (k) => {
+  /* Bir bölümdeki kapalı satırların hepsi aynı türdeyse tür hapı çizilmez:
+     11 satırda 11 "Zorlanıyor" bilgi değil gürültüydü (22 Eylül 2026). Fark
+     satırın alt yazısında zaten var. */
+  const kartCiz = (k, _i, bolum) => {
     const acikMi = anahtar(k) === ilkAcik
-    if (!acikMi) return <KapaliSatir key={anahtar(k)} k={k} onAc={() => setAcik(anahtar(k))} />
+    const tekTur = Array.isArray(bolum) && bolum.length > 1 && bolum.every((x) => x.tip === bolum[0].tip)
+    if (!acikMi) return <KapaliSatir key={anahtar(k)} k={k} onAc={() => setAcik(anahtar(k))} hapsiz={tekTur} />
     const ortak = { kart: k, onOgrenciAc, onBitti: karmasikBitti(k), onHata: setHata }
     if (k.tip === 'gorusme') return <div key={anahtar(k)} className="yp-eski"><GorusmeKarti {...ortak} /></div>
     if (k.tip === 'plan') return <div key={anahtar(k)} className="yp-eski"><PlanKarti {...ortak} /></div>
@@ -236,13 +240,13 @@ export default function Yapilacaklar({ onOgrenciAc, onSayi, ogrenciId = null, ba
   )
 }
 
-function KapaliSatir({ k, onAc }) {
+function KapaliSatir({ k, onAc, hapsiz = false }) {
   const [tur, ton] = TUR[k.tip] ?? [k.tip, 'dikkat']
   return (
     <button type="button" className="yp-kart yp-kapali" onClick={onAc}>
       <Avatar yol={k.fotograf_yolu} ad={k.ad} boyut="kucuk" />
       <span className="yp-kapali-yazi"><b>{k.ad}</b><small>{k.baglam}</small></span>
-      <span className={`yp-tur yp-tur--${ton}`}>{tur}</span>
+      {!hapsiz && <span className={`yp-tur yp-tur--${ton}`}>{tur}</span>}
     </button>
   )
 }

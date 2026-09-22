@@ -83,11 +83,11 @@ export default function BugunOkuma({ ogrenciId, tarih, saltOkunur = false }) {
             aria-label={`${kitap.ad} için bugün okunan sayfa`}
           />
         )}
+        {/* Kitabın adı ve toplam ilerleme aşağıdaki kitap satırında; burada
+            yalnız bugünün sayısı (22 Eylül 2026). */}
         <span className="okuma-kitap">
-          <i>{kitap.ad}</i>
           <small>
-            {kitap.sayfa ? `${okunan}/${kitap.sayfa} sayfa` : `${okunan} sayfa`}
-            {bekliyor ? ' · kaydediliyor…' : kayitli ? ' · kaydedildi' : saltOkunur ? '' : ' · boş bırakabilirsin'}
+            sayfa{bekliyor ? ' · kaydediliyor…' : kayitli ? ' · kaydedildi' : saltOkunur ? '' : ' · boş bırakabilirsin'}
           </small>
         </span>
       </div>

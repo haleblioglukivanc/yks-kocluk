@@ -19,7 +19,7 @@ import './KonuYolu.css'
 /* Öğrencinin Yol sayfasında (düz patika) koçun terimleri yerine öğrencinin
    diliyle (22 Eylül 2026). */
 const ETIKET_OGRENCI = {
-  onayli: 'bitti · koçun onayladı',
+  onayli: 'bitti',
   bekliyor: 'bitirdin · koçun bakacak',
   tekrar: 'tekrar etmen gerekiyor',
   simdi: 'şu an buradasın',

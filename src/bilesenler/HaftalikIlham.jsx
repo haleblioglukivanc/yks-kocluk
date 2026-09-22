@@ -124,8 +124,16 @@ export default function HaftalikIlham({ goster = 'hepsi', ogrenciId = null, biti
             <small>Haftanın kitabı</small>
             {veri.kitap_ad}
             {kunye && <em>{kunye}</em>}
+            {/* İlerleme burada, tek yerde (22 Eylül 2026): sayfa girişi Unutma
+                kutusunda, toplam ve çubuk kitabın kendi satırında. */}
+            {sayfa > 0 && (
+              <span className="hi-kisa-ilerleme" aria-label={`${okunan} / ${sayfa} sayfa`}>
+                <i style={{ '--w': `${Math.min(100, Math.round((okunan / sayfa) * 100))}%` }} />
+                <b>{okunan}/{sayfa}</b>
+              </span>
+            )}
           </span>
-          {bitirilebilir && (
+          {bitirilebilir && (okunan > 0 || bittiGibi || sayfa === 0) && (
             <button type="button" className="hi-kisa-bitir" disabled={bekliyor} onClick={bitir}>
               {bekliyor ? '…' : 'Bitirdim'}
             </button>
