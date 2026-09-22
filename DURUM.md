@@ -972,3 +972,8 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Kitap tek yerde: Unutma kutusunda yalnız bugünün sayfa sayısı (kitap adı yok); kitap satırında künye altında ilerleme çubuğu + x/toplam; Bitirdim yalnız sayfa girildiyse (ya da toplam sayfa bilinmiyorsa).
 - Posta kutusu ve tabela rozeti "9+" değil gerçek sayı (99'a kadar); zil 9+ kalıyor.
 - Açık: 7 (üç gelen kutusu) toplantı modunda konuşulacak; 11–16 ince ayar turunda.
+
+## 22 Eylül 2026 — Koçta Bildirimler kalktı (denetim 7, Bekir "A")
+- Koçta zil Yapılacaklar'ı açar; rozeti bekleyen iş sayısı (posta kutusuyla aynı, gerçek sayı, 99'a kadar). Yanında mesaj düğmesi + okunmamış mesaj sayısı. Yapılacaklar ekranında zil yok.
+- Koç için `/bildirimler` Yapılacaklar'a yönlenir (eski bildirim bağlantıları için). `Bildirimler.jsx` öğrencide aynen (gelen kutusu).
+- Sonraki: 11–16 ince ayar turu.
