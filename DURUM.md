@@ -954,3 +954,15 @@ Düzeltme (`20260920_yanlis_tekrar_duzeltme.sql`): son çalışmadan sonra gelmi
 - Soru çözümünden eklenen kayıt konu havuzuna `soru_cozumu` sinyali düşer (zorlanma_sinyali.hata_turu'na `yontem` eklendi); denemeden eklenen düşmez (deneme_hatalari zaten sayıyor).
 - Girişler: öğrenci Denemeler sekmesi (satır → tam sayfa defter), deneme kaydındaki "Yanlışlar nereden geldi?" adımı, Günü tamamla → Bugün çözülen (yanlışı olan ders varsa). Koçun öğrenci ekranı Denemeler'de salt okunur.
 - Açık: koç karar kartı (aynı konu + aynı neden 3. hata) sonraki adım. Playwright doğrulaması yapılamadı (test hesabı yok); Bekir telefondan deneyecek.
+
+## 22 Eylül 2026 — Tasarımcı gözüyle denetim, tur 1 (kırıklar)
+
+Geçici demo koç (`tasarim.koc@demo.khkocluk.com`) + 25 demo öğrenci (`demo01..25@demo.khkocluk.com`, seed `demo-25-ogrenci.sql`, şifre `Demo2026!ux`) ile 15 ekran × 390/1366 alındı (`denetim/tasarim.mjs`). Konsol hatası ve yatay taşma yok (Bildirimler'de bir 403 kaynak isteği var, bakılmadı). Bulunan 16 maddeden ilk altısı düzeltildi:
+- Yol kapı kartındaki "N gün üst üste" çipi metinle genişliyor; "15" viewBox dışına taşıyordu (`KapiCizimleri.jsx`).
+- Öğrencilerim'de "Bugün 00:00" → "Bugün girdi": `son_aktiflik` görünümde gün hassasiyetinde, saat basmak anlamsızdı (`OgrenciNabzi.jsx`).
+- Yol'da seçili ders çipi yanal şeritte görünür alana kaydırılıyor; Coğrafya seçiliyken ekran dışındaydı (`KonuHaritasi.jsx`).
+- `AnaTepe` sırası her ekranda aynı: başlık → alt başlık → cümle → durum hapı (Yol'da hap cümlenin üstündeydi).
+- Koçun öğrenci ekranı: "Bu hafta" cümlesi gelecek günleri saymıyor ("bugüne kadar N işin M'si"); alt başlıktaki yüzde "bu hafta" değil "son 7 gün" (risk görünümü öyle hesaplıyor, iki sayı çelişiyordu).
+- Program şeridi hizalaması rect ile (`ProgramIzgarasi.jsx`). Not: Playwright fullPage ekran görüntüsü kaydırmalı şeritleri sıfıra çekiyor; "şerit 2 hafta geride açılıyor" bulgusu buna aitti, canlıda doğru (probe ile doğrulandı).
+- Denemeler: tek deneme varken kara tahtada "ilk deneme?" yerine nokta + net; "Bu ilk denemen" cümlesi türü söylüyor ("İlk AYT denemen").
+Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde, çift 9+, sağ kenarda kesilen şeritler, native select, boş bölümler, masaüstü tek sütun) sohbet kaydında; sırada 7–10.
