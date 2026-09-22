@@ -966,3 +966,9 @@ Geçici demo koç (`tasarim.koc@demo.khkocluk.com`) + 25 demo öğrenci (`demo01
 - Program şeridi hizalaması rect ile (`ProgramIzgarasi.jsx`). Not: Playwright fullPage ekran görüntüsü kaydırmalı şeritleri sıfıra çekiyor; "şerit 2 hafta geride açılıyor" bulgusu buna aitti, canlıda doğru (probe ile doğrulandı).
 - Denemeler: tek deneme varken kara tahtada "ilk deneme?" yerine nokta + net; "Bu ilk denemen" cümlesi türü söylüyor ("İlk AYT denemen").
 Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde, çift 9+, sağ kenarda kesilen şeritler, native select, boş bölümler, masaüstü tek sütun) sohbet kaydında; sırada 7–10.
+
+## 22 Eylül 2026 — Tasarım denetimi tur 2 (8–10, doğrudan)
+- Yapılacaklar: bir bölümdeki kapalı satırların hepsi aynı türdeyse tür hapı çizilmiyor (açık karttaki hap duruyor). Yol'da "bitti · koçun onayladı" → "bitti"; Mesajlar'da "Öğrenci" etiketi yalnız koç/veli olunca.
+- Kitap tek yerde: Unutma kutusunda yalnız bugünün sayfa sayısı (kitap adı yok); kitap satırında künye altında ilerleme çubuğu + x/toplam; Bitirdim yalnız sayfa girildiyse (ya da toplam sayfa bilinmiyorsa).
+- Posta kutusu ve tabela rozeti "9+" değil gerçek sayı (99'a kadar); zil 9+ kalıyor.
+- Açık: 7 (üç gelen kutusu) toplantı modunda konuşulacak; 11–16 ince ayar turunda.
