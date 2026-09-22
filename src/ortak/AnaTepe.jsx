@@ -49,6 +49,7 @@ export default function AnaTepe({
   kisa = false,
   zilEtiket = 'Bildirimler',
   sakin = false, // öğrencide rozet amber: kırmızı yalnız acil
+  sonDugme = null, // zilden sonra, en köşede (öğrencide SOS)
 }) {
   const mevsim = useMevsim()
   return (
@@ -86,6 +87,7 @@ export default function AnaTepe({
                 {rozet > 0 && <span className={gelenKutusu || sakin ? 'ana-rozet ana-rozet--sakin' : 'ana-rozet'}>{rozet > 99 ? '99+' : rozet}</span>}
               </button>
             )}
+            {sonDugme}
             {onHesap && (
               <button type="button" className="ana-yuvarlak ana-yuvarlak--hesap" onClick={onHesap} aria-label="Hesap menüsü">
                 {hesapHarf}

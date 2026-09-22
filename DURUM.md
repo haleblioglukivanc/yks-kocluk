@@ -985,3 +985,6 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Öğrenci detayında boş bölümler tek satır ("Şu an yok." / "Henüz yok."); Notlar formu "+ Not ekle" ile açılır, kaydedince kapanır.
 - Hata defteri boş durumunda ikon artı yok, tek düğme.
 - Kalan: 16 — masaüstünde Öğrencilerim/Yapılacaklar iki sütun (önce görsel).
+
+## 22 Eylül 2026 — Öğrencide zil + mesaj balonu (Bekir)
+- Koçtaki düzen öğrencide de: balon → Mesajlar (okunmamış mesaj), zil → Bildirimler (mesaj hariç okunmamış bildirim: ders yaklaşıyor, plan onayı…), SOS en köşede (`AnaTepe sonDugme`). Rozetler öğrencide amber (`sakin`). Bildirimler ekranında mesaj satırları yok; veli için eski davranış duruyor. Çizbi yüzlü "gelen kutusu" ikonu kalktı.
