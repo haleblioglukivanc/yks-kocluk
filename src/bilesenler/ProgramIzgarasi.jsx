@@ -131,7 +131,9 @@ export default function ProgramIzgarasi({
     const kaydir = () => {
       const kap = kaydirakRef.current
       const blok = kap?.children?.[GERI_HAFTA]
-      if (kap && blok && blok.offsetLeft > 0) kap.scrollLeft = blok.offsetLeft - kap.offsetLeft
+      if (!kap || !blok) return
+      const fark = blok.getBoundingClientRect().left - kap.getBoundingClientRect().left
+      if (Math.abs(fark) > 1) kap.scrollLeft += fark
     }
     /* İlk çizimde bloklar henüz ölçülmemiş olabiliyordu, şerit 2 hafta
        geride açılıyordu (22 Eylül 2026): bir kare sonra ve veri gelince tekrar. */
