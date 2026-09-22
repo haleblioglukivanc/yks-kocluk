@@ -260,6 +260,12 @@ export default function App() {
   /* Zildeki sayı: okunmamış mesaj + koçta karar kuyruğu. Bildirimler
      ekranındaki listeyle aynı kaynaklar; sayı ile liste birbirini tutar. */
   const kocRol = profil?.rol === 'koc'
+  /* Koçta /bildirimler artık yok: eski bağlantılar ve bildirim tıklamaları
+     Yapılacaklar'a düşer (22 Eylül 2026). */
+  useEffect(() => {
+    if (kocRol && yol === '/bildirimler') git('/yapilacaklar')
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [kocRol, yol])
   useEffect(() => {
     if (!kullaniciId || !kocRol) {
       setBekleyenKarar(0)
@@ -471,10 +477,21 @@ export default function App() {
      düğmesi orada. */
   const anaSayfada = (kocMu && Boolean(gozuyleId)) || (!gozuyleId && ((anaEkranda && (kocMu || profil.rol === 'ogrenci')) || (kocMu && (yol === '/yapilacaklar' || yol === '/ogrencilerim' || yol === '/ogrenciler' || yol === '/profil' || yol === '/sifre' || yol === '/konular' || yol === '/kaynaklar' || yol === '/baglantilar' || ['/basvurular', '/sosyal', '/ilham', '/kutuphane', '/odemeler', '/kvkk', '/sistem', '/yonetim'].includes(yol) || Boolean(ogrenciId))) || ((kocMu || profil.rol === 'ogrenci') && (yol.startsWith('/mesajlar') || yol === '/bildirimler' || yol === '/profil')) || (profil.rol === 'ogrenci' && (yol === '/yol' || yol === '/denemeler'))))
   const basHarf = (profil.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
+  /* Koçta Bildirimler ekranı kalktı (22 Eylül 2026, Bekir "A"): aynı mesaj
+     üç yerden çıkıyordu. Zil doğrudan Yapılacaklar'ı açar ve rozeti oradaki
+     iş sayısıdır (posta kutusuyla aynı sayı); okunmamış mesajlar için zilin
+     yanında ayrı bir mesaj düğmesi var. Öğrencide gelen kutusu aynen. */
+  const kocMesajDugmesi = kocMu ? (
+    <button type="button" className="ana-yuvarlak" onClick={() => git('/mesajlar')} aria-label={okunmamisMesaj > 0 ? `Mesajlar, ${okunmamisMesaj} okunmamış` : 'Mesajlar'} title="Mesajlar">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
+      {okunmamisMesaj > 0 && <span className="ana-rozet">{okunmamisMesaj > 9 ? '9+' : okunmamisMesaj}</span>}
+    </button>
+  ) : null
   const anaTepe = {
-    rozet: okunmamisMesaj + (kocMu ? bekleyenKarar : 0),
+    rozet: kocMu ? bekleyenKarar : okunmamisMesaj,
     gelenKutusu: profil.rol === 'ogrenci',
-    onZil: () => git('/bildirimler'),
+    onZil: () => git(kocMu ? '/yapilacaklar' : '/bildirimler'),
+    ekDugme: kocMesajDugmesi,
     /* Koçta köşedeki KH düğmesi yok (22 Eylül 2026, Bekir): profil ana
        ekrandaki fotoğraf çerçevesinden ve selamdan açılır. */
     onHesap: kocMu || profil.rol === 'ogrenci' ? undefined : () => setHesapAcik(true),
@@ -535,6 +552,7 @@ export default function App() {
           onGeri={() => (window.history.state ? window.history.back() : git('/mesajlar'))}
         />
       )
+    if (yol === '/bildirimler' && kocMu) return null // yönlendirme yukarıdaki etkide
     if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
     if (kocMu && yol === '/konular')
       return kocAltSayfa('Konu öncelikleri', 'Hangi konular önce çalışılsın.', <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />)
@@ -637,14 +655,14 @@ export default function App() {
           /* Vekalette tepe öğrencinin tepesi: Çizbi yüzlü gelen kutusu,
              koçun zili ve karar sayısı yok. Dokununca o öğrenciyle
              yazışma açılır — öğrencinin gelen kutusunun koçtaki karşılığı. */
-          rozet={gozuyleId || bildirimlerdeMi ? 0 : okunmamisMesaj + bekleyenKarar}
+          rozet={gozuyleId || bildirimlerdeMi ? 0 : kocMu ? bekleyenKarar : okunmamisMesaj}
           zilEtkin={bildirimlerdeMi}
           gelenKutusu={profil.rol === 'ogrenci' || Boolean(gozuyleId)}
           hesapGizli={Boolean(gozuyleId)}
           hesapEtkin={hesapAcik}
           onGeri={geriHedef ? () => git(geriHedef) : null}
           onLogo={() => git(gozuyleId ? gozuyleYolu('bugun') : '/')}
-          onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : '/bildirimler')}
+          onZil={() => git(gozuyleId ? `/mesajlar/${gozuyleId}` : bildirimlerdeMi ? '/' : kocMu ? '/yapilacaklar' : '/bildirimler')}
           onHesap={() => (kocMu || profil.rol === 'ogrenci' ? git('/profil') : setHesapAcik(true))}
         />
       </header>
