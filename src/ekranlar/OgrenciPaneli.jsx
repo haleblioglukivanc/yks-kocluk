@@ -269,8 +269,8 @@ export default function OgrenciPaneli({
           selam={ilkAdi ? `Merhaba ${ilkAdi}` : 'Merhaba'}
           tarih={gunBasligi(seciliGun ?? ozet?.bugun)}
           ozet={gunOzeti(ozet, dunOzeti)}
-          ekDugme={vekaleten ? null : <AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} />}
           {...tepe}
+          ekDugme={vekaleten ? null : <>{tepe.ekDugme}<AcilGorusme ogrenciId={hedefId} saltOkunur={vekaleten} /></>}
           durum={vekaleten ? <span className="od-durum od-durum--vekalet"><i />{ilkAdi ? `${iyelik(ilkAdi)} gözünden bakıyorsun` : 'Öğrencinin gözünden bakıyorsun'}</span> : undefined}
           /* Öğrencinin kendi fotoğraf çerçevesi; çerçeve ya da selam profili açar
              (22 Eylül 2026, koçla aynı). Koç gözüyle bakarken yok. */

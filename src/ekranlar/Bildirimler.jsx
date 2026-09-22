@@ -53,7 +53,9 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
     let iptal = false
     ;(async () => {
       const olaylar = []
-      const { data: kutu } = await supabase.rpc('mesaj_kutum')
+      /* Mesajlar burada değil (22 Eylül 2026): kendi balonu ve ekranı var.
+         Veli için eski davranış (mesajlar listede) sürüyor. */
+      const { data: kutu } = profil.rol === 'veli' ? await supabase.rpc('mesaj_kutum') : { data: [] }
       for (const k of kutu ?? []) {
         if ((k.okunmamis ?? 0) > 0 && k.rol !== 'veli') {
           olaylar.push({
@@ -83,6 +85,7 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
         .order('olusturuldu', { ascending: false })
         .limit(30)
       for (const b of kuyrukBildirim ?? []) {
+        if (b.tip === 'mesaj' && profil.rol !== 'veli') continue
         olaylar.push({
           id: `bildirim-${b.id}`,
           tip: b.tip,
@@ -139,7 +142,7 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
   const bekleyen = (liste ?? []).filter((o) => o.bekliyor)
   const gecmis = (liste ?? []).filter((o) => !o.bekliyor)
   const yeniSayi = (liste ?? []).filter((o) => o.bekliyor || o.yeni).length
-  const baslik = profil.rol === 'ogrenci' ? 'Gelen kutusu' : 'Bildirimler'
+  const baslik = 'Bildirimler'
   const ozet = liste === null ? ' ' : bekleyen.length ? `Senden bir şey bekleyen ${bekleyen.length} olay var.` : 'Bekleyen bir şey yok.'
 
   const satir = (o) => (

@@ -176,6 +176,7 @@ export default function App() {
   })
   const [hesapAcik, setHesapAcik] = useState(false)
   const [bekleyenKarar, setBekleyenKarar] = useState(0)
+  const [okunmamisBildirim, setOkunmamisBildirim] = useState(0) // öğrencide zil (mesaj hariç)
   const [yol, git, degistir] = useYol()
 
   /* Her sayfanın canonical'ı kendi adresi. index.html tek dosya olduğu için
@@ -266,6 +267,15 @@ export default function App() {
     if (kocRol && yol === '/bildirimler') git('/yapilacaklar')
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [kocRol, yol])
+  /* Öğrencide zil: okunmamış bildirim (mesaj hariç; mesajın kendi balonu
+     var, 22 Eylül 2026 Bekir: koçtaki zil+balon düzeni öğrencide de). */
+  useEffect(() => {
+    if (!kullaniciId || kocRol) { setOkunmamisBildirim(0); return }
+    let iptal = false
+    supabase.from('bildirim_kuyrugu').select('id', { count: 'exact', head: true }).eq('okundu_mu', false).neq('tip', 'mesaj')
+      .then(({ count }) => { if (!iptal) setOkunmamisBildirim(count ?? 0) })
+    return () => { iptal = true }
+  }, [kullaniciId, kocRol, yol])
   useEffect(() => {
     if (!kullaniciId || !kocRol) {
       setBekleyenKarar(0)
@@ -481,15 +491,16 @@ export default function App() {
      üç yerden çıkıyordu. Zil doğrudan Yapılacaklar'ı açar ve rozeti oradaki
      iş sayısıdır (posta kutusuyla aynı sayı); okunmamış mesajlar için zilin
      yanında ayrı bir mesaj düğmesi var. Öğrencide gelen kutusu aynen. */
-  const kocMesajDugmesi = kocMu ? (
+  const kocMesajDugmesi = kocMu || profil.rol === 'ogrenci' ? (
     <button type="button" className="ana-yuvarlak" onClick={() => git('/mesajlar')} aria-label={okunmamisMesaj > 0 ? `Mesajlar, ${okunmamisMesaj} okunmamış` : 'Mesajlar'} title="Mesajlar">
       <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" /></svg>
-      {okunmamisMesaj > 0 && <span className="ana-rozet">{okunmamisMesaj > 9 ? '9+' : okunmamisMesaj}</span>}
+      {okunmamisMesaj > 0 && <span className={kocMu ? 'ana-rozet' : 'ana-rozet ana-rozet--sakin'}>{okunmamisMesaj > 9 ? '9+' : okunmamisMesaj}</span>}
     </button>
   ) : null
   const anaTepe = {
-    rozet: kocMu ? bekleyenKarar : okunmamisMesaj,
-    gelenKutusu: profil.rol === 'ogrenci',
+    rozet: kocMu ? bekleyenKarar : profil.rol === 'ogrenci' ? okunmamisBildirim : okunmamisMesaj,
+    gelenKutusu: false,
+    sakin: profil.rol === 'ogrenci',
     onZil: () => git(kocMu ? '/yapilacaklar' : '/bildirimler'),
     zilEtiket: kocMu ? 'Yapılacaklar' : 'Bildirimler',
     ekDugme: kocMesajDugmesi,
@@ -554,7 +565,7 @@ export default function App() {
         />
       )
     if (yol === '/bildirimler' && kocMu) return null // yönlendirme yukarıdaki etkide
-    if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} tepe={{ ...anaTepe, onGeri: () => git('/') }} />
+    if (yol === '/bildirimler') return <Bildirimler profil={profil} onGit={git} tepe={{ ...anaTepe, onZil: undefined, onGeri: () => git('/') }} />
     if (kocMu && yol === '/konular')
       return kocAltSayfa('Konu öncelikleri', 'Hangi konular önce çalışılsın.', <KonuOncelik onOgrenciAc={(id) => git(`/ogrenci/${id}`)} onGit={git} />)
     if (kocMu && yol === '/kaynaklar') return kocAltSayfa('Kaynaklar', 'Kitaplar, bağlantılar ve kendi hazırladıkların.', <Kaynaklar profil={profil} />)
@@ -656,9 +667,9 @@ export default function App() {
           /* Vekalette tepe öğrencinin tepesi: Çizbi yüzlü gelen kutusu,
              koçun zili ve karar sayısı yok. Dokununca o öğrenciyle
              yazışma açılır — öğrencinin gelen kutusunun koçtaki karşılığı. */
-          rozet={gozuyleId || bildirimlerdeMi ? 0 : kocMu ? bekleyenKarar : okunmamisMesaj}
+          rozet={gozuyleId || bildirimlerdeMi ? 0 : kocMu ? bekleyenKarar : profil.rol === 'ogrenci' ? okunmamisBildirim : okunmamisMesaj}
           zilEtkin={bildirimlerdeMi}
-          gelenKutusu={profil.rol === 'ogrenci' || Boolean(gozuyleId)}
+          gelenKutusu={Boolean(gozuyleId)}
           hesapGizli={Boolean(gozuyleId)}
           hesapEtkin={hesapAcik}
           onGeri={geriHedef ? () => git(geriHedef) : null}
