@@ -69,7 +69,7 @@ export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = nul
       {fazla > 0 && (
         <text x={42 + 3 * 24 - 4} y="60.5" fontFamily="Manrope, sans-serif" fontSize="10" fontWeight="800" fill="var(--m-soluk)">+{fazla}</text>
       )}
-      {canli && <TabelaCanlisi mevsim={mevsim} x={88} y={12} olcek={0.6} />}
+      {canli && <TabelaCanlisi mevsim={mevsim} x={88} y={12} olcek={0.85} />}
     </svg>
   )
 }
@@ -143,7 +143,7 @@ export function PortreCizimi({ mevsim, foto = null, bas = '', durum = null, idEk
       {mevsim === 'yaz' && [10, 30].map((x) => (
         <path key={x} d={`M${x} 110 q-2 -7 -5 -9 M${x} 110 q0 -8 1 -10 M${x} 110 q3 -6 6 -8`} stroke="#7FA86B" strokeWidth="1.6" fill="none" strokeLinecap="round" />
       ))}
-      {canli && <TabelaCanlisi mevsim={mevsim} x={30} y={12} olcek={0.8} />}
+      {canli && <TabelaCanlisi mevsim={mevsim} x={30} y={12} olcek={1} />}
     </svg>
   )
 }
@@ -286,11 +286,17 @@ export function TabelaCanlisi({ mevsim, x, y, olcek = 1 }) {
   if (mevsim === 'yaz') return (
     <g transform={donus} aria-hidden="true">
       <g className="tc tc-serce">
-        <g transform="translate(0 -16)">
+        <g className="tc-serce-govde" transform="translate(0 -16)">
           <path d="M-14 4 L-24 0 L-14 -1 Z" fill="#6E4A2E" />
           <ellipse cx="-3" cy="2" rx="12" ry="9" fill="#9A6A43" />
           <ellipse cx="-2" cy="5" rx="8" ry="5" fill="#E9D8BE" />
-          <path d="M-8 -1 q6 -5 12 1" stroke="#6E4A2E" strokeWidth="2" fill="none" />
+          {/* kapalı kanat: konmuşken */}
+          <path className="tc-serce-kapali" d="M-8 -1 q6 -5 12 1" stroke="#6E4A2E" strokeWidth="2" fill="none" />
+          {/* açık kanatlar: yalnız uçarken görünür, hızlı çırpar */}
+          <g className="tc-serce-ucan">
+            <ellipse className="tc-serce-kanat" cx="-2" cy="-4" rx="9" ry="3.5" fill="#7E5535" />
+            <ellipse className="tc-serce-kanat tc-serce-kanat--arka" cx="-4" cy="-2" rx="8" ry="3" fill="#6E4A2E" />
+          </g>
           <g className="tc-serce-bas">
             <circle cx="8" cy="-6" r="7" fill="#9A6A43" />
             <path d="M5 -9 q4 -3 8 0" stroke="#6E4A2E" strokeWidth="2" fill="none" />

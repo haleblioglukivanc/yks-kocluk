@@ -130,7 +130,7 @@ function useKocGidisati(donem) {
 function KocPortresi({ profil, mevsim }) {
   const foto = useFotograf(profil?.fotograf_yolu)
   const bas = (profil?.ad_soyad ?? '').split(' ').filter(Boolean).slice(0, 2).map((p) => p[0]).join('').toLocaleUpperCase('tr')
-  return <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={null} idEk="kocana" canli={false} />
+  return <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={null} idEk="kocana" />
 }
 
 export default function KocAnaSayfa({ profil, onGit, tepe }) {
@@ -207,7 +207,7 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
             iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}
         <section className="ana-kapilar" aria-label="Öğrencilerim ve Yapılacaklar">
           <button type="button" className="ana-kapi" onClick={() => onGit('/ogrencilerim')}>
-            <TabelaCizimi mevsim={mevsim} canli ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi, yol: r.fotograf_yolu }))} />
+            <TabelaCizimi mevsim={mevsim} ogrenciler={sirali.map((r) => ({ bas: basHarf(r.ad_soyad), durum: r.risk_seviyesi, yol: r.fotograf_yolu }))} />
             <b>Öğrencilerim</b>
             <span>{ogrenciEtiket === 'Öğrencilerim' ? ' ' : `${sirali.length} öğrenci: ${ogrenciEtiket}.`}</span>
           </button>

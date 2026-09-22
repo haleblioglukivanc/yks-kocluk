@@ -1512,16 +1512,30 @@ button.isl-hc:disabled { cursor: default; }
 .tc-kanat--sag { transform-origin: 0% 50%; }
 @keyframes tc-kanat { 0%, 55%, 100% { transform: scaleX(1); } 65% { transform: scaleX(.3); } 75% { transform: scaleX(1); } 85% { transform: scaleX(.3); } }
 .tc-serce { animation-name: tc-serce; }
+/* Geliş: sağ üstten süzülerek, ~1,5 sn'de yay çizip konar; gidiş: sola sıçrayıp yükselir. */
 @keyframes tc-serce {
-  0% { transform: translate(90px, -70px); opacity: 0; } 2% { opacity: 1; }
-  8% { transform: translate(0, 0); } 20% { transform: translate(0, 0); }
+  0% { transform: translate(110px, -40px) rotate(-8deg); opacity: 0; } 0.6% { opacity: 1; }
+  2.2% { transform: translate(40px, 6px) rotate(6deg); }
+  3.6% { transform: translate(6px, -8px) rotate(-4deg); }
+  4.4% { transform: translate(0, 0) rotate(0); } 20% { transform: translate(0, 0) rotate(0); }
   22% { transform: translate(6px, -6px); } 24% { transform: translate(12px, 0); }
   36% { transform: translate(12px, 0); } 38% { transform: translate(6px, -6px); } 40% { transform: translate(0, 0); }
-  55% { transform: translate(0, 0); opacity: 1; } 62% { transform: translate(-90px, -70px); opacity: 1; }
-  64%, 100% { transform: translate(-110px, -80px); opacity: 0; }
+  55% { transform: translate(0, 0) rotate(0); opacity: 1; }
+  56% { transform: translate(-8px, -14px) rotate(8deg); }
+  60% { transform: translate(-100px, -60px) rotate(4deg); opacity: 1; }
+  62%, 100% { transform: translate(-130px, -80px); opacity: 0; }
 }
-.tc-serce-bas { transform-box: fill-box; transform-origin: 30% 80%; animation: tc-bakin 35s infinite; }
-@keyframes tc-bakin { 0%, 12% { transform: none; } 13%, 17% { transform: scaleX(-1); } 18%, 29% { transform: none; } 30%, 33% { transform: rotate(-18deg); } 34%, 100% { transform: none; } }
+/* Gövde giderken sola bakar */
+.tc-serce-govde { transform-box: fill-box; transform-origin: 50% 50%; animation: tc-serce-yon 35s step-end infinite; }
+@keyframes tc-serce-yon { 0%, 55% { transform: none; } 55.2%, 100% { transform: scaleX(-1); } }
+/* Açık kanatlar yalnız uçuş pencerelerinde görünür (0–4,4 % ve 55–62 %) */
+.tc-serce-ucan { animation: tc-serce-ucus 35s step-end infinite; }
+@keyframes tc-serce-ucus { 0% { opacity: 1; } 4.4% { opacity: 0; } 55% { opacity: 1; } 62% { opacity: 0; } 100% { opacity: 0; } }
+.tc-serce-kapali { animation: tc-serce-konmus 35s step-end infinite; }
+@keyframes tc-serce-konmus { 0% { opacity: 0; } 4.4% { opacity: 1; } 55% { opacity: 0; } 62% { opacity: 1; } 100% { opacity: 1; } }
+.tc-serce-kanat { transform-box: fill-box; transform-origin: 90% 100%; animation: tc-cirp .22s ease-in-out infinite alternate; }
+.tc-serce-kanat--arka { animation-delay: -.11s; }
+@keyframes tc-cirp { from { transform: rotate(-38deg) scaleY(.9); } to { transform: rotate(22deg) scaleY(1.1); } }
 .tc-sincap { animation-name: tc-sincap; }
 @keyframes tc-sincap {
   0% { transform: translate(-4px, 96px) rotate(-90deg); opacity: 0; } 2% { opacity: 1; }
@@ -1540,6 +1554,7 @@ button.isl-hc:disabled { cursor: default; }
 .tc-kar { transform-box: view-box; animation: tc-kar 35s ease-in infinite; opacity: 0; }
 @keyframes tc-kar { 0%, 39% { transform: translate(0, 0); opacity: 0; } 39.5% { opacity: 1; } 46% { transform: translate(var(--tc-x, 0), 46px); opacity: 0; } 100% { opacity: 0; } }
 @media (prefers-reduced-motion: reduce) {
-  .tc, .tc-kanat, .tc-serce-bas, .tc-kuyruk, .tc-gerdan-govde { animation: none !important; }
+  .tc, .tc-kanat, .tc-serce-bas, .tc-serce-govde, .tc-serce-kanat, .tc-kuyruk, .tc-gerdan-govde { animation: none !important; }
+  .tc-serce-ucan { display: none; } .tc-serce-kapali { opacity: 1 !important; animation: none !important; }
   .tc-yaprak, .tc-kar { display: none; }
 }

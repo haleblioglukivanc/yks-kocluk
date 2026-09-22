@@ -7,6 +7,15 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 22 Eylül 2026 — Tabeladaki canlılar, ince ayar 1
+
+Bekir'in telefon geri bildirimi: canlı koç ana ekranında alttaki Öğrencilerim
+kartında çıkıyordu, sağ üstteki fotoğraf tabelasına taşındı (kart canlısız).
+Serçe yukarıdan ağır düşüyordu ve kanadı yoktu: sağ üstten yay çizerek ~1,5 sn'de
+konuyor, uçarken açık kanatlar çırpıyor, konunca kapanıyor, giderken sola bakıyor.
+Ölçekler büyütüldü (fotoğraf tabelası 1, Öğrencilerim 0.85). `.onizleme/` küçük
+önizleme düzeneği artık repoda. Ayrıntı: docs/TABELA-CANLILARI.md.
+
 ## 22 Eylül 2026 — Tabeladaki canlılar
 
 - Mokap onaylı, ilk sürüm canlıda: ilkbahar kelebek, yaz serçe, sonbahar sincap (+ düşen yaprak), kış kızılgerdan (+ dökülen kar). `TabelaCanlisi` (KapiCizimleri.jsx), `PortreCizimi canli` (varsayılan açık) ve `TabelaCizimi canli` (Öğrencilerim); koç ana ekranında yalnız Öğrencilerim tabelasında. Tur 35 sn, CSS keyframe (`.tc-*`, mevsim.css); hareket azaltmada canlı sabit, yaprak/kar yok.
