@@ -326,11 +326,7 @@ export default function ProgramIzgarasi({
               cizgili
               baslik="Hafta boyu tekrarlar"
               sayi={rutinler.length || null}
-              aciklama={
-                rutinler.length === 0
-                  ? 'Haftanın çoğu gününe yazılan işler burada tek satırda toplanır. Şu an yok.'
-                  : null
-              }
+              aciklama={rutinler.length === 0 ? 'Şu an yok.' : null}
               eylem={duzenlenebilir ? '+ Ekle' : null}
               onEylem={() => onRutinEkle?.(seciliHafta)}
             >

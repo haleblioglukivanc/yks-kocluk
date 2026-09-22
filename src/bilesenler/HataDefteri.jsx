@@ -642,7 +642,6 @@ export function TekrarBlogu({ ogrenciId, katalogId, zayif = [], duzenlenebilir =
   } else {
     kutu = (
       <div className="tb-kutu">
-        <span className="tb-sayi">+</span>
         <div><b>{koc ? 'Defteri boş' : 'Defterin boş'}</b>{koc ? 'Yanlış yaptığı soruları eklediğinde burada görünür.' : 'Yanlış yaptığın bir soruyu ekle; unutmaman için doğru zamanda karşına çıkar.'}</div>
       </div>
     )

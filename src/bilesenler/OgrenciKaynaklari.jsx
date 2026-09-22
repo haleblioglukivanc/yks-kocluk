@@ -153,7 +153,7 @@ export default function OgrenciKaynaklari({ ogrenciId, rol = 'ogrenci', bugunDer
       sayi={sayi}
       aciklama={
         liste.length === 0
-          ? 'Göreve kaynak iliştirdiğinde kitap burada birikir.'
+          ? 'Henüz yok.'
           : acik
             ? null
             : 'Verdiğin görevlerden birikenler.'

@@ -1584,3 +1584,25 @@ button.isl-hc:disabled { cursor: default; }
   .tc-serce-kapali, .tc-gerdan-kapali, .tc-kelebek-konmus { opacity: 1 !important; animation: none !important; }
   .tc-yaprak, .tc-kar { display: none; }
 }
+
+/* ── Denetim ince ayarı (22 Eylül 2026) ──
+   Yanal kayan çip şeritleri sağ kenarda sert kesilmesin: sağa doğru solma,
+   "devamı var" hissi. */
+.on2-suz, .yol-dersler {
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.2rem), transparent);
+  mask-image: linear-gradient(90deg, #000 calc(100% - 2.2rem), transparent);
+  padding-right: 2.2rem;
+}
+/* Tarayıcının kendi <select> görünümü mevsim diline uymuyordu (Notlar, Kaynaklar). */
+.uygulama select {
+  appearance: none; -webkit-appearance: none;
+  padding-right: 2.4rem;
+  border: 1.5px solid var(--m-cizgi-2, var(--cizgi-2));
+  border-radius: 14px;
+  background-color: var(--m-yuzey, var(--yuzey));
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B5E57' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.8rem center;
+  background-size: 18px;
+  font-weight: 600;
+}

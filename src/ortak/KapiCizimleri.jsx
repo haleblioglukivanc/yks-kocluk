@@ -67,7 +67,11 @@ export function TabelaCizimi({ mevsim, ogrenciler = [], zemin = true, yazi = nul
         <AsiliBas key={o.bas + i} x={asili.length === 1 ? 66 : 42 + i * 24} o={o} />
       ))}
       {fazla > 0 && (
-        <text x={42 + 3 * 24 - 4} y="60.5" fontFamily="Manrope, sans-serif" fontSize="10" fontWeight="800" fill="var(--m-soluk)">+{fazla}</text>
+        /* Ağaçların üstünde okunmuyordu (22 Eylül 2026): kendi zemininde. */
+        <g>
+          <rect x={42 + 3 * 24 - 7} y="49" width="24" height="16" rx="8" fill="#FFF6EC" stroke="#8C5B45" strokeWidth="1.2" />
+          <text x={42 + 3 * 24 + 5} y="60.5" textAnchor="middle" fontFamily="Manrope, sans-serif" fontSize="9.5" fontWeight="800" fill="#6B3D29">+{fazla}</text>
+        </g>
       )}
       {canli && <TabelaCanlisi mevsim={mevsim} x={88} y={12} olcek={0.85} />}
     </svg>

@@ -74,7 +74,6 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
         tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}
         {...tepe}
         altBaslik={kocMu ? (yonetici ? 'Koç · Yönetici' : 'Koç') : 'Öğrenci'}
-        durum={<span className="od-durum od-durum--profil"><i />Profil</span>}
         sagCizim={(mevsim) => (
           <button type="button" className="od-portre" onClick={tepe.onGeri} aria-label="Ana ekrana dön">
             <PortreCizimi mevsim={mevsim} foto={foto} bas={bas} durum={null} idEk="koc" />

@@ -202,7 +202,7 @@ function ProfilSayfasi({ ogrenci, kataloglar, yukle, ilkDuzenlenen = null, onKap
         {...tepe}
         onGeri={onKapat}
         altBaslik={[ogrenci.sinif ? (ogrenci.sinif === 13 ? 'Mezun' : `${ogrenci.sinif}. sınıf`) : null, ogrenci.alan ? ALAN_ADI[ogrenci.alan] : null].filter(Boolean).join(', ') || null}
-        durum={<span className={`od-durum ${ogrenci.aktif ? 'od-durum--profil' : 'od-durum--kapali'}`}><i />{ogrenci.aktif ? 'Profil' : 'Erişim kapalı'}</span>}
+        durum={ogrenci.aktif ? null : <span className="od-durum od-durum--kapali"><i />Erişim kapalı</span>}
         sagCizim={(mevsim) => (
           /* Çerçeve iki yönlü (22 Eylül 2026, Bekir): öğrenci ekranında
              profili açar, profilde öğrenci ekranına geri götürür. */
@@ -1177,6 +1177,7 @@ const GORUNURLUK_ADI = Object.fromEntries(GORUNURLUK)
  *  varsayılan "sadece ben", yani bilinçli seçmeden hiçbir not paylaşılmaz. */
 function Notlar({ ogrenci }) {
   const [liste, setListe] = useState(null)
+  const [formAcik, setFormAcik] = useState(false) // form dokununca açılır (22 Eylül 2026)
   const [metin, setMetin] = useState('')
   const [gorunurluk, setGorunurluk] = useState('sadece_koc')
   const [bekliyor, setBekliyor] = useState(false)
@@ -1223,11 +1224,12 @@ function Notlar({ ogrenci }) {
   async function sil(id) {
     const { error } = await supabase.from('koc_notlari').delete().eq('id', id)
     if (error) setHata(hataMetni(error))
-    else yukle()
+    else { yukle(); setFormAcik(false) }
   }
 
   return (
-    <Bolum cizgili baslik="Notlar" aciklama="Her notta kimin göreceğini sen seçersin.">
+    <Bolum cizgili baslik="Notlar" sayi={liste?.length || null} aciklama={formAcik ? 'Her notta kimin göreceğini sen seçersin.' : null} eylem={formAcik ? 'Vazgeç' : '+ Not ekle'} onEylem={() => setFormAcik((a) => !a)}>
+      {formAcik && (
       <div className="form-kutu form-kutu--duz">
         <Alan etiket="Yeni not">
           <textarea
@@ -1253,6 +1255,7 @@ function Notlar({ ogrenci }) {
 
         <Dugme onClick={ekle} bekliyor={bekliyor}>Notu kaydet</Dugme>
       </div>
+      )}
 
       {liste === null ? (
         <Yukleniyor />
