@@ -1608,10 +1608,19 @@ button.isl-hc:disabled { cursor: default; }
 }
 
 /* ── Masaüstünde iki sütun: listeden seç, yanda aç (22 Eylül 2026, denetim 16) ── */
-.ana-govde--genis { max-width: 72rem; }
-.iki-sutun { display: grid; grid-template-columns: minmax(22rem, 26rem) minmax(0, 1fr); gap: 1.25rem; align-items: start; }
-.iki-sutun-sol { min-width: 0; }
-.iki-sutun-sag { min-width: 0; position: sticky; top: 1rem; }
+/* Bilgisayar çerçevesi (22 Eylül 2026, Bekir): her ekranda tepe ve gövde
+   aynı 72rem genişlikte ve aynı sol kenarda; ekran değişince içerik
+   kaymaz. 42rem'lik tek sütun kuralının yerine geçer (yalnız ≥64rem). */
+@media (min-width: 64rem) {
+  .ana-govde, .ana-govde--dar, .ana-govde--ogrenci, .ana-govde--genis, .ana-tepe-ic { max-width: 72rem; }
+  .ana-tepe-cizim { right: calc((100% - 72rem) / 2 + 2rem); }
+  .ana-selam { max-width: 44rem; }
+}
+.iki-sutun { display: grid; grid-template-columns: minmax(22rem, 27rem) minmax(0, 1fr); gap: 1.5rem; align-items: start; }
+.iki-sutun-sol, .iki-sutun-sag { min-width: 0; display: flex; flex-direction: column; gap: inherit; }
+.iki-sutun-sol { gap: 1.25rem; }
+.iki-sutun-sag { gap: 1.25rem; }
+.iki-sutun-sag:empty { display: none; }
 .on2-satir--secili { background: color-mix(in srgb, var(--m-vurgu) 12%, var(--m-yuzey)); box-shadow: inset 3px 0 0 var(--m-vurgu); margin: 0 -0.9rem; padding-left: 0.9rem; padding-right: 0.9rem; border-radius: 12px; }
 .oz-panel { display: flex; flex-direction: column; gap: 0.75rem; }
 .oz-kunye { display: flex; align-items: center; gap: 0.9rem; padding: 1rem 1.25rem; border-radius: 22px; background: var(--m-yuzey); box-shadow: 0 1px 2px rgba(40,30,20,.05), 0 10px 24px -18px rgba(40,30,20,.3); }
@@ -1628,3 +1637,14 @@ button.isl-hc:disabled { cursor: default; }
 .oz-eylem .ana-yuvarlak { position: static; background: var(--m-zemin); color: var(--m-murekkep); box-shadow: none; }
 .oz-tam { min-height: 40px; padding: 0 1rem; border: 0; border-radius: 999px; background: var(--m-murekkep); color: #fff; font: 700 0.85rem var(--m-govde); cursor: pointer; white-space: nowrap; }
 .oz-govde { padding-top: 0; }
+@media (min-width: 64rem) {
+  .dn-ekle { max-width: 27rem; }
+  .ms .balon { max-width: min(82%, 34rem); }
+  .ms-tek { max-width: 44rem; }
+  .eski-ic > form, .eski-ic > .form-kutu { max-width: 36rem; }
+}
+.ms-kisi--secili { background: color-mix(in srgb, var(--m-vurgu) 12%, var(--m-yuzey)); box-shadow: inset 3px 0 0 var(--m-vurgu); border-radius: 12px; }
+.ms-yan { display: flex; flex-direction: column; gap: 0.75rem; }
+.ms-yan-bas { display: flex; align-items: baseline; gap: 0.6rem; padding: 0.2rem 0.25rem; }
+.ms-yan-bas b { font: 700 1.35rem var(--m-baslik, Fraunces, serif); }
+.ms-yan-bas span { font-size: 0.82rem; color: var(--m-soluk); }

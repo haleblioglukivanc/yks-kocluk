@@ -1,3 +1,4 @@
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import { useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import AnaTepe from '../ortak/AnaTepe.jsx'
@@ -82,6 +83,7 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
       />
 
       <div className="ana-govde ana-govde--dar kp-govde">
+        <Sutunlu>
         <Bolum
           baslik="Bilgilerim"
           eylem={<button type="button" className="kp-kalem" onClick={() => { setDuzenle((d) => !d); setAd(profil.ad_soyad ?? ''); setTelefon(profil.telefon ?? ''); setHata('') }}>{duzenle ? 'Vazgeç' : 'Düzenle'}</button>}
@@ -111,6 +113,7 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
           </Bolum>
         )}
 
+        <Sag>
         {kocMu && (
         <Bolum baslik="Koçluk araçları">
           <Satir baslik="Kaynaklar" alt="Kitaplar ve öğrencilere verilenler" onClick={() => onGit('/kaynaklar')} />
@@ -145,6 +148,8 @@ export default function KocProfili({ profil, eposta, tepe = {}, yonetimdeMi, onS
         </Bolum>
 
         <p className="kp-surum">sürüm {__DERLEME__}</p>
+        </Sag>
+        </Sutunlu>
       </div>
     </div>
   )

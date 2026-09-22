@@ -1,3 +1,4 @@
+import { useGenisEkran } from '../lib/genislik.js'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -259,6 +260,8 @@ function KisiBasi({ k }) {
   )
 }
 
+const ozetYaz = (k) => `${ROL_ADI[k.rol] ?? k.rol}${k.sonZaman ? ` · son mesaj ${gunYaz(k.sonZaman)}` : ''}`
+
 export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
   const [kutu, setKutu] = useState(null)
   const [secili, setSecili] = useState(null)
@@ -267,6 +270,10 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
   const [suzgec, setSuzgec] = useState('tumu')
 
   const kocMu = profil.rol === 'koc'
+  /* Bilgisayarda koç: solda kişi listesi, sağda açık yazışma (22 Eylül 2026,
+     tek çerçeve kuralı). Tepe her zaman "Mesajlar" kalır, sayfa değişmez. */
+  const genis = useGenisEkran()
+  const yanYana = genis && kocMu
 
   const yukle = useCallback(async () => {
     const { data, error } = await supabase.rpc('mesaj_kutum')
@@ -295,11 +302,17 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
   useEffect(() => {
     yukle()
   }, [yukle])
+  useEffect(() => {
+    if (yanYana && !secili && kutu?.length) {
+      const ilk = [...kutu].sort((a, b) => (b.okunmamis > 0) - (a.okunmamis > 0) || new Date(b.sonZaman ?? 0) - new Date(a.sonZaman ?? 0))[0]
+      setSecili(ilk)
+    }
+  }, [yanYana, kutu]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const okunmamis = (kutu ?? []).reduce((a, k) => a + (k.okunmamis ?? 0), 0)
   const tekMuhatap = !kocMu && (kutu ?? []).length === 1
   const geri = () => {
-    if (secili && !tekMuhatap && !(kisiId && onGeri)) { setSecili(null); yukle(); return }
+    if (secili && !tekMuhatap && !yanYana && !(kisiId && onGeri)) { setSecili(null); yukle(); return }
     onGeri?.()
   }
 
@@ -310,31 +323,32 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
     .filter((k) => !aranan || (k.ad ?? '').toLocaleLowerCase('tr').includes(aranan))
     .sort((a, b) => (b.okunmamis > 0) - (a.okunmamis > 0) || new Date(b.sonZaman ?? 0) - new Date(a.sonZaman ?? 0))
 
-  const ozet = secili
+  const ozet = secili && !yanYana
     ? `${ROL_ADI[secili.rol] ?? secili.rol}${secili.sonZaman ? ` · son mesaj ${gunYaz(secili.sonZaman)}` : ''}`
     : kutu === null ? ' ' : okunmamis ? `${okunmamis} okunmamış mesaj var.` : 'Okunmamış mesaj yok.'
 
   return (
     <div className="ana-sayfa ms">
       <AnaTepe
-        selam={secili ? secili.ad : 'Mesajlar'}
+        selam={secili && !yanYana ? secili.ad : 'Mesajlar'}
         tarih={new Date().toLocaleDateString('tr-TR', { weekday: 'long', day: 'numeric', month: 'long' }).replace(/^(\d+ \S+) (\S+)$/, '$2, $1')}
         ozet={ozet}
         {...(tepe ?? {})}
         onGeri={tekMuhatap && !onGeri ? null : geri}
-        kisa={Boolean(secili)}
-        sagCizim={secili ? null : () => <UcakCizimi sayi={okunmamis} />}
+        kisa={Boolean(secili) && !yanYana}
+        sagCizim={secili && !yanYana ? null : () => <UcakCizimi sayi={okunmamis} />}
       />
       <div className="ana-govde ana-govde--dar ms-govde">
         <Uyari>{hata}</Uyari>
-        {secili ? (
+        {secili && !yanYana ? (
           <Yazisma kisi={secili} profilId={profil.id} hazirCevap={kocMu} />
         ) : kutu === null ? (
           <Yukleniyor />
         ) : kutu.length === 0 ? (
           <div className="gd-bos"><strong>Henüz kimse yok.</strong><span>Koçun seni eklediğinde burada yazışabilirsiniz.</span></div>
         ) : (
-          <>
+          <div className={yanYana ? 'iki-sutun' : 'ms-tek'}>
+          <div className={yanYana ? 'iki-sutun-sol' : 'ms-tek'}>
             {kocMu && (
               <>
                 <label className="on2-ara">
@@ -353,7 +367,7 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
             ) : (
               <div className="ms-liste">
                 {liste.map((k) => (
-                  <button key={k.id} type="button" className={k.okunmamis > 0 ? 'ms-kisi ms-kisi--yeni' : 'ms-kisi'} onClick={() => setSecili(k)}>
+                  <button key={k.id} type="button" className={`ms-kisi${k.okunmamis > 0 ? ' ms-kisi--yeni' : ''}${yanYana && secili?.id === k.id ? ' ms-kisi--secili' : ''}`} onClick={() => setSecili(k)}>
                     <KisiBasi k={k} />
                     <span className="ms-yazi">
                       <span className="ms-ust">
@@ -370,7 +384,17 @@ export default function Mesajlar({ profil, kisiId, onGeri, tepe = null }) {
                 ))}
               </div>
             )}
-          </>
+          </div>
+          {yanYana && (
+            <div className="iki-sutun-sag">
+              {secili ? (
+                <div className="ms-yan"><div className="ms-yan-bas"><b>{secili.ad}</b><span>{ozetYaz(secili)}</span></div><Yazisma key={secili.id} kisi={secili} profilId={profil.id} hazirCevap={kocMu} /></div>
+              ) : (
+                <div className="gd-bos"><strong>Bir kişi seç.</strong><span>Yazışma burada açılır.</span></div>
+              )}
+            </div>
+          )}
+          </div>
         )}
       </div>
     </div>

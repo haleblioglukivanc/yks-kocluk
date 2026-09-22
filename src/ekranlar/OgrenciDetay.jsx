@@ -21,6 +21,7 @@ import OgrenciKimlikKarti from '../bilesenler/OgrenciKimlikKarti.jsx'
 import KonuYolu from '../bilesenler/KonuYolu.jsx'
 import { aksanStili } from '../lib/sekmeAksani.js'
 import Bolum from '../ortak/Bolum.jsx'
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import BosDurum from '../ortak/BosDurum.jsx'
 import KatalogSec, { OGRENCI_GUNCELLENDI } from '../bilesenler/KatalogSec.jsx'
 import SifreSifirla from '../bilesenler/SifreSifirla.jsx'
@@ -122,19 +123,21 @@ export default function OgrenciDetay({ ogrenciId, onGeri, onMesaj, onGozuyle, te
           Konular kapıları · haftayı hızlı kurma · Program. Denemeler ve
           Konular kendi alt sayfasında (geri → program). */}
       {sekme === 'program' ? (
-        <>
+        <Sutunlu>
           <HaftaOzeti ogrenciId={ogrenci.id} ad={ad} onDenemeler={() => setSekme('denemeler')} onKonular={() => setSekme('konular')} tazele={programSayac} />
           <Yapilacaklar ogrenciId={ogrenci.id} baslik={`${ad.split(' ')[0]} için bekleyenler`} onOgrenciAc={() => {}} />
           <OgrenciKapilari ogrenciId={ogrenci.id} onDenemeler={() => setSekme('denemeler')} onKonular={() => setSekme('konular')} />
-          <HaftaToplu ogrenciId={ogrenci.id} onDegisti={() => setProgramSayac((n) => n + 1)} />
-          <Program key={programSayac} ogrenci={ogrenci} />
+          <Sag>
+            <HaftaToplu ogrenciId={ogrenci.id} onDegisti={() => setProgramSayac((n) => n + 1)} />
+            <Program key={programSayac} ogrenci={ogrenci} />
+          </Sag>
           {/* Programın ve rutinlerin altında: bu öğrenciye hangi kitapları
               vermişim. Yeni görev yazarken elindekine bakmak için. */}
           <OgrenciKaynaklari ogrenciId={ogrenci.id} rol="koc" />
           {/* Notlar koçluğun kendisi, idari değil: öğrenciye bakarken
               yazılır. Bu yüzden profil sayfasına değil buraya alındı. */}
           <Notlar ogrenci={ogrenci} />
-        </>
+        </Sutunlu>
       ) : (
         <>
           <button type="button" className="od-alt-geri" onClick={() => setSekme('program')}>‹ {iyelik(ad.split(' ')[0])} programı</button>

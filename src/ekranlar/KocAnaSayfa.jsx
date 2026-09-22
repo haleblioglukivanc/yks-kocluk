@@ -10,6 +10,7 @@ import VeliMesajlari from '../bilesenler/VeliMesajlari.jsx'
 import OgrenciNabzi from '../bilesenler/OgrenciNabzi.jsx'
 import OgrenciOzetPaneli from './OgrenciOzetPaneli.jsx'
 import { useGenisEkran } from '../lib/genislik.js'
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import { gunEkle, yerelIso } from '../lib/hafta.js'
 
 /* Koçun tek ekranı (21 Eylül 2026, mevsimsel tasarım). Alt menü, Rapor
@@ -205,6 +206,7 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
         )}
       />
       <div className="ana-govde ana-govde--dar">
+        <Sutunlu>
         {/* Kapılar (22 Eylül 2026, Bekir): Dikkat gerektirenler'in yerinde
             iki kart; öğrenci ekranındaki Yol / Denemeler kartlarının eşi. */}
         <section className="ana-kapilar" aria-label="Öğrencilerim ve Yapılacaklar">
@@ -219,7 +221,8 @@ export default function KocAnaSayfa({ profil, onGit, tepe }) {
             <span>{isMetni}</span>
           </button>
         </section>
-        <Gidisat donem={donem} onDonem={setDonem} {...gidisat} />
+        <Sag><Gidisat donem={donem} onDonem={setDonem} {...gidisat} /></Sag>
+        </Sutunlu>
       </div>
     </div>
   )

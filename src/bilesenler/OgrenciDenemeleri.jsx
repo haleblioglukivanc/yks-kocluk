@@ -1,3 +1,4 @@
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { supabase, hataMetni } from '../lib/supabase.js'
 import { Uyari, Yukleniyor } from './Ortak.jsx'
@@ -96,6 +97,7 @@ export default function OgrenciDenemeleri({ ogrenciId, katalogId, hedefTyt = nul
       <Uyari>{hata}</Uyari>
       {form}
 
+      <Sutunlu>
       {/* 1. Son denemen */}
       <section className="kp-bolum">
         <div className="kp-bolum-bas"><h2>{K('Son denemen', 'Son denemesi')}</h2></div>
@@ -155,6 +157,7 @@ export default function OgrenciDenemeleri({ ogrenciId, katalogId, hedefTyt = nul
         </div>
       </section>
 
+      <Sag>
       {/* 2. Tekrar etmen gerekenler */}
       <TekrarBlogu ogrenciId={ogrenciId} katalogId={katalogId} zayif={zayif} duzenlenebilir={duzenlenebilir && !koc} koc={koc} />
 
@@ -194,6 +197,8 @@ export default function OgrenciDenemeleri({ ogrenciId, katalogId, hedefTyt = nul
           ))}
         </div>
       </section>
+      </Sag>
+      </Sutunlu>
     </>
   )
 }

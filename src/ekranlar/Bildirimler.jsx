@@ -1,3 +1,4 @@
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase.js'
 import { Yukleniyor } from '../bilesenler/Ortak.jsx'
@@ -156,6 +157,13 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
     </button>
   )
 
+  const gecmisBlok = (
+    <section className="bl-grup" aria-label="Son 7 gün">
+                <div className="on2-grup-bas"><i style={{ background: 'var(--m-soluk)' }} />Son 7 gün</div>
+                {gecmis.map(satir)}
+              </section>
+  )
+
   return (
     <div className="ana-sayfa bl">
       <AnaTepe
@@ -171,20 +179,15 @@ export default function Bildirimler({ profil, onGit, tepe = null }) {
         ) : liste.length === 0 ? (
           <div className="gd-bos"><strong>Bekleyen bir şey yok.</strong><span>Yeni bir şey olursa çan çalar.</span></div>
         ) : (
-          <>
+          <Sutunlu>
             {bekleyen.length > 0 && (
               <section className="bl-grup" aria-label="Senden bekleyenler">
                 <div className="on2-grup-bas"><i style={{ background: 'var(--m-acil)' }} />Senden bekleyenler</div>
                 {bekleyen.map(satir)}
               </section>
             )}
-            {gecmis.length > 0 && (
-              <section className="bl-grup" aria-label="Son 7 gün">
-                <div className="on2-grup-bas"><i style={{ background: 'var(--m-soluk)' }} />Son 7 gün</div>
-                {gecmis.map(satir)}
-              </section>
-            )}
-          </>
+            {gecmis.length > 0 && (bekleyen.length > 0 ? <Sag>{gecmisBlok}</Sag> : gecmisBlok)}
+          </Sutunlu>
         )}
       </div>
     </div>

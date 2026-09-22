@@ -1,3 +1,4 @@
+import Sutunlu, { Sag } from '../ortak/Sutunlu.jsx'
 import { iyelik } from '../lib/turkce.js'
 import Islerim from '../bilesenler/Islerim.jsx'
 import OgrenciDenemeleri from '../bilesenler/OgrenciDenemeleri.jsx'
@@ -295,7 +296,9 @@ export default function OgrenciPaneli({
           {/* Yeni düzen (22 Eylül 2026, mokap v2): önce Yol / Denemeler kapıları,
               sonra İşlerim (Bugün / 7 gün / 30 gün). Hafta şeridi, koçun notu,
               ayrı Gidişat ve Kaynaklarım ana ekrandan kalktı. */}
+          <Sutunlu>
           <Kapilar ogrenciId={kayit.id} denemeler={denemeler} onYol={() => setSekme('konular')} onDenemeler={() => setSekme('denemeler')} />
+          <Sag>
           <Islerim ogrenciId={kayit.id} bugun={ozet?.bugun} haftaBasi={ozet?.haftaBasi} tazele={tazele} secili={seciliGun} onGunSec={setSeciliGun}>
           {(() => {
             /* Programım · Bugün (22 Eylül 2026): günün tamamı tek sayfada;
@@ -344,16 +347,20 @@ export default function OgrenciPaneli({
             )
           })()}
           </Islerim>
+          </Sag>
           <HaftalikIlham ogrenciId={kayit.id} bitirilebilir={!vekaleten && profil?.rol === 'ogrenci'} kisa />
+          </Sutunlu>
         </div>
       ) : sekme === 'konular' ? (
         <>
           <div className="ana-govde ana-govde--dar od-govde yol-govde">
-          <KonuHaritasi profilId={kayit.id} odakDers={odakDers ?? yolOzeti?.siradakiDers ?? null} yeni />
+          <Sutunlu>
+          <Sag><KonuHaritasi profilId={kayit.id} odakDers={odakDers ?? yolOzeti?.siradakiDers ?? null} yeni /></Sag>
           {/* Seri tepede; kitaplar ve kaynaklar altta kısa listeler. */}
           <Okuduklarim ogrenciId={kayit.id} />
           {/* Kaynaklarım ana ekrandan buraya taşındı (22 Eylül 2026). */}
           <OgrenciKaynaklari ogrenciId={kayit.id} rol="ogrenci" bugunDersler={[...new Set((ozet?.gorevler ?? []).map((g) => g.ders).filter(Boolean))]} />
+          </Sutunlu>
           </div>
         </>
       ) : (
