@@ -17,6 +17,13 @@
 > yürütülecek. Not: bu repoda Remotion ve Buffer'a ait hiçbir dosya yok;
 > o çalışma başka bir yerde duruyorsa önce birleştirilmeli.
 
+> **Güncelleme (26 Eylül 2026):** Günlük videoların arka plan fotoğrafları Higgsfield'da
+> üretildi (28 görsel, `sosyal/video/public/arka/`, bkz. DURUM.md). Görsel istem kalıbı: nesne +
+> "vertical cinematic photograph, 35mm film look, warm amber desk-lamp glow, deep navy-blue shadows,
+> top and bottom thirds calm dark empty space, no people/faces/hands/text/letters/numbers/logos".
+> Yeni görsel `public/arka/<çizim-adı>.jpg` (1080×1920) olarak konunca o çizimin günleri kendiliğinden
+> fotoğraflı çıkar.
+
 ---
 
 ## Higgsfield — referans (kullanılmaya başlandığında)

@@ -31,3 +31,9 @@ Instagram, TikTok ve Pinterest için kuyruk satırına `"kapak_ms": 0` gibi bir
 değer yazılırsa Buffer o milisaniyedeki kareyi kapak yapar.
 Bekleyen bir gönderiyi yenisiyle değiştirmek için satıra
 `"degistir": "<eski Buffer gönderi kimliği>"` yazılır; iş akışı önce eskisini siler.
+
+## Ses ve fotoğraf (26 Eylül 2026)
+- Seslendirme `sosyal/ses.py` (ElevenLabs, Kıvanç'ın klon sesi). `gunluk.py --render` sesi üretir,
+  `public/ses/<tarih>.mp3`'e koyar ve zaman çizelgesini (`zaman`) props'a yazar; Sahne süresi sesten gelir.
+- Seri müzikleri `python3 muzik/eleven.py` ile ElevenLabs Music'ten (parça başına ~375 kredi).
+- `public/arka/<çizim>.jpg` Higgsfield fotoğrafları; varsa gün **foto** kurgusuyla çıkar.

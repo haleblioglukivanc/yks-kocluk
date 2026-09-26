@@ -1019,3 +1019,13 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Akış: `sosyal-uretim` (06:30) → yazım denetimi (`sosyal/denetim.py`, izinli kelimeler `sosyal/sozluk.txt`) → video → Telegram'da koça önizleme + Onayla/Yayınlama. Onaylananları `sosyal-onayli` (08–22 arası saatte bir) Buffer'a planlar. Onaylanmayan video paylaşılmaz.
 - Veritabanı: `private.sosyal_onay`, RPC'ler `sosyal_onay_iste` / `sosyal_onaylananlar` / `sosyal_paylasildi` (yalnız servis anahtarı), `telegram_isle` içinde `sosyal:` düğme dalı.
 - Açık konu: 16.04 ve 25.04 aynı fikri işliyor (sosyal medyadaki masa); biri değiştirilebilir.
+
+## 26 Eylül 2026 — sosyal video: seslendirme, yeni müzik, Higgsfield fotoğrafları
+
+- Sorun: videolarda ses yalnız koddan üretilmiş piyano müziğiydi, görseller düz renk zemin + çizimdi; etkisiz bulundu.
+- **Seslendirme** (`sosyal/ses.py`): ElevenLabs'ta Kıvanç'ın klonlanmış sesi ("kıvanç", `ZKMGIIUyHLQowzll3hUe`, `eleven_multilingual_v2`) kancayı, gövde satırlarını ve kapanışı (soru ya da "Yarın yine buradayız.") tek istekte okur. Harf zamanlarından her satırın ve kelimenin başladığı kare çıkar; kayıt parçalara bölünüp aralarına sessizlik konur (kanca 0,7 sn, satır 0,55 sn). Video artık sabit 20 sn değil, sese göre ~16–20 sn. Kısaltmalar (YKS, TYT, AYT, LGS, ÖSYM…) harf harf, `19:00` "19" okunur (`KISALTMA`, `okunus`). Gün başına ~90 ElevenLabs kredisi.
+- **Müzik** (`sosyal/video/muzik/eleven.py`): sekiz seri parçası ElevenLabs Music ile yeniden üretildi (30 sn, sözsüz, `public/muzik/<seri>.mp3`); eski `seri.py` sentezi yerinde duruyor ama kullanılmıyor. Müzik Kıvanç konuşurken 0,13'e iner, sonda söner (`Sahne.jsx` → `muzikSesi`).
+- **Görsel** (Higgsfield, `gpt_image_2_5`, görsel başına 0,25 kredi): 28 çizim kavramı için metinsiz, yüzsüz, sıcak lamba + lacivert gölge 9:16 fotoğraf (`sosyal/video/public/arka/<çizim>.jpg`). Yeni kurgu **foto** (`Kurgular.jsx` → `Foto`): fotoğraf yavaş yaklaşır, kanca üstte, satırlar okundukça kelime kelime yanar (okunan kelime amber). `gunluk.py`: çiziminin fotoğrafı olan gün foto kurgusuyla çıkar; yazışma (çarşamba) günleri ve `sahne.json`'da `"foto": false` yazan günler eski kurguda kalır. Fotoğrafı olmayan çizimler: kalp-atisi, bayrak, pusula, kar-tanesi, yaprak, roket (Higgsfield'da 0,5 kredi kaldı).
+- Zaman çizelgesi: `ortak.js`'te `SATIR/KAPANIS/SURE` artık `zamanAyarla()` ile sesten yazılıyor; `Kok.jsx` Sahne süresini `props.zaman.sure`'dan alıyor. Seslendirme yoksa (anahtar yok) eski sabit zamanlar geçerli.
+- Hassas günler (10 Kasım, 6 Şubat, 15 Temmuz) değişmedi: sade kart, seslendirmesiz, müziksiz.
+- **Yapılacak:** GitHub → Settings → Secrets → `ELEVENLABS_API_KEY` eklenmeli (`sosyal-uretim.yml` okuyor). Yerelde anahtar depo kökündeki `.env`'de (depoya girmez).

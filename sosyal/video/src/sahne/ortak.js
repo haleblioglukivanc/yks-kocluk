@@ -32,9 +32,16 @@ export const G = { sol: 130, sag: 170, ust: 250, alt: 430 }
 export const GEN = 1080 - G.sol - G.sag      // 780
 export const SON = 1920 - G.alt              // 1490
 
-export const SURE = 600
-export const SATIR = [90, 180, 270]    // gövde satırları (3, 6, 9 sn) — ilk saniyelerde izleyiciyi tutmak için erken
-export const KAPANIS = 450             // 15 sn
+// Varsayılan zaman çizelgesi (seslendirme yoksa). Seslendirmeli günde sosyal/ses.py'nin
+// hesapladığı çizelge zamanAyarla() ile yazılır: satır, Kıvanç onu okumaya başlayınca gelir.
+export let SURE = 600
+export let SATIR = [90, 180, 270]      // gövde satırları (3, 6, 9 sn) — ilk saniyelerde izleyiciyi tutmak için erken
+export let KAPANIS = 450               // 15 sn
+export function zamanAyarla(z) {
+  SURE = z?.sure ?? 600
+  SATIR = z?.satir ?? [90, 180, 270]
+  KAPANIS = z?.kapanis ?? 450
+}
 
 export const yay = (f, bas, cfg = { damping: 18, stiffness: 130 }) => (bas <= 0 ? 1 : spring({ frame: f - bas, fps: 30, config: cfg }))
 export const ara = (f, a, b, x = 0, y = 1) => interpolate(f, [a, b], [x, y], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })

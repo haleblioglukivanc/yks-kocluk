@@ -7,12 +7,14 @@
 Gövdesi (sosyal/takvim/govde.py) yazılmamış gün üretilmez: uyarı verir, çıkar.
 Aynı gün aynı kanala ikinci kez gönderilmez (Buffer'da o güne ait gönderi varsa atlar).
 """
-import argparse, json, mimetypes, os, pathlib, subprocess, sys, urllib.error, urllib.request
+import argparse, json, mimetypes, os, pathlib, shutil, subprocess, sys, urllib.error, urllib.request
 from datetime import date, datetime, timedelta, timezone
 
 KOK = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(KOK / 'takvim'))
+sys.path.insert(0, str(KOK))
 from govde import GOVDE  # noqa: E402
+import ses  # noqa: E402
 
 TR = timezone(timedelta(hours=3))
 KANAL = {'yt': '6aace7c9ea19ca0bde758f8b', 'ig': '6aad24b7ea19ca0bde778286', 'tt': '6aad283cea19ca0bde77a6ba'}
@@ -23,6 +25,7 @@ EKIP = json.loads((KOK / 'ekip.json').read_text(encoding='utf-8'))
 UZMAN_NOTU = ('Bu içerik bilgilendirme amaçlıdır. Kaygı, uykusuzluk ya da umutsuzluk haftalardır sürüyorsa '
               'okul rehber öğretmenine ya da bir uzmana başvur. Acil bir durumda 112.')
 SITE = 'https://khkocluk.com'
+NPX = shutil.which('npx') or 'npx'          # Windows'ta npx.cmd
 
 
 def gun_bul(tarih):
@@ -69,7 +72,7 @@ def render(g, govde, cikti):
     video = KOK / 'video'
     paket = video / 'build'
     if not (paket / 'index.html').exists():        # bir kez paketle, sonra her kare hızlı
-        subprocess.run(['npx', 'remotion', 'bundle', 'src/index.js', f'--out-dir={paket}', '--log=error'],
+        subprocess.run([NPX, 'remotion', 'bundle', 'src/index.js', f'--out-dir={paket}', '--log=error'],
                        cwd=video, check=True)
     props = {'gun': g, 'govde': govde, 'muzik': f"muzik/{MUZIK[g['seri']]}.mp3" if g.get('muzik') else None}
     # Sahne yönü olan gün yeni sahne sistemiyle (kurgu + zemin + çizim) üretilir; hassas günler sade kalır
@@ -77,13 +80,29 @@ def render(g, govde, cikti):
     sahne = json.loads(sp.read_text(encoding='utf-8')).get(g['tarih']) if sp.exists() else None
     kompozisyon = 'Sahne' if sahne and not g['hassas'] else 'Gunluk'
     if kompozisyon == 'Sahne':
+        # Çizimin Higgsfield fotoğrafı varsa gün fotoğraflı kurguyla çıkar (yazışma ve "foto": false olan günler hariç)
+        if sahne.get('kurgu') != 'yazisma' and sahne.get('foto', True) is not False \
+                and (video / 'public' / 'arka' / f"{sahne.get('cizim')}.jpg").exists():
+            sahne = {**sahne, 'kurgu': 'foto', 'foto': sahne['cizim']}
         props['sahne'] = sahne
+        # Seslendirme: Kıvanç'ın klon sesi kancayı, satırları ve kapanışı okur; video sesin zamanına göre kurulur
+        if ses.anahtar() and g.get('ses', True):
+            kapanis = g.get('soru') or 'Yarın yine buradayız.'
+            kayit = ses.seslendir([g['kanca'], *govde, kapanis], KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3")
+            props['zaman'] = ses.zamanla(kayit)
+            props['ses'] = f"ses/{g['tarih']}.mp3"
+            for yer in (video / 'public' / 'ses', paket / 'public' / 'ses'):   # paket bir kez kurulur; ses ona da kopyalanır
+                yer.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3", yer / f"{g['tarih']}.mp3")
+            print(f">> Seslendirme: {kayit['sure']:.1f} sn, video {props['zaman']['sure'] / 30:.1f} sn")
+        else:
+            print('::warning::ELEVENLABS_API_KEY yok; video seslendirmesiz üretildi.')
     pf = video / '.props.json'
     pf.write_text(json.dumps(props, ensure_ascii=False), encoding='utf-8')
     cikti.parent.mkdir(parents=True, exist_ok=True)
-    subprocess.run(['npx', 'remotion', 'render', str(paket), kompozisyon, str(cikti), f'--props={pf}',
+    subprocess.run([NPX, 'remotion', 'render', str(paket), kompozisyon, str(cikti), f'--props={pf}',
                     '--crf=20', '--log=error'], cwd=video, check=True)
-    subprocess.run(['npx', 'remotion', 'still', str(paket), kompozisyon, str(cikti.with_suffix('.png')),
+    subprocess.run([NPX, 'remotion', 'still', str(paket), kompozisyon, str(cikti.with_suffix('.png')),
                     f'--props={pf}', '--frame=0', '--log=error'], cwd=video, check=True)
     pf.unlink()
 

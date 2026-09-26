@@ -58,6 +58,7 @@ jobs:
       - name: Videoyu üret, onaya gönder
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           TARIH: ${{ inputs.tarih }}

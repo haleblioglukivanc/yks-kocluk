@@ -1,5 +1,5 @@
 // Kurgu tipleri. Seri içeriği belirler, kurgu sahneyi. Her kurgunun 0. karesi eksiksiz kapaktır.
-import { AbsoluteFill } from 'remotion'
+import { AbsoluteFill, Img, staticFile } from 'remotion'
 import { BASLIK, GOVDE, EL, P, G, GEN, SON, SATIR, KAPANIS, ZEMIN, yay, ara, gel, elCemberi, elCizgisi, punto, tohumla } from './ortak.js'
 import { Cizim, CIZIM } from './Cizimler.jsx'
 
@@ -22,7 +22,7 @@ export function Baslik({ metin, boyut, renk, stil, vurgu, f = 0, cizgi = P.amber
       return <span key={i}>{i ? ' ' : ''}{bu
         ? <span style={{ position: 'relative', display: 'inline-block' }}>{k}
             <svg viewBox="0 0 100 20" preserveAspectRatio="none" style={{ position: 'absolute', left: '-2%', width: '104%', bottom: '-0.2em',
-              height: '0.28em', overflow: 'visible', clipPath: `inset(-50% ${(1 - cek) * 100}% -50% -5%)` }}>
+              height: '0.28em', overflow: 'visible', opacity: cek > 0.02 ? 1 : 0, clipPath: `inset(-50% ${(1 - cek) * 100}% -50% -5%)` }}>
               <path d={elCizgisi(0, 10, 100, 4, 2)} stroke={cizgi} fill="none" strokeLinecap="round" vectorEffect="non-scaling-stroke"
                 style={{ strokeWidth: boyut * 0.1 }} />
             </svg></span>
@@ -271,6 +271,51 @@ export function Kapanis({ f, gun, z, s }) {
         <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: 48, color: k.yazi, letterSpacing: '-0.02em' }}>Kıvanç Hoca ile koçluk</div>
         <div style={{ fontFamily: GOVDE, fontWeight: 600, fontSize: 30, color: k.soluk, marginTop: 4 }}>khkocluk.com</div>
       </div>
+    </div>
+  </AbsoluteFill>
+}
+
+// ── G · Fotoğraf: Higgsfield arka planı + seslendirmeyle kelime kelime yanan satırlar ──
+// Görsel sosyal/video/public/arka/<çizim>.jpg (metinsiz, yüzsüz; sosyal/higgsfield.md).
+// Kanca 0. karede tam durur (kapak); satırın kelimeleri Kıvanç okudukça beyazlaşır, okunan kelime amber.
+export function Foto({ f, gun, govde, s, zaman }) {
+  const sure = zaman?.sure ?? 600
+  const z = ZEMIN.murekkep
+  const yak = ara(f, 0, sure, 1.06, 1.16)                       // yavaş yaklaşma
+  const kay = ara(f, 0, sure, 0, -40)
+  const satirGeldi = yay(f, SATIR[0] - 16)
+  return <AbsoluteFill style={{ background: P.murekkep, overflow: 'hidden' }}>
+    <Img src={staticFile(`arka/${s.foto}.jpg`)} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+      transform: `scale(${yak}) translateY(${kay}px)`, filter: `brightness(${0.78 - satirGeldi * 0.12}) saturate(1.05)` }} />
+    <AbsoluteFill style={{ background: `linear-gradient(180deg, rgba(26,34,51,.92) 0%, rgba(26,34,51,.55) 30%, rgba(26,34,51,.08) 48%,
+      rgba(26,34,51,.35) 58%, rgba(26,34,51,.9) 78%, rgba(26,34,51,.96) 100%)` }} />
+    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 20 }} />
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 80, transform: `scale(${1 - satirGeldi * 0.1})`, transformOrigin: 'left top' }}>
+      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 108)} renk={P.krem} vurgu={s.vurgu} f={f} cizgi={P.amber}
+        stil={{ textShadow: '0 4px 30px rgba(0,0,0,.45)' }} />
+    </div>
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 1040 }}>
+      {govde.map((satir, i) => {
+        const gir = yay(f, SATIR[i]), cik = i < govde.length - 1 ? ara(f, SATIR[i + 1] - 8, SATIR[i + 1] + 4) : ara(f, KAPANIS - 6, KAPANIS + 6)
+        if (gir < 0.01 || cik > 0.99) return null
+        const bas = zaman?.kelime?.[i + 1] || []
+        const kelimeler = satir.split(/\s+/).filter(Boolean)
+        return <div key={i} style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: Math.min(1, gir * 1.4) * (1 - cik),
+          transform: `translateY(${(1 - gir) * 40 - cik * 30}px)`, display: 'flex', gap: 26 }}>
+          <div style={{ flex: '0 0 auto', fontFamily: EL, fontSize: 90, lineHeight: 1, color: P.amber }}>{i + 1}</div>
+          <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: satir.length > 60 ? 62 : 70, lineHeight: 1.12, letterSpacing: '-0.02em',
+            textShadow: '0 3px 24px rgba(0,0,0,.5)' }}>
+            {kelimeler.map((k, j) => {
+              const t = bas[j]
+              const okundu = t == null || f >= t, sonraki = bas[j + 1] ?? t + 12
+              const simdi = t != null && f >= t && f < sonraki
+              const p = t == null ? 1 : yay(f, t, { damping: 14, stiffness: 220 })
+              return <span key={j}>{j ? ' ' : ''}<span style={{ display: 'inline-block', color: simdi ? P.amber : P.krem,
+                opacity: okundu ? 1 : 0.34, transform: `scale(${simdi ? 1 + 0.06 * p : 1})`, transformOrigin: 'center bottom' }}>{k}</span></span>
+            })}
+          </div>
+        </div>
+      })}
     </div>
   </AbsoluteFill>
 }

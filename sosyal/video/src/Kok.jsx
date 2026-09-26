@@ -12,7 +12,9 @@ export const Kok = () => (<>
   <Composition id="Gunluk" component={Gunluk} defaultProps={ORNEK}
     durationInFrames={GUNLUK_SURE} fps={30} width={1080} height={1920} />
   {/* Yeni sahne sistemi: --props ile { gun, govde, muzik, sahne } */}
+  {/* Seslendirmeli günde süre sesten gelir (props.zaman.sure, sosyal/ses.py) */}
   <Composition id="Sahne" component={Sahne} defaultProps={{ ...ORNEK, sahne: { kurgu: 'dev', zemin: 'murekkep', sayi: '3', ek: 'iş.', ust: 'Bu hafta her şeyi yapmayacaksın.' } }}
+    calculateMetadata={({ props }) => ({ durationInFrames: props.zaman?.sure ?? GUNLUK_SURE })}
     durationInFrames={GUNLUK_SURE} fps={30} width={1080} height={1920} />
   <Composition id="Katalog" component={Katalog} durationInFrames={1} fps={30} width={1920} height={2100} />
 </>)
