@@ -253,6 +253,15 @@
 .t-biyografi p { margin: 0; font-size: clamp(17px, 1.5cqw, 20px); line-height: 1.6; text-wrap: pretty; }
 .t-kim-dip { display: flex; flex-wrap: wrap; gap: 8px 28px; margin-top: 24px; font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--g-grafit); }
 .t-kim-dip b { color: var(--g-murekkep); font-size: var(--punto-orta); }
+.t-kim-dip a { font-weight: 600; text-decoration: none; }
+.t-kim-egitimler { list-style: none; margin: 22px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.t-kim-egitimler li { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--g-cizgi-2); font-size: var(--punto-kucuk); color: var(--g-murekkep); background: var(--beyaz); }
+
+/* Bir bölümü dayandığı eğitime bağlayan satır (Çarşamba, Veli) */
+.t-belge-bagi { display: inline-block; margin-top: 20px; font-size: var(--punto-kucuk); line-height: 1.5; text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 2px; }
+.t-belge-bagi span { font-family: var(--marka-mono); font-size: var(--punto-mini); white-space: nowrap; }
+.tanitim .t-belge-bagi--acik { color: var(--t-turuncu-a); }
+.tanitim .t-belge-bagi--acik:hover { color: var(--beyaz); }
 
 /* ── Sorular ──────────────────────────────────────────────────── */
 .t-sorular { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 0 clamp(24px, 4cqw, 64px); border-top: 2px solid var(--g-murekkep); }
@@ -382,54 +391,50 @@
   .tanitim * { transition: none !important; animation: none !important; }
 }
 
-/* ── Belgeler: akan küçük çerçeveler ─────────────────────────── */
-.t-belgeler { overflow: hidden; }
-.t-belge-serit {
-  --belge-en: 150px;
-  --belge-bosluk: 22px;
-  margin-top: 8px;
-  padding: 10px 0 18px;
-  mask-image: linear-gradient(90deg, transparent, var(--siyah) 8%, var(--siyah) 92%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, var(--siyah) 8%, var(--siyah) 92%, transparent);
+/* ── Belgeler: alanlara göre gruplu ──────────────────────────── */
+/* Her alan bir satır: solda alanın adı ve koçluğa yansıması, sağda
+   belgeler. Belgeler yatay (A4 enine), kart oranı 842 / 595. */
+.t-alanlar { display: grid; border-top: 2px solid var(--g-murekkep); }
+.t-alan {
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 20px clamp(24px, 4cqw, 64px);
+  padding: clamp(24px, 3cqw, 36px) 0; border-bottom: 1px solid var(--g-cizgi);
 }
-.t-belge-akis {
-  display: flex; gap: var(--belge-bosluk); width: max-content;
-  animation: belge-akis calc(var(--n) * 5s) linear infinite;
-}
-.t-belge-serit:hover .t-belge-akis,
-.t-belge-serit:focus-within .t-belge-akis { animation-play-state: paused; }
-.t-belge-serit--sabit { mask-image: none; -webkit-mask-image: none; overflow-x: auto; padding-left: clamp(20px, 4cqw, 48px); }
-.t-belge-serit--sabit .t-belge-akis { animation: none; }
-@keyframes belge-akis {
-  to { transform: translateX(calc(-1 * var(--n) * (var(--belge-en) + var(--belge-bosluk)))); }
-}
+.t-alan-bas { display: grid; gap: 8px; align-content: start; }
+.t-alan-bas h3 { font-weight: 700; font-size: 22px; letter-spacing: -.02em; line-height: 1.15; }
+.t-alan-sayi { margin: 0; font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--g-mavi); }
+.t-alan-koclukta { margin: 4px 0 0; font-size: var(--punto-orta); line-height: 1.6; color: var(--g-grafit); text-wrap: pretty; max-width: 42ch; }
+.t-alan-belgeler { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 24px; align-content: start; }
 
 .t-belge {
-  all: unset; cursor: pointer; display: grid; gap: 10px; width: var(--belge-en);
-  justify-items: start; transition: transform .25s ease;
+  all: unset; cursor: pointer; display: grid; gap: 10px; align-content: start; min-width: 0;
+  transition: transform .25s ease;
 }
 .t-belge:hover, .t-belge:focus-visible { transform: translateY(-4px); }
 .t-belge:focus-visible .t-belge-cerceve { outline: 2px solid var(--t-turuncu); outline-offset: 3px; }
 .t-belge-cerceve {
-  display: block; width: 100%; aspect-ratio: 3 / 4; box-sizing: border-box;
-  padding: 7px; background: var(--beyaz); border: 1px solid var(--g-cizgi-2); border-radius: 3px;
+  display: block; width: 100%; aspect-ratio: 842 / 595; box-sizing: border-box;
+  padding: 6px; background: var(--beyaz); border: 1px solid var(--g-cizgi-2); border-radius: 3px;
   box-shadow: 0 1px 0 color-mix(in srgb, var(--t-gece) 4%, transparent), 0 10px 24px -14px color-mix(in srgb, var(--t-gece) 45%, transparent);
   transition: box-shadow .25s ease, border-color .25s ease;
 }
 .t-belge:hover .t-belge-cerceve { border-color: var(--t-turuncu-k); box-shadow: 0 1px 0 color-mix(in srgb, var(--t-gece) 4%, transparent), 0 18px 32px -14px color-mix(in srgb, var(--t-gece) 55%, transparent); }
-.t-belge-cerceve img { width: 100%; height: 100%; object-fit: cover; display: block; border: 1px solid var(--g-cizgi); }
+.t-belge-cerceve img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .t-belge-alt { display: grid; gap: 2px; width: 100%; line-height: 1.3; }
-.t-belge-alt b { font-size: 13px; color: var(--g-murekkep); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.t-belge-alt small { font-family: var(--marka-mono); font-size: 11px; color: var(--g-grafit); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.t-belge-alt b { font-size: 15px; color: var(--g-murekkep); }
+.t-belge-alt small { font-family: var(--marka-mono); font-size: 11px; color: var(--g-grafit); }
+.t-belge-dogrulama { margin: 20px 0 0; font-family: var(--marka-mono); font-size: var(--punto-mini); color: var(--g-soluk); max-width: 70ch; }
+@media (max-width: 760px) {
+  .t-alan { grid-template-columns: 1fr; }
+}
 
 /* Büyük görünüm */
 .t-belge-perde {
-  position: fixed; inset: 0; z-index: 60; display: grid; grid-template-columns: auto 1fr auto; align-items: center;
+  position: fixed; inset: 0; z-index: 60; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
   padding: 24px; gap: 8px; background: color-mix(in srgb, var(--t-gece) 86%, transparent); backdrop-filter: blur(6px);
   animation: belge-perde .2s ease;
 }
 @keyframes belge-perde { from { opacity: 0 } }
-.t-belge-buyuk { margin: 0; justify-self: center; max-width: min(92vw, 720px); display: grid; gap: 14px; justify-items: center; }
+.t-belge-buyuk { margin: 0; justify-self: center; min-width: 0; max-width: min(100%, 1100px); display: grid; gap: 14px; justify-items: center; }
 .t-belge-buyuk img {
   max-width: 100%; max-height: 74vh; display: block; background: var(--beyaz); padding: 10px; border-radius: 3px;
   box-shadow: 0 30px 60px -20px color-mix(in srgb, var(--siyah) 70%, transparent); animation: belge-gecis .3s ease;
@@ -445,10 +450,10 @@
   transition: background .15s;
 }
 .t-belge-ok:hover, .t-belge-kapat:hover { background: color-mix(in srgb, var(--beyaz) 18%, transparent); }
-.t-belge-kapat { position: absolute; top: 20px; right: 20px; font-size: 26px; }
-@media (max-width: 640px) {
-  .t-belge-serit { --belge-en: 124px; --belge-bosluk: 16px; }
+/* sistem.css dokunma halkası için bu düğmelere position: relative veriyor; perde içinde ezilsin */
+.t-belge-perde .t-belge-kapat { position: absolute; top: 20px; right: 20px; font-size: 26px; }
+@media (max-width: 900px) {
   .t-belge-perde { grid-template-columns: 1fr; padding: 16px; }
-  .t-belge-ok { position: absolute; top: 50%; transform: translateY(-50%); }
+  .t-belge-perde .t-belge-ok { position: absolute; top: 50%; transform: translateY(-50%); z-index: 1; }
   .t-belge-ok--sol { left: 12px; } .t-belge-ok--sag { right: 12px; }
 }

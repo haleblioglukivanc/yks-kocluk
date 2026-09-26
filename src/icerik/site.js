@@ -8,7 +8,7 @@
  *
  *  Yayına çıkmadan önce gerçek bilgiyle değiştirilecek alanlar:
  *    · koc.biyografi   → Kıvanç'ın kendi metni
- *    · belgeler.liste  → gerçek diploma / sertifika görselleri
+ *    · belgeler        → diploma eklenecek (sertifikalar gerçek)
  *    · yorumlar.liste  → gerçek öğrenci ve veli yorumları
  *    · netGrafigi.veri → gerçek bir öğrencinin net gelişimi
  *    · iletisim.*      → telefon, WhatsApp, Instagram
@@ -46,24 +46,63 @@ export const site = {
     portre: '/portre.jpg',
   },
 
-  // ⚠️ DEMO — gerçek belgelerle değiştirilecek.
-  // Görselleri public/belgeler/ içine koyup gorsel alanına yolunu yazın.
-  // ⚠️ DEMO — görseller örnektir, üzerlerinde "ÖRNEK" filigranı vardır.
-  // Gerçek belgeleri public/belgeler/ içine koyup gorsel yolunu değiştirin.
+  // ── Belgeler ────────────────────────────────────────────────────
+  // Görseller belge-uret/maskele.py ile PDF'ten üretilir: TC kimlik no,
+  // anne/baba adı, "İbrahim" ön adı ve karekod (içinde TC var) silinir.
+  // Orijinal PDF'ler depoya girmez. Her belge için iki görsel: <ad>.jpg
+  // (büyük görünüm) ve <ad>-kucuk.jpg (kart).
+  //
+  // Belgeler alanlara ayrılır; her alanın `koclukta` cümlesi sayfada o
+  // eğitimin koçluğa nasıl yansıdığını söyler. Terapi eğitimleri
+  // "uygulayıcı eğitimi" sertifikasıdır, terapist unvanı vermez: metinlerde
+  // terapi hizmeti vaat edilmez, yalnız bakış açısı ve yöntemden söz edilir.
+  //
+  // Diploma geldiğinde: maskele.py'den geçirip 'egitim' alanının başına ekleyin.
   belgeler: {
-    baslik: 'Belgeler',
-    aciklama: 'Eğitim ve sertifikalar. Bir belgeye tıklayınca büyük hâlini görürsünüz.',
-    liste: [
-      { ad: 'Lisans Diploması', kurum: '[DEMO] Eğitim Fakültesi', yil: '2015', gorsel: '/belgeler/ornek-01.png' },
-      { ad: 'Eğitim Koçluğu Sertifikası', kurum: '[DEMO] Sürekli Eğitim Merkezi', yil: '2016', gorsel: '/belgeler/ornek-02.png' },
-      { ad: 'Rehberlik ve Psikolojik Danışmanlık', kurum: '[DEMO] Pedagoji Enstitüsü', yil: '2019', gorsel: '/belgeler/ornek-03.png' },
-      { ad: 'Ölçme ve Değerlendirme', kurum: '[DEMO] Eğitim Bilimleri Merkezi', yil: '2022', gorsel: '/belgeler/ornek-04.png' },
-      { ad: 'Öğrenme Psikolojisi', kurum: '[DEMO] Psikoloji Uygulama Merkezi', yil: '2018', gorsel: '/belgeler/ornek-05.png' },
-      { ad: 'Sınav Kaygısı Yönetimi', kurum: '[DEMO] Danışmanlık Akademisi', yil: '2020', gorsel: '/belgeler/ornek-06.png' },
-      { ad: 'Verimli Ders Çalışma Teknikleri', kurum: '[DEMO] Eğitim Akademisi', yil: '2017', gorsel: '/belgeler/ornek-07.png' },
-      { ad: 'Bireysel Farklılıklar ve Öğrenme Stilleri', kurum: '[DEMO] Eğitim Enstitüsü', yil: '2021', gorsel: '/belgeler/ornek-08.png' },
-      { ad: 'Aile İletişimi ve Veli Danışmanlığı', kurum: '[DEMO] Aile Danışma Merkezi', yil: '2023', gorsel: '/belgeler/ornek-09.png' },
-      { ad: 'Kariyer Planlama ve Tercih Danışmanlığı', kurum: '[DEMO] Meslek Rehberliği Merkezi', yil: '2024', gorsel: '/belgeler/ornek-10.png' },
+    baslik: 'Aldığım eğitimler',
+    aciklama:
+      'Koçluğu yalnız program olarak görmüyorum; kaygı, motivasyon ve aile ' +
+      'iletişimi de işin parçası. Bu yüzden aldığım eğitimleri alanlarına göre ' +
+      'ayırdım. Bir belgeye tıklayınca büyük hâlini görürsünüz.',
+    dogrulama:
+      'Belgelerin hepsi e-Devlet barkodludur. Görsellerde kimlik numarası ve ' +
+      'karekod gizlendi; orijinalini görüşmede gösterebilirim.',
+    alanlar: [
+      {
+        anahtar: 'psikoloji',
+        ad: 'Psikolojik yaklaşım',
+        koclukta:
+          'Sınav kaygısı, erteleme ve "yapamayacağım" düşüncesiyle çalışırken ' +
+          'bilişsel davranışçı yaklaşımı kullanıyorum: düşünceyi fark etmek, ' +
+          'sınamak ve küçük adımlarla davranışı değiştirmek.',
+        liste: [
+          { ad: 'Bilişsel Davranışçı Terapi Uygulayıcı Eğitimi', kisa: 'Bilişsel Davranışçı Terapi', kurum: 'FSMVÜ Sürekli Eğitim Merkezi', yil: '2023', saat: 220, gorsel: 'bdt' },
+          { ad: 'Şema Terapisi Uygulayıcı Eğitimi', kisa: 'Şema Terapisi', kurum: 'FSMVÜ Sürekli Eğitim Merkezi', yil: '2023', saat: 120, gorsel: 'sema' },
+          { ad: 'EMDR Uygulayıcı Eğitimi', kisa: 'EMDR', kurum: 'FSMVÜ Sürekli Eğitim Merkezi', yil: '2023', saat: 120, gorsel: 'emdr' },
+        ],
+      },
+      {
+        anahtar: 'aile',
+        ad: 'Aile ve iletişim',
+        koclukta:
+          'Veliyle konuşurken evdeki iletişimi de hesaba katıyorum. Sınav yılı ' +
+          'bütün aileyi etkiler; baskı yerine destek nasıl olur, onu birlikte ' +
+          'buluruz.',
+        liste: [
+          { ad: 'Evlilik ve Çift Terapisi Eğitimi', kisa: 'Evlilik ve Çift Terapisi', kurum: 'FSMVÜ Sürekli Eğitim Merkezi', yil: '2023', saat: 120, gorsel: 'cift-terapisi' },
+        ],
+      },
+      {
+        anahtar: 'egitim',
+        ad: 'Eğitim ve öğretim',
+        koclukta:
+          'Her öğrenci aynı hızda ve aynı yoldan öğrenmez. Özel eğitim ' +
+          'uygulamaları, programı öğrencinin gerçek ihtiyacına göre kurmama yardım ediyor.',
+        liste: [
+          { ad: 'Özel Eğitim Uygulamaları', kisa: 'Özel Eğitim Uygulamaları', kurum: 'MEB · Hayat Boyu Öğrenme', yil: '2022', saat: 80, gorsel: 'ozel-egitim' },
+          { ad: 'İngilizce A2 Seviyesi', kisa: 'İngilizce A2', kurum: 'MEB · Hayat Boyu Öğrenme', yil: '2020', saat: 160, gorsel: 'ingilizce-a2' },
+        ],
+      },
     ],
   },
 

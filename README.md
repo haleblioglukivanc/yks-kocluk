@@ -55,18 +55,29 @@ ayarıyla sağlanır; bilinmeyen yollar `index.html` döner.
 
 Tanıtım sayfasının bütün metinleri `src/icerik/site.js` dosyasındadır.
 
-### Belgeleri değiştirme
+### Belgeler (sertifikalar)
 
-`public/belgeler/` klasöründe `ornek-01.png` … `ornek-10.png` adında on örnek görsel
-var; hepsinin üzerinde "ÖRNEK" filigranı bulunur. Gerçek belgeler geldiğinde:
+Tanıtım sayfasındaki "Aldığım eğitimler" bölümü `src/icerik/site.js` içindeki
+`belgeler.alanlar` dizisinden çizilir. Belgeler alanlara ayrılır (psikolojik
+yaklaşım, aile ve iletişim, eğitim ve öğretim); Çarşamba ve Veli bölümleri ilgili
+alana bağlanır, Koç bölümü toplam belge ve saati kendisi hesaplar.
 
-1. Görselleri aynı klasöre koyun (dikey, 620×840 oranına yakın iyi sonuç verir).
-2. `src/icerik/site.js` içindeki `belgeler.liste` dizisinde `gorsel` yolunu değiştirin.
-3. `[DEMO]` etiketlerini gerçek kurum adlarıyla değiştirin.
-4. Örnek görselleri silin.
+Yeni belge eklemek:
 
-Belge görselleri service worker ön belleğine alınmaz (`globIgnores`), böylece
-uygulamayı kuranlar gereksiz veri indirmez.
+1. PDF'i depo dışındaki bir klasöre koyun (orijinaller depoya **girmez**).
+2. `python belge-uret/maskele.py <klasör>` çalıştırın. Betik TC kimlik no,
+   anne/baba adı, "İbrahim" ön adı ve karekodu (içinde TC var) metin
+   katmanından siler, `public/belgeler/<ad>.jpg` ve `<ad>-kucuk.jpg` üretir,
+   sonunda çıktıda kişisel veri kalıp kalmadığını denetler.
+   Gerekenler: `pip install pymupdf opencv-python-headless`.
+3. Yeni dosya adını `maskele.py` içindeki `ADLAR` sözlüğüne ekleyin.
+4. `site.js`'te ilgili alanın `liste`sine `{ ad, kisa, kurum, yil, saat, gorsel }` ekleyin.
+
+Terapi eğitimleri "uygulayıcı eğitimi" sertifikasıdır, terapist unvanı vermez.
+Sayfada terapi hizmeti vaat edilmez; yalnız bakış açısı ve yöntemden söz edilir.
+
+Belge görselleri service worker ön belleğine alınmaz, böylece uygulamayı
+kuranlar gereksiz veri indirmez.
 
 ### Yayın öncesi kontrol listesi
 

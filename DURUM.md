@@ -7,6 +7,26 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 26 Eylül 2026 — Gerçek sertifikalar, sayfa belgelere göre düzenlendi
+
+- 10 demo belge ve `ornek-*.png` silindi; 6 gerçek sertifika eklendi: FSMVÜ SEM
+  (BDT 220 sa, Şema 120, EMDR 120, Evlilik ve Çift Terapisi 120; 2023) ve MEB HEM
+  (Özel Eğitim Uygulamaları 80 sa 2022, İngilizce A2 160 sa 2020). Toplam 820 saat.
+- Kişisel veri: `belge-uret/maskele.py` TC no, anne/baba adı, "İbrahim" ön adı ve
+  karekodu metin katmanından siler (karekod `tckn:` taşıyordu). Orijinal PDF'ler depoda yok.
+- `BelgeSeridi` (kayan şerit, dikey belge) yerine `Belgeler.jsx`: üç alan (Psikolojik
+  yaklaşım / Aile ve iletişim / Eğitim ve öğretim), her alanın "koçlukta" cümlesi,
+  yatay kartlar, bütün belgeler arasında gezilen büyük görünüm.
+- Sıra: Koç + Belgeler, Çarşamba'nın hemen arkasına alındı (kötü gün → bu bakışın
+  arkasındaki eğitim). Koç bölümünde eğitim etiketleri ve "820 saat eğitim · 6 belge".
+  Çarşamba → psikoloji, Veli → aile alanına bağ satırı (`BelgeBagi`).
+- Terapi eğitimleri terapist unvanı vermez; metinler hizmet vaat etmiyor.
+- Düzeltme: büyük görünümde kapat/ok düğmeleri sistem.css'teki dokunma halkası
+  kuralı (`position: relative`) yüzünden yerinden kayıyordu; seçici güçlendirildi.
+- Sayılar (10 yıl, 3.450 öğrenci) yaklaşık; Bekir onayladı.
+
+---
+
 ## 22 Eylül 2026 — Haftalık izleme linkleri
 
 - Mokap onaylı ("onay ok"). Tablo `haftalik_link` (öğrenci, hafta başı, url, başlık, not, izlendi, kapandı; göç 20260922_haftalik_link.sql). RLS: okuma `erisebilir_mi`, yazma yalnız koç (`ogrencim_mi`); öğrenci tiki `link_izledim(id, bool)` RPC'siyle, yalnız kendi satırı.
@@ -828,8 +848,8 @@ sıcaklık"). Özet:
 1. **`site.js` içindeki demo veri.** `[DEMO]` ve `[DOLDURULACAK]` araması yapın.
    Özellikle `yorumlar.liste` gerçek değilse boşaltın (`[]`) — uydurma referansı
    gerçek bir kişinin adı altında yayınlamak etik ve hukuki risk.
-2. **Belge görselleri.** `public/belgeler/` altındaki 10 dosya örnektir,
-   üzerlerinde "ÖRNEK" filigranı vardır. Gerçekleriyle değiştirilmeli.
+2. **Diploma.** Sertifikalar gerçek (26 Eylül); diploma gelince
+   `belge-uret/maskele.py`'den geçirip `belgeler.alanlar` → `egitim` başına ekleyin.
 3. **Kıvanç'ın biyografisi.** Hâlâ yer tutucu.
 4. **GitHub token.** Depoya yazılmış olan `ghp_` ile başlayan klasik token
    hâlâ geçerli. İptal edilmeli.

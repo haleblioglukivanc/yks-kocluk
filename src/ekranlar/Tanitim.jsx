@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
 import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.js'
-import BelgeSeridi from '../bilesenler/BelgeSeridi.jsx'
+import Belgeler, { belgeOzeti } from '../bilesenler/Belgeler.jsx'
 import { MarkaIsareti } from '../bilesenler/Marka.jsx'
 import '../tanitim.css'
 
@@ -587,12 +587,23 @@ function YuzenWhatsapp({ adres }) {
   )
 }
 
+/* Bir bölümü, dayandığı eğitim alanına bağlayan küçük satır. */
+function BelgeBagi({ belgeler, anahtar, acik, children }) {
+  const { saat } = belgeOzeti(belgeler, anahtar)
+  return (
+    <a href="#belgeler" className={'t-belge-bagi' + (acik ? ' t-belge-bagi--acik' : '')}>
+      {children} <span>({saat} saat) →</span>
+    </a>
+  )
+}
+
 export default function Tanitim({ onGiris, onRandevu }) {
   const { koc, sayilar, belgeler, kayan, vitrin, sorular, kanallar, iletisim } = site
   const netler = vitrin.maket.netler
   // Form sayfası uygulamanın içinde; tam sayfa yenilemeden aç
   const randevu = (e) => { e.preventDefault(); onRandevu?.() }
   const whatsapp = whatsappAdresi(iletisim)
+  const egitim = belgeOzeti(belgeler)
 
   const hepsi = gunler.flatMap((g) => g.gorevler).filter((t) => t.durum !== 'bos')
   const say = (d) => hepsi.filter((t) => t.durum === d).length
@@ -712,6 +723,7 @@ export default function Tanitim({ onGiris, onRandevu }) {
                 <div key={i.baslik} className="t-ilke"><span className="t-ilke-baslik">{i.baslik}</span><span className="t-ilke-metin">{i.metin}</span></div>
               ))}
             </div>
+            <BelgeBagi belgeler={belgeler} anahtar="psikoloji" acik>Bu yaklaşımın arkasında bilişsel davranışçı terapi, şema terapisi ve EMDR eğitimlerim var</BelgeBagi>
           </div>
           <div className="t-sohbet-yuva">
             <Mudahale />
@@ -720,6 +732,24 @@ export default function Tanitim({ onGiris, onRandevu }) {
           </div>
         </div>
       </section>
+
+      <section id="kim" className="t-kap t-bolum t-kim">
+        <img src={koc.portre} alt={koc.ad} className="t-portre" />
+        <div className="t-kim-metin">
+          <p className="t-etiket">Koç</p>
+          <div className="t-biyografi">{koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}</div>
+          <ul className="t-kim-egitimler" aria-label="Aldığı eğitimler">
+            {belgeler.alanlar.flatMap((a) => a.liste).map((b) => <li key={b.gorsel}>{b.kisa || b.ad}</li>)}
+          </ul>
+          <div className="t-kim-dip">
+            {sayilar.map((s) => <span key={s.birim}><b>{s.sayi}</b> {s.birim}</span>)}
+            <span><b>{egitim.saat.toLocaleString('tr-TR')}</b> saat eğitim</span>
+            <a href="#belgeler">{egitim.adet} belge →</a>
+          </div>
+        </div>
+      </section>
+
+      <Belgeler belgeler={belgeler} />
 
       <section id="net" className="t-kap t-bolum t-ikili t-ikili--alt">
         <div className="t-ikili-metin">
@@ -742,6 +772,7 @@ export default function Tanitim({ onGiris, onRandevu }) {
           <p className="t-etiket">Veli</p>
           <h2 className="t-baslik">Pazar akşamı size gelen özet.</h2>
           <p className="t-alt-metin">Yandaki kart velinin gördüğü her şey. Günlük liste yok, mesajlar yok. "Bugün ne yaptın?" sorusunu sormanız gerekmesin diye var; sorunuz olursa muhatabınız benim, çocuğunuz değil.</p>
+          <BelgeBagi belgeler={belgeler} anahtar="aile">Veliyle iletişimde evlilik ve çift terapisi eğitimimden yararlanıyorum</BelgeBagi>
         </div>
         <div className="t-veli-kart" data-canli="">
           <div className="t-veli-bas"><span>Haftalık özet</span><span>{ogrenci.hafta}</span></div>
@@ -774,20 +805,6 @@ export default function Tanitim({ onGiris, onRandevu }) {
           ))}
         </ol>
       </section>
-
-      <section id="kim" className="t-kap t-bolum t-kim">
-        <img src={koc.portre} alt={koc.ad} className="t-portre" />
-        <div className="t-kim-metin">
-          <p className="t-etiket">Koç</p>
-          <div className="t-biyografi">{koc.biyografi.map((p, i) => <p key={i}>{p}</p>)}</div>
-          <div className="t-kim-dip">
-            {sayilar.map((s) => <span key={s.birim}><b>{s.sayi}</b> {s.birim}</span>)}
-            <a href="#belgeler">Belgeler →</a>
-          </div>
-        </div>
-      </section>
-
-      <BelgeSeridi belgeler={belgeler} />
 
       <section id="sorular" className="t-kap t-bolum">
         <h2 className="t-baslik t-baslik--kucuk">{sorular.baslik}</h2>
