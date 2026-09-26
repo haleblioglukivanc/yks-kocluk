@@ -129,9 +129,8 @@ def o_gun_gonderi_var_mi(kanal, tarih):
     return [e['node']['id'] for e in (veri['posts']['edges'] or [])]
 
 
-def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), yeniden=False):
+def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), yeniden=False, link=None):
     simdi = datetime.now(TR)
-    link = None
     for k in kanallar:
         zaman = datetime.fromisoformat(f"{g['tarih']}T{g['saat'][k]}").replace(tzinfo=TR)
         if zaman < simdi + timedelta(minutes=10):
@@ -161,14 +160,62 @@ def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), y
         print('   planlandı:', sonuc['post']['id'])
 
 
+# ── Onay: hiçbir video koç onayı olmadan paylaşılmaz ────────────
+def rpc(ad, govde=None):
+    url = env('SUPABASE_URL').rstrip('/') + '/rest/v1/rpc/' + ad
+    anahtar = env('SUPABASE_SERVICE_KEY')
+    r = urllib.request.Request(url, method='POST', data=json.dumps(govde or {}).encode(),
+        headers={'apikey': anahtar, 'Authorization': 'Bearer ' + anahtar, 'Content-Type': 'application/json'})
+    try:
+        with urllib.request.urlopen(r, timeout=60) as c:
+            ham = c.read()
+    except urllib.error.HTTPError as h:
+        sys.exit('Supabase RPC %s HTTP %s: %s' % (ad, h.code, h.read().decode()[:500]))
+    return json.loads(ham) if ham else None
+
+
+def ozet(g, govde):
+    satirlar = '\n'.join('• ' + x for x in govde)
+    return f"{g['seri']} · {g['baslik']}\n\n« {g['kanca']} »\n\n{satirlar}" + (f"\n\n💬 {g['soru']}" if g.get('soru') else '')
+
+
+def onaya_gonder(g, govde, video, deneme):
+    if deneme:
+        print('>> DENEME: onaya gönderilmedi.\n' + ozet(g, govde)); return
+    link = yukle(video, g['tarih'])
+    kapak = yukle(video.with_suffix('.png'), g['tarih'])
+    n = rpc('sosyal_onay_iste', {'p_tarih': g['tarih'], 'p_video_url': link, 'p_kapak_url': kapak, 'p_ozet': ozet(g, govde)})
+    print(f'>> Onaya gönderildi ({n} kişiye Telegram önizlemesi):', link)
+    if not n:
+        print('::warning::Telegram bağlı koç yok; onay mesajı kimseye gitmedi.')
+
+
+def onaylananlari_paylas(deneme):
+    liste = rpc('sosyal_onaylananlar') or []
+    if not liste:
+        print('Onaylanıp paylaşılmayı bekleyen video yok.'); return
+    for o in liste:
+        g = gun_bul(o['tarih'])
+        govde = g.get('gundem_govde') or GOVDE.get(g['baslik'])
+        aciklama, yt_baslik = metinler(g, govde)
+        print(f"== {g['tarih']} · {g['baslik']} (onaylı)")
+        gonder(g, None, aciklama, yt_baslik, deneme, link=o['video_url'])
+        if not deneme:
+            rpc('sosyal_paylasildi', {'p_tarih': g['tarih']})
+
+
 if __name__ == '__main__':
     a = argparse.ArgumentParser()
     a.add_argument('--tarih', default=(datetime.now(TR) + timedelta(days=1)).strftime('%Y-%m-%d'))
     a.add_argument('--render', action='store_true'); a.add_argument('--gonder', action='store_true')
     a.add_argument('--metin', action='store_true'); a.add_argument('--deneme', action='store_true')
     a.add_argument('--kanal', default='yt,ig,tt', help='yalnız bu kanallar, örn. ig')
+    a.add_argument('--onaya', action='store_true', help='videoyu Buffer yerine koç onayına gönder (Telegram)')
+    a.add_argument('--onaylananlar', action='store_true', help='onaylanmış videoları Buffer a planla')
     a.add_argument('--yeniden', action='store_true', help='düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atlar)')
     arg = a.parse_args()
+    if arg.onaylananlar:
+        onaylananlari_paylas(arg.deneme); sys.exit(0)
     g = gun_bul(arg.tarih)
     govde = g.get('gundem_govde') or GOVDE.get(g['baslik'])
     print(f"{g['tarih']} {g['gun']} · {g['seri']} · {g['baslik']}")
@@ -183,6 +230,8 @@ if __name__ == '__main__':
             print(f'\n=== {k} ===\n{v}')
     if arg.render:
         render(g, govde, video); print('video:', video)
+    if arg.onaya:
+        onaya_gonder(g, govde, video, arg.deneme)
     if arg.gonder:
         gonder(g, video, aciklama, yt_baslik, arg.deneme,
                tuple(k.strip() for k in arg.kanal.split(',') if k.strip() in KANAL), arg.yeniden)

@@ -146,7 +146,7 @@
   "kurgu": "metafor",
   "zemin": "murekkep",
   "cizim": "ayna",
-  "vurgu": "arkadaşına"
+  "vurgu": "arkadaşınla"
  },
  "2026-10-12": {
   "kurgu": "masa",
@@ -279,8 +279,8 @@
  "2026-11-02": {
   "kurgu": "masa",
   "zemin": "kum",
-  "cizim": "gunes",
-  "vurgu": "Bilerek"
+  "cizim": "tabela",
+  "vurgu": "Planı"
  },
  "2026-11-03": {
   "kurgu": "metafor",
@@ -292,7 +292,7 @@
   "kurgu": "yazisma",
   "zemin": "seftali",
   "cizim": "dusunce-balonu",
-  "vurgu": "planladığımın"
+  "vurgu": "kararınca"
  },
  "2026-11-05": {
   "kurgu": "masa",
@@ -321,14 +321,14 @@
  "2026-11-09": {
   "kurgu": "masa",
   "zemin": "krem",
-  "cizim": "kronometre",
-  "vurgu": "Planı"
+  "cizim": "takvim",
+  "vurgu": "gider"
  },
  "2026-11-11": {
   "kurgu": "yazisma",
   "zemin": "gok",
-  "cizim": "tabela",
-  "vurgu": "kararınca"
+  "cizim": "ay-bulut",
+  "vurgu": "kalkamıyorum"
  },
  "2026-11-12": {
   "kurgu": "metafor",
@@ -359,8 +359,8 @@
  "2026-11-16": {
   "kurgu": "masa",
   "zemin": "kum",
-  "cizim": "takvim",
-  "vurgu": "gider"
+  "cizim": "hedef-tahtasi",
+  "vurgu": "nereden"
  },
  "2026-11-17": {
   "kurgu": "metafor",
@@ -371,8 +371,8 @@
  "2026-11-18": {
   "kurgu": "yazisma",
   "zemin": "nane",
-  "cizim": "ay-bulut",
-  "vurgu": "kalkamıyorum"
+  "cizim": "ayna",
+  "vurgu": "Matematiğe"
  },
  "2026-11-19": {
   "kurgu": "masa",
@@ -403,8 +403,8 @@
  "2026-11-23": {
   "kurgu": "masa",
   "zemin": "krem",
-  "cizim": "merdiven",
-  "vurgu": "nereden"
+  "cizim": "gunes",
+  "vurgu": "Bilerek"
  },
  "2026-11-24": {
   "kurgu": "metafor",
@@ -415,8 +415,8 @@
  "2026-11-25": {
   "kurgu": "yazisma",
   "zemin": "gok",
-  "cizim": "bulut-yagmur",
-  "vurgu": "Matematiğe"
+  "cizim": "dusunce-balonu",
+  "vurgu": "planladığımın"
  },
  "2026-11-26": {
   "kurgu": "metafor",
@@ -484,7 +484,7 @@
   "kurgu": "metafor",
   "zemin": "kum",
   "cizim": "terazi",
-  "vurgu": "dünkü"
+  "vurgu": "haline"
  },
  "2026-12-07": {
   "kurgu": "masa",
@@ -1230,7 +1230,7 @@
   "kurgu": "bolunmus",
   "zemin": "seftali",
   "cizim": "tabela",
-  "vurgu": "tekrarı"
+  "vurgu": "tekrar"
  },
  "2027-04-10": {
   "kurgu": "masa",
@@ -1394,7 +1394,7 @@
   "kurgu": "masa",
   "zemin": "krem",
   "cizim": "gunes",
-  "vurgu": "bölmek"
+  "vurgu": "tatili"
  },
  "2027-05-07": {
   "kurgu": "metafor",
@@ -1738,7 +1738,7 @@
   "kurgu": "masa",
   "zemin": "gok",
   "cizim": "ev-kalp",
-  "vurgu": "sınıf"
+  "vurgu": "eylülde"
  },
  "2027-07-02": {
   "kurgu": "bolunmus",

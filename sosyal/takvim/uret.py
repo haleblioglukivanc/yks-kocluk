@@ -228,6 +228,8 @@ def etiketler(g, seri, kitle, ders=None, hassas=False):
 
 def uygun(kosul, g):
     """Mevsim koşulu: ay kümesi {11, 12} ya da sınava göreli pencere ('yks', -21, -1)."""
+    if isinstance(kosul, list):                                  # gerçek tarih pencereleri [(baş, bit), ...]
+        return any(b <= g <= s for b, s in kosul)
     if isinstance(kosul, tuple):
         capa = {"yks": YKS, "sonuc": SONUC, "lgs": LGS}[kosul[0]]
         return capa + timedelta(kosul[1]) <= g <= capa + timedelta(kosul[2])

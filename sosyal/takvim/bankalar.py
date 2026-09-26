@@ -46,7 +46,7 @@ PLAN = [
  ("Haftanın ölçüsü", "Pazar akşamı sor: kaç iş vardı, kaçı bitti?"),
  ("Yeni ay, sade plan", "Ay başı: planı büyütme, temizle."),
  ("Deneme sonrası plan", "Denemede çıkan 3 eksik, bu haftanın planıdır."),
- ("Kış saatleri", "Hava 17:30'da kararıyor. Planı ışığa göre kur."),
+ ("Kış saatleri", "Hava erken kararıyor. Planı ışığa göre kur."),
  ("Okul yoğun haftası", "Yazılı haftası: YKS planı durmaz, küçülür."),
  ("Sınavdan geriye plan", "Sınavdan geriye say: bu hafta hangi dilimdesin?"),
  ("Plan çizelgesi", "Haftayı bir kâğıda sığdır. Sığmıyorsa fazla."),
@@ -204,11 +204,11 @@ VELI = [
  ("Kıyafet ve sınav", "Sınav günü rahat kıyafet, yanında su ve kimlik."),
  ("Anne–baba ortak dil", "Anne bir şey, baba başka şey diyorsa çocuk kaybolur."),
  ("Sosyal medya", "Çocuğunuzun takip ettiği ‘motivasyon’ hesapları ona iyi gelmiyor olabilir."),
- ("Uzun hafta sonu", "Bayram tatili: 9 günü bölmek."),
- ("11. sınıf velisi", "11. sınıfta başlamak erken değil. Ama sınıf sınıf."),
+ ("Uzun hafta sonu", "Bayram ve 19 Mayıs birleşti: tatili bölmek."),
+ ("11. sınıf velisi", "11. sınıf bitti. Yazdan ısınan, eylülde rahat eder."),
  ("Sonuç günü", "Sonuç açıklandığında ilk sarılma, sonra puan."),
  ("Kaygılı veli", "Sizin kaygınız çocuğunuza da bulaşıyor olabilir."),
- ("Güven", "Çocuğunuz size yanlış netini söyleyebiliyor mu?"),
+ ("Güven", "Çocuğunuz size kötü netini söyleyebiliyor mu?"),
  ("Çalışma masası", "İyi bir masa ve iyi bir ışık: en ucuz yatırım."),
  ("Yazılı haftası", "Okul yazılısı ile YKS çakışınca öncelik ne?"),
  ("Mola hakkı", "Mola veren çocuk tembel değil."),
@@ -240,7 +240,7 @@ EFSANE = [
  ("Uyku kaybıdır", "Uyku, ezberin kaydedildiği saattir."),
  ("Sosyal hayat bitmeli", "Arkadaşsız bir yıl, verimli bir yıl değil."),
  ("Paragraf yeteneğe bağlı", "Paragraf yetenek değil, antrenman."),
- ("Matematik kafası", "‘Benim matematik kafam yok.’ Kafası yok, tekrarı yok."),
+ ("Matematik kafası", "‘Benim matematik kafam yok.’ Eksik olan kafa değil, tekrar."),
  ("Bayramda çalışılmaz", "Bayramda çalışmamak geri bırakmaz. Hiç dönmemek bırakır."),
  ("Son hafta yeni konu", "Son hafta yeni konu açmak paniği büyütür."),
  ("Herkes 14 saat çalışıyor", "Sosyal medyadaki masa fotoğrafı gerçek bir gün değil."),
@@ -270,7 +270,7 @@ EFSANE = [
 # Cumartesi — DENEME GÜNÜ
 DENEME = [
  ("Deneme sabahı rutini", "Deneme sabahı: aynı kahvaltı, aynı saat, aynı kalem."),
- ("Soru sırası stratejisi", "Türkçe'den mi başlarsın matematikten mi? Seç ve sabitle."),
+ ("Soru sırası stratejisi", "Türkçeden mi başlarsın matematikten mi? Seç ve sabitle."),
  ("İlk tur ikinci tur", "İlk turda emin olduklarını çöz. İkinci turda dön."),
  ("Deneme analizi 20 dakika", "Deneme bitti. En önemli 20 dakika şimdi başlıyor."),
  ("Yanlış defteri", "Her denemeden 5 yanlış deftere. Başka hiçbir şey."),
@@ -300,7 +300,7 @@ DENEME = [
  ("Deneme korkusu", "Deneme sınav değil, antrenman."),
  ("Net düşüşü", "Net düştü mü? Deneme zorlaştı mı, sen mi yoruldun?"),
  ("Fen sırası", "Fende fizik mi önce kimya mı? Kendi sıranı bul."),
- ("Deneme arası mola", "TYT'den sonra AYT'ye geçerken ne yiyeceksin?"),
+ ("Sınav sabahı kahvaltı", "Sınav sabahı ne yiyeceksin?"),
  ("Dönem sonu denemesi", "Dönem bitti. Bu deneme dönemin karnesi."),
  ("Net hedefi gerçekçi", "Bir sonraki deneme hedefi: +2 net. +20 değil."),
  ("Bayram denemesi", "Uzun tatilin bir gününü deneme günü yap."),
@@ -323,14 +323,14 @@ DENEME = [
 PAZAR = [
  ("Pazar akşamı ağırlığı", "Pazar akşamı içinde bir ağırlık mı var? Yalnız değilsin."),
  ("Haftayı kapat", "Bu haftanın tek iyi şeyini yaz. Bir tane yeter."),
- ("Kendine koç ol", "Kendine bir arkadaşına konuşur gibi konuş."),
+ ("Kendine koç ol", "Kendinle bir arkadaşınla konuşur gibi konuş."),
  ("Yetmiyorum hissi", "‘Yetmiyorum’ bir his. Gerçek değil."),
  ("Yarın yeni hafta", "Yarın sıfırdan değil, kaldığın yerden."),
  ("Kaygıyla yaşamak", "Kaygı gitmeyecek. Seninle birlikte çalışacak."),
  ("Küçük zaferler", "Bu hafta bir soruyu ilk kez yaptın mı? Bu bir zafer."),
  ("Mükemmel hafta yok", "Mükemmel hafta yok. İyi yeter."),
  ("Dinlenme hakkı", "Bugün dinlendiysen, suçluluk duymana gerek yok."),
- ("Kıyas bırak", "Bu hafta kimseye bakma. Sadece dünkü sene."),
+ ("Kıyas bırak", "Bu hafta kimseye bakma. Sadece dünkü haline."),
  ("Neden başladın", "Neden başladığını hatırla. Kâğıda yaz."),
  ("Yalnızlık", "Bu yol yalnız hissettirir. Ama yalnız değilsin."),
  ("Beden de çalışır", "Bu hafta kaç kere yürüdün? Beyin bacaklarla da çalışır."),
@@ -373,19 +373,26 @@ PAZAR = [
 
 # Mevsime bağlı konular: başlık -> hangi aylarda {ay} ya da sınava göre hangi pencerede ('yks'|'sonuc'|'lgs', başlangıç, bitiş gün farkı).
 # Buradaki konular yalnız bu aylarda seçilir; diğerleri yıl boyu sırayla gelir.
+# MEB 2026-2027: 1. ara tatil 16-20 Kasım, yarıyıl 25 Ocak-5 Şubat, 2. ara tatil 8-12 Mart.
+# Tatile bağlı konular ay ile değil gerçek tarih penceresiyle seçilir (ay koşulu tatilden önceye düşürüyordu).
+from datetime import date as _d
+ARA_TATIL_ONCESI = [(_d(2026, 11, 5), _d(2026, 11, 15)), (_d(2027, 2, 25), _d(2027, 3, 7))]
+ARA_TATIL_SONRASI = [(_d(2026, 11, 23), _d(2026, 11, 29)), (_d(2027, 3, 15), _d(2027, 3, 21))]
+TATIL_SONRASI = ARA_TATIL_SONRASI + [(_d(2027, 2, 8), _d(2027, 2, 14))]
+
 MEVSIM = {
  # Plan
  "Kış saatleri": {11, 12, 1}, "Yaz planı": {7, 8}, "Okul yoğun haftası": {10, 11, 12, 3, 4, 5},
- "Sınavdan geriye plan": {3, 4, 5}, "Tatil sonrası dönüş": {11, 2, 3},
+ "Sınavdan geriye plan": {3, 4, 5}, "Tatil sonrası dönüş": TATIL_SONRASI,
  # Aynı Hafta
  "Kış karanlığı": {11, 12, 1}, "Bahar yorgunluğu": {4, 5}, "Son 100 gün paniği": ("yks", -106, -90),
  "Tercih kaygısı": ("sonuc", 0, 30), "Yeni başlıyorum": {6, 7, 8, 9}, "Mezun yılı": {9, 10, 7, 8},
- "Ara tatil bitti": {11, 3}, "Bayram çalışması": {3, 5}, "Hastalandım": {12, 1, 2},
+ "Ara tatil bitti": ARA_TATIL_SONRASI, "Bayram çalışması": {3, 5}, "Hastalandım": {12, 1, 2},
  "Okul yetişmiyor": {10, 11, 12, 3, 4, 5},
  # Veli
  "Karne haftası": {1, 6}, "Tercih dönemi": ("sonuc", 0, 35), "Sınav günü": ("yks", -21, -2), "Bayram ziyaretleri": {3, 5},
  "Uzun hafta sonu": {5}, "11. sınıf velisi": {7, 8, 9}, "Sonuç günü": ("sonuc", -4, 6), "Başarısızlık korkusu": ("yks", 1, 30),
- "Yıl sonu değerlendirme": ("yks", 3, 45), "Ara tatil": {11, 3}, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
+ "Yıl sonu değerlendirme": ("yks", 3, 45), "Ara tatil": ARA_TATIL_ONCESI, "Yazılı haftası": {10, 11, 12, 3, 4, 5},
  "Mezun öğrenci": {9, 10, 7, 8}, "LGS velisi": {9, 10, 11},
  # Efsane
  "Kış tembel yapar": {11, 12, 1}, "Son ay her şeyi değiştirir": {4, 5}, "Son hafta yeni konu": ("yks", -45, -3),

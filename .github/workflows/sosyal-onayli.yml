@@ -1,0 +1,29 @@
+name: Sosyal - onaylı paylaşım
+
+# Koçun Telegram'dan onayladığı videoları Buffer'a planlar.
+# 08:00-22:00 (Türkiye) arasında saatte bir bakar; onaylanmamış video asla gitmez.
+on:
+  schedule:
+    - cron: '5 5-19 * * *'
+  workflow_dispatch:
+    inputs:
+      deneme:
+        description: 'Deneme modu (Buffer a göndermez, sadece gösterir)'
+        type: boolean
+        default: false
+
+jobs:
+  paylas:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Onaylananları planla
+        env:
+          BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
+          DENEME: ${{ inputs.deneme }}
+        run: |
+          ek=""
+          [ "$DENEME" = "true" ] && ek="--deneme"
+          python3 sosyal/gunluk.py --onaylananlar $ek

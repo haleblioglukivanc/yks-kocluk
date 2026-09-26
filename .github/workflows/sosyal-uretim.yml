@@ -1,9 +1,10 @@
 name: Sosyal - günlük video üretimi
 
-# Her sabah 06:30 (Türkiye) YARININ videosunu takvimden üretir ve üç kanala
-# (YouTube, Instagram, TikTok) Buffer'da planlar. Bir gün önceden planlandığı
-# için Buffer'da kontrol etmeye bir gün vakit kalır.
+# Her sabah 06:30 (Türkiye) YARININ videosunu takvimden üretir, yazım denetiminden
+# geçirir ve koça Telegram'dan onaya gönderir. Onaylanmayan video paylaşılmaz;
+# onaylananları 'Sosyal - onaylı paylaşım' iş akışı Buffer'a planlar.
 # Elle: Actions -> bu iş akışı -> Run workflow (tarih boş = yarın).
+# 'onaysiz' yalnız koçun zaten onayladığı bir düzeltmeyi yeniden paylaşmak içindir.
 on:
   schedule:
     - cron: '30 3 * * *'
@@ -25,6 +26,10 @@ on:
         description: 'Düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atla)'
         type: boolean
         default: false
+      onaysiz:
+        description: 'Onaya göndermeden doğrudan Buffer a planla (yalnız onaylı düzeltmeler için)'
+        type: boolean
+        default: false
 
 jobs:
   uret:
@@ -43,7 +48,14 @@ jobs:
         working-directory: sosyal/video
         run: npm ci --no-audit --no-fund
 
-      - name: Videoyu üret ve planla
+      - name: Yazım denetimi
+        run: |
+          sudo apt-get install -y -qq hunspell hunspell-tr >/dev/null
+          python3 sosyal/denetim.py --tarih "${TARIH:-$(TZ=Europe/Istanbul date -d tomorrow +%F)}"
+        env:
+          TARIH: ${{ inputs.tarih }}
+
+      - name: Videoyu üret, onaya gönder
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -52,13 +64,18 @@ jobs:
           DENEME: ${{ inputs.deneme }}
           KANAL: ${{ inputs.kanal }}
           YENIDEN: ${{ inputs.yeniden }}
+          ONAYSIZ: ${{ inputs.onaysiz }}
         run: |
           ek=""
           [ -n "$TARIH" ] && ek="--tarih $TARIH"
           [ "$DENEME" = "true" ] && ek="$ek --deneme"
           [ -n "$KANAL" ] && ek="$ek --kanal $KANAL"
           [ "$YENIDEN" = "true" ] && ek="$ek --yeniden"
-          python3 sosyal/gunluk.py $ek --render --gonder
+          if [ "$ONAYSIZ" = "true" ]; then
+            python3 sosyal/gunluk.py $ek --render --gonder
+          else
+            python3 sosyal/gunluk.py $ek --render --onaya
+          fi
 
       - name: Videoyu indirilebilir bırak
         if: always()
