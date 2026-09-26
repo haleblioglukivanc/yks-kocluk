@@ -129,17 +129,17 @@ def o_gun_gonderi_var_mi(kanal, tarih):
     return [e['node']['id'] for e in (veri['posts']['edges'] or [])]
 
 
-def gonder(g, video, aciklama, yt_baslik, deneme):
+def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), yeniden=False):
     simdi = datetime.now(TR)
     link = None
-    for k in ('yt', 'ig', 'tt'):
+    for k in kanallar:
         zaman = datetime.fromisoformat(f"{g['tarih']}T{g['saat'][k]}").replace(tzinfo=TR)
         if zaman < simdi + timedelta(minutes=10):
             zaman = simdi + timedelta(minutes=15)
         print(f"-- {k}: {zaman:%Y-%m-%d %H:%M} (TR)")
         if deneme:
             print(aciklama[k][:300] + ('…' if len(aciklama[k]) > 300 else '')); continue
-        var = o_gun_gonderi_var_mi(KANAL[k], g['tarih'])
+        var = [] if yeniden else o_gun_gonderi_var_mi(KANAL[k], g['tarih'])
         if var:
             print('   bu kanala o gün zaten gönderi var, atlandı:', var); continue
         link = link or yukle(video, g['tarih'])
@@ -166,6 +166,8 @@ if __name__ == '__main__':
     a.add_argument('--tarih', default=(datetime.now(TR) + timedelta(days=1)).strftime('%Y-%m-%d'))
     a.add_argument('--render', action='store_true'); a.add_argument('--gonder', action='store_true')
     a.add_argument('--metin', action='store_true'); a.add_argument('--deneme', action='store_true')
+    a.add_argument('--kanal', default='yt,ig,tt', help='yalnız bu kanallar, örn. ig')
+    a.add_argument('--yeniden', action='store_true', help='düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atlar)')
     arg = a.parse_args()
     g = gun_bul(arg.tarih)
     govde = g.get('gundem_govde') or GOVDE.get(g['baslik'])
@@ -182,4 +184,5 @@ if __name__ == '__main__':
     if arg.render:
         render(g, govde, video); print('video:', video)
     if arg.gonder:
-        gonder(g, video, aciklama, yt_baslik, arg.deneme)
+        gonder(g, video, aciklama, yt_baslik, arg.deneme,
+               tuple(k.strip() for k in arg.kanal.split(',') if k.strip() in KANAL), arg.yeniden)

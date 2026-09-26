@@ -228,7 +228,7 @@ EFSANE = [
  ("Kafein mucizesi", "Enerji içeceği net artırmaz. Uykuyu azaltır."),
  ("Özet çıkarmak şart", "Her konuya özet çıkarmak zaman kaybı olabilir."),
  ("Boş bırakmak kaybettirir", "4 yanlış 1 doğruyu götürür. Yani?"),
- ("11. sınıf erken", "‘Daha 11. sınıftayım.’ En ucuz yıl şimdi."),
+ ("11. sınıf erken", "‘Daha 11. sınıftayım.’ En uzun yıl şimdi."),
  ("Motivasyon beklenir", "Motivasyonu beklersen masaya oturmazsın."),
  ("Tek kaynak yetmez", "Çok kaynak değil, bitmiş kaynak."),
  ("Sabah erken kalkan kazanır", "Erken kalkmak değil, düzenli kalkmak."),

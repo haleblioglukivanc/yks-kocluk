@@ -17,6 +17,14 @@ on:
         description: 'Deneme modu (videoyu üretir, Buffer a göndermez)'
         type: boolean
         default: true
+      kanal:
+        description: 'Kanallar (yt,ig,tt; boş = hepsi)'
+        required: false
+        default: ''
+      yeniden:
+        description: 'Düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atla)'
+        type: boolean
+        default: false
 
 jobs:
   uret:
@@ -42,10 +50,14 @@ jobs:
           SUPABASE_SERVICE_KEY: ${{ secrets.SUPABASE_SERVICE_KEY }}
           TARIH: ${{ inputs.tarih }}
           DENEME: ${{ inputs.deneme }}
+          KANAL: ${{ inputs.kanal }}
+          YENIDEN: ${{ inputs.yeniden }}
         run: |
           ek=""
           [ -n "$TARIH" ] && ek="--tarih $TARIH"
           [ "$DENEME" = "true" ] && ek="$ek --deneme"
+          [ -n "$KANAL" ] && ek="$ek --kanal $KANAL"
+          [ "$YENIDEN" = "true" ] && ek="$ek --yeniden"
           python3 sosyal/gunluk.py $ek --render --gonder
 
       - name: Videoyu indirilebilir bırak
