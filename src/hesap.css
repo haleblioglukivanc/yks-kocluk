@@ -1,0 +1,68 @@
+/* ═══ Net ve puan hesaplama (/net-hesapla). Tanıtım ve başvuru formunun
+   renk, düğme ve girdi stillerini kullanır; burada yalnız yerleşim var. ═══ */
+.h-kap { max-width: 1120px; padding-top: clamp(28px, 5cqw, 56px); padding-bottom: 72px; }
+.h-bas { max-width: 640px; }
+.h-bas h1 { font-weight: 800; font-size: clamp(34px, 5cqw, 52px); line-height: 1; letter-spacing: -.04em; }
+
+.h-izgara { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); gap: clamp(20px, 3cqw, 40px); margin-top: 32px; align-items: start; }
+.h-girdiler { display: grid; gap: 20px; }
+
+.h-test { margin: 0; padding: 18px clamp(14px, 2cqw, 22px) 10px; border: 1px solid var(--g-cizgi-2); border-radius: 16px; background: var(--g-yuzey); min-width: 0; }
+.h-test legend { display: contents; }
+.h-test legend > span { display: inline-block; font-family: var(--marka-baslik); font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+.h-test legend > small { display: inline-block; margin-left: 10px; font-size: var(--punto-mini); color: var(--g-soluk); }
+.h-test legend > b { float: right; font-family: var(--marka-mono); font-size: 20px; color: var(--t-turuncu-m); }
+.h-test legend > b i { font-style: normal; font-size: var(--punto-mini); color: var(--g-soluk); }
+
+.h-satir { display: grid; grid-template-columns: minmax(0, 1fr) 72px 72px 64px; gap: 8px; align-items: center; padding: 6px 0; border-top: 1px solid var(--g-cizgi); }
+.h-satir--bas { margin-top: 12px; border-top: 0; font-family: var(--marka-mono); font-size: 11px; color: var(--g-soluk); text-transform: uppercase; letter-spacing: .06em; }
+.h-satir--bas span:not(:first-child) { text-align: center; }
+.h-ders { display: grid; font-weight: 600; font-size: var(--punto-kucuk); line-height: 1.25; }
+.h-ders small { font-weight: 400; font-size: 12px; color: var(--g-soluk); }
+.h-satir input {
+  font: inherit; font-size: 16px; text-align: center; color: var(--g-murekkep); background: var(--g-kagit);
+  border: 1px solid var(--g-cizgi-2); border-radius: 10px; min-height: 44px; width: 100%; box-sizing: border-box; padding: 0 4px;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.h-satir input::-webkit-outer-spin-button, .h-satir input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.h-satir input:focus-visible { outline: 3px solid var(--t-turuncu); outline-offset: 1px; border-color: var(--g-murekkep); }
+.h-net { text-align: center; font-family: var(--marka-mono); font-weight: 700; font-size: var(--punto-kucuk); }
+.h-net em { font-style: normal; font-weight: 500; font-size: 11px; color: var(--t-kalan); }
+.h-satir--hata input { border-color: var(--t-kalan); }
+
+.h-obp .r-alan { margin-top: 14px; max-width: 220px; }
+.h-obp .r-onay { margin-bottom: 10px; }
+.h-sifirla { justify-self: start; font: inherit; font-size: var(--punto-kucuk); background: none; border: 0; padding: 10px 0; color: var(--g-grafit); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+
+/* Sonuç: masaüstünde yanda sabit, telefonda girdilerin altında */
+.h-sonuc { position: sticky; top: 20px; display: grid; gap: 16px; padding: 22px; border-radius: 18px; background: var(--t-lacivert); color: var(--beyaz); }
+.h-sonuc h2 { font-weight: 800; font-size: 22px; letter-spacing: -.02em; }
+.h-bos { margin: 0; color: var(--t-acik-mavi); font-size: var(--punto-kucuk); line-height: 1.5; }
+.h-puanlar { margin: 0; display: grid; }
+.h-puanlar > div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--beyaz) 12%, transparent); }
+.h-puanlar > div.bos { opacity: .45; }
+.h-puanlar dt { display: grid; justify-items: start; text-align: left; font-weight: 700; font-size: var(--punto-kucuk); }
+.h-puanlar dt small { font-weight: 400; font-size: 12px; color: var(--t-acik-mavi); }
+.h-puanlar dd { margin: 0; display: grid; justify-items: end; }
+.h-puanlar dd b { font-family: var(--marka-mono); font-size: 24px; color: var(--t-turuncu-a); }
+.h-puanlar dd small { font-family: var(--marka-mono); font-size: 11px; color: var(--t-acik-mavi); }
+.h-obp-not { margin: 0; font-size: var(--punto-kucuk); color: var(--t-acik-mavi); }
+.h-obp-not b { color: var(--beyaz); font-family: var(--marka-mono); }
+.h-lgs { margin: 0; font-size: var(--punto-kucuk); color: var(--t-acik-mavi); }
+.h-lgs b { font-family: var(--marka-mono); font-size: 44px; color: var(--t-turuncu-a); margin-right: 6px; }
+.h-uyari { margin: 0; font-size: 12px; line-height: 1.55; color: color-mix(in srgb, var(--t-acik-mavi) 85%, transparent); }
+.h-cagri { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid color-mix(in srgb, var(--beyaz) 14%, transparent); }
+.h-cagri p { margin: 0 0 6px; font-size: var(--punto-kucuk); line-height: 1.5; color: var(--t-acik-mavi); }
+
+.h-bilgi { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); gap: 0 clamp(20px, 3cqw, 40px); margin-top: 56px; border-top: 2px solid var(--g-murekkep); }
+.h-bilgi > div { padding: 20px 0; border-bottom: 1px solid var(--g-cizgi); }
+.h-bilgi h3 { font-weight: 700; font-size: 18px; margin-bottom: 6px; }
+.h-bilgi p { margin: 0; font-size: var(--punto-kucuk); line-height: 1.6; color: var(--g-grafit); }
+
+@media (max-width: 820px) {
+  .h-izgara { grid-template-columns: 1fr; }
+  .h-sonuc { position: static; }
+}
+@media (max-width: 420px) {
+  .h-satir { grid-template-columns: minmax(0, 1fr) 58px 58px 52px; gap: 6px; }
+}

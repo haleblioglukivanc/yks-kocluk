@@ -6,6 +6,7 @@ import { useOturum } from './lib/oturum.js'
 import { Yukleniyor } from './bilesenler/Ortak.jsx'
 import Tanitim from './ekranlar/Tanitim.jsx'
 import Randevu from './ekranlar/Randevu.jsx'
+import NetHesapla from './ekranlar/NetHesapla.jsx'
 import Giris from './ekranlar/Giris.jsx'
 import KocAnaSayfa, { YapilacaklarEkrani, OgrencilerimEkrani } from './ekranlar/KocAnaSayfa.jsx'
 import { useMevsim } from './lib/mevsim.js'
@@ -338,6 +339,11 @@ export default function App() {
     )
   }
 
+  /* Net hesaplama herkese açık araç: giriş yapmış öğrenci de açabilir. */
+  if (yol === '/net-hesapla') {
+    return <NetHesapla onGeri={() => git('/')} onRandevu={() => git('/randevu')} />
+  }
+
   // Giriş yapılmamış: tanıtım veya giriş
   if (durum === 'cikis') {
     /* Ana ekrandan açılan uygulama tanıtım sayfası göstermez: girişe
@@ -345,7 +351,7 @@ export default function App() {
     if (kuruluMu() && yol !== '/randevu') return <Giris />
     if (yol === '/giris') return <Giris onGeri={() => git('/')} />
     if (yol === '/randevu') return <Randevu onGeri={() => git('/')} />
-    return <Tanitim onGiris={() => git('/giris')} onRandevu={() => git('/randevu')} />
+    return <Tanitim onGiris={() => git('/giris')} onRandevu={() => git('/randevu')} onHesapla={() => git('/net-hesapla')} />
   }
 
   if (!profil) {

@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { site } from '../icerik/site.js'
 import { ogrenci, gunler, mesajlar, ilkeler, baslangic } from '../icerik/hafta.js'
 import Belgeler, { belgeOzeti } from '../bilesenler/Belgeler.jsx'
+import SinavSayaci from '../bilesenler/SinavSayaci.jsx'
 import { MarkaIsareti } from '../bilesenler/Marka.jsx'
 import '../tanitim.css'
 
@@ -597,11 +598,12 @@ function BelgeBagi({ belgeler, anahtar, acik, children }) {
   )
 }
 
-export default function Tanitim({ onGiris, onRandevu }) {
+export default function Tanitim({ onGiris, onRandevu, onHesapla }) {
   const { koc, sayilar, belgeler, kayan, vitrin, sorular, kanallar, iletisim } = site
   const netler = vitrin.maket.netler
   // Form sayfası uygulamanın içinde; tam sayfa yenilemeden aç
   const randevu = (e) => { e.preventDefault(); onRandevu?.() }
+  const hesapla = (e) => { e.preventDefault(); onHesapla?.() }
   const whatsapp = whatsappAdresi(iletisim)
   const egitim = belgeOzeti(belgeler)
 
@@ -632,6 +634,7 @@ export default function Tanitim({ onGiris, onRandevu }) {
             <span className="t-marka-alt">YKS · LGS koçu</span>
           </div>
           <nav className="t-nav">
+            <a href="/net-hesapla" onClick={hesapla} className="t-nav-ara">Net hesapla</a>
             <a href="#iletisim" className="t-dugme t-dugme--ana t-dugme--kucuk">Ücretsiz tanışma</a>
             <button type="button" className="t-dugme t-dugme--cizgi t-dugme--kucuk" onClick={onGiris}>Giriş yap</button>
           </nav>
@@ -685,6 +688,8 @@ export default function Tanitim({ onGiris, onRandevu }) {
           </div>
         </div>
       </div>
+
+      <SinavSayaci sayac={site.sayac} onRandevu={randevu} onHesapla={hesapla} />
 
       <section className="t-kap t-hafta-bolum">
         <p className="t-etiket"><i className="t-nokta" />Bir öğrencimin gerçek haftası · {ogrenci.hafta}</p>

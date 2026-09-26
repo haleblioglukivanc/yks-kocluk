@@ -7,6 +7,21 @@ olduğunu, hangi kararların neden alındığını ve nelerin açık kaldığın
 
 ---
 
+## 26 Eylül 2026 — Sınav sayacı ve net/puan hesaplama
+
+- Fikir osym7bizi.com incelemesinden (Kıvanç beğendi). Oradaki sahte canlı sayaç,
+  "7/11 kontenjan", şişik indirimler alınmadı.
+- Tanıtımda `SinavSayaci` (ders şeridinin hemen altı): YKS/LGS sekmesi, canlı geri
+  sayım, son bir yılın dönem çizelgesi, "Şu an: … dönemi" + odak maddeleri. Tarihler
+  `sosyal/takvim/sinavlar.json`'dan (sinav_takip.py günceller), `kesin: false` iken
+  "tahmini". Dönem metinleri `site.js` → `sayac`.
+- `/net-hesapla` (herkese açık, giriş yapmış kullanıcıya da): TYT/AYT/YDT + OBP,
+  LGS neti (3 yanlış 1 doğru). Yaklaşık puan katsayıları `src/lib/sinav.js` → `K`;
+  ÖSYM standart puan kullandığı için sayfada "yaklaşık". Sıralama tahmini yok
+  (veri yok, yanıltır). Girdiler yalnız localStorage'da.
+- Açık: katsayıları ÖSYM'nin 2026 sonuçlarıyla karşılaştırıp gerekirse güncellemek;
+  sitemap'e /net-hesapla.
+
 ## 26 Eylül 2026 — Gerçek sertifikalar, sayfa belgelere göre düzenlendi
 
 - 10 demo belge ve `ornek-*.png` silindi; 6 gerçek sertifika eklendi: FSMVÜ SEM

@@ -106,6 +106,27 @@ export const site = {
     ],
   },
 
+  // ── Sınav sayacı ────────────────────────────────────────────────
+  // Tarihler sosyal/takvim/sinavlar.json'dan gelir (src/lib/sinav.js).
+  // Aşamalar sınava kalan güne göre seçilir: `gun` o aşamanın başladığı
+  // kalan gün (büyükten küçüğe). Metinler Kıvanç'ın dilinden; net ya da
+  // puan vaadi yok, çünkü öğrenciden öğrenciye değişir.
+  sayac: {
+    etiket: 'Sınava kalan',
+    YKS: [
+      { gun: 9999, ad: 'Konu bitirme', metin: 'Hız değil, anlamak öncelik. Eksik konular sırayla kapanır; her biten konudan kısa bir test çözülür.', odak: ['Konu eksiklerini listele', 'Her gün düzenli soru', 'Ayda 2 deneme ile yön kontrolü'] },
+      { gun: 180, ad: 'Konu + deneme', metin: 'Konular bitmeye yaklaşırken deneme sıklaşır. Her denemeden sonra kaybedilen sorular konu konu çıkarılır.', odak: ['Haftada 1 TYT denemesi', 'Deneme analizi → programa', 'AYT konularına ağırlık'] },
+      { gun: 90, ad: 'Deneme ve eksik kapatma', metin: 'Yeni konu azalır, tekrar ve deneme artar. Net düşmüyorsa doğru yoldasın; sıçrama değil, istikrar aranır.', odak: ['Haftada 2 deneme', 'Hata defteri tekrarı', 'Süre yönetimi çalışması'] },
+      { gun: 30, ad: 'Son düzlük', metin: 'Yeni kaynak yok. Uyku saati sınav saatine göre ayarlanır, denemeler sınav saatinde çözülür.', odak: ['Sınav saatinde deneme', 'Sadece tekrar', 'Uyku ve kaygı düzeni'] },
+    ],
+    LGS: [
+      { gun: 9999, ad: 'Temel ve alışkanlık', metin: '8. sınıfın ilk ayları okulla birlikte ilerler. Asıl iş her gün düzenli çalışma alışkanlığını oturtmak.', odak: ['Okulla paralel konu', 'Günlük kısa soru', 'Ayda 1–2 deneme'] },
+      { gun: 150, ad: 'Konu + deneme', metin: 'Deneme düzenli hâle gelir. Paragraf ve yeni nesil sorular her gün programda yer alır.', odak: ['Haftada 1 deneme', 'Yeni nesil soru', 'Yanlış analizi'] },
+      { gun: 60, ad: 'Tekrar ve hız', metin: 'Konu tekrarı ve süre çalışması. Denemeler gerçek sınav süresiyle çözülür.', odak: ['Haftada 2 deneme', 'Eksik konu tekrarı', 'Süre çalışması'] },
+      { gun: 21, ad: 'Son düzlük', metin: 'Yeni kaynak yok, panik yok. Uyku düzeni ve sınav sabahı rutini provası.', odak: ['Sınav saatinde deneme', 'Hafif tekrar', 'Uyku düzeni'] },
+    ],
+  },
+
   // emoji alanı isteğe bağlı: silersen o satırda emoji görünmez.
   sayilar: [
     { emoji: '🕙', sayi: '10', birim: 'yıl', not: 'Koçluk deneyimi' },
