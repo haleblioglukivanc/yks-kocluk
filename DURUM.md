@@ -1011,3 +1011,11 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 ## 22 Eylül 2026 — Demo hesaplar silindi
 - `tasarim.koc@demo.khkocluk.com` ve `demo01..25@demo.khkocluk.com` ile bütün verileri (görev, oturum, deneme, konu ilerlemesi, mesaj) silindi. Sistemde yalnız Kıvanç (koç, 4 öğrenci: Berçem, Roşin, Nisa, Bekir-deneme) ve öğrencileri var.
 - Not: seed dosyasındaki TEMİZLİK satırı artık yetmiyor; `islem_yapan` / `koc_id` yabancı anahtarları silmeyi engelliyor. Önce `ogrenciler`, sonra `islem_yapan` satırları, en son `auth.users` silinmeli.
+
+## 26 Eylül 2026 — sosyal medya: onaysız paylaşım yok
+
+- 25 Eylül videosunda "En ucuz yıl" hatası vardı ("uzun" olmalıydı). Düzeltilip üç kanalda yeniden paylaşıldı. Eski YouTube/TikTok videoları elle silinecek.
+- Yılın 365 günü okundu. Düzeltilenler: 10.11, 10.17, 11.02–11.25 (ara tatil konuları tatilden önceye düşüyordu, artık MEB tarihlerine bağlı), 11.14 ve 12.25 (kör tahmin bilgisi), 12.05, 12.06, 01.19, 03.21, 04.09, 05.06, 07.01, 07.10 (TYT ile AYT aynı gün sanılıyordu), 08.07, 09.12, 09.16.
+- Akış: `sosyal-uretim` (06:30) → yazım denetimi (`sosyal/denetim.py`, izinli kelimeler `sosyal/sozluk.txt`) → video → Telegram'da koça önizleme + Onayla/Yayınlama. Onaylananları `sosyal-onayli` (08–22 arası saatte bir) Buffer'a planlar. Onaylanmayan video paylaşılmaz.
+- Veritabanı: `private.sosyal_onay`, RPC'ler `sosyal_onay_iste` / `sosyal_onaylananlar` / `sosyal_paylasildi` (yalnız servis anahtarı), `telegram_isle` içinde `sosyal:` düğme dalı.
+- Açık konu: 16.04 ve 25.04 aynı fikri işliyor (sosyal medyadaki masa); biri değiştirilebilir.
