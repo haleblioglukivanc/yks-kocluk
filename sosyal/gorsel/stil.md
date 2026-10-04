@@ -9,7 +9,8 @@ günlük ücretsiz kota). Hepsi aynı görsel evrende durmalı; tutarlılığı 
 - 35 mm film görünümü, hafif gren, sığ alan derinliği.
 - Her karede **tek bir nesne ya da küçük bir natürmort** — metaforun kendisi (kum saati, pil, merdiven,
   açık defter, kırık kalem…). Satırın anlamını tek bir görüntüye indir.
-- 9:16 dikey. Üst ve alt üçte bir sakin, koyu ve boş: yazı oraya gelir.
+- 9:16 dikey, nesne büyük ve ortada, lamba ışığıyla net aydınlanmış. (Yazının okunması için koyu
+  geçişi Remotion üstten ve alttan kendisi ekliyor; istemde "boş alan" istemek görseli karartıyor.)
 
 ## Yasaklar (her istemin sonuna eklenir)
 - İnsan, yüz, el, beden yok. (Tutarlılık sorunu ve öğrenci mahremiyeti.)
@@ -20,10 +21,10 @@ günlük ücretsiz kota). Hepsi aynı görsel evrende durmalı; tutarlılığı 
 Kod aşağıdaki bloğu okur; `{nesne}` yerine o satırın görsel tarifi gelir.
 
 ```istem
-{nesne}. Vertical cinematic photograph, 35mm film look, soft grain, shallow depth of field, a single
-subject on a dark wooden study desk at night, warm amber desk-lamp glow, deep navy-blue shadows, moody
-and calm, top third and bottom third are dark empty space. No people, no faces, no hands, no text,
-no letters, no numbers, no logos.
+{nesne}. Close-up still life, the subject large and centered, filling the middle of the frame, sharply lit
+by a warm amber desk lamp, rich golden highlights, soft navy-blue shadows in the background, dark wooden
+study desk at night, vertical cinematic photograph, 35mm film look, soft grain, shallow depth of field.
+No people, no faces, no hands, no text, no letters, no numbers, no logos.
 ```
 
 ## Satırdan görsele
