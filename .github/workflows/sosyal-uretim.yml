@@ -1,10 +1,11 @@
 name: Sosyal - günlük video üretimi
 
-# Her sabah 06:30 (Türkiye) YARININ videosunu takvimden üretir, yazım denetiminden
-# geçirir ve koça Telegram'dan onaya gönderir. Onaylanmayan video paylaşılmaz;
-# onaylananları 'Sosyal - onaylı paylaşım' iş akışı Buffer'a planlar.
+# Her sabah 06:30 (Türkiye) YARININ videosunu takvimden üretir, yazım denetiminden geçirir.
+# Metni okunup damgalanmış gün (sosyal/okundu.py) doğrudan Buffer'a planlanır. Metni sonradan
+# değişmiş, okunmamış ya da gündemden gelen gün koça Telegram'dan onaya gider; onaylananları
+# 'Sosyal - onaylı paylaşım' iş akışı planlar.
 # Elle: Actions -> bu iş akışı -> Run workflow (tarih boş = yarın).
-# 'onaysiz' yalnız koçun zaten onayladığı bir düzeltmeyi yeniden paylaşmak içindir.
+# 'onaysiz' damgaya bakmadan doğrudan planlar.
 on:
   schedule:
     - cron: '30 3 * * *'
@@ -27,7 +28,7 @@ on:
         type: boolean
         default: false
       onaysiz:
-        description: 'Onaya göndermeden doğrudan Buffer a planla (yalnız onaylı düzeltmeler için)'
+        description: 'Okundu damgasına bakmadan doğrudan Buffer a planla'
         type: boolean
         default: false
 
@@ -55,7 +56,7 @@ jobs:
         env:
           TARIH: ${{ inputs.tarih }}
 
-      - name: Videoyu üret, onaya gönder
+      - name: Videoyu üret, paylaş (damgasızsa onaya gönder)
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
@@ -75,7 +76,7 @@ jobs:
           if [ "$ONAYSIZ" = "true" ]; then
             python3 sosyal/gunluk.py $ek --render --gonder
           else
-            python3 sosyal/gunluk.py $ek --render --onaya
+            python3 sosyal/gunluk.py $ek --render --otomatik
           fi
 
       - name: Videoyu indirilebilir bırak

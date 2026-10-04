@@ -237,6 +237,7 @@ if __name__ == '__main__':
     a.add_argument('--metin', action='store_true'); a.add_argument('--deneme', action='store_true')
     a.add_argument('--kanal', default='yt,ig,tt', help='yalnız bu kanallar, örn. ig')
     a.add_argument('--onaya', action='store_true', help='videoyu Buffer yerine koç onayına gönder (Telegram)')
+    a.add_argument('--otomatik', action='store_true', help='metin okundu damgalıysa doğrudan paylaş, değilse onaya gönder')
     a.add_argument('--onaylananlar', action='store_true', help='onaylanmış videoları Buffer a planla')
     a.add_argument('--yeniden', action='store_true', help='düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atlar)')
     arg = a.parse_args()
@@ -256,6 +257,15 @@ if __name__ == '__main__':
             print(f'\n=== {k} ===\n{v}')
     if arg.render:
         render(g, govde, video); print('video:', video)
+    if arg.otomatik:
+        # Metni okunup damgalanmış gün doğrudan paylaşılır; değişmiş ya da okunmamış metin koç onayına düşer
+        import okundu
+        if okundu.okundu_mu(g, govde):
+            print('>> Metin okundu damgalı: doğrudan paylaşılıyor.')
+            arg.gonder = True
+        else:
+            print('::warning::Metin okundu damgalı değil (değişmiş, yeni ya da gündem içeriği); koç onayına gönderiliyor.')
+            arg.onaya = True
     if arg.onaya:
         onaya_gonder(g, govde, video, arg.deneme)
     if arg.gonder:

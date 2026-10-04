@@ -1073,3 +1073,11 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - **Efektler** (`muzik/efekt.py`, yalnız Python standart kitaplığı, `public/efekt/*.wav`): satır gelirken süpürme + tok vuruş, kapanışta parıltı. Müzik (26 Eylül'de üretilen seri parçaları) aynı, 0,6 seviyede.
 - Açık: 30 Eylül–4 Ekim videoları üretilmedi; gerekirse Actions → "Sosyal - günlük video üretimi" → Run workflow ile tarih verilerek elle üretilir.
 - Fotoğrafı olmayan altı çizim eldeki en yakın fotoğrafa bağlandı (`gunluk.py` → `FOTO_ES`): yazışma günleri dışında bütün günler foto kurgusuyla çıkıyor, Higgsfield'a gerek yok. 1–4 Ekim videoları elle üretilip onaya gönderildi.
+
+## 4 Ekim 2026 — sosyal: koç onayı yerine "okundu" damgası, doğrudan paylaşım
+
+- **Karar (Bekir):** videolar koç onayı beklemeden doğrudan paylaşılır. 26 Eylül'deki "onaysız paylaşım yok" kararının yerini aldı.
+- **Güvence:** 4 Ekim 2026 – 18 Eylül 2027 arasındaki 350 günün metni (başlık, kanca, satırlar, soru) baştan sona okundu; tarihler, geri sayımlar, tatil süreleri, ders bilgisi ve yazışmalarda konuşmacı sırası kontrol edildi. Okunan her günün metin özeti `sosyal/takvim/okundu.json`'da (`sosyal/okundu.py`).
+- **Akış:** `sosyal-uretim` → yazım denetimi → video → `gunluk.py --otomatik`: metin damgalıysa doğrudan Buffer'a planlanır; metin sonradan değiştiyse, gün damgasızsa ya da gündem içeriği geldiyse Telegram'da koç onayına düşer (eski yol yedek olarak duruyor). Metni değiştiren yeniden okuyup `python3 sosyal/okundu.py --damgala --baslangic <tarih> --bitis <tarih>` ile damgalar.
+- **Okumada düzeltilenler:** 09.11 ve 28.12 kancaları (bozuk cümle), 14.05 kancası (OBP cümlesi belirsizdi), 28.02 ("aynı şeyi düşünüyorsan"), 11.06 ("Son denemenin kötü geçmesi"), 23.06 yazışması (ilk koç balonu öğrencinin cümlesini tekrar ediyordu).
+- Bilinen, dokunulmayan: 16.04 ve 25.04 aynı fikir; 07.01 "Karne haftası" başlığı karneden iki hafta önce (metin genel); deneme sıklığı önerileri günden güne küçük farklarla geçiyor.
