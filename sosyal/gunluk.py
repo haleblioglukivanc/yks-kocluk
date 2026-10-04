@@ -155,12 +155,12 @@ def o_gun_gonderi_var_mi(kanal, tarih):
     return [e['node']['id'] for e in (veri['posts']['edges'] or [])]
 
 
-def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), yeniden=False, link=None):
+def gonder(g, video, aciklama, yt_baslik, deneme, kanallar=('yt', 'ig', 'tt'), yeniden=False, link=None, gecikme=0):
     simdi = datetime.now(TR)
     for k in kanallar:
         zaman = datetime.fromisoformat(f"{g['tarih']}T{g['saat'][k]}").replace(tzinfo=TR)
         if zaman < simdi + timedelta(minutes=10):
-            zaman = simdi + timedelta(minutes=15)
+            zaman = simdi + timedelta(minutes=15 + gecikme)     # saati geçmiş gün: şimdi + 15 dk (+ istenen gecikme)
         print(f"-- {k}: {zaman:%Y-%m-%d %H:%M} (TR)")
         if deneme:
             print(aciklama[k][:300] + ('…' if len(aciklama[k]) > 300 else '')); continue
@@ -237,6 +237,7 @@ if __name__ == '__main__':
     a.add_argument('--metin', action='store_true'); a.add_argument('--deneme', action='store_true')
     a.add_argument('--kanal', default='yt,ig,tt', help='yalnız bu kanallar, örn. ig')
     a.add_argument('--onaya', action='store_true', help='videoyu Buffer yerine koç onayına gönder (Telegram)')
+    a.add_argument('--gecikme', type=int, default=0, help='saati geçmiş günü şu kadar dakika sonraya planla')
     a.add_argument('--otomatik', action='store_true', help='metin okundu damgalıysa doğrudan paylaş, değilse onaya gönder')
     a.add_argument('--onaylananlar', action='store_true', help='onaylanmış videoları Buffer a planla')
     a.add_argument('--yeniden', action='store_true', help='düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atlar)')
@@ -270,4 +271,4 @@ if __name__ == '__main__':
         onaya_gonder(g, govde, video, arg.deneme)
     if arg.gonder:
         gonder(g, video, aciklama, yt_baslik, arg.deneme,
-               tuple(k.strip() for k in arg.kanal.split(',') if k.strip() in KANAL), arg.yeniden)
+               tuple(k.strip() for k in arg.kanal.split(',') if k.strip() in KANAL), arg.yeniden, gecikme=arg.gecikme)

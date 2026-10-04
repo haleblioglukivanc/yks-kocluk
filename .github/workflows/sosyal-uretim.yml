@@ -27,6 +27,10 @@ on:
         description: 'Düzeltilmiş gönderiyi yeniden paylaş (o gün gönderi var kontrolünü atla)'
         type: boolean
         default: false
+      gecikme:
+        description: 'Saati geçmiş günü kaç dakika sonraya planla (boş = hemen)'
+        required: false
+        default: ''
       onaysiz:
         description: 'Okundu damgasına bakmadan doğrudan Buffer a planla'
         type: boolean
@@ -67,12 +71,14 @@ jobs:
           KANAL: ${{ inputs.kanal }}
           YENIDEN: ${{ inputs.yeniden }}
           ONAYSIZ: ${{ inputs.onaysiz }}
+          GECIKME: ${{ inputs.gecikme }}
         run: |
           ek=""
           [ -n "$TARIH" ] && ek="--tarih $TARIH"
           [ "$DENEME" = "true" ] && ek="$ek --deneme"
           [ -n "$KANAL" ] && ek="$ek --kanal $KANAL"
           [ "$YENIDEN" = "true" ] && ek="$ek --yeniden"
+          [ -n "$GECIKME" ] && ek="$ek --gecikme $GECIKME"
           if [ "$ONAYSIZ" = "true" ]; then
             python3 sosyal/gunluk.py $ek --render --gonder
           else
