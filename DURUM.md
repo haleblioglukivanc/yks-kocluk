@@ -1064,3 +1064,11 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - Zaman çizelgesi: `ortak.js`'te `SATIR/KAPANIS/SURE` artık `zamanAyarla()` ile sesten yazılıyor; `Kok.jsx` Sahne süresini `props.zaman.sure`'dan alıyor. Seslendirme yoksa (anahtar yok) eski sabit zamanlar geçerli.
 - Hassas günler (10 Kasım, 6 Şubat, 15 Temmuz) değişmedi: sade kart, seslendirmesiz, müziksiz.
 - **Yapılacak:** GitHub → Settings → Secrets → `ELEVENLABS_API_KEY` eklenmeli (`sosyal-uretim.yml` okuyor). Yerelde anahtar depo kökündeki `.env`'de (depoya girmez).
+
+## 4 Ekim 2026 — sosyal video: seslendirme kapandı, hat yeniden çalışıyor, vurucu kurgu
+
+- **Arıza:** `sosyal-uretim` 30 Eylül'den beri her gün başarısızdı (son video 29 Eylül). Sebep: ElevenLabs aboneliği `past_due`; seslendirme isteği hata verince `ses.py` hattı durduruyordu. Sitedeki commit'lerle ilgisi yok.
+- **Karar (Bekir):** Kıvanç'ın sesi kullanılmayacak, maliyet düşük tutulacak. Seslendirme varsayılan olarak **kapalı**; günlük üretimin ElevenLabs'a bağımlılığı yok, günlük maliyet sıfır. Zaman çizelgesi okuma hızından kurulur (`ses.zaman_sessiz`). İleride hazır bir sesle açmak için `SOSYAL_SES=1` + `ELEVENLABS_SES_ID`; hata verirse video yine üretilir (uyarı düşer).
+- **Kurgu (Foto v2, `Kurgular.jsx`):** tek fotoğraf dört kadraj — her satırda kamera başka bir yere sıçrar (kesme + parlama), arada yaklaşır; ışık süpürmesi, toz zerreleri, vinyet; üstte hikâye çubuğu (kanca + satır dilimleri); kanca önce dev, sonra yukarı toplanır; satırlar büyük (78–104 punto), numara rozeti "1 / 3", kelimeler sırayla patlar.
+- **Efektler** (`muzik/efekt.py`, yalnız Python standart kitaplığı, `public/efekt/*.wav`): satır gelirken süpürme + tok vuruş, kapanışta parıltı. Müzik (26 Eylül'de üretilen seri parçaları) aynı, 0,6 seviyede.
+- Açık: 30 Eylül–4 Ekim videoları üretilmedi; gerekirse Actions → "Sosyal - günlük video üretimi" → Run workflow ile tarih verilerek elle üretilir.

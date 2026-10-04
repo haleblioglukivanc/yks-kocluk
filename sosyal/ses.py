@@ -1,4 +1,10 @@
-"""Günlük videonun seslendirmesi: ElevenLabs, Kıvanç'ın klonlanmış sesi.
+"""Günlük videonun zaman çizelgesi ve (isteğe bağlı) seslendirmesi.
+
+Varsayılan: seslendirme YOK, maliyet sıfır (zaman_sessiz). Seslendirme yalnız SOSYAL_SES=1 ve
+ELEVENLABS_SES_ID verilirse çalışır; Kıvanç'ın klon sesi kullanılmaz (4 Ekim 2026 kararı).
+ElevenLabs hata verirse video seslendirmesiz üretilir, hat durmaz.
+
+Seslendirme açıkken:
 
 Kanca, gövde satırları ve kapanış tek istekte okunur (tonlama bölünmez); ElevenLabs'ın
 harf zamanlarından her parçanın ve her kelimenin başladığı an çıkarılır. Video bu
@@ -12,7 +18,7 @@ Aynı metin ikinci kez okutulmaz: sonuç metnin özetiyle önbelleğe yazılır.
 import base64, hashlib, json, os, pathlib, re, sys, urllib.error, urllib.request
 
 KOK = pathlib.Path(__file__).resolve().parent
-SES_ID = os.environ.get('ELEVENLABS_SES_ID', '').strip() or 'ZKMGIIUyHLQowzll3hUe'     # "kıvanç" (klon, tr)
+SES_ID = os.environ.get('ELEVENLABS_SES_ID', '').strip()      # hazır bir ses; Kıvanç'ın klonu kullanılmaz
 MODEL = os.environ.get('ELEVENLABS_MODEL', '').strip() or 'eleven_multilingual_v2'
 AYAR = {'stability': 0.5, 'similarity_boost': 0.85, 'style': 0.3, 'use_speaker_boost': True, 'speed': 1.0}
 
@@ -53,14 +59,14 @@ def _istek(metin):
         with urllib.request.urlopen(r, timeout=180) as c:
             return json.loads(c.read())
     except urllib.error.HTTPError as h:
-        sys.exit('ElevenLabs HTTP %s: %s' % (h.code, h.read().decode()[:500]))
+        raise RuntimeError('ElevenLabs HTTP %s: %s' % (h.code, h.read().decode()[:300]))
 
 
 def seslendir(parcalar, cikti):
     """parcalar: ekranda yazan metinler (kanca, satırlar, kapanış).
     Döner: {'sure': sn, 'parca': [{'bas','bit','kelime': [bas...]}]} — ekrandaki her kelimenin başladığı an."""
     if not anahtar():
-        sys.exit('ELEVENLABS_API_KEY yok.')
+        raise RuntimeError('ELEVENLABS_API_KEY yok.')
     cikti = pathlib.Path(cikti)
     ozet = hashlib.sha1(json.dumps([parcalar, SES_ID, MODEL, AYAR], ensure_ascii=False).encode()).hexdigest()[:12]
     onbellek = cikti.with_suffix('.json')
@@ -128,6 +134,25 @@ def zamanla(ses, gecikme=0.3, fps=30):
     kapanis = klip[-1]['from'] - 24
     sure = max(kare(t) + 60, kapanis + 150)
     return {'satir': satir, 'kapanis': kapanis, 'sure': sure, 'kelime': kelime, 'klip': klip}
+
+
+def zaman_sessiz(parcalar, fps=30):
+    """Seslendirmesiz günün zaman çizelgesi (varsayılan, maliyetsiz): okuma hızına göre.
+    Kelime başına 0,20 sn + harf başına 0,04 sn; kanca en az 2,2 sn durur, her satırdan sonra 0,8 sn nefes."""
+    kare = lambda t: int(round(t * fps))
+    kelime, bas, t = [], [], 0.25
+    for i, p in enumerate(parcalar):
+        bas.append(t); satir = []
+        for k in p.split():
+            satir.append(kare(t)); t += 0.20 + 0.04 * len(k)
+        kelime.append(satir)
+        if i == 0:
+            t = max(t, 2.2) + 0.3
+        else:
+            t += 0.8
+    satir = [kare(x) for x in bas[1:-1]]
+    kapanis = kare(bas[-1]) - 6
+    return {'satir': satir, 'kapanis': kapanis, 'sure': kapanis + 135, 'kelime': kelime}
 
 
 if __name__ == '__main__':

@@ -1,6 +1,6 @@
 // Kurgu tipleri. Seri içeriği belirler, kurgu sahneyi. Her kurgunun 0. karesi eksiksiz kapaktır.
 import { AbsoluteFill, Img, staticFile } from 'remotion'
-import { BASLIK, GOVDE, EL, P, G, GEN, SON, SATIR, KAPANIS, ZEMIN, yay, ara, gel, elCemberi, elCizgisi, punto, tohumla } from './ortak.js'
+import { BASLIK, GOVDE, EL, P, G, GEN, SON, SATIR, KAPANIS, SURE, ZEMIN, yay, ara, gel, elCemberi, elCizgisi, punto, tohumla } from './ortak.js'
 import { Cizim, CIZIM } from './Cizimler.jsx'
 
 // ── Ortak parçalar ───────────────────────────────────────────────
@@ -275,47 +275,89 @@ export function Kapanis({ f, gun, z, s }) {
   </AbsoluteFill>
 }
 
-// ── G · Fotoğraf: Higgsfield arka planı + seslendirmeyle kelime kelime yanan satırlar ──
+// ── G · Fotoğraf: Higgsfield arka planı üstünde kurgulu anlatım ──────────────
 // Görsel sosyal/video/public/arka/<çizim>.jpg (metinsiz, yüzsüz; sosyal/higgsfield.md).
-// Kanca 0. karede tam durur (kapak); satırın kelimeleri Kıvanç okudukça beyazlaşır, okunan kelime amber.
+// Tek fotoğraf, dört kadraj: her satırda kamera başka bir yere sıçrar (kesme + parlama), arada yavaşça yaklaşır.
+// Kanca 0. karede tam durur (kapak). Satırlar büyük, ortada; kelimeler sırayla patlar, okunan kelime amber.
+const KADRAJ = [[1.1, 50, 50], [1.5, 38, 44], [1.72, 64, 54], [1.32, 50, 40]]   // ölçek, odak x%, odak y%
+
+function Zerreler({ f, tarih }) {
+  const rnd = tohumla(tarih + 'toz')
+  return <AbsoluteFill style={{ mixBlendMode: 'screen' }}>
+    {Array.from({ length: 22 }).map((_, i) => {
+      const x = rnd() * 1080, y0 = rnd() * 1920, b = 4 + rnd() * 12, hiz = 0.5 + rnd() * 1.6, faz = rnd() * 6.28
+      const y = (((y0 - f * hiz) % 1920) + 1920) % 1920
+      return <div key={i} style={{ position: 'absolute', left: x + Math.sin(f / 40 + faz) * 26, top: y, width: b, height: b, borderRadius: b,
+        background: P.limon, opacity: 0.1 + 0.22 * (0.5 + 0.5 * Math.sin(f / 18 + faz)), filter: `blur(${b > 10 ? 4 : 1.5}px)` }} />
+    })}
+  </AbsoluteFill>
+}
+
 export function Foto({ f, gun, govde, s, zaman }) {
-  const sure = zaman?.sure ?? 600
-  const z = ZEMIN.murekkep
-  const yak = ara(f, 0, sure, 1.06, 1.16)                       // yavaş yaklaşma
-  const kay = ara(f, 0, sure, 0, -40)
-  const satirGeldi = yay(f, SATIR[0] - 16)
+  const sure = zaman?.sure ?? SURE
+  const bol = SATIR.filter((t, i) => i < govde.length && f >= t).length          // 0 kanca, 1..n satırlar
+  const bas = bol ? SATIR[bol - 1] : 0, yerel = f - bas
+  const [olcek, ox, oy] = KADRAJ[bol % KADRAJ.length]
+  const vurus = bol ? ara(yerel, 0, 9, 1, 0) : 0                                 // kesme anı: parlama + geri tepme
+  const yak = olcek + yerel * 0.0011 + vurus * 0.07
+  const kucuk = yay(f, SATIR[0] - 6, { damping: 16, stiffness: 170 })            // kanca yukarı toplanır
+  const bolumler = [0, ...SATIR.slice(0, govde.length), KAPANIS]
   return <AbsoluteFill style={{ background: P.murekkep, overflow: 'hidden' }}>
     <Img src={staticFile(`arka/${s.foto}.jpg`)} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
-      transform: `scale(${yak}) translateY(${kay}px)`, filter: `brightness(${0.78 - satirGeldi * 0.12}) saturate(1.05)` }} />
-    <AbsoluteFill style={{ background: `linear-gradient(180deg, rgba(26,34,51,.92) 0%, rgba(26,34,51,.55) 30%, rgba(26,34,51,.08) 48%,
-      rgba(26,34,51,.35) 58%, rgba(26,34,51,.9) 78%, rgba(26,34,51,.96) 100%)` }} />
-    <Ust gun={gun} z={z} stil={{ position: 'absolute', left: G.sol, top: G.ust + 20 }} />
-    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 80, transform: `scale(${1 - satirGeldi * 0.1})`, transformOrigin: 'left top' }}>
-      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 108)} renk={P.krem} vurgu={s.vurgu} f={f} cizgi={P.amber}
-        stil={{ textShadow: '0 4px 30px rgba(0,0,0,.45)' }} />
+      transformOrigin: `${ox}% ${oy}%`, transform: `scale(${yak}) rotate(${Math.sin(f / 70) * 0.5}deg)`,
+      filter: `brightness(${0.9 - kucuk * 0.1 + vurus * 0.35}) saturate(${1.15 + vurus * 0.4}) contrast(1.08)` }} />
+    {/* ışık süpürmesi: sıcak bir bant çaprazdan ağır ağır geçer */}
+    <AbsoluteFill style={{ mixBlendMode: 'screen', opacity: 0.5,
+      background: `linear-gradient(115deg, transparent ${ara(f, 0, sure, -30, 90)}%, rgba(232,164,28,.38) ${ara(f, 0, sure, -8, 112)}%, transparent ${ara(f, 0, sure, 14, 134)}%)` }} />
+    <Zerreler f={f} tarih={gun.tarih} />
+    <AbsoluteFill style={{ background: 'radial-gradient(ellipse 75% 60% at 50% 46%, transparent 35%, rgba(10,14,24,.78) 100%)' }} />
+    <AbsoluteFill style={{ background: `linear-gradient(180deg, rgba(26,34,51,.9) 0%, rgba(26,34,51,.35) 26%, rgba(26,34,51,${0.05 + kucuk * 0.3}) 50%, rgba(26,34,51,.75) 80%, rgba(26,34,51,.95) 100%)` }} />
+    <AbsoluteFill style={{ background: P.limon, opacity: vurus * 0.2, mixBlendMode: 'screen' }} />
+
+    {/* hikâye çubuğu: kanca + her satır bir dilim, zamanla dolar */}
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust - 6, display: 'flex', gap: 10 }}>
+      {bolumler.slice(0, -1).map((b, i) => <div key={i} style={{ flex: 1, height: 8, borderRadius: 8, background: 'rgba(244,239,230,.28)', overflow: 'hidden' }}>
+        <div style={{ width: `${ara(f, b, bolumler[i + 1], 0, 100)}%`, height: '100%', background: P.amber, borderRadius: 8 }} /></div>)}
     </div>
-    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: 1040 }}>
-      {govde.map((satir, i) => {
-        const gir = yay(f, SATIR[i]), cik = i < govde.length - 1 ? ara(f, SATIR[i + 1] - 8, SATIR[i + 1] + 4) : ara(f, KAPANIS - 6, KAPANIS + 6)
-        if (gir < 0.01 || cik > 0.99) return null
-        const bas = zaman?.kelime?.[i + 1] || []
-        const kelimeler = satir.split(/\s+/).filter(Boolean)
-        return <div key={i} style={{ position: 'absolute', left: 0, right: 0, top: 0, opacity: Math.min(1, gir * 1.4) * (1 - cik),
-          transform: `translateY(${(1 - gir) * 40 - cik * 30}px)`, display: 'flex', gap: 26 }}>
-          <div style={{ flex: '0 0 auto', fontFamily: EL, fontSize: 90, lineHeight: 1, color: P.amber }}>{i + 1}</div>
-          <div style={{ fontFamily: BASLIK, fontWeight: 800, fontSize: satir.length > 60 ? 62 : 70, lineHeight: 1.12, letterSpacing: '-0.02em',
-            textShadow: '0 3px 24px rgba(0,0,0,.5)' }}>
-            {kelimeler.map((k, j) => {
-              const t = bas[j]
-              const okundu = t == null || f >= t, sonraki = bas[j + 1] ?? t + 12
-              const simdi = t != null && f >= t && f < sonraki
-              const p = t == null ? 1 : yay(f, t, { damping: 14, stiffness: 220 })
-              return <span key={j}>{j ? ' ' : ''}<span style={{ display: 'inline-block', color: simdi ? P.amber : P.krem,
-                opacity: okundu ? 1 : 0.34, transform: `scale(${simdi ? 1 + 0.06 * p : 1})`, transformOrigin: 'center bottom' }}>{k}</span></span>
-            })}
-          </div>
+    <Ust gun={gun} z={ZEMIN.murekkep} stil={{ position: 'absolute', left: G.sol, top: G.ust + 34 }} />
+
+    {/* kanca: önce dev, satırlar başlayınca yukarıda küçülür */}
+    <div style={{ position: 'absolute', left: G.sol, width: GEN, top: G.ust + 96 + (1 - kucuk) * 250,
+      transform: `scale(${1.12 - kucuk * 0.52})`, transformOrigin: 'left top', opacity: 1 - kucuk * 0.22 }}>
+      <Baslik metin={gun.kanca} boyut={punto(gun.kanca, 112)} renk={P.krem} vurgu={s.vurgu} f={f} cizgi={P.amber}
+        stil={{ textShadow: '0 6px 40px rgba(0,0,0,.6)' }} />
+    </div>
+
+    {/* satırlar */}
+    {govde.map((satir, i) => {
+      const gir = yay(f, SATIR[i], { damping: 13, stiffness: 190 })
+      const son = i < govde.length - 1 ? SATIR[i + 1] : KAPANIS
+      const cik = ara(f, son - 7, son)
+      if (gir < 0.01 || cik > 0.99) return null
+      const t0 = zaman?.kelime?.[i + 1] || []
+      const kelimeler = satir.split(/\s+/).filter(Boolean)
+      const boyut = satir.length > 62 ? 78 : satir.length > 40 ? 90 : 104
+      return <div key={i} style={{ position: 'absolute', left: G.sol, width: GEN, top: 760, opacity: 1 - cik,
+        transform: `translateX(${-cik * 90}px) scale(${1 + cik * 0.06})` }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 16, transform: `scale(${gir})`, transformOrigin: 'left center',
+          background: P.amber, color: P.murekkep, borderRadius: 999, padding: '10px 30px 10px 14px', fontFamily: GOVDE, fontWeight: 600, fontSize: 34 }}>
+          <span style={{ display: 'inline-block', width: 58, height: 58, borderRadius: 58, background: P.murekkep, color: P.amber, fontFamily: BASLIK,
+            fontWeight: 800, fontSize: 38, lineHeight: '58px', textAlign: 'center' }}>{i + 1}</span>
+          <span style={{ letterSpacing: '.08em' }}>{i + 1} / {govde.length}</span>
         </div>
-      })}
-    </div>
+        <div style={{ marginTop: 34, fontFamily: BASLIK, fontWeight: 800, fontSize: boyut, lineHeight: 1.06, letterSpacing: '-0.03em',
+          color: P.krem, textShadow: '0 6px 36px rgba(0,0,0,.7), 0 2px 4px rgba(0,0,0,.5)' }}>
+          {kelimeler.map((k, j) => {
+            const t = t0[j] ?? SATIR[i] + j * 5
+            const p = yay(f, t, { damping: 11, stiffness: 240 })
+            const sonraki = t0[j + 1] ?? t + 14
+            const simdi = f >= t && f < sonraki
+            return <span key={j}>{j ? ' ' : ''}<span style={{ display: 'inline-block', opacity: Math.min(1, p * 1.6),
+              transform: `translateY(${(1 - p) * 46}px) scale(${0.7 + 0.3 * p}) rotate(${(1 - p) * -5}deg)`, transformOrigin: 'left bottom',
+              color: simdi ? P.amber : P.krem }}>{k}</span></span>
+          })}
+        </div>
+      </div>
+    })}
   </AbsoluteFill>
 }

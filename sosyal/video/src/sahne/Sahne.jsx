@@ -22,7 +22,7 @@ const KURGU = { metafor: Metafor, dev: DevTipo, bolunmus: Bolunmus, harita: Hari
 function muzikSesi(f, zaman) {
   const sure = zaman?.sure ?? 600
   const son = interpolate(f, [sure - 45, sure - 1], [1, 0], { extrapolateLeft: 'clamp', extrapolateRight: 'clamp' })
-  if (!zaman?.klip) return 0.5 * son
+  if (!zaman?.klip) return 0.6 * son
   let konusma = 0
   for (const k of zaman.klip) {
     const b = k.from, e = k.from + (k.kesBit - k.kesBas)
@@ -45,6 +45,12 @@ export function Sahne({ gun, govde, muzik, sahne, ses, zaman }) {
     <Kunye f={f} z={kz} />
     <Kapanis f={f} gun={gun} s={s} z={kz} />
     {muzik && <Audio src={staticFile(muzik)} loop volume={(k) => muzikSesi(k, zaman)} />}
+    {/* efektler (koddan üretilir, muzik/efekt.py): satır gelirken süpürme + vuruş, kapanışta parıltı */}
+    {zaman?.satir?.slice(0, govde.length).map((t, i) => <Sequence key={'e' + i} from={Math.max(0, t - 5)} layout="none">
+      <Audio src={staticFile('efekt/gecis.wav')} volume={0.5} />
+      <Sequence from={5} layout="none"><Audio src={staticFile('efekt/vurus.wav')} volume={0.75} /></Sequence>
+    </Sequence>)}
+    {zaman?.kapanis != null && <Sequence from={zaman.kapanis} layout="none"><Audio src={staticFile('efekt/kapanis.wav')} volume={0.4} /></Sequence>}
     {ses && zaman?.klip?.map((k, i) => <Sequence key={i} from={k.from} durationInFrames={k.kesBit - k.kesBas} layout="none">
       <Audio src={staticFile(ses)} trimBefore={k.kesBas} trimAfter={k.kesBit} />
     </Sequence>)}

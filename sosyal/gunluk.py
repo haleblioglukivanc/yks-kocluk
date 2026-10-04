@@ -85,18 +85,21 @@ def render(g, govde, cikti):
                 and (video / 'public' / 'arka' / f"{sahne.get('cizim')}.jpg").exists():
             sahne = {**sahne, 'kurgu': 'foto', 'foto': sahne['cizim']}
         props['sahne'] = sahne
-        # Seslendirme: Kıvanç'ın klon sesi kancayı, satırları ve kapanışı okur; video sesin zamanına göre kurulur
-        if ses.anahtar() and g.get('ses', True):
-            kapanis = g.get('soru') or 'Yarın yine buradayız.'
-            kayit = ses.seslendir([g['kanca'], *govde, kapanis], KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3")
-            props['zaman'] = ses.zamanla(kayit)
-            props['ses'] = f"ses/{g['tarih']}.mp3"
-            for yer in (video / 'public' / 'ses', paket / 'public' / 'ses'):   # paket bir kez kurulur; ses ona da kopyalanır
-                yer.mkdir(parents=True, exist_ok=True)
-                shutil.copyfile(KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3", yer / f"{g['tarih']}.mp3")
-            print(f">> Seslendirme: {kayit['sure']:.1f} sn, video {props['zaman']['sure'] / 30:.1f} sn")
-        else:
-            print('::warning::ELEVENLABS_API_KEY yok; video seslendirmesiz üretildi.')
+        # Zaman çizelgesi okuma hızından kurulur (seslendirmesiz, maliyetsiz). Seslendirme yalnız
+        # SOSYAL_SES=1 + ELEVENLABS_SES_ID ile açılır; hata verirse video sessiz çizelgeyle üretilir.
+        parcalar = [g['kanca'], *govde, g.get('soru') or 'Yarın yine buradayız.']
+        props['zaman'] = ses.zaman_sessiz(parcalar)
+        if env('SOSYAL_SES') == '1' and ses.SES_ID and ses.anahtar():
+            try:
+                kayit = ses.seslendir(parcalar, KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3")
+                for yer in (video / 'public' / 'ses', paket / 'public' / 'ses'):   # paket bir kez kurulur; ses ona da kopyalanır
+                    yer.mkdir(parents=True, exist_ok=True)
+                    shutil.copyfile(KOK / 'medya' / 'ses' / f"{g['tarih']}.mp3", yer / f"{g['tarih']}.mp3")
+                props['zaman'] = ses.zamanla(kayit)
+                props['ses'] = f"ses/{g['tarih']}.mp3"
+            except Exception as h:                                                 # ödeme, kota, ağ: hat durmaz
+                print(f'::warning::Seslendirme yapılamadı, video seslendirmesiz üretiliyor: {h}')
+        print(f">> Video {props['zaman']['sure'] / 30:.1f} sn" + (' (seslendirmeli)' if props.get('ses') else ''))
     pf = video / '.props.json'
     pf.write_text(json.dumps(props, ensure_ascii=False), encoding='utf-8')
     cikti.parent.mkdir(parents=True, exist_ok=True)
