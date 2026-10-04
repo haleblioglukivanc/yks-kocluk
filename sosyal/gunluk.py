@@ -26,6 +26,9 @@ UZMAN_NOTU = ('Bu içerik bilgilendirme amaçlıdır. Kaygı, uykusuzluk ya da u
               'okul rehber öğretmenine ya da bir uzmana başvur. Acil bir durumda 112.')
 SITE = 'https://khkocluk.com'
 NPX = shutil.which('npx') or 'npx'          # Windows'ta npx.cmd
+# Kendi fotoğrafı olmayan çizimler en yakın anlamlı fotoğrafı kullanır (yeni üretim maliyeti yok)
+FOTO_ES = {'pusula': 'tabela', 'roket': 'merdiven', 'yaprak': 'filiz', 'kar-tanesi': 'bulut-yagmur',
+           'kalp-atisi': 'ay-bulut', 'bayrak': 'gunes'}
 
 
 def gun_bul(tarih):
@@ -81,9 +84,10 @@ def render(g, govde, cikti):
     kompozisyon = 'Sahne' if sahne and not g['hassas'] else 'Gunluk'
     if kompozisyon == 'Sahne':
         # Çizimin Higgsfield fotoğrafı varsa gün fotoğraflı kurguyla çıkar (yazışma ve "foto": false olan günler hariç)
+        foto = FOTO_ES.get(sahne.get('cizim'), sahne.get('cizim'))
         if sahne.get('kurgu') != 'yazisma' and sahne.get('foto', True) is not False \
-                and (video / 'public' / 'arka' / f"{sahne.get('cizim')}.jpg").exists():
-            sahne = {**sahne, 'kurgu': 'foto', 'foto': sahne['cizim']}
+                and (video / 'public' / 'arka' / f"{foto}.jpg").exists():
+            sahne = {**sahne, 'kurgu': 'foto', 'foto': foto}
         props['sahne'] = sahne
         # Zaman çizelgesi okuma hızından kurulur (seslendirmesiz, maliyetsiz). Seslendirme yalnız
         # SOSYAL_SES=1 + ELEVENLABS_SES_ID ile açılır; hata verirse video sessiz çizelgeyle üretilir.
