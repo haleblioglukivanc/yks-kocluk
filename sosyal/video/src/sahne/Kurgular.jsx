@@ -278,6 +278,7 @@ export function Kapanis({ f, gun, z, s }) {
 // ── G · Fotoğraf: Higgsfield arka planı üstünde kurgulu anlatım ──────────────
 // Görsel sosyal/video/public/arka/<çizim>.jpg (metinsiz, yüzsüz; sosyal/higgsfield.md).
 // Tek fotoğraf, dört kadraj: her satırda kamera başka bir yere sıçrar (kesme + parlama), arada yavaşça yaklaşır.
+// s.sahneler varsa (sosyal/gorsel.py) her satır kendi görseline keser: kanca 0, satırlar 1..n.
 // Kanca 0. karede tam durur (kapak). Satırlar büyük, ortada; kelimeler sırayla patlar, okunan kelime amber.
 const KADRAJ = [[1.1, 50, 50], [1.5, 38, 44], [1.72, 64, 54], [1.32, 50, 40]]   // ölçek, odak x%, odak y%
 
@@ -303,7 +304,7 @@ export function Foto({ f, gun, govde, s, zaman }) {
   const kucuk = yay(f, SATIR[0] - 6, { damping: 16, stiffness: 170 })            // kanca yukarı toplanır
   const bolumler = [0, ...SATIR.slice(0, govde.length), KAPANIS]
   return <AbsoluteFill style={{ background: P.murekkep, overflow: 'hidden' }}>
-    <Img src={staticFile(`arka/${s.foto}.jpg`)} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
+    <Img src={staticFile(s.sahneler?.length ? s.sahneler[Math.min(bol, s.sahneler.length - 1)] : `arka/${s.foto}.jpg`)} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover',
       transformOrigin: `${ox}% ${oy}%`, transform: `scale(${yak}) rotate(${Math.sin(f / 70) * 0.5}deg)`,
       filter: `brightness(${0.9 - kucuk * 0.1 + vurus * 0.35}) saturate(${1.15 + vurus * 0.4}) contrast(1.08)` }} />
     {/* ışık süpürmesi: sıcak bir bant çaprazdan ağır ağır geçer */}

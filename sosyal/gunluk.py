@@ -88,6 +88,15 @@ def render(g, govde, cikti):
         if sahne.get('kurgu') != 'yazisma' and sahne.get('foto', True) is not False \
                 and (video / 'public' / 'arka' / f"{foto}.jpg").exists():
             sahne = {**sahne, 'kurgu': 'foto', 'foto': foto}
+        # Satır görselleri (sosyal/gorsel.py, Cloudflare Workers AI) varsa her satır kendi görseline keser
+        import gorsel
+        sahneler = gorsel.gorseller(g['tarih'])
+        if sahne.get('kurgu') != 'yazisma' and len(sahneler) >= len(govde) + 1:
+            sahne = {**sahne, 'kurgu': 'foto', 'sahneler': sahneler[:len(govde) + 1]}
+            hedef = paket / 'public' / 'sahne' / g['tarih']              # paket önceden kurulduysa görseller ona da kopyalanır
+            if paket.exists():
+                shutil.copytree(video / 'public' / 'sahne' / g['tarih'], hedef, dirs_exist_ok=True)
+            print(f'>> Satır görselleri: {len(sahne["sahneler"])} kare')
         props['sahne'] = sahne
         # Zaman çizelgesi okuma hızından kurulur (seslendirmesiz, maliyetsiz). Seslendirme yalnız
         # SOSYAL_SES=1 + ELEVENLABS_SES_ID ile açılır; hata verirse video sessiz çizelgeyle üretilir.

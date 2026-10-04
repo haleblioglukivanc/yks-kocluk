@@ -60,6 +60,14 @@ jobs:
         env:
           TARIH: ${{ inputs.tarih }}
 
+      - name: Satır görselleri (Cloudflare Workers AI, ücretsiz; hata verirse eski kurgu)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          TARIH: ${{ inputs.tarih }}
+        run: python3 sosyal/gorsel.py --tarih "${TARIH:-$(TZ=Europe/Istanbul date -d tomorrow +%F)}"
+
       - name: Videoyu üret, paylaş (damgasızsa onaya gönder)
         env:
           BUFFER_API_KEY: ${{ secrets.BUFFER_API_KEY }}
@@ -90,6 +98,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: gunluk-video
-          path: sosyal/medya/gunluk/
+          path: |
+            sosyal/medya/gunluk/
+            sosyal/video/public/sahne/
           if-no-files-found: ignore
           retention-days: 14

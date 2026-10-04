@@ -1081,3 +1081,12 @@ Kalan maddeler (7–16: üç gelen kutusu, tekrar eden rozetler, kitap iki yerde
 - **Akış:** `sosyal-uretim` → yazım denetimi → video → `gunluk.py --otomatik`: metin damgalıysa doğrudan Buffer'a planlanır; metin sonradan değiştiyse, gün damgasızsa ya da gündem içeriği geldiyse Telegram'da koç onayına düşer (eski yol yedek olarak duruyor). Metni değiştiren yeniden okuyup `python3 sosyal/okundu.py --damgala --baslangic <tarih> --bitis <tarih>` ile damgalar.
 - **Okumada düzeltilenler:** 09.11 ve 28.12 kancaları (bozuk cümle), 14.05 kancası (OBP cümlesi belirsizdi), 28.02 ("aynı şeyi düşünüyorsan"), 11.06 ("Son denemenin kötü geçmesi"), 23.06 yazışması (ilk koç balonu öğrencinin cümlesini tekrar ediyordu).
 - Bilinen, dokunulmayan: 16.04 ve 25.04 aynı fikir; 07.01 "Karne haftası" başlığı karneden iki hafta önce (metin genel); deneme sıklığı önerileri günden güne küçük farklarla geçiyor.
+
+## 4 Ekim 2026 — sosyal Shorts: satır başına görsel (Cloudflare Workers AI, ücretsiz)
+
+- **Karar (Bekir):** uzun YouTube videosu yok, yalnız Shorts. Görseller ücretsiz üretilecek: Cloudflare Workers AI (Kıvanç'ın hesabı, günlük ücretsiz kota).
+- **Ne değişti:** foto kurgusunda tek fotoğrafın dört kadrajı yerine, görsel varsa **her satır kendi görseline keser** (kanca 00, satırlar 01..n). Efektler, zamanlama, Buffer akışı, okundu damgası aynı.
+- **Üretim:** `sosyal/gorsel.py --tarih <gün>` — Llama 3.3 her satırı tek bir somut nesneye çevirir, görsel modeli (`@cf/leonardo/lucid-origin`, olmazsa `flux-1-schnell`) `sosyal/gorsel/stil.md`'deki istem kalıbıyla çizer → `sosyal/video/public/sahne/<tarih>/` (+ `istem.json`). Depoya girmez (gitignore); CI'da her sabah üretilir, iş akışı çıktısında indirilebilir.
+- **İş akışı:** `sosyal-uretim.yml`'de video adımından önce "Satır görselleri" adımı (`continue-on-error`). Anahtar yoksa, kota biterse ya da model hata verirse video eski foto kurgusuyla çıkar; hat durmaz.
+- **Yapılacak:** GitHub → Settings → Secrets → `CLOUDFLARE_ACCOUNT_ID` ve `CLOUDFLARE_API_TOKEN` (Workers AI izni) eklenmeli. Sonra Actions → "Sosyal - günlük video üretimi" → Run workflow (deneme açık) ile pilot alınır.
+- Yerelde yer tutucu görsellerle doğrulandı: 05.10 videosu 4 karede 4 ayrı görselle render edildi.
